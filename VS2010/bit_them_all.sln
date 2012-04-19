@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bit_them_all", "bit_them_all.vcxproj", "{9964A96B-4183-4D63-A656-0D7071B4B2D7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9964A96B-4183-4D63-A656-0D7071B4B2D7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9964A96B-4183-4D63-A656-0D7071B4B2D7}.Debug|Win32.Build.0 = Debug|Win32
+		{9964A96B-4183-4D63-A656-0D7071B4B2D7}.Release|Win32.ActiveCfg = Release|Win32
+		{9964A96B-4183-4D63-A656-0D7071B4B2D7}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		QtVersion = $(DefaultQtVersion)
+	EndGlobalSection
+EndGlobal
