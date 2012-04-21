@@ -16,9 +16,16 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
+     <widget class="QPushButton" name="refreshButton">
+      <property name="text">
+       <string>Refresh</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>4</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="Map">
        <attribute name="title">
@@ -53,6 +60,16 @@
           <column>
            <property name="text">
             <string>Name</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Content</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Ressources</string>
            </property>
           </column>
          </widget>
@@ -107,7 +124,7 @@
        <attribute name="title">
         <string>Reports</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_3" stretch="1,0">
+       <layout class="QVBoxLayout" name="verticalLayout_3" stretch="1">
         <item>
          <widget class="QSplitter" name="splitter">
           <property name="orientation">
@@ -135,17 +152,6 @@
           </widget>
           <widget class="QTableView" name="tableView"/>
          </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_7">
-          <item>
-           <widget class="QPushButton" name="refreshReportButton">
-            <property name="text">
-             <string>Refresh</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </item>
        </layout>
       </widget>

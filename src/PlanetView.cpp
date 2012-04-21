@@ -2,6 +2,8 @@
 
 #include <boost/foreach.hpp>
 
+#include "TranslationTools.h"
+
 void PlanetView::refreshAll()
 {
 }
@@ -26,7 +28,7 @@ PlanetView::PlanetView(
 		ui.buildingsTreeWidget->addTopLevelItem(item);
 	}
 
-	BOOST_FOREACH(Task const& task, planet.taskQueue)
+	BOOST_FOREACH(Task const & task, planet.taskQueue)
 	{
 		QTreeWidgetItem* item = new QTreeWidgetItem(ui.taskTreeWidget);
 		item->setData(0, 0, getTaskName(task.type).c_str());

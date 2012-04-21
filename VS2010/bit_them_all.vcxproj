@@ -88,6 +88,7 @@
     <ClCompile Include="..\src\Model.cpp" />
     <ClCompile Include="..\src\PlanetView.cpp" />
     <ClCompile Include="..\src\PythonHighlighter.cpp" />
+    <ClCompile Include="..\src\TranslationTools.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_bit_them_all.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -167,6 +168,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -D_MBCS "-I." "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I." "-II:\C\boost_1_48_0" "-IC:\Python27\include" "-I." "-I." "-I." "-I."</Command>
     </CustomBuild>
+    <ClInclude Include="..\src\TranslationTools.h" />
     <ClInclude Include="GeneratedFiles\ui_PlanetView.h" />
     <CustomBuild Include="..\src\PlanetView.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

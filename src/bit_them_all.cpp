@@ -8,6 +8,9 @@
 
 #include "PythonHighlighter.h"
 #include "PlanetView.h"
+#include "TranslationTools.h"
+
+
 
 bit_them_all::bit_them_all(QWidget* parent, Qt::WFlags flags):
 	QMainWindow(parent, flags),
@@ -54,6 +57,16 @@ void bit_them_all::refreshAll()
 		item->setData(0, 0, planet.coord.X);
 		item->setData(1, 0, planet.coord.Y);
 		item->setData(2, 0, planet.coord.Z);
+		std::string ressStr;
+		for(int i = 0; i < Ressource::Count; ++i)
+		{
+			ressStr +=
+				getRessourceName(static_cast<Ressource::Enum>(i))[0] +
+			  std::string(":") +
+			  boost::lexical_cast<std::string>(planet.ressourceSet.tab[i]) +
+			  std::string("; ");
+		}
+		item->setData(5, 0, ressStr.c_str());
 		ui.planetTable->addTopLevelItem(item);
 	}
 
@@ -66,10 +79,42 @@ void bit_them_all::refreshAll()
 		item->setData(0, 0, fleet.coord.X);
 		item->setData(1, 0, fleet.coord.Y);
 		item->setData(2, 0, fleet.coord.Z);
+		item->setData(3, 0, fleet.name.c_str());
+		std::string content;
+		for(int i = 0; i < Ship::Count; ++i)
+		{
+			content +=
+				getShipName(static_cast<Ship::Enum>(i))[0] +
+			  std::string(":") +
+			  boost::lexical_cast<std::string>(fleet.shipList[i]) +
+			  std::string("; ");
+		}
+		item->setData(4, 0, content.c_str());
+		std::string ressStr;
+		for(int i = 0; i < Ressource::Count; ++i)
+		{
+			ressStr +=
+				getRessourceName(static_cast<Ressource::Enum>(i))[0] +
+			  std::string(":") +
+			  boost::lexical_cast<std::string>(fleet.ressourceSet.tab[i]) +
+			  std::string("; ");
+		}
+		item->setData(5, 0, ressStr.c_str());
 		ui.fleetTable->addTopLevelItem(item);
 	}
 
-	on_refreshReportButton_clicked();
+	Player player = engine_.getPlayer(logged_);
+	ui.reportTreeWidget->clear();
+	BOOST_FOREACH(Event const & ev, player.eventList)
+	{
+		QTreeWidgetItem* item = new QTreeWidgetItem(ui.reportTreeWidget);
+		item->setData(0, 0, ctime(&ev.time));
+		item->setData(1, 0, ev.type);
+		item->setData(2, 0, ev.comment.c_str());
+		//item->setSizeHint(2, QSize(400, 400));
+		ui.reportTreeWidget->addTopLevelItem(item);
+	}
+	ui.reportTreeWidget->setUniformRowHeights(true);
 }
 
 
@@ -97,21 +142,9 @@ void bit_them_all::on_resetPlanetCodeButton_clicked()
 	ui.planetCodeEdit->setText(code.c_str());
 }
 
-void bit_them_all::on_refreshReportButton_clicked()
+void bit_them_all::on_refreshButton_clicked()
 {
-	Player player = engine_.getPlayer(logged_);
-
-	ui.reportTreeWidget->clear();
-	BOOST_FOREACH(Event const & ev, player.eventList)
-	{
-		QTreeWidgetItem* item = new QTreeWidgetItem(ui.reportTreeWidget);
-		item->setData(0, 0, ctime(&ev.time));
-		item->setData(1, 0, ev.type);
-		item->setData(2, 0, ev.comment.c_str());
-		//item->setSizeHint(2, QSize(400, 400));
-		ui.reportTreeWidget->addTopLevelItem(item);
-	}
-	ui.reportTreeWidget->setUniformRowHeights(true);
+	refreshAll();
 }
 
 void bit_them_all::on_planetTable_itemDoubleClicked(QTreeWidgetItem* item, int) //column
@@ -129,7 +162,7 @@ void bit_them_all::on_planetTable_itemDoubleClicked(QTreeWidgetItem* item, int) 
 void bit_them_all::on_actionLoad_activated()
 {
 	QString fileName = QFileDialog::getOpenFileName(this,
-     tr("Open Archive"), "", tr("Archive Files (*.bta)"));
+	                   tr("Open Archive"), "", tr("Archive Files (*.bta)"));
 	engine_.load(fileName.toStdString());
 	refreshAll();
 }
@@ -138,6 +171,6 @@ void bit_them_all::on_actionLoad_activated()
 void bit_them_all::on_actionSave_activated()
 {
 	QString fileName = QFileDialog::getSaveFileName(this,
-     tr("Open Archive"), "", tr("Archive Files (*.bta)"));
+	                   tr("Open Archive"), "", tr("Archive Files (*.bta)"));
 	engine_.save(fileName.toStdString());
 }

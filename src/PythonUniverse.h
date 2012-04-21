@@ -27,16 +27,25 @@ BOOST_PYTHON_MODULE(DroneWars)
 		.def_readonly("level", &Building::level)
 		;*/
 
-	enum_<Building::Type>("Building")
+	enum_<Building::Enum>("Building")
 	.value("CommandCenter",     Building::CommandCenter)
 	.value("MetalMine",         Building::MetalMine)
 	.value("CarbonMine",        Building::CarbonMine)
-	.value("CristalMine",       Building::CristalMine)
+	.value("CristalMine",       Building::LoiciumFilter)
 	.value("Factory",           Building::Factory)
 	.value("Laboratory",        Building::Laboratory)
 	.value("CarbonicCentral",   Building::CarbonicCentral)
 	.value("SolarCentral",      Building::SolarCentral)
 	.value("GeothermicCentral", Building::GeothermicCentral)
+	;
+
+	enum_<Ship::Enum>("Ship")
+	.value("Mosquito",     Ship::Mosquito)
+	.value("Hornet",       Ship::Hornet)
+	.value("Vulture",      Ship::Vulture)
+	.value("Dragon",       Ship::Dragon)
+	.value("Behemoth",     Ship::Behemoth)
+	.value("Apocalyps",    Ship::Apocalyps)
 	;
 
 	class_<Planet::BuildingMap>("BuildingMap")
@@ -50,9 +59,9 @@ BOOST_PYTHON_MODULE(DroneWars)
 	.def_readonly("buildingMap", &Planet::buildingMap)
 	;
 
-	class_<Ship>("Ship", init<Ship::Type>())
-	.def_readonly("type", &Ship::type)
-	;
+	//class_<Ship>("Ship", init<Ship::Enum>())
+	//.def_readonly("type", &Ship::Enum)
+	//;
 
 	class_<Fleet>("Fleet", init<Fleet::ID, Player::ID, Coord>())
 	.def_readonly("id", &Fleet::id)
@@ -77,13 +86,15 @@ BOOST_PYTHON_MODULE(DroneWars)
 	;
 
 	scope outer =
-	  class_<PlanetAction>("PlanetAction", init<PlanetAction::Type, Building::Type>())
+	  class_<PlanetAction>("PlanetAction", init<PlanetAction::Type, Building::Enum>())
+	  .def(init<PlanetAction::Type, Ship::Enum, size_t>())
 	  .def_readonly("action",   &PlanetAction::action)
 	  .def_readonly("building", &PlanetAction::building)
 	  ;
 
 	enum_<PlanetAction::Type>("Type")
-	.value("Building",  PlanetAction::Building);
+	.value("Building",  PlanetAction::Building)
+	.value("Ship",  PlanetAction::Ship);
 }
 
 #endif //__BTA_PYTHON_UNIVERSE__

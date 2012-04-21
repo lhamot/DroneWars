@@ -10,9 +10,11 @@
 #include <queue>
 #include <iosfwd>
 
+#include <boost/array.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/map.hpp>
+#include <boost/serialization/array.hpp>
 
 struct Event
 {
@@ -34,7 +36,7 @@ struct Event
 	Type type;
 	std::string comment;
 
-	Event(){}
+	Event() {}
 	Event(time_t ti, Type ty, std::string const& comm):
 		time(ti), type(ty), comment(comm)
 	{
@@ -52,7 +54,7 @@ private:
 	}
 
 public:
-	Player(){} //pour boost::serialization
+	Player() {} //pour boost::serialization
 
 	typedef size_t ID;
 	static ID const NoId = ID(-1);
@@ -65,30 +67,6 @@ public:
 	Player(ID i, std::string const& lg): id(i), login(lg) {}
 };
 
-struct Task
-{
-	template<class Archive>
-	void serialize(Archive& ar, const unsigned int)
-	{
-		ar& type& value& lauchTime& duration;
-	}
-
-	enum Type
-	{
-		UpgradeBuilding
-	};
-
-	Type type;
-	size_t value;
-	time_t lauchTime;
-	size_t duration;
-
-	Task(){}
-	Task(Type t, size_t val, time_t lauch, size_t dur):
-		type(t),value(val),lauchTime(lauch),duration(dur)
-	{
-	}
-};
 
 struct Coord
 {
@@ -103,7 +81,7 @@ struct Coord
 	Value Y;
 	Value Z;
 
-	Coord():X(0),Y(0),Z(0){}
+	Coord(): X(0), Y(0), Z(0) {}
 
 	Coord(Value x, Value y, Value z):
 		X(x),
@@ -130,36 +108,114 @@ struct CompCoord
 	};
 };
 
-//struct Zone{};
+struct Ressource
+{
+	enum Enum
+	{
+		Metal,
+		Carbon,
+		Loicium,
+		Count
+	};
+};
+
+struct RessourceSet
+{
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int)
+	{
+		ar& tab;
+	}
+
+	typedef boost::array<size_t, Ressource::Count> Tab;
+	Tab tab;
+
+	RessourceSet(Tab const& t):tab(t){}
+	RessourceSet(){tab.fill(0);}
+	RessourceSet(size_t a, size_t b, size_t c){tab[0] = a; tab[1] = b; tab[2] = c;}
+};
+
+
+struct Task
+{
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int)
+	{
+		ar& type& value& value2& lauchTime& duration& startCost;
+	}
+
+	enum Enum
+	{
+		UpgradeBuilding,
+		MakeShip,
+		Count
+	};
+
+	Enum type;
+	size_t value;
+	size_t value2;
+	time_t lauchTime;
+	size_t duration;
+	RessourceSet startCost;
+	bool expired;
+
+	Task() {}
+	Task(Enum t, time_t lauch, size_t dur):
+		type(t), value(0), value2(0), lauchTime(lauch), duration(dur), expired(false)
+	{
+	}
+};
+
 
 struct Building
 {
-	enum Type
+	enum Enum
 	{
+		None = -1,
 		CommandCenter,
 		MetalMine,
 		CarbonMine,
-		CristalMine,
+		LoiciumFilter,
 		Factory,
 		Laboratory,
 		CarbonicCentral,
 		SolarCentral,
 		GeothermicCentral,
+		Count
 	};
+	
+	RessourceSet price;
+	double coef;
 
-	//Type type;
-	//size_t level;
-
-	//Building(Type t):type(t),level(0){}
+	static Building const List[];
 };
 
+
+struct Ship
+{
+	enum Enum
+	{
+		None = -1,
+		Mosquito,
+		Hornet,
+		Vulture,
+		Dragon,
+		Behemoth,
+		Apocalyps,
+		Count
+	};
+
+	RessourceSet price;
+
+	static Ship const List[];
+};
 
 struct Planet
 {
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
-		ar& coord& playerId& buildingMap& taskQueue;
+		ar& coord& playerId& buildingMap& taskQueue& ressourceSet;
 	}
 
 	/*struct CmpBuild
@@ -172,11 +228,12 @@ struct Planet
 
 	Coord coord;
 	Player::ID playerId;
-	typedef std::map<Building::Type, size_t> BuildingMap;
+	typedef std::map<Building::Enum, size_t> BuildingMap;
 	BuildingMap buildingMap;
 	std::vector<Task> taskQueue;
+	RessourceSet ressourceSet;
 
-	Planet(){}
+	Planet() {}
 	Planet(Coord c): coord(c), playerId(Player::NoId) {}
 };
 
@@ -186,59 +243,30 @@ struct PlanetAction
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
-		ar& action& building;
+		ar& action& building& ship;
 	}
 
 	enum Type
 	{
 		Building,
-		StopBuilding
+		StopBuilding,
+		Ship
 	};
 
 	Type action;
-	Building::Type building;
+	Building::Enum building;
+	Ship::Enum ship;
+	size_t number;
 
 	bool operator==(PlanetAction const& other)
 	{
 		return action == other.action && building == other.building;
 	}
 
-	PlanetAction(Type a, Building::Type b): action(a), building(b) {}
+	PlanetAction(Type a, Building::Enum b): action(a), building(b), ship(Ship::None), number(0) {}
+	PlanetAction(Type a, Ship::Enum s, size_t n): action(a), building(Building::None), ship(s), number(n) {}
 };
 typedef std::vector<PlanetAction> PlanetActionList;
-
-struct Ship
-{
-	template<class Archive>
-	void serialize(Archive& ar, const unsigned int)
-	{
-		ar& type;
-	}
-
-
-	enum Type
-	{
-		Factory,
-		Laboratory,
-		MetalMine,
-		CarbonMine,
-		CristalMine,
-		CarbonicCentral,
-		SolarCentral,
-		GeothermicCentral,
-		CommandCenter
-	};
-
-	//Fleet::ID const fleetId;
-	Type type;
-
-	Ship(){}
-	Ship(
-	  //Fleet::ID fid,
-	  Type t):
-		//fleetId(fid),
-		type(t) {}
-};
 
 
 struct Fleet
@@ -254,10 +282,15 @@ struct Fleet
 	Player::ID playerId;
 	Coord coord;
 	std::string name;
-	std::vector<Ship> shipList;
+	boost::array<size_t, Ship::Count> shipList;
+	RessourceSet ressourceSet;
 
-	Fleet(){}
-	Fleet(ID fid, Player::ID pid, Coord c): id(fid), playerId(pid), coord(c) {}
+	Fleet() {}
+	Fleet(ID fid, Player::ID pid, Coord c): 
+		id(fid), playerId(pid), coord(c) 
+	{
+		shipList.fill(0);
+	}
 };
 
 
@@ -286,9 +319,10 @@ struct Universe
 	PlanetMap planetMap;
 	std::vector<Fleet> fleetList;
 	Player::ID nextPlayerID;
+	Fleet::ID nextFleetID;
 	time_t time;
 
-	Universe(): nextPlayerID(0),time(0)
+	Universe(): nextPlayerID(0), time(0)
 	{
 	}
 };
@@ -297,12 +331,23 @@ void construct(Universe& univ);
 
 Player::ID createPlayer(Universe& univ, std::string const& login);
 
-void saveToStream(Universe const& univ, std::ostream &out);
-void loadFromStream(std::istream &in, Universe& univ);
+void saveToStream(Universe const& univ, std::ostream& out);
+void loadFromStream(std::istream& in, Universe& univ);
 
-std::string getBuildingName(Building::Type type);
+std::string getBuildingName(Building::Enum type);
 
-std::string getTaskName(Task::Type type);
+bool canBuild(Planet const& planet, Ship::Enum type, size_t number);
 
+bool canBuild(Planet const& planet, Building::Enum type);
+
+void addTask(Planet& planet, time_t time, Building::Enum building);
+
+void addTask(Planet& planet, time_t time, Ship::Enum ship, size_t number);
+
+bool canStop(Planet const& planet, Building::Enum type);
+
+void stopTask(Planet& planet, Task::Enum tasktype, Building::Enum building);
+
+void planetRound(Universe& univ, Planet& planet);
 
 #endif //_BTA_MODEL_

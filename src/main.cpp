@@ -43,6 +43,7 @@ public:
 };
 
 int main(int argc, char* argv[])
+try
 {
 	srand(static_cast<unsigned int>(time(NULL)));
 
@@ -50,4 +51,16 @@ int main(int argc, char* argv[])
 	bit_them_all view;
 	view.show();
 	return a.exec();
+}
+catch(boost::exception& e)
+{
+	qFatal(boost::diagnostic_information(e).c_str());
+}
+catch(std::exception& e)
+{
+	qFatal(boost::diagnostic_information(e).c_str());
+}
+catch(...)
+{
+	qFatal("Error <unknown>");
 }

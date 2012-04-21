@@ -22,7 +22,7 @@ public slots:
 	void on_savePlanetCodeButton_clicked();
 	void on_resetFleetCodeButton_clicked();
 	void on_resetPlanetCodeButton_clicked();
-	void on_refreshReportButton_clicked();
+	void on_refreshButton_clicked();
 	void on_planetTable_itemDoubleClicked(QTreeWidgetItem* item, int column);
 	void on_actionLoad_activated();
 	void on_actionSave_activated();

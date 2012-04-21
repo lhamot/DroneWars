@@ -96,7 +96,7 @@ void Engine::save(std::string const& saveName) const
 	std::string const ansSaveName = saveName + ".ans";
 	remove(ansSaveName.c_str());
 	struct stat buf;
-	if(stat(saveName.c_str(), &buf ) == 0)
+	if(stat(saveName.c_str(), &buf) == 0)
 		rename(saveName.c_str(), ansSaveName.c_str());
 	rename(newSaveName.c_str(), saveName.c_str());
 	std::cout << "OK" << std::endl;
@@ -188,6 +188,8 @@ Planet Engine::getPlanet(Coord coord) const
 }
 
 
+//   -------   PRIVEE   -------------------------------------------------------
+
 boost::python::object Engine::registerCode(
   Player::ID const pid, std::string const& module, std::string const& code)
 try
@@ -221,62 +223,35 @@ catch(boost::python::error_already_set const&)
 	return boost::python::object();
 }
 
-bool canBuild(Planet const& planet, Building::Type type)
-{
-	auto iter = std::find_if(planet.taskQueue.begin(), planet.taskQueue.end(), 
-		[&](Task const& task){return task.value == static_cast<size_t>(type);});
-	if(iter == planet.taskQueue.end())
-		return true;
-	else
-		return false;
-}
-
-void addTask(Planet& planet, Building::Type building)
-{
-	auto const buIter = planet.buildingMap.find(building);
-	size_t const buLevel = (buIter == planet.buildingMap.end())? 0: buIter->second;
-	size_t const duration = static_cast<size_t>(pow(buLevel + 1., 1.5) * 10);
-	planet.taskQueue.push_back(Task(Task::UpgradeBuilding, building, time(0), duration));
-}
-
-bool canStop(Planet& planet, Building::Type type)
-{
-	return true;
-}
-
-void stopTask(Planet& planet, Task::Type tasktype, Building::Type building)
-{
-	auto iter = std::find_if(planet.taskQueue.begin(), planet.taskQueue.end(), [&]
-	(Task const& task)
-	{
-		return task.type == tasktype && task.value == static_cast<size_t>(building);
-	});
-
-	if(iter != planet.taskQueue.end())
-		planet.taskQueue.erase(iter);
-}
 
 void Engine::execPlanet(boost::python::object code, Planet& planet)
 try
 {
 	PlanetActionList list;
 	code(planet, boost::ref(list));
-	BOOST_FOREACH(PlanetAction const& action, list)
+	BOOST_FOREACH(PlanetAction const & action, list)
 	{
 		switch(action.action)
 		{
 		case PlanetAction::Building:
-			{
-				if(canBuild(planet, action.building))
-					addTask(planet, action.building);
-			}
-			break;
+		{
+			if(canBuild(planet, action.building))
+				addTask(planet, univ_.time, action.building);
+		}
+		break;
 		case PlanetAction::StopBuilding:
-			{
-				if(canStop(planet, action.building))
-					stopTask(planet, Task::UpgradeBuilding, action.building);
-			}
-			break;
+		{
+			if(canStop(planet, action.building))
+				stopTask(planet, Task::UpgradeBuilding, action.building);
+		}
+		case PlanetAction::Ship:
+		{
+			if(canBuild(planet, action.ship, action.number))
+				addTask(planet, univ_.time, action.ship, action.number);
+		}
+		break;
+		default:
+			BOOST_THROW_EXCEPTION(std::logic_error("Unknown PlanetAction::Type"));
 		};
 	}
 }
@@ -304,12 +279,13 @@ static size_t const RoundSecond = 5;
 
 
 void Engine::round()
+try
 {
 	std::cout << "Mise a jour";
 	UniqueLock lock(mutex_);
 
 	univ_.time += RoundSecond;
-	
+
 	PyTools::PythonEngine pyEngine;
 	initDroneWars();
 	std::string const boringWarnings = PyTools::getPyStdErr();
@@ -334,27 +310,7 @@ void Engine::round()
 		if(planet.playerId != Player::NoId)
 			execPlanet(codesMap_[planet.playerId].planetsCode, planet);
 
-		//On met de coté les taches qui sont périmée
-		auto splitIter = std::remove_if(planet.taskQueue.begin(), planet.taskQueue.end(),[&]
-		(Task const& task)
-		{
-			return (task.lauchTime + task.duration) <= univ_.time;
-		});
-
-		//On les excecutes
-		for(auto iter = splitIter; iter != planet.taskQueue.end(); ++iter)
-		{
-			Task const& task = *iter;
-			switch(task.type)
-			{
-			case Task::UpgradeBuilding:
-				planet.buildingMap[static_cast<Building::Type>(task.value)] += 1;
-				break;
-			}
-		}
-
-		//Puis ont les supprime
-		planet.taskQueue.erase(splitIter, planet.taskQueue.end());
+		planetRound(univ_, planet);
 	}
 
 	//Les flotes
@@ -364,6 +320,10 @@ void Engine::round()
 	codesMap_.clear();
 
 	std::cout << "  OK" << std::endl;
+}
+catch(std::exception const& ex)
+{
+	std::cout << boost::diagnostic_information(ex) << std::endl;
 }
 
 
