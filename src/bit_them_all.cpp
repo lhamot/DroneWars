@@ -8,6 +8,7 @@
 
 #include "PythonHighlighter.h"
 #include "PlanetView.h"
+#include "FleetView.h"
 #include "TranslationTools.h"
 
 
@@ -61,7 +62,7 @@ void bit_them_all::refreshAll()
 		for(int i = 0; i < Ressource::Count; ++i)
 		{
 			ressStr +=
-				getRessourceName(static_cast<Ressource::Enum>(i))[0] +
+			  getRessourceName(static_cast<Ressource::Enum>(i))[0] +
 			  std::string(":") +
 			  boost::lexical_cast<std::string>(planet.ressourceSet.tab[i]) +
 			  std::string("; ");
@@ -76,6 +77,7 @@ void bit_them_all::refreshAll()
 	BOOST_FOREACH(Fleet const & fleet, fleetList)
 	{
 		QTreeWidgetItem* item = new QTreeWidgetItem(ui.fleetTable);
+		item->setData(0, Qt::UserRole, fleet.id);
 		item->setData(0, 0, fleet.coord.X);
 		item->setData(1, 0, fleet.coord.Y);
 		item->setData(2, 0, fleet.coord.Z);
@@ -84,7 +86,7 @@ void bit_them_all::refreshAll()
 		for(int i = 0; i < Ship::Count; ++i)
 		{
 			content +=
-				getShipName(static_cast<Ship::Enum>(i))[0] +
+			  getShipName(static_cast<Ship::Enum>(i))[0] +
 			  std::string(":") +
 			  boost::lexical_cast<std::string>(fleet.shipList[i]) +
 			  std::string("; ");
@@ -94,7 +96,7 @@ void bit_them_all::refreshAll()
 		for(int i = 0; i < Ressource::Count; ++i)
 		{
 			ressStr +=
-				getRessourceName(static_cast<Ressource::Enum>(i))[0] +
+			  getRessourceName(static_cast<Ressource::Enum>(i))[0] +
 			  std::string(":") +
 			  boost::lexical_cast<std::string>(fleet.ressourceSet.tab[i]) +
 			  std::string("; ");
@@ -156,6 +158,15 @@ void bit_them_all::on_planetTable_itemDoubleClicked(QTreeWidgetItem* item, int) 
 	PlanetView* planetView = new PlanetView(this, 0, engine_, Coord(x, y, z));
 
 	planetView->show();
+}
+
+void bit_them_all::on_fleetTable_itemDoubleClicked(QTreeWidgetItem* item, int) // column
+{
+	Fleet::ID fleetID = item->data(0, Qt::UserRole).toUInt();
+
+	FleetView* fleetView = new FleetView(this, 0, engine_, fleetID);
+
+	fleetView->show();
 }
 
 

@@ -1,4 +1,3 @@
-
 #pragma warning(push)
 #pragma warning(disable:4127 4251 4231)
 #include <boost/exception/all.hpp>

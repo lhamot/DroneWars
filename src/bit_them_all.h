@@ -24,6 +24,7 @@ public slots:
 	void on_resetPlanetCodeButton_clicked();
 	void on_refreshButton_clicked();
 	void on_planetTable_itemDoubleClicked(QTreeWidgetItem* item, int column);
+	void on_fleetTable_itemDoubleClicked(QTreeWidgetItem* item, int column);
 	void on_actionLoad_activated();
 	void on_actionSave_activated();
 

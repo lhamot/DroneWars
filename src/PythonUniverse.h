@@ -7,14 +7,58 @@
 #include <boost/python.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include <boost/python/suite/indexing/map_indexing_suite.hpp>
+//#include <boost/python/suite/indexing/indexing_suite.hpp>
 #include <boost/python/scope.hpp>
 #pragma warning(pop)
 
+#include "PyOptional.h"
+
 #include "Model.h"
+
+
+bool planetIsFree(Planet const& planet)
+{
+	return planet.playerId == Player::NoId;
+}
+/*size_t getship(Fleet::ShipTab const& tab, size_t index)
+{
+	if(index >= Fleet::ShipTab::static_size)
+  {
+    PyErr_SetString(PyExc_IndexError, "Index out of range");
+    boost::python::throw_error_already_set();
+  }
+
+	return tab[index];
+}*/
+
+template<size_t I>
+size_t getRess(RessourceSet const& ress)
+{
+	return ress.tab[I];
+}
+
+template<size_t I>
+bool ressEquel(RessourceSet const& ress1, RessourceSet const& ress2)
+{
+	return ress1.tab == ress2.tab;
+}
 
 BOOST_PYTHON_MODULE(DroneWars)
 {
 	using namespace boost::python;
+
+	register_optional<Planet>(); 
+	//register_optional<FleetAction>(); 
+
+	
+	class_<RessourceSet>("RessourceSet", init<size_t, size_t, size_t>())
+	.def(init<>())
+	.def(self == self)
+	.def(self != self)
+	.def_readonly("M", getRess<0>)
+	.def_readonly("C", getRess<1>)
+	.def_readonly("L", getRess<2>)
+	;
 
 	class_<Coord>("Coord", init<Coord::Value, Coord::Value, Coord::Value>())
 	.def_readonly("X", &Coord::X)
@@ -50,18 +94,24 @@ BOOST_PYTHON_MODULE(DroneWars)
 
 	class_<Planet::BuildingMap>("BuildingMap")
 	//.def("count", &Planet::BuildingSet::count);
-	.def(boost::python::map_indexing_suite<Planet::BuildingMap>());
+	.def(boost::python::map_indexing_suite<Planet::BuildingMap>())
 	;
 
 	class_<Planet>("Planet", init<Coord>())
+	.def("is_free", planetIsFree)
 	.def_readonly("coord", &Planet::coord)
 	.def_readonly("playerId", &Planet::playerId)
 	.def_readonly("buildingMap", &Planet::buildingMap)
+	.def_readonly("ressourceSet", &Planet::ressourceSet)
 	;
 
 	//class_<Ship>("Ship", init<Ship::Enum>())
 	//.def_readonly("type", &Ship::Enum)
 	//;
+
+	class_<Fleet::ShipTab>("ShipTab")
+	.def(boost::python::vector_indexing_suite<Fleet::ShipTab>());
+	;
 
 	class_<Fleet>("Fleet", init<Fleet::ID, Player::ID, Coord>())
 	.def_readonly("id", &Fleet::id)
@@ -74,27 +124,44 @@ BOOST_PYTHON_MODULE(DroneWars)
 	class_<Universe>("Universe")
 	.def_readonly("playerMap", &Universe::playerMap)
 	.def_readonly("planetMap", &Universe::planetMap)
-	.def_readonly("fleetList", &Universe::fleetList)
+	.def_readonly("fleetMap", &Universe::fleetMap)
 	.def_readonly("MapSizeX", &Universe::MapSizeX)
 	.def_readonly("MapSizeY", &Universe::MapSizeY)
 	.def_readonly("MapSizeZ", &Universe::MapSizeZ)
 	//.def_readonly("nextPlayerID", &Universe::nextPlayerID)
 	;
 
+	{
+		scope outer =
+		  class_<PlanetAction>("PlanetAction", init<PlanetAction::Type, Building::Enum>())
+		  .def(init<PlanetAction::Type, Ship::Enum, size_t>())
+		  .def_readonly("action",   &PlanetAction::action)
+		  .def_readonly("building", &PlanetAction::building)
+		  ;
+
+		enum_<PlanetAction::Type>("Type")
+		.value("Building",  PlanetAction::Building)
+		.value("Ship",  PlanetAction::Ship);
+	}
 	class_<PlanetActionList>("PlanetActionList")
 	.def(boost::python::vector_indexing_suite<PlanetActionList>());
 	;
 
-	scope outer =
-	  class_<PlanetAction>("PlanetAction", init<PlanetAction::Type, Building::Enum>())
-	  .def(init<PlanetAction::Type, Ship::Enum, size_t>())
-	  .def_readonly("action",   &PlanetAction::action)
-	  .def_readonly("building", &PlanetAction::building)
-	  ;
+	{
+		scope outer =
+		  class_<FleetAction>("FleetAction", init<FleetAction::Type, Coord>())
+		  .def(init<FleetAction::Type>())
+		  .def_readonly("action",   &FleetAction::action)
+		  .def_readonly("target", &FleetAction::target)
+		  ;
 
-	enum_<PlanetAction::Type>("Type")
-	.value("Building",  PlanetAction::Building)
-	.value("Ship",  PlanetAction::Ship);
+		enum_<FleetAction::Type>("Type")
+		.value("Nothing",      FleetAction::Nothing)
+		.value("Move",      FleetAction::Move)
+		.value("Harvest",   FleetAction::Harvest)
+		.value("Colonize",  FleetAction::Colonize)
+		;
+	}
 }
 
 #endif //__BTA_PYTHON_UNIVERSE__

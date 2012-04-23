@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>FleetView</class>
+ <widget class="QDialog" name="FleetView">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -88,15 +88,49 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="Tasks">
+      <attribute name="title">
+       <string>Tasks</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QTreeWidget" name="taskTreeWidget">
+         <attribute name="headerDefaultSectionSize">
+          <number>100</number>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>Type</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Start</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>End</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Info</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
      <widget class="QWidget" name="Reports">
       <attribute name="title">
        <string>Reports</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <widget class="QTableWidget" name="tableWidget_7">
-         <attribute name="horizontalHeaderDefaultSectionSize">
-          <number>70</number>
+        <widget class="QTreeWidget" name="reportTreeWidget">
+         <attribute name="headerDefaultSectionSize">
+          <number>100</number>
          </attribute>
          <column>
           <property name="text">
@@ -110,17 +144,7 @@
          </column>
          <column>
           <property name="text">
-           <string>X</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Y</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Z</string>
+           <string>Comment</string>
           </property>
          </column>
         </widget>
@@ -151,7 +175,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>FleetView</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -167,7 +191,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>FleetView</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

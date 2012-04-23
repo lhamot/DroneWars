@@ -28,7 +28,7 @@ PlanetView::PlanetView(
 		ui.buildingsTreeWidget->addTopLevelItem(item);
 	}
 
-	BOOST_FOREACH(Task const & task, planet.taskQueue)
+	BOOST_FOREACH(PlanetTask const & task, planet.taskQueue)
 	{
 		QTreeWidgetItem* item = new QTreeWidgetItem(ui.taskTreeWidget);
 		item->setData(0, 0, getTaskName(task.type).c_str());
@@ -37,8 +37,4 @@ PlanetView::PlanetView(
 		item->setData(3, 0, task.value);
 		ui.taskTreeWidget->addTopLevelItem(item);
 	}
-}
-
-PlanetView::~PlanetView()
-{
 }

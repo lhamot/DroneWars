@@ -46,15 +46,20 @@ public:
 
 	Planet getPlanet(Coord coord) const;
 
+	Fleet getFleet(Fleet::ID fid);
+
 	typedef boost::shared_mutex Mutex;
 
 private:
+	typedef std::multimap<Coord, Fleet, CompCoord> FleetCoordMap;
+
+
 	void round();
 	void loop();
-	void execPlanet(boost::python::object, Planet& planet);
-	void execFleet(boost::python::object, Fleet& fleet);
+	void execPlanet(boost::python::object, Planet& planet, time_t time);
+	bool execFleet(boost::python::object, Fleet& fleet, FleetCoordMap& fleetMap, time_t time);
 	boost::python::object registerCode(
-	  Player::ID const pid, std::string const& module, std::string const& code);
+	  Player::ID const pid, std::string const& module, std::string const& code, time_t time);
 
 	struct PyCodes
 	{

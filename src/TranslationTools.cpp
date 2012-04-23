@@ -1,9 +1,9 @@
 #include "TranslationTools.h"
 
 
-std::string getTaskName(Task::Enum type)
+std::string getTaskName(PlanetTask::Enum type)
 {
-#define BTA_STR(X) case Task::X: return #X;
+#define BTA_STR(X) case PlanetTask::X: return #X;
 	switch(type)
 	{
 		BTA_STR(UpgradeBuilding)
@@ -12,7 +12,22 @@ std::string getTaskName(Task::Enum type)
 #undef BTA_STR
 
 	BOOST_THROW_EXCEPTION(std::logic_error("Unknown task type"));
-	static_assert(Task::MakeShip == Task::Count - 1, "Task cases missing");
+	static_assert(PlanetTask::MakeShip == PlanetTask::Count - 1, "Task cases missing");
+}
+
+std::string getTaskName(FleetTask::Enum type)
+{
+#define BTA_STR(X) case FleetTask::X: return #X;
+	switch(type)
+	{
+		BTA_STR(Move)
+		BTA_STR(Harvest)
+		BTA_STR(Colonize)
+	}
+#undef BTA_STR
+
+	BOOST_THROW_EXCEPTION(std::logic_error("Unknown task type"));
+	static_assert(FleetTask::Colonize == FleetTask::Count - 1, "Task cases missing");
 }
 
 std::string getShipName(Ship::Enum ship)
@@ -46,4 +61,27 @@ std::string getRessourceName(Ressource::Enum ress)
 
 	BOOST_THROW_EXCEPTION(std::logic_error("Unknown Ressource type"));
 	static_assert(Ressource::Loicium == Ressource::Count - 1, "Ressource cases missing");
+}
+
+
+std::string getEventName(Event::Type evtype)
+{
+#define BTA_STR(X) case Event::X: return #X;
+	switch(evtype)
+	{
+		BTA_STR(FleetCodeError)
+		BTA_STR(FleetCodeExecError)
+		BTA_STR(PlanetCodeError)
+		BTA_STR(PlanetCodeExecError)
+		BTA_STR(Upgraded)
+		BTA_STR(ShipMade)
+		BTA_STR(PlanetHarvested)
+		BTA_STR(FleetWin)
+		BTA_STR(FleetDraw)
+		BTA_STR(FleetsGather)
+	}
+#undef BTA_STR
+
+	BOOST_THROW_EXCEPTION(std::logic_error("Unknown Ressource type"));
+	static_assert(Event::FleetsGather == Event::Count - 1, "Event cases missing");
 }

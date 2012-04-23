@@ -7,35 +7,21 @@
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
+//#include <boost/filesystem.hpp>
+//#include <boost/filesystem/fstream.hpp>
 #include <boost/exception/all.hpp>
+#include <boost/range.hpp>
+#include <boost/range/adaptor/map.hpp>
+#include <boost/optional.hpp>
 
 #include "PythonUniverse.h"
 #include "PyTools.h"
 
+using namespace std;
+using namespace boost;
+
 typedef boost::unique_lock<Engine::Mutex> UniqueLock;
 typedef boost::shared_lock<Engine::Mutex> SharedLock;
-
-template<typename M>
-typename M::const_iterator
-mapFind(M const& map, typename M::key_type key)
-{
-	typename M::const_iterator iter = map.find(key);
-	if(iter == map.end())
-		BOOST_THROW_EXCEPTION(std::logic_error("Can't find item"));
-	return iter;
-}
-
-template<typename M>
-typename M::iterator
-mapFind(M& map, typename M::key_type key)
-{
-	typename M::iterator iter = map.find(key);
-	if(iter == map.end())
-		BOOST_THROW_EXCEPTION(std::logic_error("Can't find item"));
-	return iter;
-}
 
 
 Engine::Engine()
@@ -114,7 +100,7 @@ std::vector<Fleet> Engine::getPlayerFleets(Player::ID pid) const
 {
 	SharedLock lock(mutex_);
 	std::vector<Fleet> fleetList;
-	BOOST_FOREACH(Fleet const & fleet, univ_.fleetList)
+	BOOST_FOREACH(Fleet const & fleet, univ_.fleetMap | boost::adaptors::map_values)
 	{
 		if(fleet.playerId == pid)
 			fleetList.push_back(fleet);
@@ -187,11 +173,18 @@ Planet Engine::getPlanet(Coord coord) const
 	return mapFind(univ_.planetMap, coord)->second;
 }
 
+Fleet Engine::getFleet(Fleet::ID fid)
+{
+	SharedLock lock(mutex_);
+	return mapFind(univ_.fleetMap, fid)->second;
+}
+
+
 
 //   -------   PRIVEE   -------------------------------------------------------
 
 boost::python::object Engine::registerCode(
-  Player::ID const pid, std::string const& module, std::string const& code)
+  Player::ID const pid, std::string const& module, std::string const& code, time_t time)
 try
 {
 	using namespace boost::python;
@@ -219,16 +212,18 @@ catch(boost::python::error_already_set const&)
 {
 	PyErr_Print();
 	mapFind(univ_.playerMap, pid)->second.eventList.push_back(
-	  Event(time(0), Event::FleetCodeError, PyTools::getPyStdErr()));
+	  Event(time, Event::FleetCodeError, PyTools::getPyStdErr()));
 	return boost::python::object();
 }
 
 
-void Engine::execPlanet(boost::python::object code, Planet& planet)
+void Engine::execPlanet(boost::python::object code, Planet& planet, time_t time)
 try
 {
+	if(code.is_none())
+		return;
 	PlanetActionList list;
-	code(planet, boost::ref(list));
+	code(boost::cref(planet), boost::ref(list));
 	BOOST_FOREACH(PlanetAction const & action, list)
 	{
 		switch(action.action)
@@ -242,7 +237,7 @@ try
 		case PlanetAction::StopBuilding:
 		{
 			if(canStop(planet, action.building))
-				stopTask(planet, Task::UpgradeBuilding, action.building);
+				stopTask(planet, PlanetTask::UpgradeBuilding, action.building);
 		}
 		case PlanetAction::Ship:
 		{
@@ -259,20 +254,150 @@ catch(boost::python::error_already_set const&)
 {
 	PyErr_Print();
 	mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(
-	  Event(time(0), Event::FleetCodeError, PyTools::getPyStdErr()));
+	  Event(time, Event::FleetCodeError, PyTools::getPyStdErr()));
 }
 
-
-void Engine::execFleet(boost::python::object code, Fleet& fleet)
+bool Engine::execFleet(boost::python::object code, Fleet& fleet, FleetCoordMap& fleetMap, time_t time)
 try
 {
-	//code(fleet);
+	if(code.is_none())
+		return true;
+	//! Si flotte allié
+	//! - Si rassemblement = oui ET oui
+	//!   rassemblement
+	//!
+	//! Si flotte enemie:
+	//! - Si combat? : oui OU oui
+	//!   - excecution du script de préparation
+	//!     Combat
+	//!
+	//! Si planete enemie
+	//! - Si combat : oui
+	//!   - excecution du script de préparation
+	//!     Combat
+	//!
+	//! Sinon Si planete libre ET (flotte veux récolter ou coloniser)
+	//!   - Si Récolte:
+	//!     recolte
+	//!   - Si Construire:
+	//!     construction : contre de commandement(la planete appartien au joueur)
+	//! Sinon Si la flotte veux se déplacer:
+	//! - Déplacement
+
+	//! Gestion flottes alliées
+	auto localFleetsKV = fleetMap.equal_range(fleet.coord);
+	auto fleetIter = localFleetsKV.first;
+	while(fleetIter != localFleetsKV.second)
+	{
+		Fleet& otherFleet = fleetIter->second;
+		if((otherFleet.id > fleet.id) && (otherFleet.playerId == fleet.playerId))
+		{
+			if(code.attr("do_gather")(boost::cref(fleet), boost::cref(otherFleet)) &&
+			   code.attr("do_gather")(boost::cref(otherFleet), boost::cref(fleet)))
+			{
+				gather(fleet, otherFleet);
+				auto condemned = fleetIter;
+				++fleetIter;
+				fleetMap.erase(condemned);
+				fleet.eventList.push_back(
+					Event(time, Event::FleetsGather, "Rassemblement des flottes"));
+				//mapFind(univ_.planetMap, fleet)
+				continue;
+			}
+		}
+		++fleetIter;
+	}
+
+	//! Gestion flottes enemies
+	localFleetsKV = fleetMap.equal_range(fleet.coord);
+	fleetIter = localFleetsKV.first;
+	while(fleetIter != localFleetsKV.second)
+	{
+		Fleet& otherFleet = fleetIter->second;
+		if((otherFleet.id != fleet.id) && (otherFleet.playerId != fleet.playerId))
+		{
+			if(code.attr("do_fight")(boost::cref(fleet), boost::cref(otherFleet)))
+			{
+				boost::tribool result = fight(fleet, otherFleet);
+				if(result == true)
+				{
+					auto condamned = fleetIter;
+					++fleetIter;
+					fleetMap.erase(condamned);
+					fleet.eventList.push_back(
+						Event(time, Event::FleetWin, "Victoire"));
+					continue;
+				}
+				else if(result == false)
+				{
+					otherFleet.eventList.push_back(
+						Event(time, Event::FleetWin, "Victoire"));
+					return false;
+				}
+			}
+		}
+		++fleetIter;
+	}
+
+	auto planetIter = univ_.planetMap.find(fleet.coord);
+	boost::optional<Planet> planet;
+	if(planetIter != univ_.planetMap.end())
+	{
+		planet = planetIter->second;
+		/*if(planetIter->second.playerId == Player::NoId)
+		{
+			FleetAction action =
+				boost::python::extract<FleetAction>(code.attr("action")(fleet, planet));
+		}*/
+	}
+	FleetAction action =
+		planet?
+	  boost::python::extract<FleetAction>(code.attr("action")(boost::cref(fleet), boost::cref(*planet))):
+		boost::python::extract<FleetAction>(code.attr("action")(boost::cref(fleet), boost::optional<Planet>()));
+	switch(action.action)
+	{
+	case FleetAction::Nothing: break;
+	case FleetAction::Move:
+	{
+		Coord target = fleet.coord;
+		target.X += (rand() % 3) - 1;
+		target.Y += (rand() % 3) - 1;
+		target.Z += (rand() % 3) - 1;
+		if(canMove(fleet, target))
+			addTask(fleet, univ_.time, target);
+	}
+	break;
+	case FleetAction::Harvest:
+	{
+		if(planet && canHarvest(fleet, *planet))
+			addTaskHarvest(fleet, univ_.time, *planet);
+	}
+	break;
+	case FleetAction::Colonize:
+		//TODO
+		break;
+	}
+
+
+	/*FleetActionList list;
+	code(fleet, boost::ref(list));
+	BOOST_FOREACH(FleetAction const & action, list)
+	{
+		switch(action.action)
+		{
+		default:
+			BOOST_THROW_EXCEPTION(std::logic_error("Unknown PlanetAction::Type"));
+		};
+	}*/
+
+	return true;
 }
 catch(boost::python::error_already_set const&)
 {
 	PyErr_Print();
 	mapFind(univ_.playerMap, fleet.playerId)->second.eventList.push_back(
-	  Event(time(0), Event::FleetCodeError, PyTools::getPyStdErr()));
+	  Event(time, Event::FleetCodeError, PyTools::getPyStdErr()));
+	return true;
 }
 
 static size_t const RoundSecond = 5;
@@ -297,8 +422,8 @@ try
 		Player const& player = playerNVP.second;
 		PyCodes newCodes =
 		{
-			boost::python::object(),//registerCode(player.id, "Fleet", player.fleetsCode),
-			registerCode(player.id, "Planet", player.planetsCode)
+			registerCode(player.id, "Fleet", player.fleetsCode, univ_.time),
+			registerCode(player.id, "Planet", player.planetsCode, univ_.time)
 		};
 		codesMap_[player.id] = newCodes;
 	}
@@ -307,15 +432,37 @@ try
 	BOOST_FOREACH(Universe::PlanetMap::value_type & planetNVP, univ_.planetMap)
 	{
 		Planet& planet = planetNVP.second;
+		planetRound(univ_, planet, univ_.time);
 		if(planet.playerId != Player::NoId)
-			execPlanet(codesMap_[planet.playerId].planetsCode, planet);
-
-		planetRound(univ_, planet);
+			execPlanet(codesMap_[planet.playerId].planetsCode, planet, univ_.time);
 	}
 
-	//Les flotes
-	BOOST_FOREACH(Fleet & fleet, univ_.fleetList)
-		execFleet(codesMap_[fleet.playerId].fleetsCode, fleet);
+	{
+		FleetCoordMap fleetMap;
+		BOOST_FOREACH(Fleet& fleet, univ_.fleetMap | boost::adaptors::map_values)
+			fleetMap.insert(make_pair(fleet.coord, fleet));
+
+		auto iter = fleetMap.begin();
+		while(iter != fleetMap.end())
+		{
+			fleetRound(univ_, iter->second, univ_.time);
+
+			bool keepFleet = execFleet(codesMap_[iter->second.playerId].fleetsCode, iter->second, fleetMap, univ_.time);
+			if(keepFleet == false)
+			{
+				auto condemned = iter;
+				++iter;
+				fleetMap.erase(condemned);
+			}
+			else
+				++iter;
+		}
+
+		std::map<Fleet::ID, Fleet> newFleetMap;
+		BOOST_FOREACH(Fleet& fleet, fleetMap | boost::adaptors::map_values)
+			newFleetMap.insert(make_pair(fleet.id, fleet));
+		newFleetMap.swap(univ_.fleetMap);
+	}
 
 	codesMap_.clear();
 
@@ -341,14 +488,14 @@ void Engine::loop()
 		time_t now;
 		time(&now);
 
-		if(newUpdate <= now)
+		//if(newUpdate <= now)
 		{
 			//std::cout << newUpdate << " " << now << std::endl;
 			round();
 			newUpdate += RoundSecond;
 		}
-		else
-			boost::this_thread::sleep(boost::posix_time::seconds(1));
+		//else
+		boost::this_thread::sleep(boost::posix_time::milliseconds(100));
 	}
 }
 

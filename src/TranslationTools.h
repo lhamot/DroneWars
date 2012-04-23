@@ -4,10 +4,14 @@
 
 #include "Model.h"
 
-std::string getTaskName(Task::Enum type);
+std::string getTaskName(FleetTask::Enum type);
+
+std::string getTaskName(PlanetTask::Enum type);
 
 std::string getShipName(Ship::Enum ship);
 
 std::string getRessourceName(Ressource::Enum ress);
+
+std::string getEventName(Event::Type evtype);
 
 #endif //__BTA_TRANSLATION_TOOLS__
