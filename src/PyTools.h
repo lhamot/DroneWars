@@ -47,28 +47,6 @@ inline std::string getPyStdErr()
 	return message;
 }
 
-/*
-inline boost::python::object loadAIobject(char const* const modulename)
-try
-{
-	using namespace boost::python;
-	using namespace std;
-	object main_module = import("__main__");
-	object main_namespace = main_module.attr("__dict__");
-	string fileName = getModuleFileName(modulename);
-	object fileObject = exec_file(fileName.c_str(), main_namespace);
-	object instanceIA = eval("AI()", main_namespace);
-	assert(instanceIA.ptr());
-	return instanceIA;
-}
-catch(boost::python::error_already_set const&)
-{
-	PyErr_Print();
-	std::string message = PyTools::getPyStdErr();
-	throw PythonException(message);
-}*/
-
-
 class PythonEngine
 {
 	boost::python::object objStringIO;

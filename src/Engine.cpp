@@ -16,6 +16,7 @@
 
 #include "PythonUniverse.h"
 #include "PyTools.h"
+#include "Tools.h"
 
 using namespace std;
 using namespace boost;

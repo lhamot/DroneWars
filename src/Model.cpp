@@ -17,6 +17,7 @@
 #include <boost/lexical_cast.hpp>
 #pragma warning(pop)
 
+#include "Tools.h"
 
 
 BOOST_GEOMETRY_REGISTER_BOOST_ARRAY_CS(cs::cartesian)

@@ -21,26 +21,6 @@
 #include <boost/range/algorithm.hpp>
 #pragma warning(pop)
 
-template<typename M>
-typename M::const_iterator
-mapFind(M const& map, typename M::key_type key)
-{
-	typename M::const_iterator iter = map.find(key);
-	if(iter == map.end())
-		BOOST_THROW_EXCEPTION(std::logic_error("Can't find item"));
-	return iter;
-}
-
-template<typename M>
-typename M::iterator
-mapFind(M& map, typename M::key_type key)
-{
-	typename M::iterator iter = map.find(key);
-	if(iter == map.end())
-		BOOST_THROW_EXCEPTION(std::logic_error("Can't find item"));
-	return iter;
-}
-
 
 struct Event
 {
@@ -244,7 +224,7 @@ struct Building
 {
 	enum Enum
 	{
-		None = -1,
+		Undefined = -1,
 		CommandCenter,
 		MetalMine,
 		CarbonMine,
@@ -268,7 +248,7 @@ struct Ship
 {
 	enum Enum
 	{
-		None = -1,
+		Undefined = -1,
 		Mosquito,
 		Hornet,
 		Vulture,
@@ -322,6 +302,7 @@ struct PlanetAction
 
 	enum Type
 	{
+		Undefined = -1,
 		Building,
 		StopBuilding,
 		Ship
@@ -340,8 +321,9 @@ struct PlanetAction
 		       number == other.number;
 	}
 
-	PlanetAction(Type a, Building::Enum b): action(a), building(b), ship(Ship::None), number(0) {}
-	PlanetAction(Type a, Ship::Enum s, size_t n): action(a), building(Building::None), ship(s), number(n) {}
+	PlanetAction():action(Undefined),building(Building::Undefined), ship(Ship::Undefined), number(0) {}
+	PlanetAction(Type a, Building::Enum b): action(a), building(b), ship(Ship::Undefined), number(0) {}
+	PlanetAction(Type a, Ship::Enum s, size_t n): action(a), building(Building::Undefined), ship(s), number(n) {}
 };
 typedef std::vector<PlanetAction> PlanetActionList;
 
@@ -472,4 +454,8 @@ bool canHarvest(Fleet const& fleet, Planet const& planet);
 
 void addTaskHarvest(Fleet& fleet, time_t time, Planet const& planet);
 
+inline bool planetIsFree(Planet const& planet)
+{
+	return planet.playerId == Player::NoId;
+}
 #endif //_BTA_MODEL_

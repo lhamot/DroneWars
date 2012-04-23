@@ -16,33 +16,6 @@
 #include "Model.h"
 
 
-bool planetIsFree(Planet const& planet)
-{
-	return planet.playerId == Player::NoId;
-}
-/*size_t getship(Fleet::ShipTab const& tab, size_t index)
-{
-	if(index >= Fleet::ShipTab::static_size)
-  {
-    PyErr_SetString(PyExc_IndexError, "Index out of range");
-    boost::python::throw_error_already_set();
-  }
-
-	return tab[index];
-}*/
-
-template<size_t I>
-size_t getRess(RessourceSet const& ress)
-{
-	return ress.tab[I];
-}
-
-template<size_t I>
-bool ressEquel(RessourceSet const& ress1, RessourceSet const& ress2)
-{
-	return ress1.tab == ress2.tab;
-}
-
 BOOST_PYTHON_MODULE(DroneWars)
 {
 	using namespace boost::python;
@@ -55,9 +28,6 @@ BOOST_PYTHON_MODULE(DroneWars)
 	.def(init<>())
 	.def(self == self)
 	.def(self != self)
-	.def_readonly("M", getRess<0>)
-	.def_readonly("C", getRess<1>)
-	.def_readonly("L", getRess<2>)
 	;
 
 	class_<Coord>("Coord", init<Coord::Value, Coord::Value, Coord::Value>())
