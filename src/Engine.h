@@ -26,8 +26,6 @@ public:
 
 	void stop();
 
-	void construct();
-
 	void load(std::string const& univName);
 
 	void save(std::string const& univName) const;
@@ -54,30 +52,51 @@ public:
 
 	Fleet getFleet(Fleet::ID fid);
 
-	typedef boost::shared_mutex Mutex;
-
 private:
-	typedef std::multimap<Coord, Fleet, CompCoord> FleetCoordMap;
 
-
-	void round();
-	void loop();
-	void execPlanet(LuaTools::LuaEngine&, luabind::object, Planet& planet, time_t time);
-	bool execFleet(LuaTools::LuaEngine&, luabind::object, Fleet& fleet, FleetCoordMap& fleetMap, time_t time);
-	luabind::object registerCode(
-	  LuaTools::LuaEngine& luaEngine,
-	  Player::ID const pid, std::string const& module, std::string const& code, time_t time);
-
-	struct PlayerCodes
+	class Simulation
 	{
-		luabind::object fleetsCode;
-		luabind::object planetsCode;
+		Simulation(Simulation const&);
+		Simulation& operator = (Simulation const&);
+	public:
+		Simulation(Universe &univ):univ_(univ)
+		{
+		}
+
+		void loop();
+		
+		void start();
+
+		void stop();
+
+		void reloadPlayer(Player::ID pid)
+		{
+			playerToReload_.insert(pid);
+		}
+
+	private:
+		typedef std::multimap<Coord, Fleet, CompCoord> FleetCoordMap;
+		struct PlayerCodes
+		{
+			luabind::object fleetsCode;
+			luabind::object planetsCode;
+		};
+		typedef std::map<Player::ID, PlayerCodes> PlayerCodeMap;
+
+		void round(LuaTools::LuaEngine&, PlayerCodeMap& codesMap);
+		void execPlanet(luabind::object, Planet& planet, time_t time);
+		bool execFleet(luabind::object, Fleet& fleet, FleetCoordMap& fleetMap, time_t time);
+		luabind::object registerCode(
+			LuaTools::LuaEngine& luaEngine,
+			Player::ID const pid, std::string const& code, time_t time);
+
+		std::set<Player::ID> playerToReload_;
+		Universe &univ_;
 	};
 
 	Universe univ_;
-	std::map<Player::ID, PlayerCodes> codesMap_;
+	Simulation simulation_;
 	boost::thread simulating_;
-	mutable Mutex mutex_;
 };
 
 #endif //__BTA_ENGINE__

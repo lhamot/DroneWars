@@ -20,8 +20,6 @@ bit_them_all::bit_them_all(QWidget* parent, Qt::WFlags flags):
 {
 	ui.setupUi(this);
 
-	engine_.construct();
-
 	logged_ = 0;
 
 	//connect(ui.saveFleetCodeButton, SIGNAL(clicked()), this, SLOT(onSaveFleetCode()));

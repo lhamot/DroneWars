@@ -2,6 +2,7 @@
 #pragma warning(disable:4127 4251 4231)
 #include <boost/exception/all.hpp>
 #include <QtGui/QApplication>
+#include <QMessageBox>
 #pragma warning(pop)
 
 #include "Engine.h"
@@ -22,17 +23,18 @@ public:
 		}
 		catch(boost::exception& e)
 		{
-			qFatal(boost::diagnostic_information(e).c_str());
+			QMessageBox::critical(0, "Error", boost::diagnostic_information(e).c_str());
 		}
 		catch(std::exception& e)
 		{
-			qFatal(boost::diagnostic_information(e).c_str());
+			QMessageBox::critical(0, "Error", boost::diagnostic_information(e).c_str());
 		}
 		catch(...)
 		{
-			qFatal("Error <unknown> sending event %s to object %s (%s)",
-			       typeid(*event).name(), qPrintable(receiver->objectName()),
-			       typeid(*receiver).name());
+			QMessageBox::critical(0, "Error", boost::current_exception_diagnostic_information().c_str());
+			//QMessageBox::critical(0, "Error", "Error <unknown> sending event %s to object %s (%s)",
+			//       typeid(*event).name(), qPrintable(receiver->objectName()),
+			//       typeid(*receiver).name());
 		}
 
 		// qFatal aborts, so this isn't really necessary

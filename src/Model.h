@@ -19,6 +19,7 @@
 #include <boost/serialization/array.hpp>
 #include <boost/logic/tribool.hpp>
 #include <boost/range/algorithm.hpp>
+#include <boost/thread/shared_mutex.hpp>
 #pragma warning(pop)
 
 
@@ -417,6 +418,9 @@ struct Universe
 	Player::ID nextPlayerID;
 	Fleet::ID nextFleetID;
 	time_t time;
+
+	typedef boost::shared_mutex Mutex;
+	mutable Mutex mutex;
 
 	Universe(): nextPlayerID(0), time(0)
 	{

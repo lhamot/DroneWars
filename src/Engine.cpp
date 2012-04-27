@@ -31,12 +31,14 @@ extern "C"
 using namespace std;
 using namespace boost;
 
-typedef boost::unique_lock<Engine::Mutex> UniqueLock;
-typedef boost::shared_lock<Engine::Mutex> SharedLock;
+typedef boost::unique_lock<Universe::Mutex> UniqueLock;
+typedef boost::shared_lock<Universe::Mutex> SharedLock;
 
 
-Engine::Engine()
+Engine::Engine():
+	simulation_(univ_)
 {
+	construct(univ_);
 	start();
 }
 
@@ -49,7 +51,7 @@ Engine::~Engine()
 
 void Engine::start()
 {
-	simulating_ = boost::thread(&Engine::loop, this);
+	simulating_ = boost::thread(&Simulation::loop, boost::ref(simulation_));
 }
 
 
@@ -60,16 +62,16 @@ void Engine::stop()
 }
 
 
-void Engine::construct()
+/*void Engine::construct()
 {
 	UniqueLock lock(mutex_);
 	::construct(univ_);
-}
+}*/
 
 
 void Engine::load(std::string const& univName)
 {
-	UniqueLock lock(mutex_);
+	UniqueLock lock(univ_.mutex);
 	using namespace std;
 	ifstream loadFile(univName, ios::in | ios::binary);
 	if(loadFile.is_open() == false)
@@ -80,7 +82,7 @@ void Engine::load(std::string const& univName)
 
 void Engine::save(std::string const& saveName) const
 {
-	SharedLock lock(mutex_);
+	SharedLock lock(univ_.mutex);
 
 	using namespace std;
 	std::string const newSaveName = saveName + ".new";
@@ -102,14 +104,14 @@ void Engine::save(std::string const& saveName) const
 
 void Engine::addPlayer(Player const&) //player
 {
-	UniqueLock lock(mutex_);
+	UniqueLock lock(univ_.mutex);
 	//TODO
 }
 
 
 std::vector<Fleet> Engine::getPlayerFleets(Player::ID pid) const
 {
-	SharedLock lock(mutex_);
+	SharedLock lock(univ_.mutex);
 	std::vector<Fleet> fleetList;
 	BOOST_FOREACH(Fleet const & fleet, univ_.fleetMap | boost::adaptors::map_values)
 	{
@@ -122,7 +124,7 @@ std::vector<Fleet> Engine::getPlayerFleets(Player::ID pid) const
 
 std::vector<Planet> Engine::getPlayerPlanets(Player::ID pid) const
 {
-	SharedLock lock(mutex_);
+	SharedLock lock(univ_.mutex);
 	std::vector<Planet> planetList;
 	BOOST_FOREACH(Universe::PlanetMap::value_type const & planetNVP, univ_.planetMap)
 	{
@@ -135,35 +137,37 @@ std::vector<Planet> Engine::getPlayerPlanets(Player::ID pid) const
 
 void Engine::setPlayerFleetCode(Player::ID pid, std::string const& code)
 {
-	UniqueLock lock(mutex_);
+	UniqueLock lock(univ_.mutex);
 	mapFind(univ_.playerMap, pid)->second.fleetsCode = code;
+	simulation_.reloadPlayer(pid);
 }
 
 
 void Engine::setPlayerPlanetCode(Player::ID pid, std::string const& code)
 {
-	UniqueLock lock(mutex_);
+	UniqueLock lock(univ_.mutex);
 	mapFind(univ_.playerMap, pid)->second.planetsCode = code;
+	simulation_.reloadPlayer(pid);
 }
 
 
 std::string Engine::getPlayerFleetCode(Player::ID pid) const
 {
-	SharedLock lock(mutex_);
+	SharedLock lock(univ_.mutex);
 	return 	mapFind(univ_.playerMap, pid)->second.fleetsCode;
 }
 
 
 std::string Engine::getPlayerPlanetCode(Player::ID pid) const
 {
-	SharedLock lock(mutex_);
+	SharedLock lock(univ_.mutex);
 	return 	mapFind(univ_.playerMap, pid)->second.planetsCode;
 }
 
 
 std::vector<Player> Engine::getPlayers() const
 {
-	SharedLock lock(mutex_);
+	SharedLock lock(univ_.mutex);
 	std::vector<Player> playerList;
 	BOOST_FOREACH(Universe::PlayerMap::value_type const & nvp, univ_.playerMap)
 	{
@@ -174,19 +178,20 @@ std::vector<Player> Engine::getPlayers() const
 
 Player Engine::getPlayer(Player::ID pid) const
 {
-	SharedLock lock(mutex_);
+	SharedLock lock(univ_.mutex);
 	return mapFind(univ_.playerMap, pid)->second;
 }
 
 Planet Engine::getPlanet(Coord coord) const
 {
-	SharedLock lock(mutex_);
+	SharedLock lock(univ_.mutex);
+	BOOST_THROW_EXCEPTION(std::logic_error(""));
 	return mapFind(univ_.planetMap, coord)->second;
 }
 
 Fleet Engine::getFleet(Fleet::ID fid)
 {
-	SharedLock lock(mutex_);
+	SharedLock lock(univ_.mutex);
 	return mapFind(univ_.fleetMap, fid)->second;
 }
 
@@ -194,9 +199,9 @@ Fleet Engine::getFleet(Fleet::ID fid)
 
 //   -------   PRIVEE   -------------------------------------------------------
 
-luabind::object Engine::registerCode(
+luabind::object Engine::Simulation::registerCode(
   LuaTools::LuaEngine& luaEngine,
-  Player::ID const pid, std::string const& module, std::string const& code, time_t time)
+  Player::ID const pid, std::string const& code, time_t time)
 try
 {
 	using namespace luabind;
@@ -224,7 +229,7 @@ catch(std::exception const& ex)
 }
 
 
-void Engine::execPlanet(LuaTools::LuaEngine& luaEngine, luabind::object code, Planet& planet, time_t time)
+void Engine::Simulation::execPlanet(luabind::object code, Planet& planet, time_t time)
 try
 {
 	if(false == code.is_valid())
@@ -258,14 +263,21 @@ try
 		};
 	}
 }
+catch(luabind::error& e)
+{
+  luabind::object error_msg(luabind::from_stack(e.state(), -1));
+	std::stringstream ss;
+	ss << error_msg;
+  mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(
+	  Event(time, Event::FleetCodeError, ss.str()));
+}
 catch(std::exception const& ex)
 {
-	std::string message = lua_tostring(luaEngine.state(), -1);
 	mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(
-	  Event(time, Event::PlanetCodeError, ex.what() + string(" ") + message));
+	  Event(time, Event::FleetCodeError, ex.what()));
 }
 
-bool Engine::execFleet(LuaTools::LuaEngine& luaEngine, luabind::object code, Fleet& fleet, FleetCoordMap& fleetMap, time_t time)
+bool Engine::Simulation::execFleet(luabind::object code, Fleet& fleet, FleetCoordMap& fleetMap, time_t time)
 try
 {
 	if(false == code.is_valid())
@@ -423,32 +435,26 @@ catch(std::exception const& ex)
 static size_t const RoundSecond = 5;
 
 
-void Engine::round()
+void Engine::Simulation::round(LuaTools::LuaEngine& luaEngine, PlayerCodeMap& codesMap)
 try
 {
 	std::cout << "Mise a jour";
-	UniqueLock lock(mutex_);
+	UniqueLock lock(univ_.mutex);
 
 	univ_.time += RoundSecond;
 
-	LuaTools::LuaEngine luaEngine;
-	luaL_openlibs(luaEngine.state());
-
-	initDroneWars(luaEngine.state());
-
-	//Rechargement de tout les code flote/planet de tout les joueur(chargement dans python)
-	//std::map<Player::ID, PyCodes> codesMap;
-	codesMap_.clear();
-	BOOST_FOREACH(Universe::PlayerMap::value_type & playerNVP, univ_.playerMap)
+	//Rechargement des codes flote/planet des joueurs dont le code a été changé
+	BOOST_FOREACH(Player::ID pid, playerToReload_)
 	{
-		Player const& player = playerNVP.second;
+		Player const& player = mapFind(univ_.playerMap, pid)->second;
 		PlayerCodes newCodes =
 		{
-			registerCode(luaEngine, player.id, "Fleet", player.fleetsCode, univ_.time),
-			registerCode(luaEngine, player.id, "Planet", player.planetsCode, univ_.time)
+			registerCode(luaEngine, player.id, player.fleetsCode, univ_.time),
+			registerCode(luaEngine, player.id, player.planetsCode, univ_.time)
 		};
-		codesMap_[player.id] = newCodes;
+		codesMap[player.id] = newCodes;
 	}
+	playerToReload_.clear();
 
 	//Les planètes
 	BOOST_FOREACH(Universe::PlanetMap::value_type & planetNVP, univ_.planetMap)
@@ -456,7 +462,7 @@ try
 		Planet& planet = planetNVP.second;
 		planetRound(univ_, planet, univ_.time);
 		if(planet.playerId != Player::NoId)
-			execPlanet(luaEngine, codesMap_[planet.playerId].planetsCode, planet, univ_.time);
+			execPlanet(codesMap[planet.playerId].planetsCode, planet, univ_.time);
 	}
 
 	{
@@ -469,7 +475,7 @@ try
 		{
 			fleetRound(univ_, iter->second, univ_.time);
 
-			bool keepFleet = execFleet(luaEngine, codesMap_[iter->second.playerId].fleetsCode, iter->second, fleetMap, univ_.time);
+			bool keepFleet = execFleet(codesMap[iter->second.playerId].fleetsCode, iter->second, fleetMap, univ_.time);
 			if(keepFleet == false)
 			{
 				auto condemned = iter;
@@ -486,8 +492,6 @@ try
 		newFleetMap.swap(univ_.fleetMap);
 	}
 
-	codesMap_.clear();
-
 	std::cout << "  OK" << std::endl;
 }
 catch(std::exception const& ex)
@@ -496,10 +500,31 @@ catch(std::exception const& ex)
 }
 
 
-void Engine::loop()
+void Engine::Simulation::loop()
 {
-	//PyTools::PythonEngine pyEngine;
-	//initDroneWars();
+	LuaTools::LuaEngine luaEngine;
+	PlayerCodeMap codesMap;
+
+	luaL_openlibs(luaEngine.state());
+
+	initDroneWars(luaEngine.state());
+
+	{
+		UniqueLock lock(univ_.mutex);
+
+		//Chargement de tout les code flote/planet de tout les joueur(chargement dans python)
+		BOOST_FOREACH(Universe::PlayerMap::value_type & playerNVP, univ_.playerMap)
+		{
+			Player const& player = playerNVP.second;
+			PlayerCodes newCodes =
+			{
+				registerCode(luaEngine, player.id, player.fleetsCode, univ_.time),
+				registerCode(luaEngine, player.id, player.planetsCode, univ_.time)
+			};
+			codesMap[player.id] = newCodes;
+		}
+	}
+
 
 	time_t newUpdate;
 	time(&newUpdate);
@@ -513,11 +538,12 @@ void Engine::loop()
 		//if(newUpdate <= now)
 		{
 			//std::cout << newUpdate << " " << now << std::endl;
-			round();
+			round(luaEngine, codesMap);
 			newUpdate += RoundSecond;
 		}
 		//else
 		boost::this_thread::sleep(boost::posix_time::milliseconds(100));
 	}
 }
+
 
