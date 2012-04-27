@@ -6,8 +6,14 @@
 
 #pragma warning(push)
 #pragma warning(disable:4512 4127 4244 4121 4100)
-#include <boost/python.hpp>
+//#include <boost/python.hpp>
+#include <luabind/luabind.hpp>
 #pragma warning(pop)
+
+namespace LuaTools
+{
+class LuaEngine;
+}
 
 class Engine
 {
@@ -56,19 +62,20 @@ private:
 
 	void round();
 	void loop();
-	void execPlanet(boost::python::object, Planet& planet, time_t time);
-	bool execFleet(boost::python::object, Fleet& fleet, FleetCoordMap& fleetMap, time_t time);
-	boost::python::object registerCode(
+	void execPlanet(LuaTools::LuaEngine&, luabind::object, Planet& planet, time_t time);
+	bool execFleet(LuaTools::LuaEngine&, luabind::object, Fleet& fleet, FleetCoordMap& fleetMap, time_t time);
+	luabind::object registerCode(
+	  LuaTools::LuaEngine& luaEngine,
 	  Player::ID const pid, std::string const& module, std::string const& code, time_t time);
 
-	struct PyCodes
+	struct PlayerCodes
 	{
-		boost::python::object fleetsCode;
-		boost::python::object planetsCode;
+		luabind::object fleetsCode;
+		luabind::object planetsCode;
 	};
 
 	Universe univ_;
-	std::map<Player::ID, PyCodes> codesMap_;
+	std::map<Player::ID, PlayerCodes> codesMap_;
 	boost::thread simulating_;
 	mutable Mutex mutex_;
 };

@@ -150,15 +150,16 @@ struct RessourceSet
 	RessourceSet(Tab const& t): tab(t) {}
 	RessourceSet() {tab.fill(0);}
 	RessourceSet(size_t a, size_t b, size_t c) {tab[0] = a; tab[1] = b; tab[2] = c;}
+
+	inline bool operator == (RessourceSet const& b) const
+	{
+		return boost::range::equal(tab, b.tab);
+	}
+	inline bool operator != (RessourceSet const& b) const
+	{
+		return !(*this == b);
+	}
 };
-inline bool operator == (RessourceSet const& a, RessourceSet const& b)
-{
-	return boost::range::equal(a.tab, b.tab);
-}
-inline bool operator != (RessourceSet const& a, RessourceSet const& b)
-{
-	return !(a == b);
-}
 
 struct PlanetTask
 {
@@ -289,6 +290,11 @@ struct Planet
 
 	Planet() {}
 	Planet(Coord c): coord(c), playerId(Player::NoId) {}
+
+	bool isFree() const
+	{
+		return playerId == Player::NoId;
+	}
 };
 
 
@@ -321,7 +327,7 @@ struct PlanetAction
 		       number == other.number;
 	}
 
-	PlanetAction():action(Undefined),building(Building::Undefined), ship(Ship::Undefined), number(0) {}
+	PlanetAction(): action(Undefined), building(Building::Undefined), ship(Ship::Undefined), number(0) {}
 	PlanetAction(Type a, Building::Enum b): action(a), building(b), ship(Ship::Undefined), number(0) {}
 	PlanetAction(Type a, Ship::Enum s, size_t n): action(a), building(Building::Undefined), ship(s), number(n) {}
 };
@@ -454,8 +460,4 @@ bool canHarvest(Fleet const& fleet, Planet const& planet);
 
 void addTaskHarvest(Fleet& fleet, time_t time, Planet const& planet);
 
-inline bool planetIsFree(Planet const& planet)
-{
-	return planet.playerId == Player::NoId;
-}
 #endif //_BTA_MODEL_

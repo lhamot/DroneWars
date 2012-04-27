@@ -1,5 +1,6 @@
 #include "Engine.h"
 
+#include <fstream>
 #include <vector>
 #include <ctime>
 #include <cstdio>
@@ -14,9 +15,18 @@
 #include <boost/range/adaptor/map.hpp>
 #include <boost/optional.hpp>
 
-#include "PythonUniverse.h"
-#include "PyTools.h"
+//#include "PythonUniverse.h"
+#include "LuaUniverse.h"
+#include "LuaTools.h"
 #include "Tools.h"
+
+extern "C"
+{
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+}
+
 
 using namespace std;
 using namespace boost;
@@ -184,47 +194,44 @@ Fleet Engine::getFleet(Fleet::ID fid)
 
 //   -------   PRIVEE   -------------------------------------------------------
 
-boost::python::object Engine::registerCode(
+luabind::object Engine::registerCode(
+  LuaTools::LuaEngine& luaEngine,
   Player::ID const pid, std::string const& module, std::string const& code, time_t time)
 try
 {
-	using namespace boost::python;
+	using namespace luabind;
 	using namespace std;
 
-	static size_t counter = 0;
-	std::string implModule = module + '_' + boost::lexical_cast<std::string>(counter);
-
-	object main_module = import("__main__");
-	object main_namespace = main_module.attr("__dict__");
-	//object local_module = main_namespace.attr(implModule.c_str());
-	//object local_namespace = local_module.attr("__dict__");
-	object fileObject = exec(code.c_str(), main_namespace);
-	object funcAI = eval("AI", main_namespace);
-	assert(funcAI.ptr());
-
-	++counter;
-
-	return funcAI;
-
-	//std::string const moduleName = module + boost::lexical_cast<std::string>(pid);
-	//return boost::python::object();
+	if(luaL_dostring(luaEngine.state(), code.c_str()) != 0)
+	{
+		std::string message = lua_tostring(luaEngine.state(), -1);
+		mapFind(univ_.playerMap, pid)->second.eventList.push_back(
+		  Event(time, Event::FleetCodeError, message));
+		return luabind::object();
+	}
+	else
+	{
+		luabind::object g = luabind::globals(luaEngine.state());
+		return g["AI"];
+	}
 }
-catch(boost::python::error_already_set const&)
+catch(std::exception const& ex)
 {
-	PyErr_Print();
+	std::string message = lua_tostring(luaEngine.state(), -1);
 	mapFind(univ_.playerMap, pid)->second.eventList.push_back(
-	  Event(time, Event::FleetCodeError, PyTools::getPyStdErr()));
-	return boost::python::object();
+	  Event(time, Event::FleetCodeError, ex.what() + string(" ") + message));
+	return luabind::object();
 }
 
 
-void Engine::execPlanet(boost::python::object code, Planet& planet, time_t time)
+void Engine::execPlanet(LuaTools::LuaEngine& luaEngine, luabind::object code, Planet& planet, time_t time)
 try
 {
-	if(code.is_none())
+	if(false == code.is_valid())
 		return;
 	PlanetActionList list;
 	code(boost::cref(planet), boost::ref(list));
+
 	BOOST_FOREACH(PlanetAction const & action, list)
 	{
 		switch(action.action)
@@ -251,17 +258,17 @@ try
 		};
 	}
 }
-catch(boost::python::error_already_set const&)
+catch(std::exception const& ex)
 {
-	PyErr_Print();
+	std::string message = lua_tostring(luaEngine.state(), -1);
 	mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(
-	  Event(time, Event::FleetCodeError, PyTools::getPyStdErr()));
+	  Event(time, Event::PlanetCodeError, ex.what() + string(" ") + message));
 }
 
-bool Engine::execFleet(boost::python::object code, Fleet& fleet, FleetCoordMap& fleetMap, time_t time)
+bool Engine::execFleet(LuaTools::LuaEngine& luaEngine, luabind::object code, Fleet& fleet, FleetCoordMap& fleetMap, time_t time)
 try
 {
-	if(code.is_none())
+	if(false == code.is_valid())
 		return true;
 	//! Si flotte allié
 	//! - Si rassemblement = oui ET oui
@@ -293,15 +300,16 @@ try
 		Fleet& otherFleet = fleetIter->second;
 		if((otherFleet.id > fleet.id) && (otherFleet.playerId == fleet.playerId))
 		{
-			if(code.attr("do_gather")(boost::cref(fleet), boost::cref(otherFleet)) &&
-			   code.attr("do_gather")(boost::cref(otherFleet), boost::cref(fleet)))
+			bool const wantGather1 = luabind::call_member<bool>(code, "do_gather", boost::cref(fleet), boost::cref(otherFleet));
+			bool const wantGather2 = luabind::call_member<bool>(code, "do_gather", boost::cref(otherFleet), boost::cref(fleet));
+			if(wantGather1 && wantGather2)
 			{
 				gather(fleet, otherFleet);
 				auto condemned = fleetIter;
 				++fleetIter;
 				fleetMap.erase(condemned);
 				fleet.eventList.push_back(
-					Event(time, Event::FleetsGather, "Rassemblement des flottes"));
+				  Event(time, Event::FleetsGather, "Rassemblement des flottes"));
 				//mapFind(univ_.planetMap, fleet)
 				continue;
 			}
@@ -317,7 +325,7 @@ try
 		Fleet& otherFleet = fleetIter->second;
 		if((otherFleet.id != fleet.id) && (otherFleet.playerId != fleet.playerId))
 		{
-			if(code.attr("do_fight")(boost::cref(fleet), boost::cref(otherFleet)))
+			if(luabind::call_member<bool>(code, "do_fight", boost::cref(fleet), boost::cref(otherFleet)))
 			{
 				boost::tribool result = fight(fleet, otherFleet);
 				if(result == true)
@@ -326,13 +334,13 @@ try
 					++fleetIter;
 					fleetMap.erase(condamned);
 					fleet.eventList.push_back(
-						Event(time, Event::FleetWin, "Victoire"));
+					  Event(time, Event::FleetWin, "Victoire"));
 					continue;
 				}
 				else if(result == false)
 				{
 					otherFleet.eventList.push_back(
-						Event(time, Event::FleetWin, "Victoire"));
+					  Event(time, Event::FleetWin, "Victoire"));
 					return false;
 				}
 			}
@@ -351,13 +359,16 @@ try
 				boost::python::extract<FleetAction>(code.attr("action")(fleet, planet));
 		}*/
 	}
-	FleetAction action =
-		planet?
-	  boost::python::extract<FleetAction>(code.attr("action")(boost::cref(fleet), boost::cref(*planet))):
-		boost::python::extract<FleetAction>(code.attr("action")(boost::cref(fleet), boost::optional<Planet>()));
+	using namespace luabind;
+	FleetAction action(FleetAction::Nothing);
+	if(planet)
+		action = luabind::call_member<FleetAction>(code, "action", boost::cref(fleet), boost::cref(*planet));
+	else
+		action = luabind::call_member<FleetAction>(code, "action", boost::cref(fleet), false);
 	switch(action.action)
 	{
-	case FleetAction::Nothing: break;
+	case FleetAction::Nothing:
+		break;
 	case FleetAction::Move:
 	{
 		Coord target = fleet.coord;
@@ -393,11 +404,19 @@ try
 
 	return true;
 }
-catch(boost::python::error_already_set const&)
+catch(luabind::error& e)
 {
-	PyErr_Print();
+  luabind::object error_msg(luabind::from_stack(e.state(), -1));
+	std::stringstream ss;
+	ss << error_msg;
+  mapFind(univ_.playerMap, fleet.playerId)->second.eventList.push_back(
+	  Event(time, Event::FleetCodeError, ss.str()));
+	return true;
+}
+catch(std::exception const& ex)
+{
 	mapFind(univ_.playerMap, fleet.playerId)->second.eventList.push_back(
-	  Event(time, Event::FleetCodeError, PyTools::getPyStdErr()));
+	  Event(time, Event::FleetCodeError, ex.what()));
 	return true;
 }
 
@@ -412,19 +431,21 @@ try
 
 	univ_.time += RoundSecond;
 
-	PyTools::PythonEngine pyEngine;
-	initDroneWars();
-	std::string const boringWarnings = PyTools::getPyStdErr();
+	LuaTools::LuaEngine luaEngine;
+	luaL_openlibs(luaEngine.state());
+
+	initDroneWars(luaEngine.state());
 
 	//Rechargement de tout les code flote/planet de tout les joueur(chargement dans python)
 	//std::map<Player::ID, PyCodes> codesMap;
+	codesMap_.clear();
 	BOOST_FOREACH(Universe::PlayerMap::value_type & playerNVP, univ_.playerMap)
 	{
 		Player const& player = playerNVP.second;
-		PyCodes newCodes =
+		PlayerCodes newCodes =
 		{
-			registerCode(player.id, "Fleet", player.fleetsCode, univ_.time),
-			registerCode(player.id, "Planet", player.planetsCode, univ_.time)
+			registerCode(luaEngine, player.id, "Fleet", player.fleetsCode, univ_.time),
+			registerCode(luaEngine, player.id, "Planet", player.planetsCode, univ_.time)
 		};
 		codesMap_[player.id] = newCodes;
 	}
@@ -435,12 +456,12 @@ try
 		Planet& planet = planetNVP.second;
 		planetRound(univ_, planet, univ_.time);
 		if(planet.playerId != Player::NoId)
-			execPlanet(codesMap_[planet.playerId].planetsCode, planet, univ_.time);
+			execPlanet(luaEngine, codesMap_[planet.playerId].planetsCode, planet, univ_.time);
 	}
 
 	{
 		FleetCoordMap fleetMap;
-		BOOST_FOREACH(Fleet& fleet, univ_.fleetMap | boost::adaptors::map_values)
+		BOOST_FOREACH(Fleet & fleet, univ_.fleetMap | boost::adaptors::map_values)
 			fleetMap.insert(make_pair(fleet.coord, fleet));
 
 		auto iter = fleetMap.begin();
@@ -448,7 +469,7 @@ try
 		{
 			fleetRound(univ_, iter->second, univ_.time);
 
-			bool keepFleet = execFleet(codesMap_[iter->second.playerId].fleetsCode, iter->second, fleetMap, univ_.time);
+			bool keepFleet = execFleet(luaEngine, codesMap_[iter->second.playerId].fleetsCode, iter->second, fleetMap, univ_.time);
 			if(keepFleet == false)
 			{
 				auto condemned = iter;
@@ -460,7 +481,7 @@ try
 		}
 
 		std::map<Fleet::ID, Fleet> newFleetMap;
-		BOOST_FOREACH(Fleet& fleet, fleetMap | boost::adaptors::map_values)
+		BOOST_FOREACH(Fleet & fleet, fleetMap | boost::adaptors::map_values)
 			newFleetMap.insert(make_pair(fleet.id, fleet));
 		newFleetMap.swap(univ_.fleetMap);
 	}

@@ -20,10 +20,10 @@ BOOST_PYTHON_MODULE(DroneWars)
 {
 	using namespace boost::python;
 
-	register_optional<Planet>(); 
-	//register_optional<FleetAction>(); 
+	register_optional<Planet>();
+	//register_optional<FleetAction>();
 
-	
+
 	class_<RessourceSet>("RessourceSet", init<size_t, size_t, size_t>())
 	.def(init<>())
 	.def(self == self)

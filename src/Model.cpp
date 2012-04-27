@@ -70,37 +70,50 @@ Player::ID createPlayer(Universe& univ, std::string const& login)
 	univ.nextPlayerID += 1;
 
 	Player player(newPlayerID, login);
-	player.fleetsCode =
-	  "from DroneWars import *\n"
-	  "class AI:\n\n"
-	  "  @staticmethod\n"
-	  "  def do_gather(myFleet, otherFleet):\n"
-	  "    return True\n\n"
-	  "  @staticmethod\n"
-	  "  def do_fight(myFleet, otherFleet):\n"
-	  "    return True\n\n"
-	  "  @staticmethod\n"
-	  "  def action(myFleet, planet):\n"
-		"    if planet:\n"
-	  "      if planet.is_free():\n"
-		"        if planet.ressourceSet != RessourceSet():\n"
-		"          return FleetAction(FleetAction.Type.Harvest)\n"
-		"      elif planet.playerId == myFleet.playerId and myFleet.shipList[Ship.Mosquito] < 10:\n"
-		"        return FleetAction(FleetAction.Type.Nothing)\n"
-	  "    return FleetAction(FleetAction.Type.Move)\n\n";
+	player.fleetsCode = "";
 	player.planetsCode =
+		"function AI(planet, actions)\n"
+		"  if (not planet.buildingMap:count(Building.MetalMine)) or (planet.buildingMap:find(Building.MetalMine) < 4) then\n"
+		"    actions:append(PlanetAction(PlanetAction.Building, Building.MetalMine))\n"
+		"  elseif not planet.buildingMap:count(Building.Factory) then\n"
+		"    actions:append(PlanetAction(PlanetAction.Building, Building.Factory))\n"
+		"  else\n"
+		"    actions:append(PlanetAction(PlanetAction.Ship, Ship.Mosquito, 1))\n"
+		"  end\n"
+		"end";
+	player.fleetsCode =
+		"class 'AI'\n"
+		"function AI:do_gather(myFleet, otherFleet)\n"
+	  "  return true\n"
+		"end\n\n"
+		"function AI:do_fight(myFleet, otherFleet)\n"
+	  "  return true\n"
+		"end\n\n"
+		"function AI:action(myFleet, planet)\n"
+	  "  if planet then\n"
+		"    if planet:is_free() then\n"
+		"      if not (planet.ressourceSet == RessourceSet()) then\n"
+	  "        return FleetAction(FleetAction.Harvest)\n"
+		"      end\n"
+		"    elseif planet.playerId == myFleet.playerId and myFleet.shipList:at(Ship.Mosquito) < 10 then\n"
+	  "      return FleetAction(FleetAction.Nothing)\n"
+		"    end\n"
+		"  end\n"
+	  "  return FleetAction(FleetAction.Move)\n"
+	  "end\n\n";
+	/*player.planetsCode =
 	  "from DroneWars import *\n\n"
 	  "def AI(planet, actions):\n"
-		"  if Building.MetalMine not in planet.buildingMap or planet.buildingMap[Building.MetalMine] < 4:\n"
+	  "  if Building.MetalMine not in planet.buildingMap or planet.buildingMap[Building.MetalMine] < 4:\n"
 	  "    actions.append(PlanetAction(PlanetAction.Type.Building, Building.MetalMine))\n"
 	  "  elif Building.Factory not in planet.buildingMap:\n"
 	  "    actions.append(PlanetAction(PlanetAction.Type.Building, Building.Factory))\n"
 	  "  else:\n"
-	  "    actions.append(PlanetAction(PlanetAction.Type.Ship, Ship.Mosquito, 1))\n";
+	  "    actions.append(PlanetAction(PlanetAction.Type.Ship, Ship.Mosquito, 1))\n";*/
 	univ.playerMap.insert(std::make_pair(newPlayerID, player));
 
 	bool done = false;
-	
+
 	do
 	{
 		size_t const planetNumber = rand() % univ.planetMap.size();
@@ -342,21 +355,22 @@ void execTask(Universe& univ, Fleet& fleet, FleetTask& task, time_t time)
 	{
 		switch(task.type)
 		{
-		case FleetTask::Move: 
+		case FleetTask::Move:
 			fleet.coord = task.position;
 			break;
 		case FleetTask::Harvest:
+		{
+			Planet& planet = mapFind(univ.planetMap, task.position)->second;
+			if(planet.playerId == Player::NoId)
 			{
-				Planet& planet = mapFind(univ.planetMap, task.position)->second;
-				if(planet.playerId == Player::NoId)
-				{
-					boost::geometry::add_point(fleet.ressourceSet.tab, planet.ressourceSet.tab);
-					boost::geometry::assign_value(planet.ressourceSet.tab, 0);
-					fleet.eventList.push_back(Event(time, Event::PlanetHarvested, "Planet harvested"));
-				}
+				boost::geometry::add_point(fleet.ressourceSet.tab, planet.ressourceSet.tab);
+				boost::geometry::assign_value(planet.ressourceSet.tab, 0);
+				fleet.eventList.push_back(Event(time, Event::PlanetHarvested, "Planet harvested"));
 			}
+		}
+		break;
+		case FleetTask::Colonize:
 			break;
-		case FleetTask::Colonize: break;
 		default:
 			BOOST_THROW_EXCEPTION(std::logic_error("Unknown FleetTask"));
 		}

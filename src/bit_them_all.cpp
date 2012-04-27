@@ -3,6 +3,7 @@
 #pragma warning(push)
 #pragma warning(disable:4251)
 #include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
 #include <QtGui/QFileDialog>
 #pragma warning(pop)
 

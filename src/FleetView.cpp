@@ -30,7 +30,7 @@ FleetView::FleetView(
 		ui.taskTreeWidget->addTopLevelItem(item);
 	}
 
-	BOOST_FOREACH(Event const& ev, fleet.eventList)
+	BOOST_FOREACH(Event const & ev, fleet.eventList)
 	{
 		QTreeWidgetItem* item = new QTreeWidgetItem(ui.reportTreeWidget);
 		item->setData(0, 0, getEventName(ev.type).c_str());
