@@ -49,19 +49,20 @@ try
 	srand(static_cast<unsigned int>(time(NULL)));
 
 	BTAApplication a(argc, argv);
-	bit_them_all view;
+	Engine engine_;
+	bit_them_all view(engine_);
 	view.show();
 	return a.exec();
 }
 catch(boost::exception& e)
 {
-	qFatal(boost::diagnostic_information(e).c_str());
+	QMessageBox::critical(0, "Error", boost::diagnostic_information(e).c_str());
 }
 catch(std::exception& e)
 {
-	qFatal(boost::diagnostic_information(e).c_str());
+	QMessageBox::critical(0, "Error", boost::diagnostic_information(e).c_str());
 }
 catch(...)
 {
-	qFatal("Error <unknown>");
+	QMessageBox::critical(0, "Error", "Error <unknown>");
 }

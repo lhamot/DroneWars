@@ -14,9 +14,10 @@
 
 
 
-bit_them_all::bit_them_all(QWidget* parent, Qt::WFlags flags):
-	QMainWindow(parent, flags),
-	logged_(Player::NoId)
+bit_them_all::bit_them_all(Engine& engine):
+	QMainWindow(0, 0),
+	logged_(Player::NoId),
+	engine_(engine)
 {
 	ui.setupUi(this);
 

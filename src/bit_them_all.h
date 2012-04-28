@@ -29,13 +29,13 @@ public slots:
 	void on_actionSave_activated();
 
 public:
-	bit_them_all(QWidget* parent = 0, Qt::WFlags flags = 0);
+	bit_them_all(Engine& engine);
 	~bit_them_all();
 
 private:
 	Ui::bit_them_all ui;
-	Engine engine_;
 	Player::ID logged_;
+	Engine& engine_;
 };
 
 #endif // BIT_THEM_ALL_H
