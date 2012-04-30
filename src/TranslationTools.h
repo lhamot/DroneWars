@@ -14,4 +14,6 @@ std::string getRessourceName(Ressource::Enum ress);
 
 std::string getEventName(Event::Type evtype);
 
+std::string timeToString(time_t time);
+
 #endif //__BTA_TRANSLATION_TOOLS__

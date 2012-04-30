@@ -1,5 +1,5 @@
 #include "TranslationTools.h"
-
+#include <boost/thread/mutex.hpp>
 
 std::string getTaskName(PlanetTask::Enum type)
 {
@@ -84,4 +84,16 @@ std::string getEventName(Event::Type evtype)
 
 	BOOST_THROW_EXCEPTION(std::logic_error("Unknown Ressource type"));
 	static_assert(Event::FleetsGather == Event::Count - 1, "Event cases missing");
+}
+
+boost::mutex timeToStringMutex;
+
+std::string timeToString(time_t time)
+{
+	boost::unique_lock<boost::mutex> lock(timeToStringMutex);
+	static size_t const BufferSize = 80;
+  char buffer[BufferSize];
+	struct tm* timeinfo = localtime(&time);
+	strftime (buffer, BufferSize, "%Y-%m-%d %H:%M:%S", timeinfo);
+	return buffer;
 }

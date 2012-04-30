@@ -98,7 +98,7 @@ void Engine::save(std::string const& saveName) const
 	if(stat(saveName.c_str(), &buf) == 0)
 		rename(saveName.c_str(), ansSaveName.c_str());
 	rename(newSaveName.c_str(), saveName.c_str());
-	std::cout << "OK" << std::endl;
+	//std::cout << "OK" << std::endl;
 }
 
 
@@ -185,7 +185,6 @@ Player Engine::getPlayer(Player::ID pid) const
 Planet Engine::getPlanet(Coord coord) const
 {
 	SharedLock lock(univ_.mutex);
-	BOOST_THROW_EXCEPTION(std::logic_error(""));
 	return mapFind(univ_.planetMap, coord)->second;
 }
 
@@ -438,7 +437,7 @@ static size_t const RoundSecond = 5;
 void Engine::Simulation::round(LuaTools::LuaEngine& luaEngine, PlayerCodeMap& codesMap)
 try
 {
-	std::cout << "Mise a jour";
+	//std::cout << "Mise a jour";
 	UniqueLock lock(univ_.mutex);
 
 	univ_.time += RoundSecond;
@@ -492,7 +491,7 @@ try
 		newFleetMap.swap(univ_.fleetMap);
 	}
 
-	std::cout << "  OK" << std::endl;
+	//std::cout << "  OK" << std::endl;
 }
 catch(std::exception const& ex)
 {
