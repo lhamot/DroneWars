@@ -249,9 +249,9 @@ void bit_them_allWT::refreshAll()
 	fleetCode_->setText(fleetCode.c_str());
 
 
-	size_t row = 0;
+	int row = 0;
 	std::vector<Planet> planetList = engine_.getPlayerPlanets(logged_);
-	Wt::WStandardItemModel *plModel = new Wt::WStandardItemModel(planetList.size(), 6, this);
+	Wt::WStandardItemModel *plModel = new Wt::WStandardItemModel((int)planetList.size(), 6, this);
 	plModel->setHeaderData(0, Horizontal, WString("X"), DisplayRole);
 	plModel->setHeaderData(1, Horizontal, WString("Y"), DisplayRole);
 	plModel->setHeaderData(2, Horizontal, WString("Z"), DisplayRole);
@@ -294,7 +294,7 @@ void bit_them_allWT::refreshAll()
 	
 	row = 0;
 	std::vector<Fleet> fleetList = engine_.getPlayerFleets(logged_);
-	Wt::WStandardItemModel *flModel = new Wt::WStandardItemModel(fleetList.size(), 6, this);
+	Wt::WStandardItemModel *flModel = new Wt::WStandardItemModel((int)fleetList.size(), 6, this);
 	flModel->setHeaderData(0, Horizontal, WString("X"), DisplayRole);
 	flModel->setHeaderData(1, Horizontal, WString("Y"), DisplayRole);
 	flModel->setHeaderData(2, Horizontal, WString("Z"), DisplayRole);
@@ -351,7 +351,7 @@ void bit_them_allWT::refreshAll()
 	fleetsView_->setModel(flModel);
 
 	Player player = engine_.getPlayer(logged_);
-	Wt::WStandardItemModel *model = new Wt::WStandardItemModel(player.eventList.size(), 3, this);
+	Wt::WStandardItemModel *model = new Wt::WStandardItemModel((int)player.eventList.size(), 3, this);
 	model->setHeaderData(0, Horizontal, WString("Time"), DisplayRole);
 	model->setHeaderData(1, Horizontal, WString("Type"), DisplayRole);
 	model->setHeaderData(2, Horizontal, WString("Message"), DisplayRole);

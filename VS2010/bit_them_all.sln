@@ -1,33 +1,48 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bit_them_all", "bit_them_all.vcxproj", "{9964A96B-4183-4D63-A656-0D7071B4B2D7}"
-	ProjectSection(ProjectDependencies) = postProject
-		{BD8B7A72-258C-4B77-B11F-46C32D461A19} = {BD8B7A72-258C-4B77-B11F-46C32D461A19}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "luabind", "luabind\luabind.vcxproj", "{BD8B7A72-258C-4B77-B11F-46C32D461A19}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lua", "lua\lua.vcxproj", "{D2C0219B-631B-4A58-880C-B0766EC2ED0F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DroneWars", "DroneWars\DroneWars.vcxproj", "{66784FFB-A927-45B0-907F-709FC3AEFD39}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BD8B7A72-258C-4B77-B11F-46C32D461A19} = {BD8B7A72-258C-4B77-B11F-46C32D461A19}
+		{D2C0219B-631B-4A58-880C-B0766EC2ED0F} = {D2C0219B-631B-4A58-880C-B0766EC2ED0F}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
 		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9964A96B-4183-4D63-A656-0D7071B4B2D7}.Debug|Win32.ActiveCfg = Debug|Win32
-		{9964A96B-4183-4D63-A656-0D7071B4B2D7}.Debug|Win32.Build.0 = Debug|Win32
-		{9964A96B-4183-4D63-A656-0D7071B4B2D7}.Release|Win32.ActiveCfg = Release|Win32
-		{9964A96B-4183-4D63-A656-0D7071B4B2D7}.Release|Win32.Build.0 = Release|Win32
 		{BD8B7A72-258C-4B77-B11F-46C32D461A19}.Debug|Win32.ActiveCfg = Debug|Win32
 		{BD8B7A72-258C-4B77-B11F-46C32D461A19}.Debug|Win32.Build.0 = Debug|Win32
+		{BD8B7A72-258C-4B77-B11F-46C32D461A19}.Debug|x64.ActiveCfg = Debug|x64
+		{BD8B7A72-258C-4B77-B11F-46C32D461A19}.Debug|x64.Build.0 = Debug|x64
 		{BD8B7A72-258C-4B77-B11F-46C32D461A19}.Release|Win32.ActiveCfg = Release|Win32
 		{BD8B7A72-258C-4B77-B11F-46C32D461A19}.Release|Win32.Build.0 = Release|Win32
+		{BD8B7A72-258C-4B77-B11F-46C32D461A19}.Release|x64.ActiveCfg = Release|x64
+		{BD8B7A72-258C-4B77-B11F-46C32D461A19}.Release|x64.Build.0 = Release|x64
 		{D2C0219B-631B-4A58-880C-B0766EC2ED0F}.Debug|Win32.ActiveCfg = Debug|Win32
 		{D2C0219B-631B-4A58-880C-B0766EC2ED0F}.Debug|Win32.Build.0 = Debug|Win32
+		{D2C0219B-631B-4A58-880C-B0766EC2ED0F}.Debug|x64.ActiveCfg = Debug|x64
+		{D2C0219B-631B-4A58-880C-B0766EC2ED0F}.Debug|x64.Build.0 = Debug|x64
 		{D2C0219B-631B-4A58-880C-B0766EC2ED0F}.Release|Win32.ActiveCfg = Release|Win32
 		{D2C0219B-631B-4A58-880C-B0766EC2ED0F}.Release|Win32.Build.0 = Release|Win32
+		{D2C0219B-631B-4A58-880C-B0766EC2ED0F}.Release|x64.ActiveCfg = Release|x64
+		{D2C0219B-631B-4A58-880C-B0766EC2ED0F}.Release|x64.Build.0 = Release|x64
+		{66784FFB-A927-45B0-907F-709FC3AEFD39}.Debug|Win32.ActiveCfg = Debug|Win32
+		{66784FFB-A927-45B0-907F-709FC3AEFD39}.Debug|Win32.Build.0 = Debug|Win32
+		{66784FFB-A927-45B0-907F-709FC3AEFD39}.Debug|x64.ActiveCfg = Debug|x64
+		{66784FFB-A927-45B0-907F-709FC3AEFD39}.Debug|x64.Build.0 = Debug|x64
+		{66784FFB-A927-45B0-907F-709FC3AEFD39}.Release|Win32.ActiveCfg = Release|Win32
+		{66784FFB-A927-45B0-907F-709FC3AEFD39}.Release|Win32.Build.0 = Release|Win32
+		{66784FFB-A927-45B0-907F-709FC3AEFD39}.Release|x64.ActiveCfg = Release|x64
+		{66784FFB-A927-45B0-907F-709FC3AEFD39}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

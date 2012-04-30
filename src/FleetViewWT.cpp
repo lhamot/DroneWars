@@ -83,9 +83,9 @@ FleetViewWT::FleetViewWT(
 
 void FleetViewWT::refreshAll()
 {
-	size_t row = 0;
+	int row = 0;
 	Fleet fleet = engine_.getFleet(fleetID_);
-	Wt::WStandardItemModel *evModel = new Wt::WStandardItemModel(fleet.eventList.size(), 3, this);
+	Wt::WStandardItemModel *evModel = new Wt::WStandardItemModel((int)fleet.eventList.size(), 3, this);
 	evModel->setHeaderData(0, Horizontal, WString("Date"), DisplayRole);
 	evModel->setHeaderData(1, Horizontal, WString("Type"), DisplayRole);
 	evModel->setHeaderData(2, Horizontal, WString("Comment"), DisplayRole);

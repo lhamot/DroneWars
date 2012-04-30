@@ -9,13 +9,17 @@
 #include <luabind/operator.hpp>
 #include "Tools.h"
 
-size_t findBuilding(Planet::BuildingMap const& buil, Building::Enum type)
+unsigned int findBuilding(Planet::BuildingMap const& buil, Building::Enum type)
 {
 	auto iter = buil.find(type);
 	if(iter == buil.end())
 		return 0;
 	else
 		return iter->second;
+}
+unsigned int buildingCount(Planet::BuildingMap const& buil, Building::Enum type)
+{
+	return buil.count(type);
 }
 
 void PlanetActionListPushBack(PlanetActionList& list, PlanetAction const& pa){list.push_back(pa);}
@@ -83,7 +87,7 @@ extern "C" int initDroneWars(lua_State* L)
 	    value("Apocalyps",    Ship::Apocalyps)
 	  ],
 	  class_<Planet::BuildingMap>("BuildingMap")
-		.def("count", &Planet::BuildingMap::count)
+		.def("count", buildingCount)
 		.def("find", findBuilding),
 	  //.def(boost::python::map_indexing_suite<Planet::BuildingMap>())
 	  class_<Fleet::ShipTab>("ShipTab")
@@ -109,7 +113,7 @@ extern "C" int initDroneWars(lua_State* L)
 	  ],
 	  class_<PlanetAction>("PlanetAction")
 	  .def(constructor<PlanetAction::Type, Building::Enum>())
-	  .def(constructor<PlanetAction::Type, Ship::Enum, size_t>())
+	  .def(constructor<PlanetAction::Type, Ship::Enum, unsigned int>())
 	  .def_readonly("action",   &PlanetAction::action)
 	  .def_readonly("building", &PlanetAction::building)
 	  .enum_("Type")

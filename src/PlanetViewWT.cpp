@@ -94,9 +94,9 @@ PlanetViewWT::PlanetViewWT(
 
 void PlanetViewWT::refreshAll()
 {
-	size_t row = 0;
+	int row = 0;
 	Planet planet = engine_.getPlanet(planetCoord_);
-	Wt::WStandardItemModel *taModel = new Wt::WStandardItemModel(planet.taskQueue.size(), 4, this);
+	Wt::WStandardItemModel *taModel = new Wt::WStandardItemModel((int)planet.taskQueue.size(), 4, this);
 	taModel->setHeaderData(0, Horizontal, WString("Type"), DisplayRole);
 	taModel->setHeaderData(1, Horizontal, WString("Start"), DisplayRole);
 	taModel->setHeaderData(2, Horizontal, WString("End"), DisplayRole);
@@ -125,7 +125,7 @@ void PlanetViewWT::refreshAll()
 
 	
 	row = 0;
-	Wt::WStandardItemModel *buModel = new Wt::WStandardItemModel(planet.taskQueue.size(), 4, this);
+	Wt::WStandardItemModel *buModel = new Wt::WStandardItemModel((int)planet.taskQueue.size(), 4, this);
 	buModel->setHeaderData(0, Horizontal, WString("Name"), DisplayRole);
 	buModel->setHeaderData(1, Horizontal, WString("Level"), DisplayRole);
 	BOOST_FOREACH(auto const & typeLevel, planet.buildingMap)
