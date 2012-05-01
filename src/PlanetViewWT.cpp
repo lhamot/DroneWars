@@ -28,9 +28,9 @@ Wt::WContainerWidget* PlanetViewWT::createTasksTab(Wt::WContainerWidget* parent)
   tasksView_->setHeight(800);
 
 	tasksView_->setAlternatingRowColors(true);
-	tasksView_->setColumnWidth(0, 70);
-	tasksView_->setColumnWidth(1, 70);
-	tasksView_->setColumnWidth(2, 70);
+	tasksView_->setColumnWidth(0, 100);
+	tasksView_->setColumnWidth(1, 150);
+	tasksView_->setColumnWidth(2, 150);
 	tasksView_->setColumnWidth(3, 200);
 	layout->addWidget(tasksView_);
 	

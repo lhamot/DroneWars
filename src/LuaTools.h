@@ -59,7 +59,7 @@ class LuaEngine
 		 lua_Debug d;
 		 lua_getstack(L, 1, &d);
 		 lua_getinfo(L, "Sln", &d);
-		 std::string err = lua_tostring(L, -1);
+		 char const* err = lua_tostring(L, -1);
 		 lua_pop(L, 1);
 		 std::stringstream msg;
 		 msg << d.short_src << ":" << d.currentline;
@@ -68,7 +68,7 @@ class LuaEngine
 		 {
 				msg << "(" << d.namewhat << " " << d.name << ")";
 		 }
-		 msg << " " << err;
+		 msg << " " << err?std::string(err):"";
 		 lua_pushstring(L, msg.str().c_str());
 		 return 1;
 	}

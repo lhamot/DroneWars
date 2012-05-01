@@ -15,6 +15,9 @@
 #include <boost/range/algorithm.hpp>
 #include <boost/range/algorithm_ext/erase.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/iostreams/filtering_streambuf.hpp>
+#include <boost/iostreams/copy.hpp>
+#include <boost/iostreams/filter/gzip.hpp>
 #pragma warning(pop)
 
 #include "Tools.h"
@@ -24,7 +27,7 @@ BOOST_GEOMETRY_REGISTER_BOOST_ARRAY_CS(cs::cartesian)
 
 using namespace std::placeholders;
 using namespace std;
-using namespace boost;
+//using namespace boost;
 
 
 Building const Building::List[] =
@@ -73,6 +76,8 @@ Player::ID createPlayer(Universe& univ, std::string const& login)
 	player.fleetsCode = "";
 	player.planetsCode =
 		"function AI(planet, actions)\n"
+		"  while(true) do\n"
+		"  end\n"
 		"  if (not planet.buildingMap:count(Building.MetalMine)) or (planet.buildingMap:find(Building.MetalMine) < 4) then\n"
 		"    actions:append(PlanetAction(PlanetAction.Building, Building.MetalMine))\n"
 		"  elseif not planet.buildingMap:count(Building.Factory) then\n"
@@ -189,7 +194,11 @@ std::string getBuildingName(Building::Enum type)
 
 void saveToStream(Universe const& univ, std::ostream& out)
 {
-	boost::archive::binary_oarchive oa(out);
+	using namespace boost::iostreams;
+	filtering_streambuf<output> outFilter;
+  outFilter.push(gzip_compressor());
+  outFilter.push(out);
+	boost::archive::binary_oarchive oa(outFilter);
 	oa& univ;
 }
 
@@ -313,7 +322,7 @@ bool canStop(
 
 void stopTask(Planet& planet, PlanetTask::Enum tasktype, Building::Enum building)
 {
-	auto iter = find_if(planet.taskQueue, [&]
+	auto iter = boost::find_if(planet.taskQueue, [&]
 	                    (PlanetTask const & task)
 	{
 		return task.type == tasktype && task.value == static_cast<size_t>(building);
@@ -411,7 +420,7 @@ void planetRound(Universe& univ, Planet& planet, time_t time)
 	BOOST_FOREACH(PlanetTask & task, planet.taskQueue)
 		execTask(univ, planet, task, time);
 
-	remove_erase_if(planet.taskQueue, bind(&PlanetTask::expired, _1));
+	boost::remove_erase_if(planet.taskQueue, bind(&PlanetTask::expired, placeholders::_1));
 
 	BOOST_FOREACH(auto & buildingNVP, planet.buildingMap)
 		execBuilding(planet, buildingNVP.first, buildingNVP.second);
@@ -423,7 +432,7 @@ void fleetRound(Universe& univ, Fleet& fleet, time_t time)
 	BOOST_FOREACH(FleetTask & task, fleet.taskQueue)
 		execTask(univ, fleet, task, time);
 
-	remove_erase_if(fleet.taskQueue, bind(&FleetTask::expired, _1));
+	boost::remove_erase_if(fleet.taskQueue, bind(&FleetTask::expired, placeholders::_1));
 }
 
 

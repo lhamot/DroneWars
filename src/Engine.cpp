@@ -30,6 +30,7 @@ extern "C"
 
 using namespace std;
 using namespace boost;
+using namespace LuaTools;
 
 typedef boost::unique_lock<Universe::Mutex> UniqueLock;
 typedef boost::shared_lock<Universe::Mutex> SharedLock;
@@ -68,38 +69,6 @@ void Engine::stop()
 	::construct(univ_);
 }*/
 
-
-void Engine::load(std::string const& univName)
-{
-	UniqueLock lock(univ_.mutex);
-	using namespace std;
-	ifstream loadFile(univName, ios::in | ios::binary);
-	if(loadFile.is_open() == false)
-		BOOST_THROW_EXCEPTION(std::ios::failure("Can't load from " + univName));
-	loadFromStream(loadFile, univ_);
-}
-
-
-void Engine::save(std::string const& saveName) const
-{
-	SharedLock lock(univ_.mutex);
-
-	using namespace std;
-	std::string const newSaveName = saveName + ".new";
-	{
-		ofstream saveFile(newSaveName.c_str(), ios::out | ios::binary);
-		if(saveFile.is_open() == false)
-			BOOST_THROW_EXCEPTION(std::ios::failure("Can't save in " + newSaveName));
-		saveToStream(univ_, saveFile);
-	}
-	std::string const ansSaveName = saveName + ".ans";
-	remove(ansSaveName.c_str());
-	struct stat buf;
-	if(stat(saveName.c_str(), &buf) == 0)
-		rename(saveName.c_str(), ansSaveName.c_str());
-	rename(newSaveName.c_str(), saveName.c_str());
-	//std::cout << "OK" << std::endl;
-}
 
 
 void Engine::addPlayer(Player const&) //player
@@ -212,6 +181,18 @@ boost::optional<Player> Engine::getPlayer(
 
 
 //   -------   PRIVEE   -------------------------------------------------------
+static size_t const LuaMaxInstruction = 20000;
+
+void luaCountHook(lua_State *L, lua_Debug *ar)
+{
+	luaL_error(L, "timeout was reached");
+}
+
+Engine::Simulation::Simulation(Universe &univ):
+	univ_(univ)
+{
+}
+
 
 luabind::object Engine::Simulation::registerCode(
   LuaTools::LuaEngine& luaEngine,
@@ -223,9 +204,9 @@ try
 
 	if(luaL_dostring(luaEngine.state(), code.c_str()) != 0)
 	{
-		std::string message = lua_tostring(luaEngine.state(), -1);
+		char const* message = lua_tostring(luaEngine.state(), -1);
 		mapFind(univ_.playerMap, pid)->second.eventList.push_back(
-		  Event(time, Event::FleetCodeError, message));
+		  Event(time, Event::FleetCodeError, message?message:""));
 		return luabind::object();
 	}
 	else
@@ -236,19 +217,20 @@ try
 }
 catch(std::exception const& ex)
 {
-	std::string message = lua_tostring(luaEngine.state(), -1);
+	char const* message = lua_tostring(luaEngine.state(), -1);
 	mapFind(univ_.playerMap, pid)->second.eventList.push_back(
-	  Event(time, Event::FleetCodeError, ex.what() + string(" ") + message));
+	  Event(time, Event::FleetCodeError, ex.what() + string(" ") + (message?message:"")));
 	return luabind::object();
 }
 
 
-void Engine::Simulation::execPlanet(luabind::object code, Planet& planet, time_t time)
+void Engine::Simulation::execPlanet(LuaEngine& luaEngine, luabind::object code, Planet& planet, time_t time)
 try
 {
 	if(false == code.is_valid())
 		return;
 	PlanetActionList list;
+	lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 	code(boost::cref(planet), boost::ref(list));
 
 	BOOST_FOREACH(PlanetAction const & action, list)
@@ -291,34 +273,11 @@ catch(std::exception const& ex)
 	  Event(time, Event::FleetCodeError, ex.what()));
 }
 
-bool Engine::Simulation::execFleet(luabind::object code, Fleet& fleet, FleetCoordMap& fleetMap, time_t time)
+bool Engine::Simulation::execFleet(LuaEngine& luaEngine, luabind::object code, Fleet& fleet, FleetCoordMap& fleetMap, time_t time)
 try
 {
 	if(false == code.is_valid())
 		return true;
-	//! Si flotte allié
-	//! - Si rassemblement = oui ET oui
-	//!   rassemblement
-	//!
-	//! Si flotte enemie:
-	//! - Si combat? : oui OU oui
-	//!   - excecution du script de préparation
-	//!     Combat
-	//!
-	//! Si planete enemie
-	//! - Si combat : oui
-	//!   - excecution du script de préparation
-	//!     Combat
-	//!
-	//! Sinon Si planete libre ET (flotte veux récolter ou coloniser)
-	//!   - Si Récolte:
-	//!     recolte
-	//!   - Si Construire:
-	//!     construction : contre de commandement(la planete appartien au joueur)
-	//! Sinon Si la flotte veux se déplacer:
-	//! - Déplacement
-
-	//! Gestion flottes alliées
 	auto localFleetsKV = fleetMap.equal_range(fleet.coord);
 	auto fleetIter = localFleetsKV.first;
 	while(fleetIter != localFleetsKV.second)
@@ -326,7 +285,9 @@ try
 		Fleet& otherFleet = fleetIter->second;
 		if((otherFleet.id > fleet.id) && (otherFleet.playerId == fleet.playerId))
 		{
+			lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 			bool const wantGather1 = luabind::call_member<bool>(code, "do_gather", boost::cref(fleet), boost::cref(otherFleet));
+			lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 			bool const wantGather2 = luabind::call_member<bool>(code, "do_gather", boost::cref(otherFleet), boost::cref(fleet));
 			if(wantGather1 && wantGather2)
 			{
@@ -351,6 +312,7 @@ try
 		Fleet& otherFleet = fleetIter->second;
 		if((otherFleet.id != fleet.id) && (otherFleet.playerId != fleet.playerId))
 		{
+			lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 			if(luabind::call_member<bool>(code, "do_fight", boost::cref(fleet), boost::cref(otherFleet)))
 			{
 				boost::tribool result = fight(fleet, otherFleet);
@@ -387,6 +349,7 @@ try
 	}
 	using namespace luabind;
 	FleetAction action(FleetAction::Nothing);
+	lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 	if(planet)
 		action = luabind::call_member<FleetAction>(code, "action", boost::cref(fleet), boost::cref(*planet));
 	else
@@ -447,6 +410,7 @@ catch(std::exception const& ex)
 }
 
 static size_t const RoundSecond = 1;
+static size_t const SaveSecond = 60;
 
 
 void Engine::Simulation::round(LuaTools::LuaEngine& luaEngine, PlayerCodeMap& codesMap)
@@ -478,7 +442,7 @@ try
 		Planet& planet = planetNVP.second;
 		planetRound(univ_, planet, univ_.time);
 		if(planet.playerId != Player::NoId)
-			execPlanet(codesMap[planet.playerId].planetsCode, planet, univ_.time);
+			execPlanet(luaEngine, codesMap[planet.playerId].planetsCode, planet, univ_.time);
 	}
 
 	{
@@ -491,7 +455,7 @@ try
 		{
 			fleetRound(univ_, iter->second, univ_.time);
 
-			bool keepFleet = execFleet(codesMap[iter->second.playerId].fleetsCode, iter->second, fleetMap, univ_.time);
+			bool keepFleet = execFleet(luaEngine, codesMap[iter->second.playerId].fleetsCode, iter->second, fleetMap, univ_.time);
 			if(keepFleet == false)
 			{
 				auto condemned = iter;
@@ -508,6 +472,9 @@ try
 		newFleetMap.swap(univ_.fleetMap);
 	}
 
+	//std::cout << lexical_cast<std::string>(time(0)) + "_save.bta ";
+	//save(lexical_cast<std::string>(time(0)) + "_save.bta");
+
 	std::cout << time(0) << std::endl;
 }
 catch(std::exception const& ex)
@@ -515,10 +482,10 @@ catch(std::exception const& ex)
 	std::cout << boost::diagnostic_information(ex) << std::endl;
 }
 
-
 void Engine::Simulation::loop()
 {
 	LuaTools::LuaEngine luaEngine;
+	//lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, 20000);
 	PlayerCodeMap codesMap;
 
 	luaL_openlibs(luaEngine.state());
@@ -542,15 +509,22 @@ void Engine::Simulation::loop()
 	}
 
 
-	time_t newUpdate;
-	time(&newUpdate);
+	time_t newUpdate = time(0);
+	time_t newSave = newUpdate;
 	newUpdate += RoundSecond;
+	newSave += SaveSecond;
 
 	while(false == boost::this_thread::interruption_requested())
 	{
-		time_t now;
-		time(&now);
+		time_t const now = time(0);
 
+		if(newSave <= now)
+		{
+			std::cout << lexical_cast<std::string>(time(0)) + "_save.bta ";
+			save(lexical_cast<std::string>(time(0)) + "_save.bta");
+			std::cout << "OK" << std::endl;
+			newSave += SaveSecond;
+		}
 		if(newUpdate <= now)
 		{
 			//std::cout << newUpdate << " " << now << std::endl;
@@ -563,3 +537,34 @@ void Engine::Simulation::loop()
 }
 
 
+void Engine::Simulation::load(std::string const& univName)
+{
+	UniqueLock lock(univ_.mutex);
+	using namespace std;
+	ifstream loadFile(univName, ios::in | ios::binary);
+	if(loadFile.is_open() == false)
+		BOOST_THROW_EXCEPTION(std::ios::failure("Can't load from " + univName));
+	loadFromStream(loadFile, univ_);
+}
+
+
+void Engine::Simulation::save(std::string const& saveName) const
+{
+	SharedLock lock(univ_.mutex);
+
+	using namespace std;
+	std::string const newSaveName = saveName + ".new";
+	{
+		ofstream saveFile(newSaveName.c_str(), ios::out | ios::binary);
+		if(saveFile.is_open() == false)
+			BOOST_THROW_EXCEPTION(std::ios::failure("Can't save in " + newSaveName));
+		saveToStream(univ_, saveFile);
+	}
+	std::string const ansSaveName = saveName + ".ans";
+	remove(ansSaveName.c_str());
+	struct stat buf;
+	if(stat(saveName.c_str(), &buf) == 0)
+		rename(saveName.c_str(), ansSaveName.c_str());
+	rename(newSaveName.c_str(), saveName.c_str());
+	//std::cout << "OK" << std::endl;
+}

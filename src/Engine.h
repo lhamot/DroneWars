@@ -11,6 +11,7 @@
 #include <boost/optional.hpp>
 #pragma warning(pop)
 
+
 namespace LuaTools
 {
 class LuaEngine;
@@ -26,10 +27,6 @@ public:
 	void start();
 
 	void stop();
-
-	void load(std::string const& univName);
-
-	void save(std::string const& univName) const;
 
 	void addPlayer(Player const& player);
 
@@ -62,9 +59,11 @@ private:
 		Simulation(Simulation const&);
 		Simulation& operator = (Simulation const&);
 	public:
-		Simulation(Universe &univ):univ_(univ)
-		{
-		}
+		Simulation(Universe &univ);
+		
+		void load(std::string const& univName);
+
+	  void save(std::string const& univName) const;
 
 		void loop();
 		
@@ -87,8 +86,8 @@ private:
 		typedef std::map<Player::ID, PlayerCodes> PlayerCodeMap;
 
 		void round(LuaTools::LuaEngine&, PlayerCodeMap& codesMap);
-		void execPlanet(luabind::object, Planet& planet, time_t time);
-		bool execFleet(luabind::object, Fleet& fleet, FleetCoordMap& fleetMap, time_t time);
+		void execPlanet(LuaTools::LuaEngine& luaEngine, luabind::object, Planet& planet, time_t time);
+		bool execFleet(LuaTools::LuaEngine& luaEngine, luabind::object, Fleet& fleet, FleetCoordMap& fleetMap, time_t time);
 		luabind::object registerCode(
 			LuaTools::LuaEngine& luaEngine,
 			Player::ID const pid, std::string const& code, time_t time);
