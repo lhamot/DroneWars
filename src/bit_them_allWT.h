@@ -34,7 +34,7 @@ class bit_them_allWT : public Wt::WContainerWidget
 	void on_actionSave_activated();
 
 public:
-	bit_them_allWT(Engine& engine);
+	bit_them_allWT(Wt::WContainerWidget* parent, Engine& engine, Player::ID pid);
 	~bit_them_allWT();
 
 private:

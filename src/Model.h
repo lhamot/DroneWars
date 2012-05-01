@@ -64,7 +64,7 @@ private:
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
-		ar& id& login& fleetsCode& planetsCode& eventList& eventList;
+		ar& id& login& password& fleetsCode& planetsCode& eventList& eventList;
 	}
 
 public:
@@ -74,6 +74,7 @@ public:
 	static ID const NoId = ID(-1);
 	ID id;
 	std::string login;
+	std::string password;
 	std::string fleetsCode;
 	std::string planetsCode;
 	std::vector<Event> eventList;

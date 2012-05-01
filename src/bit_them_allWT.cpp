@@ -173,9 +173,9 @@ WContainerWidget* bit_them_allWT::createFleetsTab(WContainerWidget* parent)
 }
 
 
-bit_them_allWT::bit_them_allWT(Engine& engine):
-	WContainerWidget(),
-	logged_(Player::NoId),
+bit_them_allWT::bit_them_allWT(Wt::WContainerWidget* parent, Engine& engine, Player::ID pid):
+	WContainerWidget(parent),
+	logged_(pid),
 	engine_(engine),
 	fleetCode_(nullptr),
 	planetCode_(nullptr),
@@ -186,7 +186,7 @@ bit_them_allWT::bit_them_allWT(Engine& engine):
 {
 	//setupUi();
 
-	logged_ = 0;
+	//logged_ = 0;
 
 	//Wt::WBoxLayout *layout = new Wt::WBoxLayout(WBoxLayout::TopToBottom);
 	//setLayout(layout);
@@ -446,9 +446,11 @@ void bit_them_allWT::on_planetTable_itemDoubleClicked(WModelIndex const& index, 
 
 	PlanetViewWT* planetView = new PlanetViewWT(this, engine_, Coord(x, y, z));
 
-	WLayoutItem *item = planetLayout_->itemAt(1);
-	if(item)
+	if(planetLayout_->count() > 1)
+	{
+		WLayoutItem *item = planetLayout_->itemAt(1);
 		planetLayout_->removeItem(item);
+	}
 	planetLayout_->addWidget(planetView);
 }
 

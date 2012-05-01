@@ -140,7 +140,7 @@ void construct(Universe& univ)
 {
 	//univ.zoneMap.resize(
 	//	boost::extents[Universe::MapSizeX][Universe::MapSizeY][Universe::MapSizeZ]);
-	univ.time = time(0) + 2000000;
+	univ.time = time(0) + 5;
 
 	std::set<Coord, CompCoord> coordSet;
 	for(int i = 0; i < 100000; ++i)

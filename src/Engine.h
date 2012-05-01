@@ -8,6 +8,7 @@
 #pragma warning(disable:4512 4127 4244 4121 4100)
 //#include <boost/python.hpp>
 #include <luabind/luabind.hpp>
+#include <boost/optional.hpp>
 #pragma warning(pop)
 
 namespace LuaTools
@@ -51,6 +52,8 @@ public:
 	Planet getPlanet(Coord coord) const;
 
 	Fleet getFleet(Fleet::ID fid);
+
+	boost::optional<Player> getPlayer(std::string const& login, std::string const& password) const;
 
 private:
 

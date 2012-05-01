@@ -7,7 +7,7 @@
 #pragma warning(pop)
 
 #include "Engine.h"
-#include "bit_them_allWT.h"
+#include "MainForm.h"
 
 using namespace Wt;
 
@@ -29,7 +29,7 @@ public:
       "path: \"http://codemirror.net/js/\""
       "});\""
 	  );*/
-		root()->addWidget(new bit_them_allWT(engine));
+		root()->addWidget(new MainForm(root(), engine));
 		//doJavaScript("var myCodeMirror = CodeMirror(document.body);");
 		/*doJavaScript(
 			"var editor = CodeMirror.fromTextArea(document.getElementById(\"Fleet\"), {"

@@ -23,7 +23,9 @@
     <ClCompile Include="..\..\src\Engine.cpp" />
     <ClCompile Include="..\..\src\FleetViewWT.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
+    <ClCompile Include="..\..\src\MainForm.cpp" />
     <ClCompile Include="..\..\src\Model.cpp" />
+    <ClCompile Include="..\..\src\OutPage.cpp" />
     <ClCompile Include="..\..\src\PlanetViewWT.cpp" />
     <ClCompile Include="..\..\src\TranslationTools.cpp" />
   </ItemGroup>
@@ -34,7 +36,9 @@
     <ClInclude Include="..\..\src\FleetViewWT.h" />
     <ClInclude Include="..\..\src\LuaTools.h" />
     <ClInclude Include="..\..\src\LuaUniverse.h" />
+    <ClInclude Include="..\..\src\MainForm.h" />
     <ClInclude Include="..\..\src\Model.h" />
+    <ClInclude Include="..\..\src\OutPage.h" />
     <ClInclude Include="..\..\src\PlanetViewWT.h" />
     <ClInclude Include="..\..\src\Tools.h" />
     <ClInclude Include="..\..\src\TranslationTools.h" />

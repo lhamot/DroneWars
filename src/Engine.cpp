@@ -195,6 +195,21 @@ Fleet Engine::getFleet(Fleet::ID fid)
 }
 
 
+boost::optional<Player> Engine::getPlayer(
+	std::string const& login, std::string const& password) const
+{
+	auto iter = boost::find_if(univ_.playerMap, [&]
+	(Universe::PlayerMap::value_type const& player)
+	{
+		return player.second.login == login && player.second.password == password;
+	});
+	
+	if(iter == univ_.playerMap.end())
+		return false;
+	else
+		return iter->second;
+}
+
 
 //   -------   PRIVEE   -------------------------------------------------------
 
@@ -431,12 +446,14 @@ catch(std::exception const& ex)
 	return true;
 }
 
-static size_t const RoundSecond = 5;
+static size_t const RoundSecond = 1;
 
 
 void Engine::Simulation::round(LuaTools::LuaEngine& luaEngine, PlayerCodeMap& codesMap)
 try
 {
+	std::cout << time(0) << " ";
+
 	//std::cout << "Mise a jour";
 	UniqueLock lock(univ_.mutex);
 
@@ -491,7 +508,7 @@ try
 		newFleetMap.swap(univ_.fleetMap);
 	}
 
-	//std::cout << "  OK" << std::endl;
+	std::cout << time(0) << std::endl;
 }
 catch(std::exception const& ex)
 {
@@ -534,14 +551,14 @@ void Engine::Simulation::loop()
 		time_t now;
 		time(&now);
 
-		//if(newUpdate <= now)
+		if(newUpdate <= now)
 		{
 			//std::cout << newUpdate << " " << now << std::endl;
 			round(luaEngine, codesMap);
 			newUpdate += RoundSecond;
 		}
-		//else
-		boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+		else
+			boost::this_thread::sleep(boost::posix_time::milliseconds(100));
 	}
 }
 
