@@ -84,7 +84,7 @@ class LuaEngine
 	}
 
 public:
-	LuaEngine(): L(lua_open())
+	LuaEngine(): L(luaL_newstate())
 	{
 		lua_atpanic(L, &LuaEngine::panicf);
 		luabind::set_pcall_callback(add_file_and_line);

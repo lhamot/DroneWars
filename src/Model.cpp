@@ -76,8 +76,6 @@ Player::ID createPlayer(Universe& univ, std::string const& login)
 	player.fleetsCode = "";
 	player.planetsCode =
 		"function AI(planet, actions)\n"
-		"  while(true) do\n"
-		"  end\n"
 		"  if (not planet.buildingMap:count(Building.MetalMine)) or (planet.buildingMap:find(Building.MetalMine) < 4) then\n"
 		"    actions:append(PlanetAction(PlanetAction.Building, Building.MetalMine))\n"
 		"  elseif not planet.buildingMap:count(Building.Factory) then\n"

@@ -114,13 +114,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C\libs\boost_1_49_0;I:\C\libs\luabind-0.9.1;I:\C\libs\lua-5.1.5\src;I:\C\libs\wt-3.2.1\src;I:\C\libs\wt-3.2.1_$(Platform);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C_libs\wt-3.2.1\src;I:\C_libs\wt-3.2.1_$(Platform);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4505</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>I:\C\libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;I:\C\libs\wt-3.2.1_$(Platform)\src\$(Configuration);I:\C\libs\wt-3.2.1_$(Platform)\src\Wt\Ext\$(Configuration);I:\C\libs\wt-3.2.1_$(Platform)\src\http\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>I:\C_libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;I:\C_libs\wt-3.2.1_$(Platform)\src\$(Configuration);I:\C_libs\wt-3.2.1_$(Platform)\src\Wt\Ext\$(Configuration);I:\C_libs\wt-3.2.1_$(Platform)\src\http\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>wtd.lib;wthttpd.lib;wtextd.lib;lua.lib;luabind.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -131,13 +131,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C\libs\boost_1_49_0;I:\C\libs\luabind-0.9.1;I:\C\libs\lua-5.1.5\src;I:\C\libs\wt-3.2.1\src;I:\C\libs\wt-3.2.1_$(Platform);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C_libs\wt-3.2.1\src;I:\C_libs\wt-3.2.1_$(Platform);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4505</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>I:\C\libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;I:\C\libs\wt-3.2.1_$(Platform)\src\$(Configuration);I:\C\libs\wt-3.2.1_$(Platform)\src\Wt\Ext\$(Configuration);I:\C\libs\wt-3.2.1_$(Platform)\src\http\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>I:\C_libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;I:\C_libs\wt-3.2.1_$(Platform)\src\$(Configuration);I:\C_libs\wt-3.2.1_$(Platform)\src\Wt\Ext\$(Configuration);I:\C_libs\wt-3.2.1_$(Platform)\src\http\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>wtd.lib;wthttpd.lib;wtextd.lib;lua.lib;luabind.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -150,7 +150,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C\libs\boost_1_49_0;I:\C\libs\luabind-0.9.1;I:\C\libs\lua-5.1.5\src;I:\C\libs\wt-3.2.1\src;I:\C\libs\wt-3.2.1_$(Platform);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C_libs\wt-3.2.1\src;I:\C_libs\wt-3.2.1_$(Platform);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4505</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -158,7 +158,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>I:\C\libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;I:\C\libs\wt-3.2.1_$(Platform)\src\$(Configuration);I:\C\libs\wt-3.2.1_$(Platform)\src\Wt\Ext\$(Configuration);I:\C\libs\wt-3.2.1_$(Platform)\src\http\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>I:\C_libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;I:\C_libs\wt-3.2.1_$(Platform)\src\$(Configuration);I:\C_libs\wt-3.2.1_$(Platform)\src\Wt\Ext\$(Configuration);I:\C_libs\wt-3.2.1_$(Platform)\src\http\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>wt.lib;wthttp.lib;wtext.lib;lua.lib;luabind.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -171,7 +171,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C\libs\boost_1_49_0;I:\C\libs\luabind-0.9.1;I:\C\libs\lua-5.1.5\src;I:\C\libs\wt-3.2.1\src;I:\C\libs\wt-3.2.1_$(Platform);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C_libs\wt-3.2.1\src;I:\C_libs\wt-3.2.1_$(Platform);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4505</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -179,7 +179,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>I:\C\libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;I:\C\libs\wt-3.2.1_$(Platform)\src\$(Configuration);I:\C\libs\wt-3.2.1_$(Platform)\src\Wt\Ext\$(Configuration);I:\C\libs\wt-3.2.1_$(Platform)\src\http\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>I:\C_libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;I:\C_libs\wt-3.2.1_$(Platform)\src\$(Configuration);I:\C_libs\wt-3.2.1_$(Platform)\src\Wt\Ext\$(Configuration);I:\C_libs\wt-3.2.1_$(Platform)\src\http\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>wt.lib;wthttp.lib;wtext.lib;lua.lib;luabind.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

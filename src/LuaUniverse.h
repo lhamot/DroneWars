@@ -9,17 +9,13 @@
 #include <luabind/operator.hpp>
 #include "Tools.h"
 
-unsigned int findBuilding(Planet::BuildingMap const& buil, Building::Enum type)
+size_t findBuilding(Planet::BuildingMap const& buil, Building::Enum type)
 {
 	auto iter = buil.find(type);
 	if(iter == buil.end())
 		return 0;
 	else
 		return iter->second;
-}
-unsigned int buildingCount(Planet::BuildingMap const& buil, Building::Enum type)
-{
-	return buil.count(type);
 }
 
 void PlanetActionListPushBack(PlanetActionList& list, PlanetAction const& pa){list.push_back(pa);}
@@ -87,7 +83,7 @@ extern "C" int initDroneWars(lua_State* L)
 	    value("Apocalyps",    Ship::Apocalyps)
 	  ],
 	  class_<Planet::BuildingMap>("BuildingMap")
-		.def("count", buildingCount)
+		.def("count", &Planet::BuildingMap::count)
 		.def("find", findBuilding),
 	  //.def(boost::python::map_indexing_suite<Planet::BuildingMap>())
 	  class_<Fleet::ShipTab>("ShipTab")
