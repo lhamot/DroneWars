@@ -71,10 +71,20 @@ void Engine::stop()
 
 
 
-void Engine::addPlayer(Player const&) //player
+bool Engine::addPlayer(std::string const& login, std::string const& password)
 {
 	UniqueLock lock(univ_.mutex);
-	//TODO
+	
+	auto iter = boost::find_if(univ_.playerMap, [&]
+	(Universe::PlayerMap::value_type const& keyValue)
+	{
+		return keyValue.second.login == login;
+	});
+	if(iter != univ_.playerMap.end())
+		return false;
+
+	createPlayer(univ_, login, password);
+	return true;
 }
 
 

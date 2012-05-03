@@ -79,7 +79,7 @@ public:
 	std::string planetsCode;
 	std::vector<Event> eventList;
 
-	Player(ID i, std::string const& lg): id(i), login(lg) {}
+	Player(ID i, std::string const& lg, std::string const& pass): id(i), login(lg), password(pass) {}
 };
 
 
@@ -430,7 +430,7 @@ struct Universe
 
 void construct(Universe& univ);
 
-Player::ID createPlayer(Universe& univ, std::string const& login);
+Player::ID createPlayer(Universe& univ, std::string const& login, std::string const& password);
 
 void saveToStream(Universe const& univ, std::ostream& out);
 void loadFromStream(std::istream& in, Universe& univ);

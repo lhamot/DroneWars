@@ -67,12 +67,12 @@ RessourceSet getBuilingPrice(Building::Enum id, size_t level)
 	return result;
 }
 
-Player::ID createPlayer(Universe& univ, std::string const& login)
+Player::ID createPlayer(Universe& univ, std::string const& login, std::string const& password)
 {
 	Player::ID newPlayerID = univ.nextPlayerID;
 	univ.nextPlayerID += 1;
 
-	Player player(newPlayerID, login);
+	Player player(newPlayerID, login, password);
 	player.fleetsCode = "";
 	player.planetsCode =
 		"function AI(planet, actions)\n"
@@ -164,8 +164,9 @@ void construct(Universe& univ)
 		}
 	}
 
+	std::string const& password = "test";
 	for(int i = 0; i < 1000; ++i)
-		createPlayer(univ, "admin" + boost::lexical_cast<std::string>(i));
+		createPlayer(univ, "admin" + boost::lexical_cast<std::string>(i), password);
 };
 
 std::string getBuildingName(Building::Enum type)

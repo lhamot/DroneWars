@@ -28,7 +28,7 @@ public:
 
 	void stop();
 
-	void addPlayer(Player const& player);
+	bool addPlayer(std::string const& login, std::string const& password);
 
 	std::vector<Fleet> getPlayerFleets(Player::ID pid) const;
 
