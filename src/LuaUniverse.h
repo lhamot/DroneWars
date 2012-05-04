@@ -18,7 +18,7 @@ size_t findBuilding(Planet::BuildingMap const& buil, Building::Enum type)
 		return iter->second;
 }
 
-void PlanetActionListPushBack(PlanetActionList& list, PlanetAction const& pa){list.push_back(pa);}
+void PlanetActionListPushBack(PlanetActionList& list, PlanetAction const& pa) {list.push_back(pa);}
 
 template<typename V>
 typename V::value_type const&
@@ -43,8 +43,8 @@ extern "C" int initDroneWars(lua_State* L)
 
 	module(L)
 	[
-		class_<Planet>("Planet")
-		.def("is_free", &planetIsFree)
+	  class_<Planet>("Planet")
+	  .def("is_free", &planetIsFree)
 	  .def_readonly("coord", &Planet::coord)
 	  .def_readonly("playerId", &Planet::playerId)
 	  .def_readonly("buildingMap", &Planet::buildingMap)
@@ -83,12 +83,12 @@ extern "C" int initDroneWars(lua_State* L)
 	    value("Apocalyps",    Ship::Apocalyps)
 	  ],
 	  class_<Planet::BuildingMap>("BuildingMap")
-		.def("count", &Planet::BuildingMap::count)
-		.def("find", findBuilding),
+	  .def("count", &Planet::BuildingMap::count)
+	  .def("find", findBuilding),
 	  //.def(boost::python::map_indexing_suite<Planet::BuildingMap>())
 	  class_<Fleet::ShipTab>("ShipTab")
-		.def("size", &Fleet::ShipTab::size)
-		.def("at", vectorAt<Fleet::ShipTab>),
+	  .def("size", &Fleet::ShipTab::size)
+	  .def("at", vectorAt<Fleet::ShipTab>),
 	  //.def(boost::python::vector_indexing_suite<Fleet::ShipTab>());
 	  class_<Fleet>("Fleet")
 	  .def(constructor<Fleet::ID, Player::ID, Coord>())
@@ -119,7 +119,7 @@ extern "C" int initDroneWars(lua_State* L)
 	  ],
 	  class_<PlanetActionList>("PlanetActionList")
 	  //.def(boost::python::vector_indexing_suite<PlanetActionList>());
-		.def("append", PlanetActionListPushBack),
+	  .def("append", PlanetActionListPushBack),
 	  class_<FleetAction>("FleetAction")
 	  .def(constructor<FleetAction::Type, Coord>())
 	  .def(constructor<FleetAction::Type>())

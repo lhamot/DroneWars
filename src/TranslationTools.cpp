@@ -92,8 +92,8 @@ std::string timeToString(time_t time)
 {
 	boost::unique_lock<boost::mutex> lock(timeToStringMutex);
 	static size_t const BufferSize = 80;
-  char buffer[BufferSize];
+	char buffer[BufferSize];
 	struct tm* timeinfo = localtime(&time);
-	strftime (buffer, BufferSize, "%Y-%m-%d %H:%M:%S", timeinfo);
+	strftime(buffer, BufferSize, "%Y-%m-%d %H:%M:%S", timeinfo);
 	return buffer;
 }

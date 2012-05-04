@@ -1,0 +1,205 @@
+@import url("CodeMirror/theme/cobalt.css");
+@import url("CodeMirror/lib/codemirror.css");
+
+pre
+{
+  text-align: left;
+}
+
+body, .Wt-tv-c
+{
+  background-color: #000000;
+}
+
+
+
+*
+{
+  color: #E6EBFB;
+  margin-left:auto;
+  margin-right:auto;
+  text-align: center;
+  font-family: Tahoma,sans-serif;
+  font-size: 14px;
+}
+
+textarea, select, input
+{
+    color: #E6EBFB;
+    background-color: #314162;
+    background-image: url(img/bg/bg4.gif);
+}
+
+button
+{
+    background-image: url(img/bg/bg6.gif);
+}
+
+th
+{
+    font-weight: bold;
+    color: #E6EBFB;
+    padding-left: 3px;
+    background-image: url(img/bg/bg1.gif);
+    text-align:left;
+}
+
+span, a
+{
+  background-color:transparent;
+}
+
+td
+{
+    text-align: center;
+    color: #E6EBFB;
+    background-image: url(img/bg/bg3.gif);
+}
+
+/*th, input, select, textarea, img, td, tr
+{
+    border: 1px #415680 solid;
+    font-size: 11px;
+    font-family: Tahoma,sans-serif;
+}*/
+
+/*
+a
+{
+    color: #E6EBFB;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+
+textarea
+{
+    width: 100%;
+    background-image: url(img/bg/bg5.gif);
+}
+
+td, tr
+{
+    vertical-align: top;
+}
+
+
+td.l
+{
+    text-align: left;
+    padding: 3px;
+    background-image: url(img/bg/bg3.gif);
+}
+
+
+td.t, td.t font
+{
+    font-weight: bold;
+    color: #E6EBFB;
+    font-size: 22px;
+    font-family:Garamond;
+    background-image: url(img/bg/bg1.gif);
+}
+
+*.em, *.em3, *.em6, *.em9
+{
+    background-image: url("");
+    padding:0px;
+    border:0px;
+    margin:0px;
+    color:Red;
+    font-weight:normal;
+    font-size:small;
+    color:Red;
+}
+
+*.em3
+{
+    font-weight:normal;
+    font-size:small;
+}
+
+*.em6
+{
+    font-weight:normal;
+    font-size:small;
+}
+
+*.em9
+{
+    font-weight:normal;
+    font-size:small;
+}
+
+td.em, td.em3, td.em6, td.em9
+{
+    width:15px;
+    height:15px;
+}
+
+
+font.E
+{
+    color: #FF0000;
+    font-size: 15px;
+}
+
+table
+{
+    margin: auto;
+    vertical-align: top;
+}
+
+table.g
+{
+    width: 728px;
+    vertical-align: top;
+}
+
+table.p
+{
+    width: 468px;
+    vertical-align: top;
+}
+
+table.m
+{
+    width: 80%
+}
+
+.left
+{
+    margin:inherit;
+    float:left;
+}
+
+body
+{
+    vertical-align: top;
+    text-align: center;
+    margin: auto;
+    background-color: #000000;
+    color: #E6EBFB;
+    margin-top: 1px;
+    margin-left: 1px;
+    background-image: url(img/neutrynos.jpg);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-position: -140px 0px;
+    font-size: 11px;
+    font-family: Tahoma,sans-serif;
+}
+
+body.Menu
+{
+    background-position: top left;
+}
+
+div.mess
+{
+    background-image: url(img/res/message.gif);
+    width: 30px;
+    height: 30px;
+}
+
+*/

@@ -12,7 +12,7 @@
 using namespace Wt;
 
 MainForm::MainForm(
-	WContainerWidget* parent, Engine& engine):
+  WContainerWidget* parent, Engine& engine):
 	WContainerWidget(parent),
 	engine_(engine)
 {
@@ -23,7 +23,7 @@ MainForm::MainForm(
 	OutPage* outPage = nullptr;
 	addWidget(outPage = createOutPage(this));
 	outPage->onPlayerLogin = [&]
-	(Player::ID& pid)
+	                         (Player::ID & pid)
 	{
 		//this->onPlayerLogin();
 		removeWidget(widget(0));

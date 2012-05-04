@@ -75,33 +75,33 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 	Player player(newPlayerID, login, password);
 	player.fleetsCode = "";
 	player.planetsCode =
-		"function AI(planet, actions)\n"
-		"  if (not planet.buildingMap:count(Building.MetalMine)) or (planet.buildingMap:find(Building.MetalMine) < 4) then\n"
-		"    actions:append(PlanetAction(PlanetAction.Building, Building.MetalMine))\n"
-		"  elseif not planet.buildingMap:count(Building.Factory) then\n"
-		"    actions:append(PlanetAction(PlanetAction.Building, Building.Factory))\n"
-		"  else\n"
-		"    actions:append(PlanetAction(PlanetAction.Ship, Ship.Mosquito, 1))\n"
-		"  end\n"
-		"end";
+	  "function AI(planet, actions)\n"
+	  "  if (not planet.buildingMap:count(Building.MetalMine)) or (planet.buildingMap:find(Building.MetalMine) < 4) then\n"
+	  "    actions:append(PlanetAction(PlanetAction.Building, Building.MetalMine))\n"
+	  "  elseif not planet.buildingMap:count(Building.Factory) then\n"
+	  "    actions:append(PlanetAction(PlanetAction.Building, Building.Factory))\n"
+	  "  else\n"
+	  "    actions:append(PlanetAction(PlanetAction.Ship, Ship.Mosquito, 1))\n"
+	  "  end\n"
+	  "end";
 	player.fleetsCode =
-		"class 'AI'\n"
-		"function AI:do_gather(myFleet, otherFleet)\n"
+	  "class 'AI'\n"
+	  "function AI:do_gather(myFleet, otherFleet)\n"
 	  "  return true\n"
-		"end\n\n"
-		"function AI:do_fight(myFleet, otherFleet)\n"
+	  "end\n\n"
+	  "function AI:do_fight(myFleet, otherFleet)\n"
 	  "  return true\n"
-		"end\n\n"
-		"function AI:action(myFleet, planet)\n"
+	  "end\n\n"
+	  "function AI:action(myFleet, planet)\n"
 	  "  if planet then\n"
-		"    if planet:is_free() then\n"
-		"      if not (planet.ressourceSet == RessourceSet()) then\n"
+	  "    if planet:is_free() then\n"
+	  "      if not (planet.ressourceSet == RessourceSet()) then\n"
 	  "        return FleetAction(FleetAction.Harvest)\n"
-		"      end\n"
-		"    elseif planet.playerId == myFleet.playerId and myFleet.shipList:at(Ship.Mosquito) < 10 then\n"
+	  "      end\n"
+	  "    elseif planet.playerId == myFleet.playerId and myFleet.shipList:at(Ship.Mosquito) < 10 then\n"
 	  "      return FleetAction(FleetAction.Nothing)\n"
-		"    end\n"
-		"  end\n"
+	  "    end\n"
+	  "  end\n"
 	  "  return FleetAction(FleetAction.Move)\n"
 	  "end\n\n";
 	/*player.planetsCode =
@@ -195,8 +195,8 @@ void saveToStream(Universe const& univ, std::ostream& out)
 {
 	using namespace boost::iostreams;
 	filtering_streambuf<output> outFilter;
-  outFilter.push(gzip_compressor());
-  outFilter.push(out);
+	outFilter.push(gzip_compressor());
+	outFilter.push(out);
 	boost::archive::binary_oarchive oa(outFilter);
 	oa& univ;
 }
@@ -204,8 +204,13 @@ void saveToStream(Universe const& univ, std::ostream& out)
 
 void loadFromStream(std::istream& in, Universe& univ)
 {
+	using namespace boost::iostreams;
 	std::cout << "Loading... ";
-	boost::archive::binary_iarchive ia(in);
+	filtering_streambuf<input> inFilter;
+	inFilter.push(gzip_decompressor());
+	inFilter.push(in);
+
+	boost::archive::binary_iarchive ia(inFilter);
 	ia& univ;
 	std::cout << "OK" << std::endl;
 }
@@ -322,7 +327,7 @@ bool canStop(
 void stopTask(Planet& planet, PlanetTask::Enum tasktype, Building::Enum building)
 {
 	auto iter = boost::find_if(planet.taskQueue, [&]
-	                    (PlanetTask const & task)
+	                           (PlanetTask const & task)
 	{
 		return task.type == tasktype && task.value == static_cast<size_t>(building);
 	});
@@ -334,7 +339,7 @@ void stopTask(Planet& planet, PlanetTask::Enum tasktype, Building::Enum building
 
 void execTask(Universe& univ, Planet& planet, PlanetTask& task, time_t time)
 {
-	if((task.lauchTime + task.duration) <= univ.time)
+	if(time_t(task.lauchTime + task.duration) <= univ.time)
 	{
 		switch(task.type)
 		{
@@ -359,7 +364,7 @@ void execTask(Universe& univ, Planet& planet, PlanetTask& task, time_t time)
 
 void execTask(Universe& univ, Fleet& fleet, FleetTask& task, time_t time)
 {
-	if((task.lauchTime + task.duration) <= univ.time)
+	if(time_t(task.lauchTime + task.duration) <= univ.time)
 	{
 		switch(task.type)
 		{

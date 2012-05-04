@@ -32,39 +32,26 @@ using namespace boost;
 
 WContainerWidget* bit_them_allWT::createFleetTab(WContainerWidget* parent, std::string const& name)
 {
-	WContainerWidget *codeTab = new WContainerWidget(parent);
-	Wt::WVBoxLayout *layout = new Wt::WVBoxLayout();
-	codeTab->setLayout(layout);
-	
-	WTextArea *edit = new WTextArea(codeTab);
+	WContainerWidget* codeTab = new WContainerWidget(parent);
+	WTextArea* edit = new WTextArea(codeTab);
 	edit->setRows(80);
 	edit->setColumns(120);
 
-	layout->addWidget(edit);
-
-	Wt::WHBoxLayout *layout2 = new Wt::WHBoxLayout();
-	layout->addLayout(layout2);
-	
-	WPushButton *reset = new WPushButton(codeTab);
+	WPushButton* reset = new WPushButton(codeTab);
 	reset->setText("Reset");
-	layout2->addWidget(reset);
 
-	WPushButton *save = new WPushButton(codeTab);
-	layout2->addWidget(save);
+	WPushButton* save = new WPushButton(codeTab);
 	save->setText("Save");
 
 	edit->setId(name + "TextArea");
 	edit->doJavaScript(
-		"var editor = CodeMirror.fromTextArea(document.getElementById(\"" + name + "TextArea\"), {"
-        "tabMode: \"indent\","
-        "matchBrackets: true,"
-        "theme: \"neat\","
-				"onHighlightComplete: function(editor) {editor.save();}"
-      "});"
+	  "var editor = CodeMirror.fromTextArea(document.getElementById(\"" + name + "TextArea\"), {"
+	  "tabMode: \"indent\","
+	  "matchBrackets: true,"
+	  "theme: \"cobalt\","
+	  "onHighlightComplete: function(editor) {editor.save();}"
+	  "});"
 	);
-
-	//JSlot *saveSlot = new JSlot("function(sender, event) { editor.save(); return false; }", save);
-	//save->clicked().connect(*saveSlot);
 
 	if(name == "Fleet")
 	{
@@ -78,7 +65,7 @@ WContainerWidget* bit_them_allWT::createFleetTab(WContainerWidget* parent, std::
 		save->clicked().connect(this, &bit_them_allWT::on_savePlanetCodeButton_clicked);
 		reset->clicked().connect(this, &bit_them_allWT::on_resetPlanetCodeButton_clicked);
 	}
-	else 
+	else
 		BOOST_THROW_EXCEPTION(std::logic_error("Bad code editor type"));
 
 	return codeTab;
@@ -86,16 +73,12 @@ WContainerWidget* bit_them_allWT::createFleetTab(WContainerWidget* parent, std::
 
 WContainerWidget* bit_them_allWT::createCodeTab(WContainerWidget* parent)
 {
-	WContainerWidget *codeTab = new WContainerWidget(parent);
-	Wt::WVBoxLayout *layout = new Wt::WVBoxLayout();
-	codeTab->setLayout(layout);
+	WContainerWidget* codeTab = new WContainerWidget(parent);
 
 	codeTab_ = new Wt::WTabWidget(codeTab);
 
-  codeTab_->addTab(createFleetTab(codeTab, "Fleet"), "Fleet");
-  codeTab_->addTab(createFleetTab(codeTab, "Planet"), "Planet");
-
-	layout->addWidget(codeTab_);
+	codeTab_->addTab(createFleetTab(codeTab, "Fleet"), "Fleet");
+	codeTab_->addTab(createFleetTab(codeTab, "Planet"), "Planet");
 
 	return codeTab;
 }
@@ -103,13 +86,13 @@ WContainerWidget* bit_them_allWT::createCodeTab(WContainerWidget* parent)
 
 WContainerWidget* bit_them_allWT::createReportTab(WContainerWidget* parent)
 {
-	WContainerWidget *reportsTab = new WContainerWidget(parent);
-	Wt::WVBoxLayout *layout = new Wt::WVBoxLayout();
+	WContainerWidget* reportsTab = new WContainerWidget(parent);
+	Wt::WVBoxLayout* layout = new Wt::WVBoxLayout();
 	reportsTab->setLayout(layout);
 
 	eventView_ = new WTableView(reportsTab);
 
-  eventView_->setHeight(600);
+	eventView_->setHeight(600);
 
 	//eventView_->setModel(new EventModel(reportsTab, engine_, logged_));
 	eventView_->setAlternatingRowColors(true);
@@ -121,13 +104,13 @@ WContainerWidget* bit_them_allWT::createReportTab(WContainerWidget* parent)
 
 WContainerWidget* bit_them_allWT::createPlanetsTab(WContainerWidget* parent)
 {
-	WContainerWidget *planetsTab = new WContainerWidget(parent);
-	Wt::WHBoxLayout *layout = new Wt::WHBoxLayout();
+	WContainerWidget* planetsTab = new WContainerWidget(parent);
+	Wt::WHBoxLayout* layout = new Wt::WHBoxLayout();
 	planetsTab->setLayout(layout);
 
 	planetsView_ = new WTableView(planetsTab);
 
-  planetsView_->setHeight(600);
+	planetsView_->setHeight(600);
 
 	planetsView_->setAlternatingRowColors(true);
 	planetsView_->clicked().connect(this, &bit_them_allWT::on_planetTable_itemDoubleClicked);
@@ -148,13 +131,13 @@ WContainerWidget* bit_them_allWT::createPlanetsTab(WContainerWidget* parent)
 
 WContainerWidget* bit_them_allWT::createFleetsTab(WContainerWidget* parent)
 {
-	WContainerWidget *fleetsTab = new WContainerWidget(parent);
-	Wt::WHBoxLayout *layout = new Wt::WHBoxLayout();
+	WContainerWidget* fleetsTab = new WContainerWidget(parent);
+	Wt::WHBoxLayout* layout = new Wt::WHBoxLayout();
 	fleetsTab->setLayout(layout);
 
 	fleetsView_ = new WTableView(fleetsTab);
 
-  fleetsView_->setHeight(600);
+	fleetsView_->setHeight(600);
 
 	fleetsView_->setAlternatingRowColors(true);
 	fleetsView_->clicked().connect(this, &bit_them_allWT::on_fleetTable_itemDoubleClicked);
@@ -191,46 +174,21 @@ bit_them_allWT::bit_them_allWT(Wt::WContainerWidget* parent, Engine& engine, Pla
 	//Wt::WBoxLayout *layout = new Wt::WBoxLayout(WBoxLayout::TopToBottom);
 	//setLayout(layout);
 
-	WPushButton *refresh = new WPushButton(this);
+	WPushButton* refresh = new WPushButton(this);
 	refresh->setMaximumSize(1000, 50);
 	refresh->setText("Refresh");
 	refresh->clicked().connect(this, &bit_them_allWT::refreshAll);
 
 	addWidget(refresh);
 
-	/*Wt::Ext::ToolBar *toolBar = new Ext::ToolBar(this);
+	Wt::WTabWidget* tab = new Wt::WTabWidget(this);
 
-	Ext::Menu *menu = new Ext::Menu();
-
-	Wt::Ext::Button *gameMenu = toolBar->addButton("Game", menu);
-
-	Wt::Ext::MenuItem *item1 = menu->addItem("New");
-	Wt::Ext::MenuItem *item2 = menu->addItem("Log in");
-	Wt::Ext::MenuItem *item3 = menu->addItem("Log out");*/
-
-	Wt::WTabWidget *tab = new Wt::WTabWidget(this);
-
-  //tab->addTab(new Wt::WText(""),      "Map");
-  tab->addTab(createPlanetsTab(this), "Planets");
-  tab->addTab(createFleetsTab(this),  "Fleets");
-  tab->addTab(createCodeTab(this),    "Code");
-  tab->addTab(createReportTab(this),  "Reports");
+	tab->addTab(createPlanetsTab(this), "Planets");
+	tab->addTab(createFleetsTab(this),  "Fleets");
+	tab->addTab(createCodeTab(this),    "Code");
+	tab->addTab(createReportTab(this),  "Reports");
 
 	addWidget(tab);
-
-
-
-
-	//connect(ui.saveFleetCodeButton, SIGNAL(clicked()), this, SLOT(onSaveFleetCode()));
-	//connect(ui.savePlanetCodeButton, SIGNAL(clicked()), this, SLOT(onSavePlanetCode()));
-	//connect(ui.resetFleetCodeButton, SIGNAL(clicked()), this, SLOT(onResetFleetCode()));
-	//connect(ui.resetPlanetCodeButton, SIGNAL(clicked()), this, SLOT(onResetPlanetCode()));
-	//connect(ui.refreshReportButton, SIGNAL(clicked()), this, SLOT(onResetPlanetCode()));
-
-	//PythonHighlighter* fleetHighlighter = new PythonHighlighter(ui.fleetCodeEdit->document());
-	//fleetHighlighter->setParent(ui.fleetCodeEdit->document());
-	//PythonHighlighter* planetHighlighter = new PythonHighlighter(ui.planetCodeEdit->document());
-	//planetHighlighter->setParent(ui.planetCodeEdit->document());
 
 	refreshAll();
 }
@@ -251,7 +209,7 @@ void bit_them_allWT::refreshAll()
 
 	int row = 0;
 	std::vector<Planet> planetList = engine_.getPlayerPlanets(logged_);
-	Wt::WStandardItemModel *plModel = new Wt::WStandardItemModel((int)planetList.size(), 6, this);
+	Wt::WStandardItemModel* plModel = new Wt::WStandardItemModel((int)planetList.size(), 6, this);
 	plModel->setHeaderData(0, Horizontal, WString("X"), DisplayRole);
 	plModel->setHeaderData(1, Horizontal, WString("Y"), DisplayRole);
 	plModel->setHeaderData(2, Horizontal, WString("Z"), DisplayRole);
@@ -260,7 +218,7 @@ void bit_them_allWT::refreshAll()
 	plModel->setHeaderData(5, Horizontal, WString("Ressources"), DisplayRole);
 	BOOST_FOREACH(Planet const & planet, planetList)
 	{
-		Wt::WStandardItem *item = new Wt::WStandardItem();
+		Wt::WStandardItem* item = new Wt::WStandardItem();
 		item->setData(planet.coord.X, DisplayRole);
 		plModel->setItem(row, 0, item);
 
@@ -291,10 +249,10 @@ void bit_them_allWT::refreshAll()
 	planetsView_->setModel(plModel);
 
 
-	
+
 	row = 0;
 	std::vector<Fleet> fleetList = engine_.getPlayerFleets(logged_);
-	Wt::WStandardItemModel *flModel = new Wt::WStandardItemModel((int)fleetList.size(), 6, this);
+	Wt::WStandardItemModel* flModel = new Wt::WStandardItemModel((int)fleetList.size(), 6, this);
 	flModel->setHeaderData(0, Horizontal, WString("X"), DisplayRole);
 	flModel->setHeaderData(1, Horizontal, WString("Y"), DisplayRole);
 	flModel->setHeaderData(2, Horizontal, WString("Z"), DisplayRole);
@@ -303,7 +261,7 @@ void bit_them_allWT::refreshAll()
 	flModel->setHeaderData(5, Horizontal, WString("Ressources"), DisplayRole);
 	BOOST_FOREACH(Fleet const & fleet, fleetList)
 	{
-		Wt::WStandardItem *item = new Wt::WStandardItem();
+		Wt::WStandardItem* item = new Wt::WStandardItem();
 		item->setData(fleet.coord.X, DisplayRole);
 		item->setData(fleet.id, UserRole);
 		flModel->setItem(row, 0, item);
@@ -351,14 +309,14 @@ void bit_them_allWT::refreshAll()
 	fleetsView_->setModel(flModel);
 
 	Player player = engine_.getPlayer(logged_);
-	Wt::WStandardItemModel *model = new Wt::WStandardItemModel((int)player.eventList.size(), 3, this);
+	Wt::WStandardItemModel* model = new Wt::WStandardItemModel((int)player.eventList.size(), 3, this);
 	model->setHeaderData(0, Horizontal, WString("Time"), DisplayRole);
 	model->setHeaderData(1, Horizontal, WString("Type"), DisplayRole);
 	model->setHeaderData(2, Horizontal, WString("Message"), DisplayRole);
 	row = 0;
 	BOOST_FOREACH(Event const & ev, player.eventList)
 	{
-		Wt::WStandardItem *item = new Wt::WStandardItem();
+		Wt::WStandardItem* item = new Wt::WStandardItem();
 		item->setData(timeToString(ev.time), DisplayRole);
 		model->setItem(row, 0, item);
 
@@ -369,7 +327,7 @@ void bit_them_allWT::refreshAll()
 		item = new Wt::WStandardItem();
 		item->setData(ev.comment, DisplayRole);
 		model->setItem(row, 2, item);
-		
+
 		row++;
 	}
 
@@ -393,7 +351,7 @@ void bit_them_allWT::on_savePlanetCodeButton_clicked()
 
 void bit_them_allWT::on_resetFleetCodeButton_clicked()
 {
-	WWidget *oldTab = codeTab_->widget(0);
+	WWidget* oldTab = codeTab_->widget(0);
 	codeTab_->removeTab(oldTab);
 	delete oldTab;
 	oldTab = codeTab_->widget(1);
@@ -404,14 +362,14 @@ void bit_them_allWT::on_resetFleetCodeButton_clicked()
 	codeTab_->setCurrentIndex(1);
 	refreshAll();
 
-//	std::string code = engine_.getPlayerFleetCode(logged_);
-//	fleetCode_->setText(code.c_str());
-//	refresh();
+	//	std::string code = engine_.getPlayerFleetCode(logged_);
+	//	fleetCode_->setText(code.c_str());
+	//	refresh();
 }
 
 void bit_them_allWT::on_resetPlanetCodeButton_clicked()
 {
-	WWidget *oldTab = codeTab_->widget(1);
+	WWidget* oldTab = codeTab_->widget(1);
 	codeTab_->removeTab(oldTab);
 	delete oldTab;
 	codeTab_->addTab(createFleetTab(this, "Planet"), "Planet");
@@ -423,11 +381,11 @@ void bit_them_allWT::on_resetPlanetCodeButton_clicked()
 	planetCode_->doJavaScript(
 		"window.editor.hideLine(0);"
 		"window.editor = CodeMirror.fromTextArea(document.getElementById(\"PlanetTextArea\"), {"
-        "tabMode: \"indent\","
-        "matchBrackets: true,"
-        "theme: \"neat\","
+	      "tabMode: \"indent\","
+	      "matchBrackets: true,"
+	      "theme: \"neat\","
 				"onHighlightComplete: function(editor) {editor.save();}"
-      "});"
+	    "});"
 	);
 	refresh();*/
 }
@@ -448,7 +406,7 @@ void bit_them_allWT::on_planetTable_itemDoubleClicked(WModelIndex const& index, 
 
 	if(planetLayout_->count() > 1)
 	{
-		WLayoutItem *item = planetLayout_->itemAt(1);
+		WLayoutItem* item = planetLayout_->itemAt(1);
 		planetLayout_->removeItem(item);
 	}
 	planetLayout_->addWidget(planetView);
@@ -457,11 +415,11 @@ void bit_them_allWT::on_planetTable_itemDoubleClicked(WModelIndex const& index, 
 void bit_them_allWT::on_fleetTable_itemDoubleClicked(WModelIndex const& index, WMouseEvent const&)
 {
 	WStandardItemModel& model = dynamic_cast<WStandardItemModel&>(*fleetsView_->model());
-	Fleet::ID fleetID = any_cast<Fleet::ID>(model.data(index.row(), 0,UserRole));
+	Fleet::ID fleetID = any_cast<Fleet::ID>(model.data(index.row(), 0, UserRole));
 
 	FleetViewWT* fleetView = new FleetViewWT(this, engine_, fleetID);
 
-	WLayoutItem *item = fleetLayout_->itemAt(1);
+	WLayoutItem* item = fleetLayout_->itemAt(1);
 	if(item)
 		fleetLayout_->removeItem(item);
 	fleetLayout_->addWidget(fleetView);

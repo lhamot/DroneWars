@@ -56,21 +56,21 @@ class LuaEngine
 
 	static int add_file_and_line(lua_State* L)
 	{
-		 lua_Debug d;
-		 lua_getstack(L, 1, &d);
-		 lua_getinfo(L, "Sln", &d);
-		 char const* err = lua_tostring(L, -1);
-		 lua_pop(L, 1);
-		 std::stringstream msg;
-		 msg << d.short_src << ":" << d.currentline;
+		lua_Debug d;
+		lua_getstack(L, 1, &d);
+		lua_getinfo(L, "Sln", &d);
+		char const* err = lua_tostring(L, -1);
+		lua_pop(L, 1);
+		std::stringstream msg;
+		msg << d.short_src << ":" << d.currentline;
 
-		 if (d.name != 0)
-		 {
-				msg << "(" << d.namewhat << " " << d.name << ")";
-		 }
-		 msg << " " << err?std::string(err):"";
-		 lua_pushstring(L, msg.str().c_str());
-		 return 1;
+		if(d.name != 0)
+		{
+			msg << "(" << d.namewhat << " " << d.name << ")";
+		}
+		msg << " " << err ? std::string(err) : "";
+		lua_pushstring(L, msg.str().c_str());
+		return 1;
 	}
 
 	static int  panicf(lua_State* L)

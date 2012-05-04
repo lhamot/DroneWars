@@ -16,7 +16,7 @@ class PlanetViewWT : public Wt::WContainerWidget
 
 public:
 	PlanetViewWT(
-		WContainerWidget* parent,
+	  WContainerWidget* parent,
 	  Engine& eng,
 	  Coord planet);
 
@@ -28,8 +28,8 @@ private:
 
 	Engine& engine_;
 	Coord planetCoord_;
-	Wt::WTableView *tasksView_;
-	Wt::WTableView *buildingsView_;
+	Wt::WTableView* tasksView_;
+	Wt::WTableView* buildingsView_;
 
 };
 

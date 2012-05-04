@@ -406,9 +406,9 @@ struct Universe
 
 	//typedef boost::multi_array<Zone, 3> ZoneMap;
 	//ZoneMap zoneMap;
-	static const size_t MapSizeX = 100;
-	static const size_t MapSizeY = 100;
-	static const size_t MapSizeZ = 100;
+	static const unsigned short MapSizeX = 100;
+	static const unsigned short MapSizeY = 100;
+	static const unsigned short MapSizeZ = 100;
 
 	typedef std::map<Player::ID, Player> PlayerMap;
 	PlayerMap playerMap;

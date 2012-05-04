@@ -18,26 +18,11 @@ public:
 	{
 		require("CodeMirror/lib/codemirror.js");
 		require("CodeMirror/mode/lua/lua.js");
-		useStyleSheet("CodeMirror/theme/neat.css");
-		useStyleSheet("CodeMirror/lib/codemirror.css");
-		
-		/*doJavaScript(
-			"var editor = CodeMirror.fromTextArea('code', {"
-      "height: \"350px\","
-      "parserfile: \"http://codemirror.net/mode/contrib/lua/js/parselua.js\","
-      "stylesheet: \"http://codemirror.net/mode/lua/css/luacolors.css\","
-      "path: \"http://codemirror.net/js/\""
-      "});\""
-	  );*/
+		//useStyleSheet("CodeMirror/theme/neat.css");
+		//useStyleSheet("CodeMirror/lib/codemirror.css");
+		useStyleSheet("format.css");
+
 		root()->addWidget(new MainForm(root(), engine));
-		//doJavaScript("var myCodeMirror = CodeMirror(document.body);");
-		/*doJavaScript(
-			"var editor = CodeMirror.fromTextArea(document.getElementById(\"Fleet\"), {"
-					"tabMode: \"indent\","
-					"matchBrackets: true,"
-					"theme: \"neat\""
-				"});"
-		);*/
 	}
 
 	void notify(WEvent& event)
@@ -68,9 +53,9 @@ public:
 	}
 };
 
-Wt::WApplication *createApplication(const Wt::WEnvironment& env, Engine& engine)
+Wt::WApplication* createApplication(const Wt::WEnvironment& env, Engine& engine)
 {
-  WApplication *apply = new BTAApplication(env, engine);
+	WApplication* apply = new BTAApplication(env, engine);
 	//apply->useStyleSheet("format.css");
 	//apply->messageResourceBundle().use("Rybosome");
 	//apply->setLocale("fr");
@@ -84,7 +69,9 @@ try
 
 	Engine engine;
 	return Wt::WRun(argc, argv, [&]
-		(const Wt::WEnvironment& env){return createApplication(env, engine);
+	                (const Wt::WEnvironment & env)
+	{
+		return createApplication(env, engine);
 	});
 
 	//BTAApplication a(argc, argv);
@@ -94,13 +81,16 @@ try
 }
 catch(boost::exception& e)
 {
-	WMessageBox::show("Error", boost::diagnostic_information(e).c_str(), Ok);
+	std::cout << boost::diagnostic_information(e) << std::endl;
+	//WMessageBox::show("Error", boost::diagnostic_information(e).c_str(), Ok);
 }
 catch(std::exception& e)
 {
-	WMessageBox::show("Error", boost::diagnostic_information(e).c_str(), Ok);
+	std::cout << boost::diagnostic_information(e) << std::endl;
+	//WMessageBox::show("Error", boost::diagnostic_information(e).c_str(), Ok);
 }
 catch(...)
 {
-	WMessageBox::show("Error", "Error <unknown>", Ok);
+	std::cout << "Error <unknown>" << std::endl;
+	//WMessageBox::show("Error", "Error <unknown>", Ok);
 }

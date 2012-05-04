@@ -19,13 +19,13 @@ using namespace Wt;
 
 Wt::WContainerWidget* PlanetViewWT::createTasksTab(Wt::WContainerWidget* parent)
 {
-	WContainerWidget *tasksTab = new WContainerWidget(parent);
-	Wt::WHBoxLayout *layout = new Wt::WHBoxLayout();
+	WContainerWidget* tasksTab = new WContainerWidget(parent);
+	Wt::WHBoxLayout* layout = new Wt::WHBoxLayout();
 	tasksTab->setLayout(layout);
 
 	tasksView_ = new WTableView(tasksTab);
 
-  tasksView_->setHeight(800);
+	tasksView_->setHeight(800);
 
 	tasksView_->setAlternatingRowColors(true);
 	tasksView_->setColumnWidth(0, 100);
@@ -33,19 +33,19 @@ Wt::WContainerWidget* PlanetViewWT::createTasksTab(Wt::WContainerWidget* parent)
 	tasksView_->setColumnWidth(2, 150);
 	tasksView_->setColumnWidth(3, 200);
 	layout->addWidget(tasksView_);
-	
+
 	return tasksTab;
 }
 
 Wt::WContainerWidget* PlanetViewWT::createBuildingsTab(Wt::WContainerWidget* parent)
 {
-	WContainerWidget *buildingsTab = new WContainerWidget(parent);
-	Wt::WHBoxLayout *layout = new Wt::WHBoxLayout();
+	WContainerWidget* buildingsTab = new WContainerWidget(parent);
+	Wt::WHBoxLayout* layout = new Wt::WHBoxLayout();
 	buildingsTab->setLayout(layout);
 
 	buildingsView_ = new WTableView(buildingsTab);
 
-  //buildingsView_->setHeight(800);
+	//buildingsView_->setHeight(800);
 
 	buildingsView_->setAlternatingRowColors(true);
 	buildingsView_->setColumnWidth(0, 100);
@@ -69,18 +69,18 @@ Wt::WContainerWidget* PlanetView::createDefenceTab(Wt::WContainerWidget*)
 
 
 PlanetViewWT::PlanetViewWT(
-	WContainerWidget* parent,
+  WContainerWidget* parent,
   Engine& eng,
   Coord plaCoord):
 	WContainerWidget(parent),
 	engine_(eng),
 	planetCoord_(plaCoord)
 {
-	Wt::WVBoxLayout *layout = new Wt::WVBoxLayout();
+	Wt::WVBoxLayout* layout = new Wt::WVBoxLayout();
 	setLayout(layout);
 
 
-	WTabWidget *tab = new WTabWidget(this);
+	WTabWidget* tab = new WTabWidget(this);
 	tab->addTab(createBuildingsTab(this), "Buildings");
 	tab->addTab(createTasksTab(this), "Tasks");
 	//tab->addTab(createResearchTab(this), "Research");
@@ -96,14 +96,14 @@ void PlanetViewWT::refreshAll()
 {
 	int row = 0;
 	Planet planet = engine_.getPlanet(planetCoord_);
-	Wt::WStandardItemModel *taModel = new Wt::WStandardItemModel((int)planet.taskQueue.size(), 4, this);
+	Wt::WStandardItemModel* taModel = new Wt::WStandardItemModel((int)planet.taskQueue.size(), 4, this);
 	taModel->setHeaderData(0, Horizontal, WString("Type"), DisplayRole);
 	taModel->setHeaderData(1, Horizontal, WString("Start"), DisplayRole);
 	taModel->setHeaderData(2, Horizontal, WString("End"), DisplayRole);
 	taModel->setHeaderData(3, Horizontal, WString("What"), DisplayRole);
 	BOOST_FOREACH(PlanetTask const & task, planet.taskQueue)
 	{
-		Wt::WStandardItem *item = new Wt::WStandardItem();
+		Wt::WStandardItem* item = new Wt::WStandardItem();
 		item->setData(getTaskName(task.type), DisplayRole);
 		taModel->setItem(row, 0, item);
 
@@ -123,14 +123,14 @@ void PlanetViewWT::refreshAll()
 	}
 	tasksView_->setModel(taModel);
 
-	
+
 	row = 0;
-	Wt::WStandardItemModel *buModel = new Wt::WStandardItemModel((int)planet.taskQueue.size(), 4, this);
+	Wt::WStandardItemModel* buModel = new Wt::WStandardItemModel((int)planet.taskQueue.size(), 4, this);
 	buModel->setHeaderData(0, Horizontal, WString("Name"), DisplayRole);
 	buModel->setHeaderData(1, Horizontal, WString("Level"), DisplayRole);
 	BOOST_FOREACH(auto const & typeLevel, planet.buildingMap)
 	{
-		Wt::WStandardItem *item = new Wt::WStandardItem();
+		Wt::WStandardItem* item = new Wt::WStandardItem();
 		item->setData(getBuildingName(typeLevel.first), DisplayRole);
 		buModel->setItem(row, 0, item);
 

@@ -10,7 +10,7 @@
 
 namespace Wt
 {
-	class WLineEdit;
+class WLineEdit;
 }
 
 class OutPage : public Wt::WContainerWidget

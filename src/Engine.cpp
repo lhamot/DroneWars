@@ -14,6 +14,7 @@
 #include <boost/range.hpp>
 #include <boost/range/adaptor/map.hpp>
 #include <boost/optional.hpp>
+#include <boost/filesystem.hpp>
 
 //#include "PythonUniverse.h"
 #include "LuaUniverse.h"
@@ -39,8 +40,39 @@ typedef boost::shared_lock<Universe::Mutex> SharedLock;
 Engine::Engine():
 	simulation_(univ_)
 {
-	construct(univ_);
+	boost::filesystem::directory_iterator dir("."), end;
+
+  time_t maxtime = 0;
+	BOOST_FOREACH(const boost::filesystem::path& p, std::make_pair(dir, end))
+	{
+		std::string const fileStr = p.filename().string();
+		if(fileStr.find("_save.bta") == 10)
+		{
+			std::string const strTime = fileStr.substr(0, 10);
+			time_t filetime = strtoul(strTime.c_str(), 0, 10);
+			maxtime = max(maxtime, filetime);
+		}
+	}
+	if(maxtime)
+	{
+		std::stringstream ss;
+		ss << maxtime << "_save.bta";
+		load(ss.str());
+	}
+	else
+		construct(univ_);
 	start();
+}
+
+
+void Engine::load(std::string const& univName)
+{
+	UniqueLock lock(univ_.mutex);
+	using namespace std;
+	ifstream loadFile(univName, ios::in | ios::binary);
+	if(loadFile.is_open() == false)
+		BOOST_THROW_EXCEPTION(std::ios::failure("Can't load from " + univName));
+	loadFromStream(loadFile, univ_);
 }
 
 
@@ -74,16 +106,17 @@ void Engine::stop()
 bool Engine::addPlayer(std::string const& login, std::string const& password)
 {
 	UniqueLock lock(univ_.mutex);
-	
+
 	auto iter = boost::find_if(univ_.playerMap, [&]
-	(Universe::PlayerMap::value_type const& keyValue)
+	                           (Universe::PlayerMap::value_type const & keyValue)
 	{
 		return keyValue.second.login == login;
 	});
 	if(iter != univ_.playerMap.end())
 		return false;
 
-	createPlayer(univ_, login, password);
+	Player::ID const pid = createPlayer(univ_, login, password);
+	simulation_.reloadPlayer(pid);
 	return true;
 }
 
@@ -175,14 +208,14 @@ Fleet Engine::getFleet(Fleet::ID fid)
 
 
 boost::optional<Player> Engine::getPlayer(
-	std::string const& login, std::string const& password) const
+  std::string const& login, std::string const& password) const
 {
 	auto iter = boost::find_if(univ_.playerMap, [&]
-	(Universe::PlayerMap::value_type const& player)
+	                           (Universe::PlayerMap::value_type const & player)
 	{
 		return player.second.login == login && player.second.password == password;
 	});
-	
+
 	if(iter == univ_.playerMap.end())
 		return false;
 	else
@@ -193,12 +226,12 @@ boost::optional<Player> Engine::getPlayer(
 //   -------   PRIVEE   -------------------------------------------------------
 static size_t const LuaMaxInstruction = 20000;
 
-void luaCountHook(lua_State *L, lua_Debug *ar)
+void luaCountHook(lua_State* L, lua_Debug* ar)
 {
 	luaL_error(L, "timeout was reached");
 }
 
-Engine::Simulation::Simulation(Universe &univ):
+Engine::Simulation::Simulation(Universe& univ):
 	univ_(univ)
 {
 }
@@ -216,7 +249,7 @@ try
 	{
 		char const* message = lua_tostring(luaEngine.state(), -1);
 		mapFind(univ_.playerMap, pid)->second.eventList.push_back(
-		  Event(time, Event::FleetCodeError, message?message:""));
+		  Event(time, Event::FleetCodeError, message ? message : ""));
 		return luabind::object();
 	}
 	else
@@ -229,7 +262,7 @@ catch(std::exception const& ex)
 {
 	char const* message = lua_tostring(luaEngine.state(), -1);
 	mapFind(univ_.playerMap, pid)->second.eventList.push_back(
-	  Event(time, Event::FleetCodeError, ex.what() + string(" ") + (message?message:"")));
+	  Event(time, Event::FleetCodeError, ex.what() + string(" ") + (message ? message : "")));
 	return luabind::object();
 }
 
@@ -271,10 +304,10 @@ try
 }
 catch(luabind::error& e)
 {
-  luabind::object error_msg(luabind::from_stack(e.state(), -1));
+	luabind::object error_msg(luabind::from_stack(e.state(), -1));
 	std::stringstream ss;
 	ss << error_msg;
-  mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(
+	mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(
 	  Event(time, Event::FleetCodeError, ss.str()));
 }
 catch(std::exception const& ex)
@@ -405,10 +438,10 @@ try
 }
 catch(luabind::error& e)
 {
-  luabind::object error_msg(luabind::from_stack(e.state(), -1));
+	luabind::object error_msg(luabind::from_stack(e.state(), -1));
 	std::stringstream ss;
 	ss << error_msg;
-  mapFind(univ_.playerMap, fleet.playerId)->second.eventList.push_back(
+	mapFind(univ_.playerMap, fleet.playerId)->second.eventList.push_back(
 	  Event(time, Event::FleetCodeError, ss.str()));
 	return true;
 }
@@ -434,6 +467,7 @@ try
 	univ_.time += RoundSecond;
 
 	//Rechargement des codes flote/planet des joueurs dont le code a été changé
+	SharedLock lockReload(mutex_);
 	BOOST_FOREACH(Player::ID pid, playerToReload_)
 	{
 		Player const& player = mapFind(univ_.playerMap, pid)->second;
@@ -546,16 +580,6 @@ void Engine::Simulation::loop()
 	}
 }
 
-
-void Engine::Simulation::load(std::string const& univName)
-{
-	UniqueLock lock(univ_.mutex);
-	using namespace std;
-	ifstream loadFile(univName, ios::in | ios::binary);
-	if(loadFile.is_open() == false)
-		BOOST_THROW_EXCEPTION(std::ios::failure("Can't load from " + univName));
-	loadFromStream(loadFile, univ_);
-}
 
 
 void Engine::Simulation::save(std::string const& saveName) const

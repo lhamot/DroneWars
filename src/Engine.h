@@ -51,6 +51,8 @@ public:
 	Fleet getFleet(Fleet::ID fid);
 
 	boost::optional<Player> getPlayer(std::string const& login, std::string const& password) const;
+	
+	void load(std::string const& univName);
 
 private:
 
@@ -59,20 +61,19 @@ private:
 		Simulation(Simulation const&);
 		Simulation& operator = (Simulation const&);
 	public:
-		Simulation(Universe &univ);
-		
-		void load(std::string const& univName);
+		Simulation(Universe& univ);
 
-	  void save(std::string const& univName) const;
+		void save(std::string const& univName) const;
 
 		void loop();
-		
+
 		void start();
 
 		void stop();
 
 		void reloadPlayer(Player::ID pid)
 		{
+			boost::unique_lock<Universe::Mutex> lock(mutex_);
 			playerToReload_.insert(pid);
 		}
 
@@ -89,11 +90,12 @@ private:
 		void execPlanet(LuaTools::LuaEngine& luaEngine, luabind::object, Planet& planet, time_t time);
 		bool execFleet(LuaTools::LuaEngine& luaEngine, luabind::object, Fleet& fleet, FleetCoordMap& fleetMap, time_t time);
 		luabind::object registerCode(
-			LuaTools::LuaEngine& luaEngine,
-			Player::ID const pid, std::string const& code, time_t time);
+		  LuaTools::LuaEngine& luaEngine,
+		  Player::ID const pid, std::string const& code, time_t time);
 
+		boost::shared_mutex mutex_;
 		std::set<Player::ID> playerToReload_;
-		Universe &univ_;
+		Universe& univ_;
 	};
 
 	Universe univ_;

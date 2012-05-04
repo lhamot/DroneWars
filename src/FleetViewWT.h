@@ -16,7 +16,7 @@ class FleetViewWT : public Wt::WContainerWidget
 
 public:
 	FleetViewWT(
-		WContainerWidget* parent,
+	  WContainerWidget* parent,
 	  Engine& eng,
 	  Fleet::ID fleetID);
 
@@ -25,7 +25,7 @@ private:
 
 	Engine& engine_;
 	Fleet::ID fleetID_;
-	Wt::WTableView *reportsView_;
+	Wt::WTableView* reportsView_;
 };
 
 #endif //__FLEET_VIEW__

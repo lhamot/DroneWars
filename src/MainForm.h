@@ -22,8 +22,8 @@ private:
 	//bit_them_allWT* createInPage(Wt::WContainerWidget*);
 	void onPlayerLogin();
 
-	bit_them_allWT *inPage_;
-	OutPage *outPage_;
+	bit_them_allWT* inPage_;
+	OutPage* outPage_;
 	Engine& engine_;
 };
 

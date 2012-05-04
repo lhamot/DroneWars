@@ -12,11 +12,11 @@
 
 namespace Wt
 {
-	class WTextArea;
-	class WTabWidget;
-	class WTableView;
-	class WModelIndex;
-	class WMouseEvent;
+class WTextArea;
+class WTabWidget;
+class WTableView;
+class WModelIndex;
+class WMouseEvent;
 }
 
 class bit_them_allWT : public Wt::WContainerWidget
@@ -47,14 +47,14 @@ private:
 	Player::ID logged_;
 	Engine& engine_;
 
-	Wt::WTextArea *fleetCode_;
-	Wt::WTextArea *planetCode_;
-	Wt::WTabWidget *codeTab_;
-	Wt::WTableView *eventView_;
-	Wt::WTableView *planetsView_;
-	Wt::WTableView *fleetsView_;
-	Wt::WLayout *planetLayout_;
-	Wt::WLayout *fleetLayout_;
+	Wt::WTextArea* fleetCode_;
+	Wt::WTextArea* planetCode_;
+	Wt::WTabWidget* codeTab_;
+	Wt::WTableView* eventView_;
+	Wt::WTableView* planetsView_;
+	Wt::WTableView* fleetsView_;
+	Wt::WLayout* planetLayout_;
+	Wt::WLayout* fleetLayout_;
 };
 
 #endif // BIT_THEM_ALL_H
