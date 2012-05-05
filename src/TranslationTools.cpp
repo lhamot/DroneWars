@@ -40,12 +40,15 @@ std::string getShipName(Ship::Enum ship)
 		BTA_STR(Vulture)
 		BTA_STR(Dragon)
 		BTA_STR(Behemoth)
-		BTA_STR(Apocalyps)
+		BTA_STR(Azathoth)
+		BTA_STR(Queen)
+		BTA_STR(Cargo)
+		BTA_STR(LargeCargo)
 	}
 #undef BTA_STR
 
 	BOOST_THROW_EXCEPTION(std::logic_error("Unknown Ship type"));
-	static_assert(Ship::Apocalyps == Ship::Count - 1, "Ship cases missing");
+	static_assert(Ship::LargeCargo == Ship::Count - 1, "Ship cases missing");
 }
 
 std::string getRessourceName(Ressource::Enum ress)
@@ -79,11 +82,12 @@ std::string getEventName(Event::Type evtype)
 		BTA_STR(FleetWin)
 		BTA_STR(FleetDraw)
 		BTA_STR(FleetsGather)
+		BTA_STR(PlanetColonized)
 	}
 #undef BTA_STR
 
 	BOOST_THROW_EXCEPTION(std::logic_error("Unknown Ressource type"));
-	static_assert(Event::FleetsGather == Event::Count - 1, "Event cases missing");
+	static_assert(Event::PlanetColonized == Event::Count - 1, "Event cases missing");
 }
 
 boost::mutex timeToStringMutex;

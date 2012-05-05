@@ -52,7 +52,10 @@ Ship const Ship::List[] =
 	{RessourceSet(2000, 0, 0)},   //Vulture
 	{RessourceSet(10000, 0, 0)},  //Dragon
 	{RessourceSet(40000, 0, 0)},  //Behemoth
-	{RessourceSet(200000, 0, 0)}  //Apocalyps
+	{RessourceSet(200000, 0, 0)}, //Azathoth
+	{RessourceSet(2000, 0, 0)},	//Queen
+	{RessourceSet(400, 0, 0)},    //Cargo
+	{RessourceSet(2000, 0, 0)}    //LargeCargo
 };
 static_assert(sizeof(Ship::List) == (sizeof(Ship) * Ship::Count), "Ship info missing");
 
@@ -80,8 +83,12 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 	  "    actions:append(PlanetAction(PlanetAction.Building, Building.MetalMine))\n"
 	  "  elseif not planet.buildingMap:count(Building.Factory) then\n"
 	  "    actions:append(PlanetAction(PlanetAction.Building, Building.Factory))\n"
-	  "  else\n"
-	  "    actions:append(PlanetAction(PlanetAction.Ship, Ship.Mosquito, 1))\n"
+	  "  elseif planet.ressourceSet:at(0) >= 2000 then\n"
+		"    if math.random(0, 4) == 0 then\n"
+		"      actions:append(PlanetAction(PlanetAction.Ship, Ship.Queen, 1))\n"
+		"    else\n"
+	  "      actions:append(PlanetAction(PlanetAction.Ship, Ship.Mosquito, 1))\n"
+		"    end\n"
 	  "  end\n"
 	  "end";
 	player.fleetsCode =
@@ -95,7 +102,9 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 	  "function AI:action(myFleet, planet)\n"
 	  "  if planet then\n"
 	  "    if planet:is_free() then\n"
-	  "      if not (planet.ressourceSet == RessourceSet()) then\n"
+		"      if myFleet.shipList:at(Ship.Queen) then\n"
+		"        return FleetAction(FleetAction.Colonize)\n"
+	  "      elseif planet.ressourceSet ~= RessourceSet() then\n"
 	  "        return FleetAction(FleetAction.Harvest)\n"
 	  "      end\n"
 	  "    elseif planet.playerId == myFleet.playerId and myFleet.shipList:at(Ship.Mosquito) < 10 then\n"
@@ -305,7 +314,7 @@ void addTask(Planet& planet, time_t time, Building::Enum building)
 
 void addTask(Planet& planet, time_t time, Ship::Enum ship, size_t number)
 {
-	size_t const duration = static_cast<size_t>(pow(ship + 1., 2.) * 10);
+	size_t const duration = Ship::List[ship].price.tab[0] / 30;
 	PlanetTask task(PlanetTask::MakeShip, time, duration);
 	task.value = ship;
 	task.value2 = number;
@@ -383,7 +392,19 @@ void execTask(Universe& univ, Fleet& fleet, FleetTask& task, time_t time)
 		}
 		break;
 		case FleetTask::Colonize:
-			break;
+		{
+			Planet& planet = mapFind(univ.planetMap, task.position)->second;
+			if(planet.playerId == Player::NoId && fleet.shipList[Ship::Queen])
+			{
+				fleet.eventList.push_back(Event(time, Event::PlanetColonized, "Planet colonized"));
+				fleet.shipList[Ship::Queen] -= 1;
+
+				planet.buildingMap[Building::CommandCenter] = 1;
+				boost::geometry::add_point(planet.ressourceSet.tab, RessourceSet(2000, 500, 0).tab);
+				planet.playerId = fleet.playerId;
+			}
+		}
+		break;
 		default:
 			BOOST_THROW_EXCEPTION(std::logic_error("Unknown FleetTask"));
 		}
@@ -500,6 +521,20 @@ bool canHarvest(Fleet const& fleet, Planet const& planet)
 void addTaskHarvest(Fleet& fleet, time_t time, Planet const& planet)
 {
 	FleetTask task(FleetTask::Harvest, time, 10);
+	task.position = planet.coord;
+	fleet.taskQueue.push_back(task);
+}
+
+bool canColonize(Fleet const& fleet, Planet const& planet)
+{
+	if(false == fleet.taskQueue.empty())
+		return false;
+	return planet.playerId == Player::NoId && fleet.shipList[Ship::Queen];
+}
+
+void addTaskColonize(Fleet& fleet, time_t time, Planet const& planet)
+{
+	FleetTask task(FleetTask::Colonize, time, 10);
 	task.position = planet.coord;
 	fleet.taskQueue.push_back(task);
 }

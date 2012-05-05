@@ -20,6 +20,11 @@ size_t findBuilding(Planet::BuildingMap const& buil, Building::Enum type)
 
 void PlanetActionListPushBack(PlanetActionList& list, PlanetAction const& pa) {list.push_back(pa);}
 
+size_t getRessource(RessourceSet const& ress, size_t i)
+{
+	return ress.tab.at(i);
+}
+
 template<typename V>
 typename V::value_type const&
 vectorAt(V const& v, size_t i)
@@ -53,7 +58,8 @@ extern "C" int initDroneWars(lua_State* L)
 	  class_<RessourceSet>("RessourceSet")
 	  .def(constructor<size_t, size_t, size_t>())
 	  .def(constructor<>())
-	  .def(const_self == other<RessourceSet>()),
+	  .def(const_self == other<RessourceSet>())
+		.def("at", getRessource),
 	  class_<Coord>("Coord")
 	  .def(constructor<Coord::Value, Coord::Value, Coord::Value>())
 	  .def_readonly("X", &Coord::X)
@@ -80,7 +86,10 @@ extern "C" int initDroneWars(lua_State* L)
 	    value("Vulture",      Ship::Vulture),
 	    value("Dragon",       Ship::Dragon),
 	    value("Behemoth",     Ship::Behemoth),
-	    value("Apocalyps",    Ship::Apocalyps)
+	    value("Azathoth",     Ship::Azathoth),
+	    value("Queen",        Ship::Queen),
+	    value("Cargo",        Ship::Cargo),
+	    value("LargeCargo",   Ship::LargeCargo)
 	  ],
 	  class_<Planet::BuildingMap>("BuildingMap")
 	  .def("count", &Planet::BuildingMap::count)

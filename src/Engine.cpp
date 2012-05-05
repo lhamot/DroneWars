@@ -321,6 +321,7 @@ try
 {
 	if(false == code.is_valid())
 		return true;
+	
 	auto localFleetsKV = fleetMap.equal_range(fleet.coord);
 	auto fleetIter = localFleetsKV.first;
 	while(fleetIter != localFleetsKV.second)
@@ -418,21 +419,10 @@ try
 	}
 	break;
 	case FleetAction::Colonize:
-		//TODO
+		if(planet && canColonize(fleet, *planet))
+			addTaskColonize(fleet, univ_.time, *planet);
 		break;
 	}
-
-
-	/*FleetActionList list;
-	code(fleet, boost::ref(list));
-	BOOST_FOREACH(FleetAction const & action, list)
-	{
-		switch(action.action)
-		{
-		default:
-			BOOST_THROW_EXCEPTION(std::logic_error("Unknown PlanetAction::Type"));
-		};
-	}*/
 
 	return true;
 }
@@ -574,6 +564,7 @@ void Engine::Simulation::loop()
 			//std::cout << newUpdate << " " << now << std::endl;
 			round(luaEngine, codesMap);
 			newUpdate += RoundSecond;
+			lua_gc(luaEngine.state(), LUA_GCCOLLECT, 0);
 		}
 		else
 			boost::this_thread::sleep(boost::posix_time::milliseconds(100));

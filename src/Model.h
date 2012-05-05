@@ -43,6 +43,7 @@ struct Event
 		FleetWin,
 		FleetDraw,
 		FleetsGather,
+		PlanetColonized,
 		Count
 	};
 
@@ -257,7 +258,10 @@ struct Ship
 		Vulture,
 		Dragon,
 		Behemoth,
-		Apocalyps,
+		Azathoth,
+		Queen,
+		Cargo,
+		LargeCargo,
 		Count
 	};
 
@@ -464,5 +468,9 @@ void addTask(Fleet& fleet, time_t time, Coord const& coord);
 bool canHarvest(Fleet const& fleet, Planet const& planet);
 
 void addTaskHarvest(Fleet& fleet, time_t time, Planet const& planet);
+
+bool canColonize(Fleet const& fleet, Planet const& planet);
+
+void addTaskColonize(Fleet& fleet, time_t time, Planet const& planet);
 
 #endif //_BTA_MODEL_
