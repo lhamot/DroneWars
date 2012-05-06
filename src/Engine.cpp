@@ -268,7 +268,7 @@ catch(std::exception const& ex)
 
 
 void Engine::Simulation::execPlanet(
-  LuaEngine& luaEngine, luabind::object code, Planet& planet, time_t time, std::vector<Fleet> const& fleetList)
+  LuaEngine& luaEngine, luabind::object code, Planet& planet, time_t time, std::vector<Fleet const*> const& fleetList)
 try
 {
 	if(false == code.is_valid())
@@ -477,13 +477,15 @@ try
 			fleetMap.insert(make_pair(fleet.coord, fleet));
 
 		//Les planètes
-		std::vector<Fleet> fleetList;
+		std::vector<Fleet const*> fleetList;
 		BOOST_FOREACH(Universe::PlanetMap::value_type & planetNVP, univ_.planetMap)
 		{
 			Planet& planet = planetNVP.second;
 			fleetList.clear();
 			auto localFleets = fleetMap.equal_range(planet.coord);
-			boost::copy(localFleets | boost::adaptors::map_values, back_inserter(fleetList));
+			auto getFleetPointer = [](FleetCoordMap::value_type const & coordFleet) {return &coordFleet.second;};
+			boost::transform(localFleets, back_inserter(fleetList), getFleetPointer);
+			//boost::copy(localFleets | boost::adaptors::map_values, back_inserter(fleetList));
 			planetRound(univ_, planet, univ_.time);
 			if(planet.playerId != Player::NoId)
 				execPlanet(luaEngine, codesMap[planet.playerId].planetsCode, planet, univ_.time, fleetList);
@@ -549,7 +551,7 @@ void Engine::Simulation::loop()
 				registerCode(luaEngine, player.id, player.fleetsCode, univ_.time),
 				registerCode(luaEngine, player.id, player.planetsCode, univ_.time)
 			};
-			codesMap[player.id] = newCodes;
+			codesMap.insert(make_pair(player.id, newCodes));
 		}
 	}
 
@@ -558,6 +560,8 @@ void Engine::Simulation::loop()
 	time_t newSave = newUpdate;
 	newUpdate += RoundSecond;
 	newSave += SaveSecond;
+
+	size_t gcCounter = 0;
 
 	while(false == boost::this_thread::interruption_requested())
 	{
@@ -575,7 +579,13 @@ void Engine::Simulation::loop()
 			//std::cout << newUpdate << " " << now << std::endl;
 			round(luaEngine, codesMap);
 			newUpdate += RoundSecond;
-			lua_gc(luaEngine.state(), LUA_GCCOLLECT, 0);
+			gcCounter += 1;
+			if((gcCounter % 1) == 0)
+			{
+				std::cout << "GC : ";
+				lua_gc(luaEngine.state(), LUA_GCCOLLECT, 0);
+				std::cout << "OK" << std::endl;
+			}
 		}
 		else
 			boost::this_thread::sleep(boost::posix_time::milliseconds(100));

@@ -136,9 +136,9 @@ extern "C" int initDroneWars(lua_State* L)
 	  class_<PlanetActionList>("PlanetActionList")
 	  //.def(boost::python::vector_indexing_suite<PlanetActionList>());
 	  .def("append", PlanetActionListPushBack),
-	  class_<std::vector<Fleet> >("FleetList")
-	  .def("at", vectorAt<std::vector<Fleet> >)
-	  .def("range", rangeOf<std::vector<Fleet> >, return_stl_iterator),
+	  class_<std::vector<Fleet const*> >("FleetList")
+	  .def("at", vectorAt<std::vector<Fleet const*> >)
+	  .def("range", rangeOf<std::vector<Fleet const*> >, return_stl_iterator),
 	  class_<FleetAction>("FleetAction")
 	  .def(constructor<FleetAction::Type, Coord>())
 	  .def(constructor<FleetAction::Type>())

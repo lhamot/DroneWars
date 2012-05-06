@@ -20,7 +20,11 @@
 #include <boost/logic/tribool.hpp>
 #include <boost/range/algorithm.hpp>
 #include <boost/thread/shared_mutex.hpp>
+#include <boost/functional/hash.hpp>
 #pragma warning(pop)
+
+#include <unordered_map>
+#include "serialize_unordered_map.h"
 
 
 struct Event
@@ -106,9 +110,26 @@ struct Coord
 	{
 	}
 };
+
 inline bool operator == (Coord const& a, Coord const& b)
 {
 	return (a.X == b.X) && (a.Y == b.Y) && (a.Z == b.Z);
+}
+
+namespace std
+{
+template<>
+struct hash<Coord>
+{
+	size_t operator()(const Coord& p) const
+	{
+		std::size_t seed = 0;
+		boost::hash_combine(seed, p.X);
+		boost::hash_combine(seed, p.Y);
+		boost::hash_combine(seed, p.Z);
+		return seed;
+	}
+};
 }
 
 struct CompCoord
@@ -416,7 +437,7 @@ struct Universe
 
 	typedef std::map<Player::ID, Player> PlayerMap;
 	PlayerMap playerMap;
-	typedef std::map<Coord, Planet, CompCoord> PlanetMap;
+	typedef std::unordered_map<Coord, Planet> PlanetMap;
 	PlanetMap planetMap;
 	//std::multimap<Coord, Fleet, CompCoord> fleetMap;
 	std::map<Fleet::ID, Fleet> fleetMap;

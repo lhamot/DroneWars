@@ -1,16 +1,16 @@
 #ifndef __BTA_ENGINE__
 #define __BTA_ENGINE__
 
-#include "Model.h"
-#include <boost/thread.hpp>
-
 #pragma warning(push)
 #pragma warning(disable:4512 4127 4244 4121 4100)
 //#include <boost/python.hpp>
 #include <luabind/luabind.hpp>
 #include <boost/optional.hpp>
+#include <boost/thread.hpp>
 #pragma warning(pop)
 
+#include "Model.h"
+#include <unordered_map>
 
 namespace LuaTools
 {
@@ -78,17 +78,17 @@ private:
 		}
 
 	private:
-		typedef std::multimap<Coord, Fleet, CompCoord> FleetCoordMap;
+		typedef std::unordered_multimap<Coord, Fleet> FleetCoordMap;
 		typedef std::pair<FleetCoordMap::const_iterator, FleetCoordMap::const_iterator> FleetRange;
 		struct PlayerCodes
 		{
 			luabind::object fleetsCode;
 			luabind::object planetsCode;
 		};
-		typedef std::map<Player::ID, PlayerCodes> PlayerCodeMap;
+		typedef std::unordered_map<Player::ID, PlayerCodes> PlayerCodeMap;
 
 		void round(LuaTools::LuaEngine&, PlayerCodeMap& codesMap);
-		void execPlanet(LuaTools::LuaEngine& luaEngine, luabind::object, Planet& planet, time_t time, std::vector<Fleet> const& fleetList);
+		void execPlanet(LuaTools::LuaEngine& luaEngine, luabind::object, Planet& planet, time_t time, std::vector<Fleet const*> const& fleetList);
 		bool execFleet(LuaTools::LuaEngine& luaEngine, luabind::object, Fleet& fleet, FleetCoordMap& fleetMap, time_t time);
 		luabind::object registerCode(
 		  LuaTools::LuaEngine& luaEngine,
