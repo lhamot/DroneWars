@@ -42,8 +42,8 @@ Engine::Engine():
 {
 	boost::filesystem::directory_iterator dir("."), end;
 
-  time_t maxtime = 0;
-	BOOST_FOREACH(const boost::filesystem::path& p, std::make_pair(dir, end))
+	time_t maxtime = 0;
+	BOOST_FOREACH(const boost::filesystem::path & p, std::make_pair(dir, end))
 	{
 		std::string const fileStr = p.filename().string();
 		if(fileStr.find("_save.bta") == 10)
@@ -267,14 +267,15 @@ catch(std::exception const& ex)
 }
 
 
-void Engine::Simulation::execPlanet(LuaEngine& luaEngine, luabind::object code, Planet& planet, time_t time)
+void Engine::Simulation::execPlanet(
+  LuaEngine& luaEngine, luabind::object code, Planet& planet, time_t time, std::vector<Fleet> const& fleetList)
 try
 {
 	if(false == code.is_valid())
 		return;
 	PlanetActionList list;
 	lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
-	code(boost::cref(planet), boost::ref(list));
+	code(boost::cref(planet), boost::cref(fleetList), boost::ref(list));
 
 	BOOST_FOREACH(PlanetAction const & action, list)
 	{
@@ -321,7 +322,7 @@ try
 {
 	if(false == code.is_valid())
 		return true;
-	
+
 	auto localFleetsKV = fleetMap.equal_range(fleet.coord);
 	auto fleetIter = localFleetsKV.first;
 	while(fleetIter != localFleetsKV.second)
@@ -470,13 +471,23 @@ try
 	}
 	playerToReload_.clear();
 
-	//Les planètes
-	BOOST_FOREACH(Universe::PlanetMap::value_type & planetNVP, univ_.planetMap)
 	{
-		Planet& planet = planetNVP.second;
-		planetRound(univ_, planet, univ_.time);
-		if(planet.playerId != Player::NoId)
-			execPlanet(luaEngine, codesMap[planet.playerId].planetsCode, planet, univ_.time);
+		FleetCoordMap fleetMap;
+		BOOST_FOREACH(Fleet & fleet, univ_.fleetMap | boost::adaptors::map_values)
+			fleetMap.insert(make_pair(fleet.coord, fleet));
+
+		//Les planètes
+		std::vector<Fleet> fleetList;
+		BOOST_FOREACH(Universe::PlanetMap::value_type & planetNVP, univ_.planetMap)
+		{
+			Planet& planet = planetNVP.second;
+			fleetList.clear();
+			auto localFleets = fleetMap.equal_range(planet.coord);
+			boost::copy(localFleets | boost::adaptors::map_values, back_inserter(fleetList));
+			planetRound(univ_, planet, univ_.time);
+			if(planet.playerId != Player::NoId)
+				execPlanet(luaEngine, codesMap[planet.playerId].planetsCode, planet, univ_.time, fleetList);
+		}
 	}
 
 	{

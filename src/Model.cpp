@@ -78,17 +78,19 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 	Player player(newPlayerID, login, password);
 	player.fleetsCode = "";
 	player.planetsCode =
-	  "function AI(planet, actions)\n"
+	  "function AI(planet, fleets, actions)\n"
 	  "  if (not planet.buildingMap:count(Building.MetalMine)) or (planet.buildingMap:find(Building.MetalMine) < 4) then\n"
 	  "    actions:append(PlanetAction(PlanetAction.Building, Building.MetalMine))\n"
 	  "  elseif not planet.buildingMap:count(Building.Factory) then\n"
 	  "    actions:append(PlanetAction(PlanetAction.Building, Building.Factory))\n"
-	  "  elseif planet.ressourceSet:at(0) >= 2000 then\n"
-		"    if math.random(0, 4) == 0 then\n"
-		"      actions:append(PlanetAction(PlanetAction.Ship, Ship.Queen, 1))\n"
-		"    else\n"
-	  "      actions:append(PlanetAction(PlanetAction.Ship, Ship.Mosquito, 1))\n"
-		"    end\n"
+	  "  else\n"
+	  "    for fleet in fleets:range() do\n"
+	  "      if fleet.shipList:at(Ship.Queen) == 0 then\n"
+	  "         actions:append(PlanetAction(PlanetAction.Ship, Ship.Queen, 1))\n"
+	  "         return\n"
+	  "      end\n"
+	  "    end\n"
+	  "    actions:append(PlanetAction(PlanetAction.Ship, Ship.Mosquito, 1))\n"
 	  "  end\n"
 	  "end";
 	player.fleetsCode =
@@ -102,8 +104,8 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 	  "function AI:action(myFleet, planet)\n"
 	  "  if planet then\n"
 	  "    if planet:is_free() then\n"
-		"      if myFleet.shipList:at(Ship.Queen) then\n"
-		"        return FleetAction(FleetAction.Colonize)\n"
+	  "      if myFleet.shipList:at(Ship.Queen) then\n"
+	  "        return FleetAction(FleetAction.Colonize)\n"
 	  "      elseif planet.ressourceSet ~= RessourceSet() then\n"
 	  "        return FleetAction(FleetAction.Harvest)\n"
 	  "      end\n"
@@ -136,7 +138,7 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 		{
 			planet.playerId = newPlayerID;
 
-			planet.buildingMap[Building::CommandCenter] = 0;
+			planet.buildingMap[Building::CommandCenter] = 1;
 			planet.ressourceSet = RessourceSet(2000, 200, 0);
 			done = true;
 			//planet.buildingSet.push_back(Building(Building::MetalMine));

@@ -19,8 +19,8 @@ using namespace Wt;
 Wt::WContainerWidget* OutPage::createHomePage(Wt::WContainerWidget* parent)
 {
 	Wt::WContainerWidget* homePage = new WContainerWidget(parent);
-	Wt::WTable *table = new Wt::WTable(homePage);
-	
+	Wt::WTable* table = new Wt::WTable(homePage);
+
 	table->elementAt(0, 0)->addWidget(new WText("login :", parent));
 	table->elementAt(0, 1)->addWidget(loginEdit_ = new WLineEdit(parent));
 	//table->elementAt(0, 0)->->addWidget(new WBreak(parent));
@@ -41,7 +41,7 @@ Wt::WContainerWidget* OutPage::createHomePage(Wt::WContainerWidget* parent)
 Wt::WContainerWidget* OutPage::createRegisterPage(Wt::WContainerWidget* parent)
 {
 	Wt::WContainerWidget* regPage = new WContainerWidget(parent);
-	Wt::WTable *table = new Wt::WTable(regPage);
+	Wt::WTable* table = new Wt::WTable(regPage);
 	table->elementAt(0, 0)->addWidget(new WText("login :", parent));
 	table->elementAt(0, 1)->addWidget(loginEdit2_ = new WLineEdit(parent));
 	//table->elementAt(1, 0)->addWidget(new WBreak(parent));

@@ -51,7 +51,7 @@ public:
 	Fleet getFleet(Fleet::ID fid);
 
 	boost::optional<Player> getPlayer(std::string const& login, std::string const& password) const;
-	
+
 	void load(std::string const& univName);
 
 private:
@@ -79,6 +79,7 @@ private:
 
 	private:
 		typedef std::multimap<Coord, Fleet, CompCoord> FleetCoordMap;
+		typedef std::pair<FleetCoordMap::const_iterator, FleetCoordMap::const_iterator> FleetRange;
 		struct PlayerCodes
 		{
 			luabind::object fleetsCode;
@@ -87,7 +88,7 @@ private:
 		typedef std::map<Player::ID, PlayerCodes> PlayerCodeMap;
 
 		void round(LuaTools::LuaEngine&, PlayerCodeMap& codesMap);
-		void execPlanet(LuaTools::LuaEngine& luaEngine, luabind::object, Planet& planet, time_t time);
+		void execPlanet(LuaTools::LuaEngine& luaEngine, luabind::object, Planet& planet, time_t time, std::vector<Fleet> const& fleetList);
 		bool execFleet(LuaTools::LuaEngine& luaEngine, luabind::object, Fleet& fleet, FleetCoordMap& fleetMap, time_t time);
 		luabind::object registerCode(
 		  LuaTools::LuaEngine& luaEngine,

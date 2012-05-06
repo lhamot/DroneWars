@@ -7,6 +7,7 @@
 #include <luabind/operator.hpp>
 #include <luabind/function.hpp>
 #include <luabind/operator.hpp>
+#include <luabind/iterator_policy.hpp>
 #include "Tools.h"
 
 size_t findBuilding(Planet::BuildingMap const& buil, Building::Enum type)
@@ -30,6 +31,12 @@ typename V::value_type const&
 vectorAt(V const& v, size_t i)
 {
 	return v.at(i);
+}
+
+template<typename V>
+V const& rangeOf(V const& v)
+{
+	return v;
 }
 
 bool planetIsFree(Planet planet)
@@ -59,7 +66,7 @@ extern "C" int initDroneWars(lua_State* L)
 	  .def(constructor<size_t, size_t, size_t>())
 	  .def(constructor<>())
 	  .def(const_self == other<RessourceSet>())
-		.def("at", getRessource),
+	  .def("at", getRessource),
 	  class_<Coord>("Coord")
 	  .def(constructor<Coord::Value, Coord::Value, Coord::Value>())
 	  .def_readonly("X", &Coord::X)
@@ -129,6 +136,9 @@ extern "C" int initDroneWars(lua_State* L)
 	  class_<PlanetActionList>("PlanetActionList")
 	  //.def(boost::python::vector_indexing_suite<PlanetActionList>());
 	  .def("append", PlanetActionListPushBack),
+	  class_<std::vector<Fleet> >("FleetList")
+	  .def("at", vectorAt<std::vector<Fleet> >)
+	  .def("range", rangeOf<std::vector<Fleet> >, return_stl_iterator),
 	  class_<FleetAction>("FleetAction")
 	  .def(constructor<FleetAction::Type, Coord>())
 	  .def(constructor<FleetAction::Type>())

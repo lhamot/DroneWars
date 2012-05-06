@@ -427,7 +427,7 @@ struct Universe
 	typedef boost::shared_mutex Mutex;
 	mutable Mutex mutex;
 
-	Universe(): nextPlayerID(0), time(0)
+	Universe(): nextPlayerID(0), nextFleetID(0), time(0)
 	{
 	}
 };
