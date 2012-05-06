@@ -76,54 +76,6 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 	univ.nextPlayerID += 1;
 
 	Player player(newPlayerID, login, password);
-	player.fleetsCode = "";
-	player.planetsCode =
-	  "function AI(planet, fleets, actions)\n"
-	  "  if (not planet.buildingMap:count(Building.MetalMine)) or (planet.buildingMap:find(Building.MetalMine) < 4) then\n"
-	  "    actions:append(PlanetAction(PlanetAction.Building, Building.MetalMine))\n"
-	  "  elseif not planet.buildingMap:count(Building.Factory) then\n"
-	  "    actions:append(PlanetAction(PlanetAction.Building, Building.Factory))\n"
-	  "  else\n"
-	  "    for fleet in fleets:range() do\n"
-	  "      if fleet.shipList:at(Ship.Queen) == 0 then\n"
-	  "         actions:append(PlanetAction(PlanetAction.Ship, Ship.Queen, 1))\n"
-	  "         return\n"
-	  "      end\n"
-	  "    end\n"
-	  "    actions:append(PlanetAction(PlanetAction.Ship, Ship.Mosquito, 1))\n"
-	  "  end\n"
-	  "end";
-	player.fleetsCode =
-	  "class 'AI'\n"
-	  "function AI:do_gather(myFleet, otherFleet)\n"
-	  "  return true\n"
-	  "end\n\n"
-	  "function AI:do_fight(myFleet, otherFleet)\n"
-	  "  return true\n"
-	  "end\n\n"
-	  "function AI:action(myFleet, planet)\n"
-	  "  if planet then\n"
-	  "    if planet:is_free() then\n"
-	  "      if myFleet.shipList:at(Ship.Queen) then\n"
-	  "        return FleetAction(FleetAction.Colonize)\n"
-	  "      elseif planet.ressourceSet ~= RessourceSet() then\n"
-	  "        return FleetAction(FleetAction.Harvest)\n"
-	  "      end\n"
-	  "    elseif planet.playerId == myFleet.playerId and myFleet.shipList:at(Ship.Mosquito) < 10 then\n"
-	  "      return FleetAction(FleetAction.Nothing)\n"
-	  "    end\n"
-	  "  end\n"
-	  "  return FleetAction(FleetAction.Move)\n"
-	  "end\n\n";
-	/*player.planetsCode =
-	  "from DroneWars import *\n\n"
-	  "def AI(planet, actions):\n"
-	  "  if Building.MetalMine not in planet.buildingMap or planet.buildingMap[Building.MetalMine] < 4:\n"
-	  "    actions.append(PlanetAction(PlanetAction.Type.Building, Building.MetalMine))\n"
-	  "  elif Building.Factory not in planet.buildingMap:\n"
-	  "    actions.append(PlanetAction(PlanetAction.Type.Building, Building.Factory))\n"
-	  "  else:\n"
-	  "    actions.append(PlanetAction(PlanetAction.Type.Ship, Ship.Mosquito, 1))\n";*/
 	univ.playerMap.insert(std::make_pair(newPlayerID, player));
 
 	bool done = false;
@@ -176,8 +128,49 @@ void construct(Universe& univ)
 	}
 
 	std::string const& password = "test";
-	for(int i = 0; i < 1000; ++i)
-		createPlayer(univ, "admin" + boost::lexical_cast<std::string>(i), password);
+	for(int i = 0; i < 100; ++i)
+	{
+		Player::ID pid = createPlayer(univ, "admin" + boost::lexical_cast<std::string>(i), password);
+		Player& player = mapFind(univ.playerMap, pid)->second;
+		player.planetsCode =
+		  "function AI(planet, fleets, actions)\n"
+		  "  if (not planet.buildingMap:count(Building.MetalMine)) or (planet.buildingMap:find(Building.MetalMine) < 4) then\n"
+		  "    actions:append(PlanetAction(PlanetAction.Building, Building.MetalMine))\n"
+		  "  elseif not planet.buildingMap:count(Building.Factory) then\n"
+		  "    actions:append(PlanetAction(PlanetAction.Building, Building.Factory))\n"
+		  "  else\n"
+		  "    for fleet in fleets:range() do\n"
+		  "      if fleet.shipList:at(Ship.Queen) == 0 then\n"
+		  "         actions:append(PlanetAction(PlanetAction.Ship, Ship.Queen, 1))\n"
+		  "         return\n"
+		  "      end\n"
+		  "    end\n"
+		  "    actions:append(PlanetAction(PlanetAction.Ship, Ship.Mosquito, 1))\n"
+		  "  end\n"
+		  "end";
+		player.fleetsCode =
+		  "class 'AI'\n"
+		  "function AI:do_gather(myFleet, otherFleet)\n"
+		  "  return true\n"
+		  "end\n\n"
+		  "function AI:do_fight(myFleet, otherFleet)\n"
+		  "  return true\n"
+		  "end\n\n"
+		  "function AI:action(myFleet, planet)\n"
+		  "  if planet then\n"
+		  "    if planet:is_free() then\n"
+		  "      if myFleet.shipList:at(Ship.Queen) > 0 then\n"
+		  "        return FleetAction(FleetAction.Colonize)\n"
+		  "      elseif planet.ressourceSet ~= RessourceSet() then\n"
+		  "        return FleetAction(FleetAction.Harvest)\n"
+		  "      end\n"
+		  "    elseif planet.playerId == myFleet.playerId and myFleet.shipList:at(Ship.Mosquito) < 10 then\n"
+		  "      return FleetAction(FleetAction.Nothing)\n"
+		  "    end\n"
+		  "  end\n"
+		  "  return FleetAction(FleetAction.Move, directionRandom())\n"
+		  "end\n\n";
+	}
 };
 
 std::string getBuildingName(Building::Enum type)
@@ -539,4 +532,15 @@ void addTaskColonize(Fleet& fleet, time_t time, Planet const& planet)
 	FleetTask task(FleetTask::Colonize, time, 10);
 	task.position = planet.coord;
 	fleet.taskQueue.push_back(task);
+}
+
+bool canDrop(Fleet const& fleet, Planet const& planet)
+{
+	return planet.playerId == fleet.playerId;
+}
+
+void drop(Fleet& fleet, Planet& planet)
+{
+	boost::geometry::add_point(planet.ressourceSet.tab, fleet.ressourceSet.tab);
+	boost::geometry::assign_value(fleet.ressourceSet.tab, 0);
 }

@@ -77,8 +77,8 @@ WContainerWidget* bit_them_allWT::createCodeTab(WContainerWidget* parent)
 
 	codeTab_ = new Wt::WTabWidget(codeTab);
 
-	codeTab_->addTab(createFleetTab(codeTab, "Fleet"), "Fleet");
 	codeTab_->addTab(createFleetTab(codeTab, "Planet"), "Planet");
+	codeTab_->addTab(createFleetTab(codeTab, "Fleet"), "Fleet");
 
 	return codeTab;
 }
@@ -281,11 +281,12 @@ void bit_them_allWT::refreshAll()
 		std::string content;
 		for(int i = 0; i < Ship::Count; ++i)
 		{
-			content +=
-			  getShipName(static_cast<Ship::Enum>(i))[0] +
-			  std::string(":") +
-			  boost::lexical_cast<std::string>(fleet.shipList[i]) +
-			  std::string("; ");
+			if(fleet.shipList[i])
+				content +=
+				  getShipName(static_cast<Ship::Enum>(i))[0] +
+				  std::string(":") +
+				  boost::lexical_cast<std::string>(fleet.shipList[i]) +
+				  std::string("; ");
 		}
 		item = new Wt::WStandardItem();
 		item->setData(content, DisplayRole);

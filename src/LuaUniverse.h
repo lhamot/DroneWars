@@ -26,6 +26,34 @@ size_t getRessource(RessourceSet const& ress, size_t i)
 	return ress.tab.at(i);
 }
 
+Coord directionRandom()
+{
+	Coord target;
+	target.X += (rand() % 3) - 1;
+	target.Y += (rand() % 3) - 1;
+	target.Z += (rand() % 3) - 1;
+	return target;
+}
+
+Coord::Value toOne(Coord::Value val)
+{
+	if(val < 0)
+		return -1;
+	else if(val > 0)
+		return 1;
+	else
+		return 0;
+}
+
+Coord directionFromTo(Coord const& ori, Coord const& targ)
+{
+	Coord target;
+	target.X += toOne(targ.X - ori.X);
+	target.Y += toOne(targ.Z - ori.Z);
+	target.Z += toOne(targ.Z - ori.Z);
+	return target;
+}
+
 template<typename V>
 typename V::value_type const&
 vectorAt(V const& v, size_t i)
@@ -55,6 +83,8 @@ extern "C" int initDroneWars(lua_State* L)
 
 	module(L)
 	[
+	  def("directionRandom", directionRandom),
+	  def("directionFromTo", directionFromTo),
 	  class_<Planet>("Planet")
 	  .def("is_free", &planetIsFree)
 	  .def_readonly("coord", &Planet::coord)
@@ -111,8 +141,10 @@ extern "C" int initDroneWars(lua_State* L)
 	  .def_readonly("id", &Fleet::id)
 	  .def_readonly("playerId", &Fleet::playerId)
 	  .def_readonly("coord", &Fleet::coord)
+	  .def_readonly("origine", &Fleet::origine)
 	  .def_readonly("name", &Fleet::name)
-	  .def_readonly("shipList", &Fleet::shipList),
+	  .def_readonly("shipList", &Fleet::shipList)
+	  .def_readonly("ressourceSet", &Fleet::ressourceSet),
 	  class_<Universe>("Universe")
 	  .def_readonly("playerMap", &Universe::playerMap)
 	  .def_readonly("planetMap", &Universe::planetMap)
@@ -149,7 +181,8 @@ extern "C" int initDroneWars(lua_State* L)
 	    value("Nothing",   FleetAction::Nothing),
 	    value("Move",      FleetAction::Move),
 	    value("Harvest",   FleetAction::Harvest),
-	    value("Colonize",  FleetAction::Colonize)
+	    value("Colonize",  FleetAction::Colonize),
+	    value("Drop",      FleetAction::Drop)
 	  ]
 	];
 

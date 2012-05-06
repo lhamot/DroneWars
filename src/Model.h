@@ -69,7 +69,7 @@ private:
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
-		ar& id& login& password& fleetsCode& planetsCode& eventList& eventList;
+		ar& id& login& password& fleetsCode& planetsCode& eventList;
 	}
 
 public:
@@ -296,7 +296,7 @@ struct Planet
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
-		ar& coord& playerId& buildingMap& taskQueue& ressourceSet;
+		ar& coord& playerId& buildingMap& taskQueue& ressourceSet& eventList;
 	}
 
 	/*struct CmpBuild
@@ -366,13 +366,14 @@ struct Fleet
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
-		ar& id& playerId& coord& name& shipList;
+		ar& id& playerId& coord& origine& name& shipList& ressourceSet& taskQueue& eventList;
 	}
 
 	typedef size_t ID;
 	ID id;
 	Player::ID playerId;
 	Coord coord;
+	Coord origine;
 	std::string name;
 	typedef std::vector<size_t> ShipTab;
 	ShipTab shipList;
@@ -382,7 +383,7 @@ struct Fleet
 
 	Fleet() {}
 	Fleet(ID fid, Player::ID pid, Coord c):
-		id(fid), playerId(pid), coord(c), shipList(Ship::Count)
+		id(fid), playerId(pid), coord(c), origine(c), shipList(Ship::Count)
 	{
 		//shipList.fill(0);
 	}
@@ -402,7 +403,8 @@ struct FleetAction
 		Nothing,
 		Move,
 		Harvest,
-		Colonize
+		Colonize,
+		Drop
 	};
 
 	Type action;
@@ -426,6 +428,7 @@ struct Universe
 		ar& planetMap;
 		ar& fleetMap;
 		ar& nextPlayerID;
+		ar& nextFleetID;
 		ar& time;
 	}
 
@@ -493,5 +496,9 @@ void addTaskHarvest(Fleet& fleet, time_t time, Planet const& planet);
 bool canColonize(Fleet const& fleet, Planet const& planet);
 
 void addTaskColonize(Fleet& fleet, time_t time, Planet const& planet);
+
+bool canDrop(Fleet const& fleet, Planet const& planet);
+
+void drop(Fleet& fleet, Planet& planet);
 
 #endif //_BTA_MODEL_

@@ -258,6 +258,15 @@ try
 		return g["AI"];
 	}
 }
+catch(luabind::error& ex)
+{
+	luabind::object error_msg(luabind::from_stack(ex.state(), -1));
+	std::stringstream ss;
+	ss << error_msg;
+	mapFind(univ_.playerMap, pid)->second.eventList.push_back(
+	  Event(time, Event::FleetCodeError, ex.what() + string(" ") + ss.str()));
+	return luabind::object();
+}
 catch(std::exception const& ex)
 {
 	char const* message = lua_tostring(luaEngine.state(), -1);
@@ -271,11 +280,11 @@ void Engine::Simulation::execPlanet(
   LuaEngine& luaEngine, luabind::object code, Planet& planet, time_t time, std::vector<Fleet const*> const& fleetList)
 try
 {
-	if(false == code.is_valid())
+	if(false == code.is_valid() || luabind::type(code) != LUA_TFUNCTION)
 		return;
 	PlanetActionList list;
 	lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
-	code(boost::cref(planet), boost::cref(fleetList), boost::ref(list));
+	luabind::call_function<void>(code, boost::cref(planet), boost::cref(fleetList), boost::ref(list));
 
 	BOOST_FOREACH(PlanetAction const & action, list)
 	{
@@ -406,9 +415,9 @@ try
 	case FleetAction::Move:
 	{
 		Coord target = fleet.coord;
-		target.X += (rand() % 3) - 1;
-		target.Y += (rand() % 3) - 1;
-		target.Z += (rand() % 3) - 1;
+		target.X += action.target.X;
+		target.Y += action.target.Y;
+		target.Z += action.target.Z;
 		if(canMove(fleet, target))
 			addTask(fleet, univ_.time, target);
 	}
@@ -422,6 +431,10 @@ try
 	case FleetAction::Colonize:
 		if(planet && canColonize(fleet, *planet))
 			addTaskColonize(fleet, univ_.time, *planet);
+		break;
+	case FleetAction::Drop:
+		if(planet && canDrop(fleet, *planet))
+			drop(fleet, *planet);
 		break;
 	}
 
@@ -458,18 +471,20 @@ try
 	univ_.time += RoundSecond;
 
 	//Rechargement des codes flote/planet des joueurs dont le code a été changé
-	SharedLock lockReload(mutex_);
-	BOOST_FOREACH(Player::ID pid, playerToReload_)
 	{
-		Player const& player = mapFind(univ_.playerMap, pid)->second;
-		PlayerCodes newCodes =
+		UniqueLock lockReload(mutex_);
+		BOOST_FOREACH(Player::ID pid, playerToReload_)
 		{
-			registerCode(luaEngine, player.id, player.fleetsCode, univ_.time),
-			registerCode(luaEngine, player.id, player.planetsCode, univ_.time)
-		};
-		codesMap[player.id] = newCodes;
+			Player const& player = mapFind(univ_.playerMap, pid)->second;
+			PlayerCodes newCodes =
+			{
+				registerCode(luaEngine, player.id, player.fleetsCode, univ_.time),
+				registerCode(luaEngine, player.id, player.planetsCode, univ_.time)
+			};
+			codesMap[player.id] = newCodes;
+		}
+		playerToReload_.clear();
 	}
-	playerToReload_.clear();
 
 	{
 		FleetCoordMap fleetMap;
@@ -582,9 +597,9 @@ void Engine::Simulation::loop()
 			gcCounter += 1;
 			if((gcCounter % 1) == 0)
 			{
-				std::cout << "GC : ";
+				std::cout << "GC : " << lua_gc(luaEngine.state(), LUA_GCCOUNT, 0);
 				lua_gc(luaEngine.state(), LUA_GCCOLLECT, 0);
-				std::cout << "OK" << std::endl;
+				std::cout << " -> " << lua_gc(luaEngine.state(), LUA_GCCOUNT, 0) << std::endl;
 			}
 		}
 		else
