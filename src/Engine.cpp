@@ -228,6 +228,7 @@ static size_t const LuaMaxInstruction = 20000;
 
 void luaCountHook(lua_State* L, lua_Debug* ar)
 {
+	lua_sethook(L, luaCountHook, LUA_MASKCOUNT, 1);
 	luaL_error(L, "timeout was reached");
 }
 
