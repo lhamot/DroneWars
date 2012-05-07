@@ -20,6 +20,11 @@ class LuaEngine;
 class Engine
 {
 public:
+	struct InvalidData : public std::runtime_error
+	{
+		InvalidData(std::string const& str): std::runtime_error(str) {}
+	};
+
 	Engine();
 
 	~Engine();

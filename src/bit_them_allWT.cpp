@@ -20,6 +20,8 @@
 #include <Wt/WStandardItem>
 #include <Wt/WText>
 #include <Wt/WJavaScript>
+#include <Wt/WMessageBox>
+#include <Wt/WLengthValidator>
 #pragma warning(pop)
 
 //#include "PythonHighlighter.h"
@@ -44,10 +46,12 @@ WContainerWidget* bit_them_allWT::createFleetTab(WContainerWidget* parent, std::
 	save->setText("Save");
 
 	edit->setId(name + "TextArea");
+	edit->setValidator(new WLengthValidator(0, Player::MaxCodeSize, edit));
 	edit->doJavaScript(
 	  "var editor = CodeMirror.fromTextArea(document.getElementById(\"" + name + "TextArea\"), {"
 	  "tabMode: \"indent\","
 	  "matchBrackets: true,"
+	  "lineNumbers: true,"
 	  "theme: \"cobalt\","
 	  "onHighlightComplete: function(editor) {editor.save();}"
 	  "});"

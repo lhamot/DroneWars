@@ -62,6 +62,8 @@ struct Event
 	}
 };
 
+static size_t const MaxStringSize = 256;
+
 struct Player
 {
 private:
@@ -83,6 +85,7 @@ public:
 	std::string fleetsCode;
 	std::string planetsCode;
 	std::vector<Event> eventList;
+	static size_t const MaxCodeSize = 16 * 1024;
 
 	Player(ID i, std::string const& lg, std::string const& pass): id(i), login(lg), password(pass) {}
 };

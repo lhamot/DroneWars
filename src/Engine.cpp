@@ -107,6 +107,11 @@ bool Engine::addPlayer(std::string const& login, std::string const& password)
 {
 	UniqueLock lock(univ_.mutex);
 
+	if(login.size() > MaxStringSize)
+		BOOST_THROW_EXCEPTION(InvalidData("login"));
+	if(password.size() > MaxStringSize)
+		BOOST_THROW_EXCEPTION(InvalidData("password"));
+
 	auto iter = boost::find_if(univ_.playerMap, [&]
 	                           (Universe::PlayerMap::value_type const & keyValue)
 	{
@@ -150,6 +155,8 @@ std::vector<Planet> Engine::getPlayerPlanets(Player::ID pid) const
 void Engine::setPlayerFleetCode(Player::ID pid, std::string const& code)
 {
 	UniqueLock lock(univ_.mutex);
+	if(code.size() > Player::MaxCodeSize)
+		BOOST_THROW_EXCEPTION(InvalidData("code"));
 	mapFind(univ_.playerMap, pid)->second.fleetsCode = code;
 	simulation_.reloadPlayer(pid);
 }
@@ -158,6 +165,8 @@ void Engine::setPlayerFleetCode(Player::ID pid, std::string const& code)
 void Engine::setPlayerPlanetCode(Player::ID pid, std::string const& code)
 {
 	UniqueLock lock(univ_.mutex);
+	if(code.size() > Player::MaxCodeSize)
+		BOOST_THROW_EXCEPTION(InvalidData("code"));
 	mapFind(univ_.playerMap, pid)->second.planetsCode = code;
 	simulation_.reloadPlayer(pid);
 }
@@ -551,7 +560,15 @@ void Engine::Simulation::loop()
 	//lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, 20000);
 	PlayerCodeMap codesMap;
 
-	luaL_openlibs(luaEngine.state());
+	//luaL_openlibs(luaEngine.state());
+	luaopen_base(luaEngine.state());
+	//luaopen_package(luaEngine.state());
+	//luaopen_string(luaEngine.state());
+	//luaopen_table(luaEngine.state());
+	//luaopen_math(luaEngine.state());
+	//luaopen_io(luaEngine.state());
+	//luaopen_os(luaEngine.state());
+	//luaopen_debug(luaEngine.state());
 
 	initDroneWars(luaEngine.state());
 

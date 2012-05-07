@@ -11,6 +11,7 @@
 #include <Wt/WBreak>
 #include <Wt/WMessageBox>
 #include <Wt/WTable>
+#include <Wt/WLengthValidator>
 #pragma warning(pop)
 
 
@@ -23,10 +24,13 @@ Wt::WContainerWidget* OutPage::createHomePage(Wt::WContainerWidget* parent)
 
 	table->elementAt(0, 0)->addWidget(new WText("login :", parent));
 	table->elementAt(0, 1)->addWidget(loginEdit_ = new WLineEdit(parent));
+	loginEdit_->setValidator(new WLengthValidator(0, MaxStringSize, loginEdit_));
 	//table->elementAt(0, 0)->->addWidget(new WBreak(parent));
 	table->elementAt(1, 0)->addWidget(new WText("password :", parent));
 	table->elementAt(1, 1)->addWidget(passwordEdit_ = new WLineEdit(parent));
 	passwordEdit_->setEchoMode(WLineEdit::Password);
+	passwordEdit_->setValidator(new WLengthValidator(0, MaxStringSize, passwordEdit_));
+
 	//table->elementAt(0, 0)->->addWidget(new WBreak(parent));
 	WPushButton* okButton = new WPushButton("Log in");
 	homePage->addWidget(okButton);
@@ -44,13 +48,16 @@ Wt::WContainerWidget* OutPage::createRegisterPage(Wt::WContainerWidget* parent)
 	Wt::WTable* table = new Wt::WTable(regPage);
 	table->elementAt(0, 0)->addWidget(new WText("login :", parent));
 	table->elementAt(0, 1)->addWidget(loginEdit2_ = new WLineEdit(parent));
+	loginEdit2_->setValidator(new WLengthValidator(0, MaxStringSize, loginEdit2_));
 	//table->elementAt(1, 0)->addWidget(new WBreak(parent));
 	table->elementAt(1, 0)->addWidget(new WText("password :", parent));
 	table->elementAt(1, 1)->addWidget(passwordEdit2_ = new WLineEdit(parent));
+	passwordEdit2_->setValidator(new WLengthValidator(0, MaxStringSize, passwordEdit2_));
 	passwordEdit2_->setEchoMode(WLineEdit::Password);
 	//table->elementAt(1, 0)->addWidget(new WBreak(parent));
 	table->elementAt(2, 0)->addWidget(new WText("password2 :", parent));
 	table->elementAt(2, 1)->addWidget(passwordEdit3_ = new WLineEdit(parent));
+	passwordEdit3_->setValidator(new WLengthValidator(0, MaxStringSize, passwordEdit3_));
 	passwordEdit3_->setEchoMode(WLineEdit::Password);
 	//table->elementAt(1, 0)->addWidget(new WBreak(parent));
 	WPushButton* regButton = new WPushButton("Register");
