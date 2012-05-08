@@ -55,12 +55,11 @@ FleetViewWT::FleetViewWT(
 	layout->addWidget(tab);
 
 
-	refreshAll();
-
+	refresh();
 }
 
 
-void FleetViewWT::refreshAll()
+void FleetViewWT::refresh()
 {
 	int row = 0;
 	Fleet fleet = engine_.getFleet(fleetID_);
@@ -85,4 +84,6 @@ void FleetViewWT::refreshAll()
 		row += 1;
 	}
 	reportsView_->setModel(evModel);
+
+	WContainerWidget::refresh();
 }

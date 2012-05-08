@@ -88,11 +88,11 @@ PlanetViewWT::PlanetViewWT(
 	layout->addWidget(tab);
 
 
-	refreshAll();
+	refresh();
 }
 
 
-void PlanetViewWT::refreshAll()
+void PlanetViewWT::refresh()
 {
 	int row = 0;
 	Planet planet = engine_.getPlanet(planetCoord_);
@@ -141,4 +141,6 @@ void PlanetViewWT::refreshAll()
 		row += 1;
 	}
 	buildingsView_->setModel(buModel);
+
+	WContainerWidget::refresh();
 }

@@ -12,7 +12,7 @@
 
 class FleetViewWT : public Wt::WContainerWidget
 {
-	void refreshAll();
+	void refresh();
 
 public:
 	FleetViewWT(

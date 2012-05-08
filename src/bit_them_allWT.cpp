@@ -192,7 +192,7 @@ bit_them_allWT::bit_them_allWT(Wt::WContainerWidget* parent, Engine& engine, Pla
 	WPushButton* refresh = new WPushButton(this);
 	refresh->setMaximumSize(1000, 50);
 	refresh->setText("Refresh");
-	refresh->clicked().connect(this, &bit_them_allWT::refreshAll);
+	refresh->clicked().connect(this, &bit_them_allWT::refresh);
 
 	addWidget(refresh);
 
@@ -205,7 +205,7 @@ bit_them_allWT::bit_them_allWT(Wt::WContainerWidget* parent, Engine& engine, Pla
 
 	addWidget(tab);
 
-	refreshAll();
+	bit_them_allWT::refresh();
 }
 
 bit_them_allWT::~bit_them_allWT()
@@ -213,7 +213,7 @@ bit_them_allWT::~bit_them_allWT()
 
 }
 
-void bit_them_allWT::refreshAll()
+void bit_them_allWT::refresh()
 {
 	CodeData planetCode = engine_.getPlayerPlanetCode(logged_);
 	getWidget<WTextArea>(planetCode_, 0)->setText(planetCode.getCode().c_str());
@@ -350,7 +350,7 @@ void bit_them_allWT::refreshAll()
 
 	eventView_->setModel(model);
 
-	refresh();
+	Wt::WContainerWidget::refresh();
 }
 
 
@@ -377,7 +377,7 @@ void bit_them_allWT::on_resetFleetCodeButton_clicked()
 	codeTab_->addTab(createFleetTab(this, "Fleet"), "Fleet");
 	codeTab_->addTab(createFleetTab(this, "Planet"), "Planet");
 	codeTab_->setCurrentIndex(1);
-	refreshAll();
+	refresh();
 
 	//	std::string code = engine_.getPlayerFleetCode(logged_);
 	//	fleetCode_->setText(code.c_str());
@@ -391,7 +391,7 @@ void bit_them_allWT::on_resetPlanetCodeButton_clicked()
 	delete oldTab;
 	codeTab_->addTab(createFleetTab(this, "Planet"), "Planet");
 	codeTab_->setCurrentIndex(1);
-	refreshAll();
+	refresh();
 
 	/*std::string code = engine_.getPlayerPlanetCode(logged_);
 	planetCode_->setText(code.c_str());
@@ -409,7 +409,7 @@ void bit_them_allWT::on_resetPlanetCodeButton_clicked()
 
 void bit_them_allWT::on_refreshButton_clicked()
 {
-	refreshAll();
+	refresh();
 }
 
 void bit_them_allWT::on_planetTable_itemDoubleClicked(WModelIndex const& index, WMouseEvent const&)
@@ -448,7 +448,7 @@ void bit_them_allWT::on_actionLoad_activated()
 	//QString fileName = QFileDialog::getOpenFileName(this,
 	//                   tr("Open Archive"), "", tr("Archive Files (*.bta)"));
 	//engine_.load(fileName.toStdString());
-	refreshAll();
+	refresh();
 }
 
 

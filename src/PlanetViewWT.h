@@ -12,7 +12,7 @@
 
 class PlanetViewWT : public Wt::WContainerWidget
 {
-	void refreshAll();
+	void refresh();
 
 public:
 	PlanetViewWT(

@@ -21,7 +21,7 @@ class WMouseEvent;
 
 class bit_them_allWT : public Wt::WContainerWidget
 {
-	void refreshAll();
+	void refresh();
 
 	void on_saveFleetCodeButton_clicked();
 	void on_savePlanetCodeButton_clicked();
