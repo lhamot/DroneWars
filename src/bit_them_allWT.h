@@ -47,8 +47,8 @@ private:
 	Player::ID logged_;
 	Engine& engine_;
 
-	Wt::WTextArea* fleetCode_;
-	Wt::WTextArea* planetCode_;
+	Wt::WContainerWidget* fleetCode_;
+	Wt::WContainerWidget* planetCode_;
 	Wt::WTabWidget* codeTab_;
 	Wt::WTableView* eventView_;
 	Wt::WTableView* planetsView_;

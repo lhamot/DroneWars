@@ -50,6 +50,31 @@ inline std::string getPyStdErr()
 	return message;
 }*/
 
+// Calling this in my luabind::error exception handler:
+std::string GetLuabindErrorString(const luabind::error& err)
+{
+	lua_State* L = err.state();
+
+	const char* pStr = lua_tostring(L, -1);
+	if(!pStr)
+	{
+		return "(No error message on stack)";
+	}
+
+	std::string result(pStr);
+	lua_pop(L, 1);
+
+	// Get stack trace.
+	pStr = lua_tostring(L, -1);
+	if(pStr)
+	{
+		result += std::string(pStr);
+		lua_pop(L, 1);
+	}
+
+	return result;
+}
+
 class LuaEngine
 {
 	lua_State* L;
@@ -59,6 +84,16 @@ class LuaEngine
 		lua_Debug d;
 		lua_getstack(L, 1, &d);
 		lua_getinfo(L, "Sln", &d);
+		if(d.what == std::string("C"))
+		{
+			int res = lua_getstack(L, 2, &d);
+			if(res == 1)
+				lua_getinfo(L, "Sln", &d);
+			else
+				return 1;
+		}
+		else
+			return 1;
 		char const* err = lua_tostring(L, -1);
 		lua_pop(L, 1);
 		std::stringstream msg;

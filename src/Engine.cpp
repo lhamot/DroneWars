@@ -157,7 +157,7 @@ void Engine::setPlayerFleetCode(Player::ID pid, std::string const& code)
 	UniqueLock lock(univ_.mutex);
 	if(code.size() > Player::MaxCodeSize)
 		BOOST_THROW_EXCEPTION(InvalidData("code"));
-	mapFind(univ_.playerMap, pid)->second.fleetsCode = code;
+	mapFind(univ_.playerMap, pid)->second.fleetsCode.setCode(code);
 	simulation_.reloadPlayer(pid);
 }
 
@@ -167,19 +167,19 @@ void Engine::setPlayerPlanetCode(Player::ID pid, std::string const& code)
 	UniqueLock lock(univ_.mutex);
 	if(code.size() > Player::MaxCodeSize)
 		BOOST_THROW_EXCEPTION(InvalidData("code"));
-	mapFind(univ_.playerMap, pid)->second.planetsCode = code;
+	mapFind(univ_.playerMap, pid)->second.planetsCode.setCode(code);
 	simulation_.reloadPlayer(pid);
 }
 
 
-std::string Engine::getPlayerFleetCode(Player::ID pid) const
+CodeData Engine::getPlayerFleetCode(Player::ID pid) const
 {
 	SharedLock lock(univ_.mutex);
 	return 	mapFind(univ_.playerMap, pid)->second.fleetsCode;
 }
 
 
-std::string Engine::getPlayerPlanetCode(Player::ID pid) const
+CodeData Engine::getPlayerPlanetCode(Player::ID pid) const
 {
 	SharedLock lock(univ_.mutex);
 	return 	mapFind(univ_.playerMap, pid)->second.planetsCode;
@@ -234,6 +234,7 @@ boost::optional<Player> Engine::getPlayer(
 
 //   -------   PRIVEE   -------------------------------------------------------
 static size_t const LuaMaxInstruction = 20000;
+static size_t const MaxCodeExecTry = 10;
 
 void luaCountHook(lua_State* L, lua_Debug* ar)
 {
@@ -249,13 +250,13 @@ Engine::Simulation::Simulation(Universe& univ):
 
 luabind::object Engine::Simulation::registerCode(
   LuaTools::LuaEngine& luaEngine,
-  Player::ID const pid, std::string const& code, time_t time)
+  Player::ID const pid, CodeData& code, time_t time)
 try
 {
 	using namespace luabind;
 	using namespace std;
 
-	if(luaL_dostring(luaEngine.state(), code.c_str()) != 0)
+	if(luaL_dostring(luaEngine.state(), code.getCode().c_str()) != 0)
 	{
 		char const* message = lua_tostring(luaEngine.state(), -1);
 		mapFind(univ_.playerMap, pid)->second.eventList.push_back(
@@ -270,11 +271,10 @@ try
 }
 catch(luabind::error& ex)
 {
-	luabind::object error_msg(luabind::from_stack(ex.state(), -1));
-	std::stringstream ss;
-	ss << error_msg;
+	std::string message = GetLuabindErrorString(ex);
+	code.newError(message);
 	mapFind(univ_.playerMap, pid)->second.eventList.push_back(
-	  Event(time, Event::FleetCodeError, ex.what() + string(" ") + ss.str()));
+	  Event(time, Event::FleetCodeError, message));
 	return luabind::object();
 }
 catch(std::exception const& ex)
@@ -322,13 +322,12 @@ try
 		};
 	}
 }
-catch(luabind::error& e)
+catch(luabind::error& ex)
 {
-	luabind::object error_msg(luabind::from_stack(e.state(), -1));
-	std::stringstream ss;
-	ss << error_msg;
-	mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(
-	  Event(time, Event::FleetCodeError, ss.str()));
+	std::string const message = GetLuabindErrorString(ex);
+	Player& player = mapFind(univ_.playerMap, planet.playerId)->second;
+	player.planetsCode.newError(message);//ex.what() + string(" ") + ss.str());
+	player.eventList.push_back(Event(time, Event::PlanetCodeError, message));//ex.what() + string(" ") + ss.str()));
 }
 catch(std::exception const& ex)
 {
@@ -450,13 +449,12 @@ try
 
 	return true;
 }
-catch(luabind::error& e)
+catch(luabind::error& ex)
 {
-	luabind::object error_msg(luabind::from_stack(e.state(), -1));
-	std::stringstream ss;
-	ss << error_msg;
-	mapFind(univ_.playerMap, fleet.playerId)->second.eventList.push_back(
-	  Event(time, Event::FleetCodeError, ss.str()));
+	std::string const message = GetLuabindErrorString(ex);
+	Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
+	player.planetsCode.newError(message);
+	player.eventList.push_back(Event(time, Event::FleetCodeError, message));
 	return true;
 }
 catch(std::exception const& ex)
@@ -480,12 +478,21 @@ try
 
 	univ_.time += RoundSecond;
 
+	//Désactivation de tout les codes qui echoue
+	BOOST_FOREACH(Player const & player, univ_.playerMap | boost::adaptors::map_values)
+	{
+		if(player.planetsCode.getFailCount() >= MaxCodeExecTry)
+			codesMap[player.id].planetsCode = luabind::object();
+		if(player.fleetsCode.getFailCount() >= MaxCodeExecTry)
+			codesMap[player.id].fleetsCode = luabind::object();
+	}
+
 	//Rechargement des codes flote/planet des joueurs dont le code a été changé
 	{
 		UniqueLock lockReload(mutex_);
 		BOOST_FOREACH(Player::ID pid, playerToReload_)
 		{
-			Player const& player = mapFind(univ_.playerMap, pid)->second;
+			Player& player = mapFind(univ_.playerMap, pid)->second;
 			PlayerCodes newCodes =
 			{
 				registerCode(luaEngine, player.id, player.fleetsCode, univ_.time),
@@ -578,7 +585,7 @@ void Engine::Simulation::loop()
 		//Chargement de tout les code flote/planet de tout les joueur(chargement dans python)
 		BOOST_FOREACH(Universe::PlayerMap::value_type & playerNVP, univ_.playerMap)
 		{
-			Player const& player = playerNVP.second;
+			Player& player = playerNVP.second;
 			PlayerCodes newCodes =
 			{
 				registerCode(luaEngine, player.id, player.fleetsCode, univ_.time),

@@ -132,7 +132,7 @@ void construct(Universe& univ)
 	{
 		Player::ID pid = createPlayer(univ, "admin" + boost::lexical_cast<std::string>(i), password);
 		Player& player = mapFind(univ.playerMap, pid)->second;
-		player.planetsCode =
+		player.planetsCode.setCode(
 		  "function AI(planet, fleets, actions)\n"
 		  "  if (not planet.buildingMap:count(Building.MetalMine)) or (planet.buildingMap:find(Building.MetalMine) < 4) then\n"
 		  "    actions:append(PlanetAction(PlanetAction.Building, Building.MetalMine))\n"
@@ -147,8 +147,8 @@ void construct(Universe& univ)
 		  "    end\n"
 		  "    actions:append(PlanetAction(PlanetAction.Ship, Ship.Mosquito, 1))\n"
 		  "  end\n"
-		  "end";
-		player.fleetsCode =
+		  "end");
+		player.fleetsCode.setCode(
 		  "class 'AI'\n"
 		  "function AI:do_gather(myFleet, otherFleet)\n"
 		  "  return true\n"
@@ -169,7 +169,7 @@ void construct(Universe& univ)
 		  "    end\n"
 		  "  end\n"
 		  "  return FleetAction(FleetAction.Move, directionRandom())\n"
-		  "end\n\n";
+		  "end\n\n");
 	}
 };
 

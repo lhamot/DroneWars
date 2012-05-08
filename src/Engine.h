@@ -43,9 +43,9 @@ public:
 
 	void setPlayerPlanetCode(Player::ID pid, std::string const& code);
 
-	std::string getPlayerFleetCode(Player::ID pid) const;
+	CodeData getPlayerFleetCode(Player::ID pid) const;
 
-	std::string getPlayerPlanetCode(Player::ID pid) const;
+	CodeData getPlayerPlanetCode(Player::ID pid) const;
 
 	std::vector<Player> getPlayers() const;
 
@@ -97,7 +97,7 @@ private:
 		bool execFleet(LuaTools::LuaEngine& luaEngine, luabind::object, Fleet& fleet, FleetCoordMap& fleetMap, time_t time);
 		luabind::object registerCode(
 		  LuaTools::LuaEngine& luaEngine,
-		  Player::ID const pid, std::string const& code, time_t time);
+		  Player::ID const pid, CodeData& code, time_t time);
 
 		boost::shared_mutex mutex_;
 		std::set<Player::ID> playerToReload_;

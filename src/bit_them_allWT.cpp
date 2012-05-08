@@ -22,6 +22,7 @@
 #include <Wt/WJavaScript>
 #include <Wt/WMessageBox>
 #include <Wt/WLengthValidator>
+#include <Wt/WBreak>
 #pragma warning(pop)
 
 //#include "PythonHighlighter.h"
@@ -32,12 +33,22 @@
 using namespace Wt;
 using namespace boost;
 
+
+template<typename T>
+T* getWidget(WContainerWidget* parent, int index)
+{
+	return &dynamic_cast<T&>(*parent->widget(index));
+}
+
 WContainerWidget* bit_them_allWT::createFleetTab(WContainerWidget* parent, std::string const& name)
 {
 	WContainerWidget* codeTab = new WContainerWidget(parent);
 	WTextArea* edit = new WTextArea(codeTab);
 	edit->setRows(80);
 	edit->setColumns(120);
+
+	WText* errorMessage = new WText(codeTab);
+	new WBreak(codeTab);
 
 	WPushButton* reset = new WPushButton(codeTab);
 	reset->setText("Reset");
@@ -59,13 +70,13 @@ WContainerWidget* bit_them_allWT::createFleetTab(WContainerWidget* parent, std::
 
 	if(name == "Fleet")
 	{
-		fleetCode_ = edit;
+		fleetCode_ = codeTab;
 		save->clicked().connect(this, &bit_them_allWT::on_saveFleetCodeButton_clicked);
 		reset->clicked().connect(this, &bit_them_allWT::on_resetFleetCodeButton_clicked);
 	}
 	else if(name == "Planet")
 	{
-		planetCode_ = edit;
+		planetCode_ = codeTab;
 		save->clicked().connect(this, &bit_them_allWT::on_savePlanetCodeButton_clicked);
 		reset->clicked().connect(this, &bit_them_allWT::on_resetPlanetCodeButton_clicked);
 	}
@@ -204,12 +215,13 @@ bit_them_allWT::~bit_them_allWT()
 
 void bit_them_allWT::refreshAll()
 {
-	std::string planetCode = engine_.getPlayerPlanetCode(logged_);
-	planetCode_->setText(planetCode.c_str());
+	CodeData planetCode = engine_.getPlayerPlanetCode(logged_);
+	getWidget<WTextArea>(planetCode_, 0)->setText(planetCode.getCode().c_str());
+	getWidget<WText>(planetCode_, 1)->setText(planetCode.getLastError().c_str());
 
-	std::string fleetCode = engine_.getPlayerFleetCode(logged_);
-	fleetCode_->setText(fleetCode.c_str());
-
+	CodeData fleetCode = engine_.getPlayerFleetCode(logged_);
+	getWidget<WTextArea>(fleetCode_, 0)->setText(fleetCode.getCode().c_str());
+	getWidget<WText>(fleetCode_, 1)->setText(fleetCode.getLastError().c_str());
 
 	int row = 0;
 	std::vector<Planet> planetList = engine_.getPlayerPlanets(logged_);
@@ -344,13 +356,13 @@ void bit_them_allWT::refreshAll()
 
 void bit_them_allWT::on_saveFleetCodeButton_clicked()
 {
-	std::string code = fleetCode_->text().toUTF8();
+	std::string code = getWidget<WTextArea>(fleetCode_, 0)->text().toUTF8();
 	engine_.setPlayerFleetCode(logged_, code);
 }
 
 void bit_them_allWT::on_savePlanetCodeButton_clicked()
 {
-	std::string code = planetCode_->text().toUTF8();
+	std::string code = getWidget<WTextArea>(planetCode_, 0)->text().toUTF8();
 	engine_.setPlayerPlanetCode(logged_, code);
 }
 
