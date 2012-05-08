@@ -1,3 +1,5 @@
+#include <functional>
+
 #pragma warning(push)
 #pragma warning(disable:4127 4251 4231 4512 4505 4275)
 #include <boost/exception/all.hpp>
@@ -7,22 +9,53 @@
 #pragma warning(pop)
 
 #include "Engine.h"
-#include "MainForm.h"
+#include "bit_them_allWT.h"
+#include "OutPage.h"
 
 using namespace Wt;
+using namespace std;
 
 class BTAApplication : public WApplication
 {
 public:
-	BTAApplication(const Wt::WEnvironment& env, Engine& engine): WApplication(env)
+	BTAApplication(const Wt::WEnvironment& env, Engine& engine):
+		WApplication(env),
+		engine_(engine),
+		playerID_(Player::NoId)
 	{
 		require("CodeMirror/lib/codemirror.js");
 		require("CodeMirror/mode/lua/lua.js");
-		//useStyleSheet("CodeMirror/theme/neat.css");
-		//useStyleSheet("CodeMirror/lib/codemirror.css");
 		useStyleSheet("format.css");
 
-		root()->addWidget(new MainForm(root(), engine));
+		internalPathChanged().connect(this, &BTAApplication::handleInternalPath);
+
+		setInternalPath("", true);
+	}
+
+private:
+	void onPlayerLogin(Player::ID& pid)
+	{
+		playerID_ = pid;
+		setInternalPath("/ingame", true);
+	}
+
+	void handleInternalPath(const std::string& internalPath)
+	{
+		if(internalPath == "/ingame" && playerID_ != Player::NoId)
+		{
+			root()->removeWidget(root()->widget(0));
+			root()->addWidget(new bit_them_allWT(root(), engine_, playerID_));
+		}
+		else
+		{
+			setInternalPath("", false);
+			playerID_ = Player::NoId;
+			if(root()->count() > 0)
+				root()->removeWidget(root()->widget(0));
+			OutPage* outPage = new OutPage(root(), engine_);
+			root()->addWidget(outPage);
+			outPage->onPlayerLogin = std::bind(&BTAApplication::onPlayerLogin, this, placeholders::_1);
+		}
 	}
 
 	void notify(WEvent& event)
@@ -51,6 +84,9 @@ public:
 		// but you might continue if you use a different logging lib
 		//return false;
 	}
+
+	Engine& engine_;
+	Player::ID playerID_;
 };
 
 Wt::WApplication* createApplication(const Wt::WEnvironment& env, Engine& engine)
@@ -73,24 +109,16 @@ try
 	{
 		return createApplication(env, engine);
 	});
-
-	//BTAApplication a(argc, argv);
-	//bit_them_all view(engine_);
-	//view.show();
-	//return a.exec();
 }
 catch(boost::exception& e)
 {
 	std::cout << boost::diagnostic_information(e) << std::endl;
-	//WMessageBox::show("Error", boost::diagnostic_information(e).c_str(), Ok);
 }
 catch(std::exception& e)
 {
 	std::cout << boost::diagnostic_information(e) << std::endl;
-	//WMessageBox::show("Error", boost::diagnostic_information(e).c_str(), Ok);
 }
 catch(...)
 {
 	std::cout << "Error <unknown>" << std::endl;
-	//WMessageBox::show("Error", "Error <unknown>", Ok);
 }

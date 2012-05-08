@@ -34,72 +34,119 @@ using namespace Wt;
 using namespace boost;
 
 
+class Editor : public WContainerWidget
+{
+public:
+	Editor(WContainerWidget* parent, std::string const& name, Engine& engine, Player::ID pid):
+		WContainerWidget(parent),
+		edit_(nullptr),
+		name_(name),
+		engine_(engine),
+		logged_(pid)
+	{
+		//WContainerWidget *codeTab = new WContainerWidget(this);
+		refresh();
+	}
+
+private:
+	void refresh()
+	{
+		edit_ = nullptr;
+
+		//On supprime le contenue de codeTab
+		while(count())
+		{
+			WWidget* toDelete = widget(0);
+			removeWidget(toDelete);
+			delete toDelete;
+		}
+
+		//On recrée son contenue
+		WContainerWidget* container = new WContainerWidget(this);
+		edit_ = new WTextArea(container);
+		edit_->setRows(80);
+		edit_->setColumns(120);
+
+		WText* errorMessage = new WText(container);
+		new WBreak(container);
+
+		WPushButton* reset = new WPushButton(container);
+		reset->setText("Reset");
+
+		WPushButton* save = new WPushButton(container);
+		save->setText("Save");
+
+		edit_->setId(name_ + "TextArea");
+		edit_->setValidator(new WLengthValidator(0, Player::MaxCodeSize, edit_));
+		edit_->doJavaScript(
+		  "var editor = CodeMirror.fromTextArea(document.getElementById(\"" + name_ + "TextArea\"), {"
+		  "tabMode: \"indent\","
+		  "matchBrackets: true,"
+		  "lineNumbers: true,"
+		  "theme: \"cobalt\","
+		  "onHighlightComplete: function(editor) {editor.save();}"
+		  "});"
+		);
+
+		save->clicked().connect(this, &Editor::on_saveCodeButton_clicked);
+		reset->clicked().connect(this, &Editor::on_resetCodeButton_clicked);
+		if(name_ == "Fleet")
+		{
+			CodeData code = engine_.getPlayerFleetCode(logged_);
+			edit_->setText(code.getCode().c_str());
+			errorMessage->setText(code.getLastError().c_str());
+		}
+		else if(name_ == "Planet")
+		{
+			CodeData code = engine_.getPlayerPlanetCode(logged_);
+			edit_->setText(code.getCode().c_str());
+			errorMessage->setText(code.getLastError().c_str());
+		}
+		else
+			BOOST_THROW_EXCEPTION(std::logic_error("Bad code editor type"));
+	}
+
+	void on_saveCodeButton_clicked()
+	{
+		std::string code = edit_->text().toUTF8();
+		engine_.setPlayerFleetCode(logged_, code);
+	}
+
+	void on_resetCodeButton_clicked()
+	{
+		refresh();
+	}
+
+	WTextArea* edit_;
+	std::string name_;
+	Engine& engine_;
+	Player::ID logged_;
+};
+
 template<typename T>
 T* getWidget(WContainerWidget* parent, int index)
 {
 	return &dynamic_cast<T&>(*parent->widget(index));
 }
 
-WContainerWidget* bit_them_allWT::createFleetTab(WContainerWidget* parent, std::string const& name)
+
+WWidget* bit_them_allWT::createCodeTab(WContainerWidget* parent)
 {
-	WContainerWidget* codeTab = new WContainerWidget(parent);
-	WTextArea* edit = new WTextArea(codeTab);
-	edit->setRows(80);
-	edit->setColumns(120);
+	codeTab_ = new Wt::WTabWidget(parent);
 
-	WText* errorMessage = new WText(codeTab);
-	new WBreak(codeTab);
+	Editor* editPlanetCode = new Editor(parent, "Planet", engine_, logged_);
+	planetCode_ = editPlanetCode;
+	codeTab_->addTab(planetCode_, "Planet", WTabWidget::LazyLoading);
 
-	WPushButton* reset = new WPushButton(codeTab);
-	reset->setText("Reset");
+	Editor* editFleetCode = new Editor(parent, "Fleet", engine_, logged_);
+	fleetCode_ = editFleetCode;
+	codeTab_->addTab(editFleetCode, "Fleet", WTabWidget::LazyLoading);
 
-	WPushButton* save = new WPushButton(codeTab);
-	save->setText("Save");
-
-	edit->setId(name + "TextArea");
-	edit->setValidator(new WLengthValidator(0, Player::MaxCodeSize, edit));
-	edit->doJavaScript(
-	  "var editor = CodeMirror.fromTextArea(document.getElementById(\"" + name + "TextArea\"), {"
-	  "tabMode: \"indent\","
-	  "matchBrackets: true,"
-	  "lineNumbers: true,"
-	  "theme: \"cobalt\","
-	  "onHighlightComplete: function(editor) {editor.save();}"
-	  "});"
-	);
-
-	if(name == "Fleet")
-	{
-		fleetCode_ = codeTab;
-		save->clicked().connect(this, &bit_them_allWT::on_saveFleetCodeButton_clicked);
-		reset->clicked().connect(this, &bit_them_allWT::on_resetFleetCodeButton_clicked);
-	}
-	else if(name == "Planet")
-	{
-		planetCode_ = codeTab;
-		save->clicked().connect(this, &bit_them_allWT::on_savePlanetCodeButton_clicked);
-		reset->clicked().connect(this, &bit_them_allWT::on_resetPlanetCodeButton_clicked);
-	}
-	else
-		BOOST_THROW_EXCEPTION(std::logic_error("Bad code editor type"));
-
-	return codeTab;
-}
-
-WContainerWidget* bit_them_allWT::createCodeTab(WContainerWidget* parent)
-{
-	WContainerWidget* codeTab = new WContainerWidget(parent);
-
-	codeTab_ = new Wt::WTabWidget(codeTab);
-
-	codeTab_->addTab(createFleetTab(codeTab, "Planet"), "Planet");
-	codeTab_->addTab(createFleetTab(codeTab, "Fleet"), "Fleet");
-
-	return codeTab;
+	return codeTab_;
 }
 
 
-WContainerWidget* bit_them_allWT::createReportTab(WContainerWidget* parent)
+WWidget* bit_them_allWT::createReportTab(WContainerWidget* parent)
 {
 	WContainerWidget* reportsTab = new WContainerWidget(parent);
 	Wt::WVBoxLayout* layout = new Wt::WVBoxLayout();
@@ -117,7 +164,7 @@ WContainerWidget* bit_them_allWT::createReportTab(WContainerWidget* parent)
 	return reportsTab;
 }
 
-WContainerWidget* bit_them_allWT::createPlanetsTab(WContainerWidget* parent)
+WWidget* bit_them_allWT::createPlanetsTab(WContainerWidget* parent)
 {
 	WContainerWidget* planetsTab = new WContainerWidget(parent);
 	Wt::WHBoxLayout* layout = new Wt::WHBoxLayout();
@@ -144,7 +191,7 @@ WContainerWidget* bit_them_allWT::createPlanetsTab(WContainerWidget* parent)
 }
 
 
-WContainerWidget* bit_them_allWT::createFleetsTab(WContainerWidget* parent)
+WWidget* bit_them_allWT::createFleetsTab(WContainerWidget* parent)
 {
 	WContainerWidget* fleetsTab = new WContainerWidget(parent);
 	Wt::WHBoxLayout* layout = new Wt::WHBoxLayout();
@@ -198,10 +245,10 @@ bit_them_allWT::bit_them_allWT(Wt::WContainerWidget* parent, Engine& engine, Pla
 
 	Wt::WTabWidget* tab = new Wt::WTabWidget(this);
 
-	tab->addTab(createPlanetsTab(this), "Planets");
-	tab->addTab(createFleetsTab(this),  "Fleets");
-	tab->addTab(createCodeTab(this),    "Code");
-	tab->addTab(createReportTab(this),  "Reports");
+	tab->addTab(createPlanetsTab(this), "Planets", WTabWidget::LazyLoading);
+	tab->addTab(createFleetsTab(this),  "Fleets", WTabWidget::LazyLoading);
+	tab->addTab(createCodeTab(this),    "Code", WTabWidget::LazyLoading);
+	tab->addTab(createReportTab(this),  "Reports", WTabWidget::LazyLoading);
 
 	addWidget(tab);
 
@@ -215,13 +262,20 @@ bit_them_allWT::~bit_them_allWT()
 
 void bit_them_allWT::refresh()
 {
-	CodeData planetCode = engine_.getPlayerPlanetCode(logged_);
-	getWidget<WTextArea>(planetCode_, 0)->setText(planetCode.getCode().c_str());
-	getWidget<WText>(planetCode_, 1)->setText(planetCode.getLastError().c_str());
+	Wt::WContainerWidget::refresh();
 
-	CodeData fleetCode = engine_.getPlayerFleetCode(logged_);
-	getWidget<WTextArea>(fleetCode_, 0)->setText(fleetCode.getCode().c_str());
-	getWidget<WText>(fleetCode_, 1)->setText(fleetCode.getLastError().c_str());
+	WTabWidget* tab = &dynamic_cast<WTabWidget&>(*widget(1));
+	int const index1 = tab->currentIndex();
+	int const index2 = codeTab_->currentIndex();
+
+	tab->removeTab(codeTab_);
+	delete codeTab_;
+	codeTab_ = nullptr;
+	tab->addTab(createCodeTab(this), "Code", WTabWidget::LazyLoading);
+	WWidget* reports = tab->widget(2);
+	tab->removeTab(reports);
+	tab->addTab(reports, "Reports");
+	tab->setCurrentIndex(index1);
 
 	int row = 0;
 	std::vector<Planet> planetList = engine_.getPlayerPlanets(logged_);
@@ -349,63 +403,8 @@ void bit_them_allWT::refresh()
 	}
 
 	eventView_->setModel(model);
-
-	Wt::WContainerWidget::refresh();
 }
 
-
-void bit_them_allWT::on_saveFleetCodeButton_clicked()
-{
-	std::string code = getWidget<WTextArea>(fleetCode_, 0)->text().toUTF8();
-	engine_.setPlayerFleetCode(logged_, code);
-}
-
-void bit_them_allWT::on_savePlanetCodeButton_clicked()
-{
-	std::string code = getWidget<WTextArea>(planetCode_, 0)->text().toUTF8();
-	engine_.setPlayerPlanetCode(logged_, code);
-}
-
-void bit_them_allWT::on_resetFleetCodeButton_clicked()
-{
-	WWidget* oldTab = codeTab_->widget(0);
-	codeTab_->removeTab(oldTab);
-	delete oldTab;
-	oldTab = codeTab_->widget(1);
-	codeTab_->removeTab(oldTab);
-	delete oldTab;
-	codeTab_->addTab(createFleetTab(this, "Fleet"), "Fleet");
-	codeTab_->addTab(createFleetTab(this, "Planet"), "Planet");
-	codeTab_->setCurrentIndex(1);
-	refresh();
-
-	//	std::string code = engine_.getPlayerFleetCode(logged_);
-	//	fleetCode_->setText(code.c_str());
-	//	refresh();
-}
-
-void bit_them_allWT::on_resetPlanetCodeButton_clicked()
-{
-	WWidget* oldTab = codeTab_->widget(1);
-	codeTab_->removeTab(oldTab);
-	delete oldTab;
-	codeTab_->addTab(createFleetTab(this, "Planet"), "Planet");
-	codeTab_->setCurrentIndex(1);
-	refresh();
-
-	/*std::string code = engine_.getPlayerPlanetCode(logged_);
-	planetCode_->setText(code.c_str());
-	planetCode_->doJavaScript(
-		"window.editor.hideLine(0);"
-		"window.editor = CodeMirror.fromTextArea(document.getElementById(\"PlanetTextArea\"), {"
-	      "tabMode: \"indent\","
-	      "matchBrackets: true,"
-	      "theme: \"neat\","
-				"onHighlightComplete: function(editor) {editor.save();}"
-	    "});"
-	);
-	refresh();*/
-}
 
 void bit_them_allWT::on_refreshButton_clicked()
 {

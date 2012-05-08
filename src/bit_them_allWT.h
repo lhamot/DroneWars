@@ -23,10 +23,6 @@ class bit_them_allWT : public Wt::WContainerWidget
 {
 	void refresh();
 
-	void on_saveFleetCodeButton_clicked();
-	void on_savePlanetCodeButton_clicked();
-	void on_resetFleetCodeButton_clicked();
-	void on_resetPlanetCodeButton_clicked();
 	void on_refreshButton_clicked();
 	void on_planetTable_itemDoubleClicked(Wt::WModelIndex const& index, Wt::WMouseEvent const& me);
 	void on_fleetTable_itemDoubleClicked(Wt::WModelIndex const& index, Wt::WMouseEvent const& me);
@@ -38,11 +34,10 @@ public:
 	~bit_them_allWT();
 
 private:
-	WContainerWidget* createFleetTab(WContainerWidget* parent, std::string const& name);
-	WContainerWidget* createCodeTab(WContainerWidget* parent);
-	WContainerWidget* createReportTab(WContainerWidget* parent);
-	WContainerWidget* createPlanetsTab(WContainerWidget* parent);
-	WContainerWidget* createFleetsTab(WContainerWidget* parent);
+	WWidget* createCodeTab(WContainerWidget* parent);
+	WWidget* createReportTab(WContainerWidget* parent);
+	WWidget* createPlanetsTab(WContainerWidget* parent);
+	WWidget* createFleetsTab(WContainerWidget* parent);
 
 	Player::ID logged_;
 	Engine& engine_;
