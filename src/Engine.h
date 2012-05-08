@@ -97,7 +97,7 @@ private:
 		bool execFleet(LuaTools::LuaEngine& luaEngine, luabind::object, Fleet& fleet, FleetCoordMap& fleetMap, time_t time);
 		luabind::object registerCode(
 		  LuaTools::LuaEngine& luaEngine,
-		  Player::ID const pid, CodeData& code, time_t time);
+		  Player::ID const pid, CodeData& code, time_t time, bool isFleet);
 
 		boost::shared_mutex mutex_;
 		std::set<Player::ID> playerToReload_;

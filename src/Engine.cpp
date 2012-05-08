@@ -250,17 +250,20 @@ Engine::Simulation::Simulation(Universe& univ):
 
 luabind::object Engine::Simulation::registerCode(
   LuaTools::LuaEngine& luaEngine,
-  Player::ID const pid, CodeData& code, time_t time)
+  Player::ID const pid, CodeData& code, time_t time, bool isFleet)
 try
 {
 	using namespace luabind;
 	using namespace std;
 
+	luaL_dostring(luaEngine.state(), "AI = nil");
+
 	if(luaL_dostring(luaEngine.state(), code.getCode().c_str()) != 0)
 	{
 		char const* message = lua_tostring(luaEngine.state(), -1);
+		code.newError(message);
 		mapFind(univ_.playerMap, pid)->second.eventList.push_back(
-		  Event(time, Event::FleetCodeError, message ? message : ""));
+		  Event(time, isFleet ? Event::FleetCodeError : Event::PlanetCodeError, message ? message : ""));
 		return luabind::object();
 	}
 	else
@@ -274,14 +277,14 @@ catch(luabind::error& ex)
 	std::string message = GetLuabindErrorString(ex);
 	code.newError(message);
 	mapFind(univ_.playerMap, pid)->second.eventList.push_back(
-	  Event(time, Event::FleetCodeError, message));
+	  Event(time, isFleet ? Event::FleetCodeError : Event::PlanetCodeError, message));
 	return luabind::object();
 }
 catch(std::exception const& ex)
 {
 	char const* message = lua_tostring(luaEngine.state(), -1);
 	mapFind(univ_.playerMap, pid)->second.eventList.push_back(
-	  Event(time, Event::FleetCodeError, ex.what() + string(" ") + (message ? message : "")));
+	  Event(time, isFleet ? Event::FleetCodeError : Event::PlanetCodeError, ex.what() + string(" ") + (message ? message : "")));
 	return luabind::object();
 }
 
@@ -453,7 +456,7 @@ catch(luabind::error& ex)
 {
 	std::string const message = GetLuabindErrorString(ex);
 	Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
-	player.planetsCode.newError(message);
+	player.fleetsCode.newError(message);
 	player.eventList.push_back(Event(time, Event::FleetCodeError, message));
 	return true;
 }
@@ -495,8 +498,8 @@ try
 			Player& player = mapFind(univ_.playerMap, pid)->second;
 			PlayerCodes newCodes =
 			{
-				registerCode(luaEngine, player.id, player.fleetsCode, univ_.time),
-				registerCode(luaEngine, player.id, player.planetsCode, univ_.time)
+				registerCode(luaEngine, player.id, player.fleetsCode, univ_.time, true),
+				registerCode(luaEngine, player.id, player.planetsCode, univ_.time, false)
 			};
 			codesMap[player.id] = newCodes;
 		}
@@ -588,8 +591,8 @@ void Engine::Simulation::loop()
 			Player& player = playerNVP.second;
 			PlayerCodes newCodes =
 			{
-				registerCode(luaEngine, player.id, player.fleetsCode, univ_.time),
-				registerCode(luaEngine, player.id, player.planetsCode, univ_.time)
+				registerCode(luaEngine, player.id, player.fleetsCode, univ_.time, true),
+				registerCode(luaEngine, player.id, player.planetsCode, univ_.time, false)
 			};
 			codesMap.insert(make_pair(player.id, newCodes));
 		}
