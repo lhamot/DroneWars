@@ -164,11 +164,19 @@ void construct(Universe& univ)
 		  "      elseif planet.ressourceSet ~= RessourceSet() then\n"
 		  "        return FleetAction(FleetAction.Harvest)\n"
 		  "      end\n"
-		  "    elseif planet.playerId == myFleet.playerId and myFleet.shipList:at(Ship.Mosquito) < 10 then\n"
-		  "      return FleetAction(FleetAction.Nothing)\n"
+		  "    elseif planet.playerId == myFleet.playerId then\n"
+		  "      if myFleet.ressourceSet ~= RessourceSet() then\n"
+		  "        return FleetAction(FleetAction.Drop)\n"
+		  "      elseif myFleet.shipList:at(Ship.Mosquito) < 10 then\n"
+		  "        return FleetAction(FleetAction.Nothing)\n"
+		  "      end\n"
 		  "    end\n"
 		  "  end\n"
-		  "  return FleetAction(FleetAction.Move, directionRandom())\n"
+		  "  if myFleet.ressourceSet:at(0) > 2000 then\n"
+		  "    return FleetAction(FleetAction.Move, directionFromTo(myFleet.coord, myFleet.origine))\n"
+		  "  else\n"
+		  "    return FleetAction(FleetAction.Move, directionRandom())\n"
+		  "  end\n"
 		  "end\n\n");
 	}
 };

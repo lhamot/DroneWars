@@ -83,11 +83,13 @@ std::string getEventName(Event::Type evtype)
 		BTA_STR(FleetDraw)
 		BTA_STR(FleetsGather)
 		BTA_STR(PlanetColonized)
+		BTA_STR(FleetLose)
+		BTA_STR(FleetDrop)
 	}
 #undef BTA_STR
 
 	BOOST_THROW_EXCEPTION(std::logic_error("Unknown Ressource type"));
-	static_assert(Event::PlanetColonized == Event::Count - 1, "Event cases missing");
+	static_assert(Event::FleetDrop == Event::Count - 1, "Event cases missing");
 }
 
 boost::mutex timeToStringMutex;

@@ -23,6 +23,16 @@ mapFind(M& map, typename M::key_type key)
 	return iter;
 }
 
+template<typename T, typename I>
+typename T::iterator
+nextNot(T& map, I const& iter)
+{
+	I res = iter;
+	while((res != map.end()) && (res->first == iter->first))
+		++res;
+	return res;
+}
+
 #define TRACE std::cout << __FILE__ << " " << __LINE__ << std::endl;
 
 #endif //__BTA_TOOLS__

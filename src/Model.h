@@ -48,6 +48,8 @@ struct Event
 		FleetDraw,
 		FleetsGather,
 		PlanetColonized,
+		FleetLose,
+		FleetDrop,
 		Count
 	};
 

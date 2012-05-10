@@ -20,6 +20,7 @@
 #include "LuaUniverse.h"
 #include "LuaTools.h"
 #include "Tools.h"
+#include "fighting.h"
 
 extern "C"
 {
@@ -46,7 +47,7 @@ Engine::Engine():
 	BOOST_FOREACH(const boost::filesystem::path & p, std::make_pair(dir, end))
 	{
 		std::string const fileStr = p.filename().string();
-		if(fileStr.find("_save.bta") == 10)
+		if(fileStr.find("_save.bta") == 10 && fileStr.size() == 19)
 		{
 			std::string const strTime = fileStr.substr(0, 10);
 			time_t filetime = strtoul(strTime.c_str(), 0, 10);
@@ -370,49 +371,10 @@ try
 		++fleetIter;
 	}
 
-	//! Gestion flottes enemies
-	localFleetsKV = fleetMap.equal_range(fleet.coord);
-	fleetIter = localFleetsKV.first;
-	while(fleetIter != localFleetsKV.second)
-	{
-		Fleet& otherFleet = fleetIter->second;
-		if((otherFleet.id != fleet.id) && (otherFleet.playerId != fleet.playerId))
-		{
-			lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
-			if(luabind::call_member<bool>(code, "do_fight", boost::cref(fleet), boost::cref(otherFleet)))
-			{
-				boost::tribool result = fight(fleet, otherFleet);
-				if(result == true)
-				{
-					auto condamned = fleetIter;
-					++fleetIter;
-					fleetMap.erase(condamned);
-					fleet.eventList.push_back(
-					  Event(time, Event::FleetWin, "Victoire"));
-					continue;
-				}
-				else if(result == false)
-				{
-					otherFleet.eventList.push_back(
-					  Event(time, Event::FleetWin, "Victoire"));
-					return false;
-				}
-			}
-		}
-		++fleetIter;
-	}
-
 	auto planetIter = univ_.planetMap.find(fleet.coord);
 	boost::optional<Planet> planet;
 	if(planetIter != univ_.planetMap.end())
-	{
 		planet = planetIter->second;
-		/*if(planetIter->second.playerId == Player::NoId)
-		{
-			FleetAction action =
-				boost::python::extract<FleetAction>(code.attr("action")(fleet, planet));
-		}*/
-	}
 	using namespace luabind;
 	FleetAction action(FleetAction::Nothing);
 	lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
@@ -445,9 +407,15 @@ try
 			addTaskColonize(fleet, univ_.time, *planet);
 		break;
 	case FleetAction::Drop:
+	{
 		if(planet && canDrop(fleet, *planet))
 			drop(fleet, *planet);
-		break;
+		fleet.eventList.push_back(
+		  Event(time, Event::FleetDrop, "Drop"));
+		planet->eventList.push_back(
+		  Event(time, Event::FleetDrop, "Suply delivered"));
+	}
+	break;
 	}
 
 	return true;
@@ -527,6 +495,48 @@ try
 		}
 	}
 
+	//Les combats
+	if(false == univ_.fleetMap.empty()) //si il y as des flottes
+	{
+		vector<Fleet::ID> deadFleets;
+		deadFleets.reserve(univ_.fleetMap.size());
+		typedef std::multimap<Coord, Fleet*, CompCoord> FleetCoordMultimap;
+		FleetCoordMultimap fleetMultimap;
+		BOOST_FOREACH(Fleet & fleet, univ_.fleetMap | boost::adaptors::map_values)
+			fleetMultimap.insert(make_pair(fleet.coord, &fleet));
+
+		std::vector<Fleet*> fleetVect;
+		// Pour chaque coordonées, on accede au range des flotes
+		for(FleetCoordMultimap::iterator iter1 = fleetMultimap.begin(), iter2 = nextNot(fleetMultimap, iter1);
+		    iter1 != fleetMultimap.end();
+		    iter1 = iter2, iter2 = nextNot(fleetMultimap, iter1))
+		{
+			auto fleetRange = make_pair(iter1, iter2);
+			fleetVect.clear();
+			boost::copy(fleetRange | boost::adaptors::map_values, back_inserter(fleetVect));
+			std::vector<FightReport> fightReportVect;
+			fight(fleetVect, fightReportVect);
+			BOOST_FOREACH(FightReport const & report, fightReportVect)
+			{
+				if(report.isDead)
+				{
+					deadFleets.push_back(report.fleet->id);
+					mapFind(univ_.playerMap, report.fleet->playerId)->second.eventList.push_back(
+					  Event(univ_.time, Event::FleetLose, "Fleet lose"));
+				}
+				else if(report.hasFight)
+				{
+					report.fleet->eventList.push_back(
+					  Event(univ_.time, Event::FleetWin, "Victoire"));
+				}
+			}
+		}
+
+		//Suppression de toute les flottes mortes
+		boost::for_each(deadFleets, [&](Fleet::ID fleetID) {univ_.fleetMap.erase(fleetID);});
+	}
+
+	//Les flottes
 	{
 		FleetCoordMap fleetMap;
 		BOOST_FOREACH(Fleet & fleet, univ_.fleetMap | boost::adaptors::map_values)

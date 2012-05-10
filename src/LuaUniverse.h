@@ -49,7 +49,7 @@ Coord directionFromTo(Coord const& ori, Coord const& targ)
 {
 	Coord target;
 	target.X += toOne(targ.X - ori.X);
-	target.Y += toOne(targ.Z - ori.Z);
+	target.Y += toOne(targ.Y - ori.Y);
 	target.Z += toOne(targ.Z - ori.Z);
 	return target;
 }

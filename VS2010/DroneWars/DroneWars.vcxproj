@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\bit_them_allWT.cpp" />
     <ClCompile Include="..\..\src\Engine.cpp" />
+    <ClCompile Include="..\..\src\fighting.cpp" />
     <ClCompile Include="..\..\src\FleetViewWT.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
     <ClCompile Include="..\..\src\Model.cpp" />
@@ -32,6 +33,7 @@
     <ClInclude Include="..\..\src\bit_them_allWT.h" />
     <ClInclude Include="..\..\src\Controler.h" />
     <ClInclude Include="..\..\src\Engine.h" />
+    <ClInclude Include="..\..\src\fighting.h" />
     <ClInclude Include="..\..\src\FleetViewWT.h" />
     <ClInclude Include="..\..\src\LuaTools.h" />
     <ClInclude Include="..\..\src\LuaUniverse.h" />
