@@ -15,6 +15,7 @@
 #include <boost/range/adaptor/map.hpp>
 #include <boost/optional.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/iterator/zip_iterator.hpp>
 
 //#include "PythonUniverse.h"
 #include "LuaUniverse.h"
@@ -514,19 +515,22 @@ try
 			auto fleetRange = make_pair(iter1, iter2);
 			fleetVect.clear();
 			boost::copy(fleetRange | boost::adaptors::map_values, back_inserter(fleetVect));
-			std::vector<FightReport> fightReportVect;
+			std::vector<FleetReport> fightReportVect;
 			fight(fleetVect, fightReportVect);
-			BOOST_FOREACH(FightReport const & report, fightReportVect)
+			auto range = make_zip_range(fleetVect, fightReportVect);
+			BOOST_FOREACH(auto fleetReportPair, range)
 			{
+				Fleet& fleet = *fleetReportPair.get<0>();
+				FleetReport const& report = fleetReportPair.get<1>();
 				if(report.isDead)
 				{
-					deadFleets.push_back(report.fleet->id);
-					mapFind(univ_.playerMap, report.fleet->playerId)->second.eventList.push_back(
+					deadFleets.push_back(fleet.id);
+					mapFind(univ_.playerMap, fleet.playerId)->second.eventList.push_back(
 					  Event(univ_.time, Event::FleetLose, "Fleet lose"));
 				}
 				else if(report.hasFight)
 				{
-					report.fleet->eventList.push_back(
+					fleet.eventList.push_back(
 					  Event(univ_.time, Event::FleetWin, "Victoire"));
 				}
 			}

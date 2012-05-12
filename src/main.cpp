@@ -109,16 +109,20 @@ try
 	{
 		return createApplication(env, engine);
 	});
+	return 0;
 }
 catch(boost::exception& e)
 {
 	std::cout << boost::diagnostic_information(e) << std::endl;
+	return 1;
 }
 catch(std::exception& e)
 {
 	std::cout << boost::diagnostic_information(e) << std::endl;
+	return 1;
 }
 catch(...)
 {
 	std::cout << "Error <unknown>" << std::endl;
+	return 1;
 }
