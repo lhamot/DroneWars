@@ -26,6 +26,7 @@ class bit_them_allWT : public Wt::WContainerWidget
 	void on_refreshButton_clicked();
 	void on_planetTable_itemDoubleClicked(Wt::WModelIndex const& index, Wt::WMouseEvent const& me);
 	void on_fleetTable_itemDoubleClicked(Wt::WModelIndex const& index, Wt::WMouseEvent const& me);
+	void on_messageTable_itemDoubleClicked(Wt::WModelIndex const& index, Wt::WMouseEvent const& me);
 	void on_actionLoad_activated();
 	void on_actionSave_activated();
 
@@ -48,6 +49,7 @@ private:
 	Wt::WTableView* eventView_;
 	Wt::WTableView* planetsView_;
 	Wt::WTableView* fleetsView_;
+	Wt::WLayout* messageLayout_;
 	Wt::WLayout* planetLayout_;
 	Wt::WLayout* fleetLayout_;
 };

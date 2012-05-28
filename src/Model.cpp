@@ -47,17 +47,28 @@ static_assert(sizeof(Building::List) == (sizeof(Building) * Building::Count), "B
 
 Ship const Ship::List[] =
 {
-	{RessourceSet(100, 0, 0)},    //Mosquito
-	{RessourceSet(400, 0, 0)},    //Hornet
-	{RessourceSet(2000, 0, 0)},   //Vulture
-	{RessourceSet(10000, 0, 0)},  //Dragon
-	{RessourceSet(40000, 0, 0)},  //Behemoth
-	{RessourceSet(200000, 0, 0)}, //Azathoth
-	{RessourceSet(2000, 0, 0)},	//Queen
-	{RessourceSet(400, 0, 0)},    //Cargo
-	{RessourceSet(2000, 0, 0)}    //LargeCargo
+	{RessourceSet(100, 0, 0),    1,       1}, //Mosquito
+	{RessourceSet(400, 0, 0),    2,       2}, //Hornet
+	{RessourceSet(2000, 0, 0),   4,       4}, //Vulture
+	{RessourceSet(10000, 0, 0),  8,       8}, //Dragon
+	{RessourceSet(40000, 0, 0),  16,     16}, //Behemoth
+	{RessourceSet(200000, 0, 0), 32,     32}, //Azathoth
+	{RessourceSet(2000, 0, 0),   4,       2},	//Queen
+	{RessourceSet(400, 0, 0),    2,       0}, //Cargo
+	{RessourceSet(2000, 0, 0),   8,       0}  //LargeCargo
 };
 static_assert(sizeof(Ship::List) == (sizeof(Ship) * Ship::Count), "Ship info missing");
+
+Cannon const Cannon::List[] =
+{
+	{RessourceSet(100, 0, 0),    1,       1},
+	{RessourceSet(400, 0, 0),    2,       2},
+	{RessourceSet(2000, 0, 0),   4,       4},
+	{RessourceSet(10000, 0, 0),  8,       8},
+	{RessourceSet(40000, 0, 0),  16,     16},
+	{RessourceSet(200000, 0, 0), 32,     32},
+};
+static_assert(sizeof(Cannon::List) == (sizeof(Cannon) * Cannon::Count), "Cannon info missing");
 
 
 RessourceSet getBuilingPrice(Building::Enum id, size_t level)
@@ -357,7 +368,7 @@ void execTask(Universe& univ, Planet& planet, PlanetTask& task, time_t time)
 		{
 		case PlanetTask::UpgradeBuilding:
 			planet.buildingMap[static_cast<Building::Enum>(task.value)] += 1;
-			planet.eventList.push_back(Event(time, Event::Upgraded, "Building upgraded"));
+			planet.eventList.push_back(Event(univ.nextEventID++, time, Event::Upgraded, "Building upgraded"));
 			break;
 		case PlanetTask::MakeShip:
 		{
@@ -390,7 +401,7 @@ void execTask(Universe& univ, Fleet& fleet, FleetTask& task, time_t time)
 			{
 				boost::geometry::add_point(fleet.ressourceSet.tab, planet.ressourceSet.tab);
 				boost::geometry::assign_value(planet.ressourceSet.tab, 0);
-				fleet.eventList.push_back(Event(time, Event::PlanetHarvested, "Planet harvested"));
+				fleet.eventList.push_back(Event(univ.nextEventID++, time, Event::PlanetHarvested));
 			}
 		}
 		break;
@@ -399,7 +410,7 @@ void execTask(Universe& univ, Fleet& fleet, FleetTask& task, time_t time)
 			Planet& planet = mapFind(univ.planetMap, task.position)->second;
 			if(planet.playerId == Player::NoId && fleet.shipList[Ship::Queen])
 			{
-				fleet.eventList.push_back(Event(time, Event::PlanetColonized, "Planet colonized"));
+				fleet.eventList.push_back(Event(univ.nextEventID++, time, Event::PlanetColonized));
 				fleet.shipList[Ship::Queen] -= 1;
 
 				planet.buildingMap[Building::CommandCenter] = 1;
@@ -468,24 +479,6 @@ void gather(Fleet& fleet, Fleet const& otherFleet)
 {
 	boost::geometry::add_point(fleet.ressourceSet.tab, otherFleet.ressourceSet.tab);
 	boost::transform(fleet.shipList, otherFleet.shipList, fleet.shipList.begin(), std::plus<size_t>());
-}
-
-
-boost::logic::tribool fight(Fleet& fleet1, Fleet& fleet2)
-{
-	size_t value1 = 0;
-	size_t value2 = 0;
-	for(int i = 0; i < Ship::Count; ++i)
-	{
-		value1 += fleet1.shipList[i] * Ship::List[i].price.tab[0];
-		value2 += fleet2.shipList[i] * Ship::List[i].price.tab[0];
-	}
-	if(value1 > value2)
-		return true;
-	else if(value1 < value2)
-		return false;
-	else
-		return boost::logic::indeterminate;
 }
 
 

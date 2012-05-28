@@ -57,6 +57,8 @@ public:
 
 	boost::optional<Player> getPlayer(std::string const& login, std::string const& password) const;
 
+	FightReport getFightReport(size_t id);
+
 	void load(std::string const& univName);
 
 private:

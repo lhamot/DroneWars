@@ -87,3 +87,4 @@ void FleetViewWT::refresh()
 
 	WContainerWidget::refresh();
 }
+

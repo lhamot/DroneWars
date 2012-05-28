@@ -24,6 +24,7 @@
     <ClCompile Include="..\..\src\fighting.cpp" />
     <ClCompile Include="..\..\src\FleetViewWT.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
+    <ClCompile Include="..\..\src\MessageView.cpp" />
     <ClCompile Include="..\..\src\Model.cpp" />
     <ClCompile Include="..\..\src\OutPage.cpp" />
     <ClCompile Include="..\..\src\PlanetViewWT.cpp" />
@@ -37,6 +38,7 @@
     <ClInclude Include="..\..\src\FleetViewWT.h" />
     <ClInclude Include="..\..\src\LuaTools.h" />
     <ClInclude Include="..\..\src\LuaUniverse.h" />
+    <ClInclude Include="..\..\src\MessageView.h" />
     <ClInclude Include="..\..\src\Model.h" />
     <ClInclude Include="..\..\src\OutPage.h" />
     <ClInclude Include="..\..\src\PlanetViewWT.h" />
@@ -115,7 +117,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C_libs\wt-3.2.1\src;I:\C_libs\wt-3.2.1_$(Platform);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4996;4505</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4996;4505;4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -132,7 +134,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C_libs\wt-3.2.1\src;I:\C_libs\wt-3.2.1_$(Platform);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4996;4505</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4996;4505;4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,7 +153,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C_libs\wt-3.2.1\src;I:\C_libs\wt-3.2.1_$(Platform);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4996;4505</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4996;4505;4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -172,7 +174,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C_libs\wt-3.2.1\src;I:\C_libs\wt-3.2.1_$(Platform);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4996;4505</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4996;4505;4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

@@ -44,6 +44,19 @@ auto make_zip_range(C1 const& c1, C2 const& c2)
 	return make_pair(begin, end);
 }
 
+template<typename M, typename F>
+void map_remove_erase_if(M& map, F& func)
+{
+	auto iter = map.begin();
+	while(iter != map.end())
+	{
+		if(func(*iter))
+			map.erase(iter++);
+		else;
+		++iter;
+	}
+}
+
 
 #define TRACE std::cout << __FILE__ << " " << __LINE__ << std::endl;
 

@@ -3,20 +3,123 @@
 #include <vector>
 #include <boost/foreach.hpp>
 #include <boost/range/algorithm.hpp>
+#include <boost/range/algorithm_ext/erase.hpp>
 
 using namespace std;
 
-struct IncrFiller
+
+//Reflexion sur les combats
+//
+// Objectifs:
+//   Regles simple
+//   Pas de strategie dominante
+//   Rapide a executer
+//
+//
+//Mechanique, en vrac
+//  Rang avant, moyen , arrière
+//  Boulier cachant 1 ou  2 rang
+//  Choix de tirer ou non en fonction de la reserve d'energie(coup + fort si energie pleine)
+//  Generateurs d'energie(dans vaisseaux?)
+//  Ravitaillement des missile(vaisseu de fabrication?)
+//  Ravitaillement de ressource(loicium rafiné?)
+//  Choix du type d'attaque(par type de vaiseau)
+//  Fuite pendant le combat
+//
+//Avant combat
+//
+//A chaque round
+//  Choix du rang pour chaque type(arière, moyen, avant)
+//  Fuire ou pas
+//
+//Algo round
+//  Demander aux IA si si continue
+//  Pour chaque type de vaiseau
+//    Demander aux IA le rang(malus d'un changement de rang?)
+//    Demander aux IA si ils tirent ou attendent
+//  Pour chaque type de vaiseau
+//    Si il tire
+//      Chaque vaiseau tire sur un enemie aléatoire(des 2 premier rang?)(difference de precision?)
+
+struct ShipInstance
 {
-	size_t value;
+	Ship::Enum type;
+	long life;
 
-	IncrFiller(): value(0) {}
-
-	size_t operator()()
+	ShipInstance(Ship::Enum type, size_t life):
+		life(long(life)), type(type)
 	{
-		return ++value;
 	}
 };
+
+void fillShipList(Fleet const& fleet, std::vector<ShipInstance>& shipTab)
+{
+	//Contage
+	size_t shipNumber = 0;
+	for(int i = 0; i < Ship::Count; ++i)
+		shipNumber += fleet.shipList[i];
+
+	shipTab.reserve(shipNumber);
+	for(Ship::Enum type = Ship::Enum(0); type < Ship::Count; type = Ship::Enum(type + 1))
+	{
+		Ship const& def = Ship::List[type];
+		size_t const count = fleet.shipList[type];
+		for(int i = 0; i < count; ++i)
+			shipTab.push_back(ShipInstance(type, def.life));
+	}
+}
+
+void applyRound(std::vector<ShipInstance>& shipTab1, std::vector<ShipInstance>& shipTab2)
+{
+	size_t pos = 0;
+	size_t const size = shipTab2.size();
+	BOOST_FOREACH(ShipInstance & ship, shipTab1)
+	{
+		shipTab2[pos].life -= long(Ship::List[ship.type].power);
+		++pos;
+		if(pos == size)
+			pos = 0;
+	}
+}
+
+void fillFinalFleet(std::vector<ShipInstance> const& shipTab, Fleet& fleet) throw()
+{
+	Fleet::ShipTab& outTab = fleet.shipList;
+	outTab.assign(Ship::Count, 0);
+	BOOST_FOREACH(ShipInstance const & ship, shipTab)
+		++outTab[ship.type];
+}
+
+
+boost::logic::tribool fight(Fleet& fleet1, Fleet& fleet2)
+{
+	//Construction de la liste de vaisseaux
+	std::vector<ShipInstance> shipTab1;
+	fillShipList(fleet1, shipTab1);
+	std::vector<ShipInstance> shipTab2;
+	fillShipList(fleet2, shipTab2);
+
+	//Rounds succesif
+	while(shipTab1.empty() == false && shipTab2.empty() == false)
+	{
+		applyRound(shipTab1, shipTab2);
+		applyRound(shipTab2, shipTab1);
+		boost::remove_erase_if(shipTab1, [](ShipInstance const & ship) {return ship.life <= 0;});
+		boost::remove_erase_if(shipTab2, [](ShipInstance const & ship) {return ship.life <= 0;});
+	}
+
+	//Impact sur les flotte
+	fillFinalFleet(shipTab1, fleet1);
+	fillFinalFleet(shipTab2, fleet2);
+
+	if(shipTab1.empty() == false && shipTab2.empty())
+		return true;
+	else if(shipTab1.empty() && shipTab2.empty() == false)
+		return false;
+	else
+		return boost::logic::indeterminate;
+}
+
 
 struct FleetPair
 {
@@ -47,7 +150,7 @@ struct FleetPair
 };
 
 void fight(std::vector<Fleet*> const& fleetList,
-           std::vector<FleetReport>& reportListResult)
+           FightReport& reportListResult)
 {
 	if(fleetList.empty())
 		return;
@@ -90,6 +193,10 @@ void fight(std::vector<Fleet*> const& fleetList,
 			report1.isDead = true;
 		else if(result == true)
 			report2.isDead = true;
+		report1.fleetsAfter = fleet1;
+		report1.fleetsAfter.eventList.clear();
+		report2.fleetsAfter = fleet2;
+		report2.fleetsAfter.eventList.clear();
 	}
 
 	//BOOST_FOREACH(FleetState& report, reportList)

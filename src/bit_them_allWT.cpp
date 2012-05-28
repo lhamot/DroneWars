@@ -28,6 +28,7 @@
 //#include "PythonHighlighter.h"
 #include "PlanetViewWT.h"
 #include "FleetViewWT.h"
+#include "MessageView.h"
 #include "TranslationTools.h"
 
 using namespace Wt;
@@ -109,7 +110,10 @@ private:
 	void on_saveCodeButton_clicked()
 	{
 		std::string code = edit_->text().toUTF8();
-		engine_.setPlayerFleetCode(logged_, code);
+		if(name_ == "Fleet")
+			engine_.setPlayerFleetCode(logged_, code);
+		else if(name_ == "Planet")
+			engine_.setPlayerPlanetCode(logged_, code);
 	}
 
 	void on_resetCodeButton_clicked()
@@ -149,7 +153,7 @@ WWidget* bit_them_allWT::createCodeTab(WContainerWidget* parent)
 WWidget* bit_them_allWT::createReportTab(WContainerWidget* parent)
 {
 	WContainerWidget* reportsTab = new WContainerWidget(parent);
-	Wt::WVBoxLayout* layout = new Wt::WVBoxLayout();
+	Wt::WHBoxLayout* layout = new Wt::WHBoxLayout();
 	reportsTab->setLayout(layout);
 
 	eventView_ = new WTableView(reportsTab);
@@ -158,8 +162,11 @@ WWidget* bit_them_allWT::createReportTab(WContainerWidget* parent)
 
 	//eventView_->setModel(new EventModel(reportsTab, engine_, logged_));
 	eventView_->setAlternatingRowColors(true);
+	eventView_->clicked().connect(this, &bit_them_allWT::on_messageTable_itemDoubleClicked);
 	eventView_->setColumnWidth(2, 400);
 	layout->addWidget(eventView_);
+
+	messageLayout_ = layout;
 
 	return reportsTab;
 }
@@ -226,6 +233,9 @@ bit_them_allWT::bit_them_allWT(Wt::WContainerWidget* parent, Engine& engine, Pla
 	planetCode_(nullptr),
 	codeTab_(nullptr),
 	eventView_(nullptr),
+	planetsView_(nullptr),
+	fleetsView_(nullptr),
+	messageLayout_(nullptr),
 	fleetLayout_(nullptr),
 	planetLayout_(nullptr)
 {
@@ -387,8 +397,10 @@ void bit_them_allWT::refresh()
 	row = 0;
 	BOOST_FOREACH(Event const & ev, player.eventList)
 	{
+		//std::cout << "ev.id = " << ev.id << std::endl;
 		Wt::WStandardItem* item = new Wt::WStandardItem();
 		item->setData(timeToString(ev.time), DisplayRole);
+		item->setData(ev.id, UserRole);
 		model->setItem(row, 0, item);
 
 		item = new Wt::WStandardItem();
@@ -433,12 +445,31 @@ void bit_them_allWT::on_fleetTable_itemDoubleClicked(WModelIndex const& index, W
 	WStandardItemModel& model = dynamic_cast<WStandardItemModel&>(*fleetsView_->model());
 	Fleet::ID fleetID = any_cast<Fleet::ID>(model.data(index.row(), 0, UserRole));
 
-	FleetViewWT* fleetView = new FleetViewWT(this, engine_, fleetID);
-
-	WLayoutItem* item = fleetLayout_->itemAt(1);
-	if(item)
+	if(fleetLayout_->count() > 1)
+	{
+		WLayoutItem* item = fleetLayout_->itemAt(1);
 		fleetLayout_->removeItem(item);
+	}
+	FleetViewWT* fleetView = new FleetViewWT(this, engine_, fleetID);
 	fleetLayout_->addWidget(fleetView);
+}
+
+
+void bit_them_allWT::on_messageTable_itemDoubleClicked(WModelIndex const& index, WMouseEvent const&)
+{
+	WStandardItemModel& model = dynamic_cast<WStandardItemModel&>(*eventView_->model());
+	Event::ID eventID = any_cast<Event::ID>(model.data(index.row(), 0, UserRole));
+
+	//std::cout << "ev.id = " << eventID << std::endl;
+
+	if(messageLayout_->count() > 1)
+	{
+		WLayoutItem* item = messageLayout_->itemAt(1);
+		messageLayout_->removeItem(item);
+	}
+	MessageView* messageView = new MessageView(this, engine_, logged_, eventID);
+	messageView->setInline(true);
+	messageLayout_->addWidget(messageView);
 }
 
 

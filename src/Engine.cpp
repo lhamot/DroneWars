@@ -13,6 +13,7 @@
 #include <boost/exception/all.hpp>
 #include <boost/range.hpp>
 #include <boost/range/adaptor/map.hpp>
+#include <boost/range/algorithm_ext/erase.hpp>
 #include <boost/optional.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/iterator/zip_iterator.hpp>
@@ -233,6 +234,12 @@ boost::optional<Player> Engine::getPlayer(
 		return iter->second;
 }
 
+FightReport Engine::getFightReport(size_t id)
+{
+	SharedLock lock(univ_.mutex);
+	return mapFind(univ_.reportMap, id)->second;
+}
+
 
 //   -------   PRIVEE   -------------------------------------------------------
 static size_t const LuaMaxInstruction = 20000;
@@ -265,7 +272,7 @@ try
 		char const* message = lua_tostring(luaEngine.state(), -1);
 		code.newError(message);
 		mapFind(univ_.playerMap, pid)->second.eventList.push_back(
-		  Event(time, isFleet ? Event::FleetCodeError : Event::PlanetCodeError, message ? message : ""));
+		  Event(univ_.nextEventID++, time, isFleet ? Event::FleetCodeError : Event::PlanetCodeError, message ? message : ""));
 		return luabind::object();
 	}
 	else
@@ -279,14 +286,14 @@ catch(luabind::error& ex)
 	std::string message = GetLuabindErrorString(ex);
 	code.newError(message);
 	mapFind(univ_.playerMap, pid)->second.eventList.push_back(
-	  Event(time, isFleet ? Event::FleetCodeError : Event::PlanetCodeError, message));
+	  Event(univ_.nextEventID++, time, isFleet ? Event::FleetCodeError : Event::PlanetCodeError, message));
 	return luabind::object();
 }
 catch(std::exception const& ex)
 {
 	char const* message = lua_tostring(luaEngine.state(), -1);
 	mapFind(univ_.playerMap, pid)->second.eventList.push_back(
-	  Event(time, isFleet ? Event::FleetCodeError : Event::PlanetCodeError, ex.what() + string(" ") + (message ? message : "")));
+	  Event(univ_.nextEventID++, time, isFleet ? Event::FleetCodeError : Event::PlanetCodeError, ex.what() + string(" ") + (message ? message : "")));
 	return luabind::object();
 }
 
@@ -332,12 +339,12 @@ catch(luabind::error& ex)
 	std::string const message = GetLuabindErrorString(ex);
 	Player& player = mapFind(univ_.playerMap, planet.playerId)->second;
 	player.planetsCode.newError(message);//ex.what() + string(" ") + ss.str());
-	player.eventList.push_back(Event(time, Event::PlanetCodeError, message));//ex.what() + string(" ") + ss.str()));
+	player.eventList.push_back(Event(univ_.nextEventID++, time, Event::PlanetCodeError, message));//ex.what() + string(" ") + ss.str()));
 }
 catch(std::exception const& ex)
 {
 	mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(
-	  Event(time, Event::FleetCodeError, ex.what()));
+	  Event(univ_.nextEventID++, time, Event::FleetCodeError, ex.what()));
 }
 
 bool Engine::Simulation::execFleet(LuaEngine& luaEngine, luabind::object code, Fleet& fleet, FleetCoordMap& fleetMap, time_t time)
@@ -364,7 +371,7 @@ try
 				++fleetIter;
 				fleetMap.erase(condemned);
 				fleet.eventList.push_back(
-				  Event(time, Event::FleetsGather, "Rassemblement des flottes"));
+				  Event(univ_.nextEventID++, time, Event::FleetsGather));
 				//mapFind(univ_.planetMap, fleet)
 				continue;
 			}
@@ -373,9 +380,9 @@ try
 	}
 
 	auto planetIter = univ_.planetMap.find(fleet.coord);
-	boost::optional<Planet> planet;
+	Planet* planet = nullptr;
 	if(planetIter != univ_.planetMap.end())
-		planet = planetIter->second;
+		planet = &(planetIter->second);
 	using namespace luabind;
 	FleetAction action(FleetAction::Nothing);
 	lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
@@ -412,9 +419,9 @@ try
 		if(planet && canDrop(fleet, *planet))
 			drop(fleet, *planet);
 		fleet.eventList.push_back(
-		  Event(time, Event::FleetDrop, "Drop"));
+		  Event(univ_.nextEventID++, time, Event::FleetDrop));
 		planet->eventList.push_back(
-		  Event(time, Event::FleetDrop, "Suply delivered"));
+		  Event(univ_.nextEventID++, time, Event::FleetDrop));
 	}
 	break;
 	}
@@ -426,13 +433,13 @@ catch(luabind::error& ex)
 	std::string const message = GetLuabindErrorString(ex);
 	Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
 	player.fleetsCode.newError(message);
-	player.eventList.push_back(Event(time, Event::FleetCodeError, message));
+	player.eventList.push_back(Event(univ_.nextEventID++, time, Event::FleetCodeError, message));
 	return true;
 }
 catch(std::exception const& ex)
 {
 	mapFind(univ_.playerMap, fleet.playerId)->second.eventList.push_back(
-	  Event(time, Event::FleetCodeError, ex.what()));
+	  Event(univ_.nextEventID++, time, Event::FleetCodeError, ex.what()));
 	return true;
 }
 
@@ -485,6 +492,9 @@ try
 		BOOST_FOREACH(Universe::PlanetMap::value_type & planetNVP, univ_.planetMap)
 		{
 			Planet& planet = planetNVP.second;
+			if(planet.eventList.size() > 10)
+				planet.eventList.erase(planet.eventList.begin(), planet.eventList.end() - 10);
+
 			fleetList.clear();
 			auto localFleets = fleetMap.equal_range(planet.coord);
 			auto getFleetPointer = [](FleetCoordMap::value_type const & coordFleet) {return &coordFleet.second;};
@@ -513,11 +523,36 @@ try
 		    iter1 = iter2, iter2 = nextNot(fleetMultimap, iter1))
 		{
 			auto fleetRange = make_pair(iter1, iter2);
+
+			//Si 0 ou 1 vaisseau, on passe
+			auto testShipNumber = iter1;
+			if(testShipNumber == iter2)
+				continue;
+			++testShipNumber;
+			if(testShipNumber == iter2)
+				continue;
+
+			//On lance le combat
 			fleetVect.clear();
 			boost::copy(fleetRange | boost::adaptors::map_values, back_inserter(fleetVect));
-			std::vector<FleetReport> fightReportVect;
+			FightReport fightReportVect;
 			fight(fleetVect, fightReportVect);
+			bool hasFight = false;
 			auto range = make_zip_range(fleetVect, fightReportVect);
+			BOOST_FOREACH(auto fleetReportPair, range)
+			{
+				FleetReport const& report = fleetReportPair.get<1>();
+				hasFight = hasFight | report.hasFight;
+			}
+			//Si personne ne c'est batue, on passe
+			if(hasFight == false)
+				continue;
+
+			//On ajoute le rapport dans la base de donné
+			size_t const reportID = univ_.nextFightID;
+			univ_.nextFightID += 1;
+			univ_.reportMap.insert(make_pair(reportID, fightReportVect));
+			//On ajoute les evenement/message dans les flottes/joueur
 			BOOST_FOREACH(auto fleetReportPair, range)
 			{
 				Fleet& fleet = *fleetReportPair.get<0>();
@@ -526,18 +561,22 @@ try
 				{
 					deadFleets.push_back(fleet.id);
 					mapFind(univ_.playerMap, fleet.playerId)->second.eventList.push_back(
-					  Event(univ_.time, Event::FleetLose, "Fleet lose"));
+					  Event(univ_.nextEventID++, univ_.time, Event::FleetLose, reportID));
 				}
 				else if(report.hasFight)
 				{
 					fleet.eventList.push_back(
-					  Event(univ_.time, Event::FleetWin, "Victoire"));
+					  Event(univ_.nextEventID++, univ_.time, Event::FleetWin, reportID));
 				}
 			}
 		}
 
 		//Suppression de toute les flottes mortes
-		boost::for_each(deadFleets, [&](Fleet::ID fleetID) {univ_.fleetMap.erase(fleetID);});
+		boost::for_each(deadFleets, [&](Fleet::ID fleetID)
+		{
+			//cout << "Supresion flotte : " << fleetID << endl;
+			univ_.fleetMap.erase(fleetID);
+		});
 	}
 
 	//Les flottes
@@ -566,10 +605,106 @@ try
 		BOOST_FOREACH(Fleet & fleet, fleetMap | boost::adaptors::map_values)
 			newFleetMap.insert(make_pair(fleet.id, fleet));
 		newFleetMap.swap(univ_.fleetMap);
+
+		BOOST_FOREACH(Fleet & fleet, univ_.fleetMap | boost::adaptors::map_values)
+		{
+			if(fleet.eventList.size() > 10)
+				fleet.eventList.erase(fleet.eventList.begin(), fleet.eventList.end() - 10);
+		}
 	}
+
+	set<size_t> usedReport;
+	BOOST_FOREACH(Player & player, univ_.playerMap | boost::adaptors::map_values)
+	{
+		if(player.eventList.size() > 10)
+			player.eventList.erase(player.eventList.begin(), player.eventList.end() - 10);
+		BOOST_FOREACH(Event const & ev, player.eventList)
+		{
+			if(ev.type == Event::FleetLose)
+				usedReport.insert(ev.value);
+		}
+	}
+
+	map_remove_erase_if(univ_.reportMap,
+	                    [&](Universe::ReportMap::value_type const & reportKV)
+	{
+		return usedReport.count(reportKV.first) == false;
+	});
+
 
 	//std::cout << lexical_cast<std::string>(time(0)) + "_save.bta ";
 	//save(lexical_cast<std::string>(time(0)) + "_save.bta");
+
+	/*
+	size_t playerSize = 0;
+	BOOST_FOREACH(auto const& playerKV, univ_.playerMap)
+	{
+		playerSize += sizeof(playerKV);
+		playerSize += playerKV.second.fleetsCode.getCode().size();
+		playerSize += playerKV.second.planetsCode.getCode().size();
+		playerSize += playerKV.second.login.size();
+		playerSize += playerKV.second.password.size();
+		BOOST_FOREACH(auto const& ev, playerKV.second.eventList)
+		{
+			playerSize += sizeof(ev);
+			playerSize += ev.comment.size();
+		}
+	}
+
+	size_t planetSize = 0;
+	BOOST_FOREACH(auto const& planetKV, univ_.planetMap)
+	{
+		planetSize += sizeof(planetKV);
+		planetSize += planetKV.second.buildingMap.size() * sizeof(Planet::BuildingMap::value_type);
+		planetSize += planetKV.second.taskQueue.size() * sizeof(PlanetTask);
+		BOOST_FOREACH(auto const& ev, planetKV.second.eventList)
+		{
+			planetSize += sizeof(ev);
+			planetSize += ev.comment.size();
+		}
+	}
+
+	size_t fleetSize = 0;
+	BOOST_FOREACH(auto const& fleetKV, univ_.fleetMap)
+	{
+		fleetSize += sizeof(fleetKV);
+		fleetSize += fleetKV.second.shipList.size() * sizeof(Fleet::ShipTab::value_type);
+		fleetSize += fleetKV.second.taskQueue.size() * sizeof(PlanetTask);
+		BOOST_FOREACH(auto const& ev, fleetKV.second.eventList)
+		{
+			fleetSize += sizeof(ev);
+			fleetSize += ev.comment.size();
+		}
+	}
+
+	size_t reportSize = 0;
+	BOOST_FOREACH(auto const& reportKV, univ_.reportMap)
+	{
+		reportSize += sizeof(reportKV);
+		BOOST_FOREACH(auto const& fleetReport, reportKV.second)
+		{
+			reportSize += sizeof(fleetReport);
+			reportSize += fleetReport.enemySet.size() * sizeof(size_t);
+			BOOST_FOREACH(auto const& ev, fleetReport.fleetsAfter.eventList)
+			{
+				reportSize += sizeof(ev);
+				reportSize += ev.comment.size();
+			}
+			BOOST_FOREACH(auto const& ev, fleetReport.fleetsBefore.eventList)
+			{
+				reportSize += sizeof(ev);
+				reportSize += ev.comment.size();
+			}
+		}
+	}
+
+	size_t const univSize = playerSize + planetSize + fleetSize + reportSize;
+	cout << "Univ global size :" << univSize << endl;
+	cout << "  playerMap:" << playerSize << endl;
+	cout << "  planetMap:" << planetSize << endl;
+	cout << "  fleetMap:" << fleetSize << endl;
+	cout << "  reportMap:" << reportSize << endl;
+	*/
 
 	std::cout << time(0) << std::endl;
 }

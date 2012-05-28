@@ -16,6 +16,7 @@
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/map.hpp>
+#include <boost/serialization/set.hpp>
 #include <boost/serialization/array.hpp>
 #include <boost/logic/tribool.hpp>
 #include <boost/range/algorithm.hpp>
@@ -26,13 +27,12 @@
 #include <unordered_map>
 #include "serialize_unordered_map.h"
 
-
 struct Event
 {
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
-		ar& time& type& comment;
+		ar& id& time& type& comment& value;
 	}
 
 	enum Type
@@ -53,13 +53,22 @@ struct Event
 		Count
 	};
 
+	typedef size_t ID;
+	static ID const NoId = ID(-1);
+	ID id;
 	time_t time;
 	Type type;
 	std::string comment;
+	size_t value;
+	bool viewed;
 
 	Event() {}
-	Event(time_t ti, Type ty, std::string const& comm):
-		time(ti), type(ty), comment(comm)
+	Event(ID ident, time_t ti, Type ty, size_t val = size_t(-1)):
+		id(ident), time(ti), type(ty), value(val), viewed(false)
+	{
+	}
+	Event(ID ident, time_t ti, Type ty, std::string const& comm):
+		id(ident), time(ti), type(ty), comment(comm), value(size_t(-1)), viewed(false)
 	{
 	}
 };
@@ -329,16 +338,42 @@ struct Ship
 	};
 
 	RessourceSet price;
+	size_t life;
+	size_t power;
+
 
 	static Ship const List[];
 };
+
+
+struct Cannon
+{
+	enum Enum
+	{
+		Undefined = -1,
+		Cannon1,
+		Cannon2,
+		Cannon3,
+		Cannon4,
+		Cannon5,
+		Cannon6,
+		Count
+	};
+
+	RessourceSet price;
+	size_t life;
+	size_t power;
+
+	static Cannon const List[];
+};
+
 
 struct Planet
 {
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
-		ar& coord& playerId& buildingMap& taskQueue& ressourceSet& eventList;
+		ar& coord& playerId& buildingMap& taskQueue& ressourceSet& eventList& cannonTab;
 	}
 
 	/*struct CmpBuild
@@ -356,9 +391,11 @@ struct Planet
 	std::vector<PlanetTask> taskQueue;
 	RessourceSet ressourceSet;
 	std::vector<Event> eventList;
+	typedef boost::array<size_t, Cannon::Count> CannonTab;
+	CannonTab cannonTab;
 
 	Planet() {}
-	Planet(Coord c): coord(c), playerId(Player::NoId) {}
+	Planet(Coord c): coord(c), playerId(Player::NoId) {cannonTab.fill(0);}
 
 	bool isFree() const
 	{
@@ -461,6 +498,34 @@ struct FleetAction
 };
 typedef std::vector<FleetAction> FleetActionList;
 
+
+struct FleetReport
+{
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int)
+	{
+		ar& isDead& hasFight& enemySet& fleetsBefore& fleetsAfter;
+		if(fleetsAfter.shipList.empty())
+			fleetsAfter.shipList = fleetsBefore.shipList;
+	}
+
+	bool isDead;
+	bool hasFight;
+	std::set<size_t> enemySet; //par index dans le FightReport
+	Fleet fleetsBefore;
+	Fleet fleetsAfter;
+
+	FleetReport() {}
+	FleetReport(Fleet const& fleet): isDead(false), hasFight(false), fleetsBefore(fleet), fleetsAfter(fleet)
+	{
+		fleetsBefore.eventList.clear();
+		fleetsAfter.eventList.clear();
+	}
+};
+
+typedef std::vector<FleetReport> FightReport;
+
+
 struct Universe
 {
 	template<class Archive>
@@ -469,8 +534,11 @@ struct Universe
 		ar& playerMap;
 		ar& planetMap;
 		ar& fleetMap;
+		ar& reportMap;
 		ar& nextPlayerID;
 		ar& nextFleetID;
+		ar& nextEventID;
+		ar& nextFightID;
 		ar& time;
 	}
 
@@ -485,15 +553,20 @@ struct Universe
 	typedef std::unordered_map<Coord, Planet> PlanetMap;
 	PlanetMap planetMap;
 	//std::multimap<Coord, Fleet, CompCoord> fleetMap;
-	std::map<Fleet::ID, Fleet> fleetMap;
+	typedef std::map<Fleet::ID, Fleet> FleetMap;
+	FleetMap fleetMap;
+	typedef std::map<size_t, FightReport> ReportMap;
+	ReportMap reportMap;
 	Player::ID nextPlayerID;
 	Fleet::ID nextFleetID;
+	Event::ID nextEventID;
+	size_t nextFightID;
 	time_t time;
 
 	typedef boost::shared_mutex Mutex;
 	mutable Mutex mutex;
 
-	Universe(): nextPlayerID(0), nextFleetID(0), time(0)
+	Universe(): nextPlayerID(0), nextFleetID(0), nextEventID(0), nextFightID(0), time(0)
 	{
 	}
 };
@@ -524,8 +597,6 @@ void planetRound(Universe& univ, Planet& planet, time_t time);
 void fleetRound(Universe& univ, Fleet& fleet, time_t time);
 
 void gather(Fleet& fleet, Fleet const& otherFleet);
-
-boost::logic::tribool fight(Fleet& fleet1, Fleet& fleet2);
 
 bool canMove(Fleet const& fleet, Coord const& coord);
 
