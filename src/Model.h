@@ -18,14 +18,20 @@
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/set.hpp>
 #include <boost/serialization/array.hpp>
+#include <boost/serialization/variant.hpp>
 #include <boost/logic/tribool.hpp>
 #include <boost/range/algorithm.hpp>
 #include <boost/thread/shared_mutex.hpp>
 #include <boost/functional/hash.hpp>
+#include <boost/variant.hpp>
 #pragma warning(pop)
 
 #include <unordered_map>
 #include "serialize_unordered_map.h"
+
+
+//#define CHECK(test) if((test) == false) BOOST_THROW_EXCEPTION(std::logic_error(#test + " test failed"));
+
 
 struct Event
 {
@@ -50,6 +56,8 @@ struct Event
 		PlanetColonized,
 		FleetLose,
 		FleetDrop,
+		PlanetLose,
+		PlanetWin,
 		Count
 	};
 
@@ -373,16 +381,20 @@ struct Planet
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
-		ar& coord& playerId& buildingMap& taskQueue& ressourceSet& eventList& cannonTab;
-	}
-
-	/*struct CmpBuild
-	{
-		bool operator()(Building a, Building b) const
+		if(Archive::is_saving::value)
 		{
-			return a.type < b.type;
+			if(playerId >= 100 && playerId != Player::NoId)
+				BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100!!"));
+			if(playerId == Player::NoId && taskQueue.empty() == false)
+				BOOST_THROW_EXCEPTION(std::logic_error("taskQueue shourld be empty"));
 		}
-	};*/
+
+		ar& coord& playerId& buildingMap& taskQueue& ressourceSet& eventList& cannonTab;
+		if(playerId >= 100 && playerId != Player::NoId)
+			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100!!"));
+		if(playerId == Player::NoId && taskQueue.empty() == false)
+			BOOST_THROW_EXCEPTION(std::logic_error("taskQueue shourld be empty"));
+	}
 
 	Coord coord;
 	Player::ID playerId;
@@ -390,12 +402,17 @@ struct Planet
 	BuildingMap buildingMap;
 	std::vector<PlanetTask> taskQueue;
 	RessourceSet ressourceSet;
-	std::vector<Event> eventList;
 	typedef boost::array<size_t, Cannon::Count> CannonTab;
+	std::vector<Event> eventList;
 	CannonTab cannonTab;
 
 	Planet() {}
-	Planet(Coord c): coord(c), playerId(Player::NoId) {cannonTab.fill(0);}
+	Planet(Coord c): coord(c), playerId(Player::NoId)
+	{
+		cannonTab.fill(0);
+		if(playerId >= 100 && playerId != Player::NoId)
+			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100!!"));
+	}
 
 	bool isFree() const
 	{
@@ -445,7 +462,14 @@ struct Fleet
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
+		if(Archive::is_saving::value)
+		{
+			if(playerId >= 100)
+				BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100!!"));
+		}
 		ar& id& playerId& coord& origine& name& shipList& ressourceSet& taskQueue& eventList;
+		if(playerId >= 100)
+			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100!!"));
 	}
 
 	typedef size_t ID;
@@ -464,7 +488,8 @@ struct Fleet
 	Fleet(ID fid, Player::ID pid, Coord c):
 		id(fid), playerId(pid), coord(c), origine(c), shipList(Ship::Count)
 	{
-		//shipList.fill(0);
+		if(playerId >= 100)
+			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100!!"));
 	}
 };
 
@@ -499,31 +524,59 @@ struct FleetAction
 typedef std::vector<FleetAction> FleetActionList;
 
 
-struct FleetReport
+template<typename T>
+struct Report
 {
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
-		ar& isDead& hasFight& enemySet& fleetsBefore& fleetsAfter;
-		if(fleetsAfter.shipList.empty())
-			fleetsAfter.shipList = fleetsBefore.shipList;
+		ar& isDead& hasFight& enemySet& fightInfo;
 	}
 
 	bool isDead;
 	bool hasFight;
 	std::set<size_t> enemySet; //par index dans le FightReport
-	Fleet fleetsBefore;
-	Fleet fleetsAfter;
-
-	FleetReport() {}
-	FleetReport(Fleet const& fleet): isDead(false), hasFight(false), fleetsBefore(fleet), fleetsAfter(fleet)
+	struct FightInfo
 	{
-		fleetsBefore.eventList.clear();
-		fleetsAfter.eventList.clear();
+		template<class Archive>
+		void serialize(Archive& ar, const unsigned int)
+		{
+			ar& before& after;
+		}
+
+		T before;
+		T after;
+
+		FightInfo() {}
+		FightInfo(T const& bef, T const& aft): before(bef), after(aft) {}
+	};
+	FightInfo fightInfo;
+
+	Report() {}
+	Report(T const& fighter): isDead(false), hasFight(false)
+	{
+		FightInfo info(fighter, fighter);
+		info.before.eventList.clear();
+		info.after.eventList.clear();
+		fightInfo = info;
 	}
 };
 
-typedef std::vector<FleetReport> FightReport;
+
+struct FightReport
+{
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int)
+	{
+		ar& fleetList& hasPlanet& planet;
+	}
+
+	std::vector<Report<Fleet> > fleetList;
+	bool hasPlanet;
+	Report<Planet> planet;
+
+	FightReport(): hasPlanet(false) {}
+};
 
 
 struct Universe

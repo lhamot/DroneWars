@@ -52,8 +52,8 @@ void map_remove_erase_if(M& map, F& func)
 	{
 		if(func(*iter))
 			map.erase(iter++);
-		else;
-		++iter;
+		else
+			++iter;
 	}
 }
 

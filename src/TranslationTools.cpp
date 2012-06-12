@@ -85,11 +85,13 @@ std::string getEventName(Event::Type evtype)
 		BTA_STR(PlanetColonized)
 		BTA_STR(FleetLose)
 		BTA_STR(FleetDrop)
+		BTA_STR(PlanetLose)
+		BTA_STR(PlanetWin)
 	}
 #undef BTA_STR
 
 	BOOST_THROW_EXCEPTION(std::logic_error("Unknown Ressource type"));
-	static_assert(Event::FleetDrop == Event::Count - 1, "Event cases missing");
+	static_assert(Event::PlanetWin == Event::Count - 1, "Event cases missing");
 }
 
 boost::mutex timeToStringMutex;
@@ -102,4 +104,22 @@ std::string timeToString(time_t time)
 	struct tm* timeinfo = localtime(&time);
 	strftime(buffer, BufferSize, "%Y-%m-%d %H:%M:%S", timeinfo);
 	return buffer;
+}
+
+std::string getCannonName(Cannon::Enum cannon)
+{
+#define BTA_STR(X) case Cannon::X: return #X;
+	switch(cannon)
+	{
+		BTA_STR(Cannon1)
+		BTA_STR(Cannon2)
+		BTA_STR(Cannon3)
+		BTA_STR(Cannon4)
+		BTA_STR(Cannon5)
+		BTA_STR(Cannon6)
+	}
+#undef BTA_STR
+
+	BOOST_THROW_EXCEPTION(std::logic_error("Unknown Cannon type"));
+	static_assert(Cannon::Cannon6 == Cannon::Count - 1, "Cannon cases missing");
 }

@@ -42,6 +42,7 @@
     <ClInclude Include="..\..\src\Model.h" />
     <ClInclude Include="..\..\src\OutPage.h" />
     <ClInclude Include="..\..\src\PlanetViewWT.h" />
+    <ClInclude Include="..\..\src\Rules.h" />
     <ClInclude Include="..\..\src\Tools.h" />
     <ClInclude Include="..\..\src\TranslationTools.h" />
   </ItemGroup>

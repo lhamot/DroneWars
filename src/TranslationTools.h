@@ -10,6 +10,8 @@ std::string getTaskName(PlanetTask::Enum type);
 
 std::string getShipName(Ship::Enum ship);
 
+std::string getCannonName(Cannon::Enum cannon);
+
 std::string getRessourceName(Ressource::Enum ress);
 
 std::string getEventName(Event::Type evtype);

@@ -7,6 +7,7 @@
 
 using namespace std;
 
+static size_t const PlanetIndex = size_t(-1);
 
 //Reflexion sur les combats
 //
@@ -40,13 +41,12 @@ using namespace std;
 //  Pour chaque type de vaiseau
 //    Si il tire
 //      Chaque vaiseau tire sur un enemie aléatoire(des 2 premier rang?)(difference de precision?)
-
 struct ShipInstance
 {
-	Ship::Enum type;
+	size_t type;
 	long life;
 
-	ShipInstance(Ship::Enum type, size_t life):
+	ShipInstance(size_t type, size_t life):
 		life(long(life)), type(type)
 	{
 	}
@@ -69,13 +69,35 @@ void fillShipList(Fleet const& fleet, std::vector<ShipInstance>& shipTab)
 	}
 }
 
+void fillShipList(Planet const& planet, std::vector<ShipInstance>& shipTab)
+{
+	//Contage
+	size_t shipNumber = 0;
+	for(int i = 0; i < Cannon::Count; ++i)
+		shipNumber += planet.cannonTab[i];
+
+	shipTab.reserve(shipNumber);
+	for(Cannon::Enum type = Cannon::Enum(0); type < Cannon::Count; type = Cannon::Enum(type + 1))
+	{
+		Cannon const& def = Cannon::List[type];
+		size_t const count = planet.cannonTab[type];
+		for(int i = 0; i < count; ++i)
+			shipTab.push_back(ShipInstance(type + Ship::Count, def.life));
+	}
+}
+
+
 void applyRound(std::vector<ShipInstance>& shipTab1, std::vector<ShipInstance>& shipTab2)
 {
 	size_t pos = 0;
 	size_t const size = shipTab2.size();
 	BOOST_FOREACH(ShipInstance & ship, shipTab1)
 	{
-		shipTab2[pos].life -= long(Ship::List[ship.type].power);
+		size_t const power =
+		  (ship.type < Ship::Count) ?
+		  Ship::List[ship.type].power :
+		  Cannon::List[ship.type - Ship::Count].power;
+		shipTab2[pos].life -= long(power);
 		++pos;
 		if(pos == size)
 			pos = 0;
@@ -90,8 +112,18 @@ void fillFinalFleet(std::vector<ShipInstance> const& shipTab, Fleet& fleet) thro
 		++outTab[ship.type];
 }
 
+void fillFinalFleet(std::vector<ShipInstance> const& shipTab, Planet& planet) throw()
+{
+	Planet::CannonTab& outTab = planet.cannonTab;
+	//outTab.assign(Cannon::Count, 0);
+	outTab.fill(0);
+	BOOST_FOREACH(ShipInstance const & ship, shipTab)
+		++outTab[ship.type - Ship::Count];
+}
 
-boost::logic::tribool fight(Fleet& fleet1, Fleet& fleet2)
+
+template<typename F1, typename F2>
+boost::logic::tribool fight(F1& fleet1, F2& fleet2)
 {
 	//Construction de la liste de vaisseaux
 	std::vector<ShipInstance> shipTab1;
@@ -149,63 +181,110 @@ struct FleetPair
 	}
 };
 
+template<typename F1, typename F2>
+void handleFighterPair(std::vector<Fleet*> const& fleetList,
+                       FightReport& reportList,
+                       FleetPair const& fleetPair,
+                       Report<F1>& report1,
+                       F1& fighter1,
+                       Report<F2>& report2,
+                       F2& fighter2
+                      )
+{
+	//Report<Fleet>& report2 = reportList.fleetList[fleetPair.index2];
+	report1.enemySet.insert(fleetPair.index2);
+	report2.enemySet.insert(fleetPair.index1);
+	//Fleet *fighterPtr1 = fleetList[fleetPair.index1];
+	//Fleet *fighterPtr2 = fleetList[fleetPair.index2];
+
+	//F1& fighter1 = *fighterPtr1;
+	//F2& fighter2 = *fighterPtr2;
+	report1.hasFight = true;
+	report2.hasFight = true;
+	boost::tribool result = fight(fighter1, fighter2);
+	if(result == false)
+		report1.isDead = true;
+	else if(result == true)
+		report2.isDead = true;
+	report1.fightInfo.after = fighter1;
+	report1.fightInfo.after.eventList.clear();
+	report2.fightInfo.after = fighter2;
+	report2.fightInfo.after.eventList.clear();
+}
+
 void fight(std::vector<Fleet*> const& fleetList,
-           FightReport& reportListResult)
+           Planet* planet,
+           FightReport& reportList)
 {
 	if(fleetList.empty())
 		return;
 
-	std::vector<FleetReport> reportList;
-	boost::transform(fleetList,
-	                 back_inserter(reportList),
-	[](Fleet * fleetPtr) {return FleetReport(*fleetPtr);});
+	reportList.fleetList.clear();
+	boost::transform(fleetList, back_inserter(reportList.fleetList),
+	[](Fleet * fleetPtr) {return Report<Fleet>(*fleetPtr);});
+	if(planet)
+	{
+		reportList.hasPlanet = true;
+		reportList.planet = Report<Planet>(*planet);
+	}
 
-	// On list les paires combatantes
+
+	//! On list les paires combatantes
 	std::set<FleetPair> fightingPair;
+	//! - Flotte/Flotte
 	for(auto iter1 = fleetList.begin(), end = fleetList.end(); iter1 != end; ++iter1)
 	{
 		for(auto iter2 = iter1 + 1; iter2 != end; ++iter2)
 		{
-			Fleet& fleet1 = **iter1;
-			Fleet& fleet2 = **iter2;
-			if(fleet1.playerId != fleet2.playerId)
+			Player::ID const player1 = (*iter1)->playerId;
+			Player::ID const player2 = (*iter2)->playerId;
+			if(player1 != player2 && player1 != Player::NoId && player2 != Player::NoId)
 			{
 				fightingPair.insert(FleetPair(iter1 - fleetList.begin(),
 				                              iter2 - fleetList.begin()));
 			}
 		}
 	}
-
-	//Pour toute les combinaisons de 2 flottes
-	BOOST_FOREACH(FleetPair const & fleetPair, fightingPair)
+	//! - Planete/Flotte
+	if(reportList.hasPlanet)
 	{
-		//Combat
-		FleetReport& report1 = reportList[fleetPair.index1];
-		FleetReport& report2 = reportList[fleetPair.index2];
-		report1.enemySet.insert(fleetPair.index2);
-		report2.enemySet.insert(fleetPair.index1);
-		Fleet& fleet1 = *fleetList[fleetPair.index1];
-		Fleet& fleet2 = *fleetList[fleetPair.index2];
-		report1.hasFight = true;
-		report2.hasFight = true;
-		boost::tribool result = fight(fleet1, fleet2);
-		if(result == false)
-			report1.isDead = true;
-		else if(result == true)
-			report2.isDead = true;
-		report1.fleetsAfter = fleet1;
-		report1.fleetsAfter.eventList.clear();
-		report2.fleetsAfter = fleet2;
-		report2.fleetsAfter.eventList.clear();
+		for(auto iter1 = fleetList.begin(), end = fleetList.end(); iter1 != end; ++iter1)
+		{
+			Player::ID const player1 = (*iter1)->playerId;
+			Player::ID const player2 = planet->playerId;
+			if(player1 != player2 && player1 != Player::NoId && player2 != Player::NoId)
+				fightingPair.insert(FleetPair(iter1 - fleetList.begin(), PlanetIndex));
+		}
 	}
 
-	//BOOST_FOREACH(FleetState& report, reportList)
-	//	report.fleetReport.fleetsAfter = *report.fleet;
+	//! Pour toute les combinaisons de 2 combatant:
+	BOOST_FOREACH(FleetPair const & fleetPair, fightingPair)
+	{
+		//! -Combat
+		if(fleetPair.index1 == PlanetIndex)
+		{
+			Report<Planet>& report1 = reportList.planet;
+			Report<Fleet>& report2 = reportList.fleetList[fleetPair.index2];
+			handleFighterPair<Planet, Fleet>(fleetList, reportList, fleetPair, report1, *planet, report2, *fleetList[fleetPair.index2]);
+		}
+		else if(fleetPair.index2 == PlanetIndex)
+		{
+			Report<Fleet>& report1 = reportList.fleetList[fleetPair.index1];
+			Report<Planet>& report2 = reportList.planet;
+			handleFighterPair<Fleet, Planet>(fleetList, reportList, fleetPair, report1, *fleetList[fleetPair.index1], report2, *planet);
+		}
+		else
+		{
+			Report<Fleet>& report1 = reportList.fleetList[fleetPair.index1];
+			Fleet* fighterPtr1 = fleetList[fleetPair.index1];
+			Report<Fleet>& report2 = reportList.fleetList[fleetPair.index2];
+			Fleet* fighterPtr2 = fleetList[fleetPair.index2];
+			handleFighterPair<Fleet, Fleet>(fleetList, reportList, fleetPair, report1, *fighterPtr1, report2, *fighterPtr2);
+		}
+	}
 
-	if(reportList.size() != fleetList.size())
+	if(reportList.fleetList.size() != fleetList.size())
 		BOOST_THROW_EXCEPTION(std::logic_error("Bad reports count!!"));
-
-	reportListResult.swap(reportList);
 }
 
 

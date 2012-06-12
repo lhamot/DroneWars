@@ -1,6 +1,7 @@
 #include "MessageView.h"
 
 #include <boost/foreach.hpp>
+#include <boost/format.hpp>
 #include <Wt/WText>
 #include <Wt/WTable>
 
@@ -8,6 +9,7 @@
 
 
 using namespace Wt;
+using namespace boost;
 
 MessageView::MessageView(WContainerWidget* parent,
                          Engine& eng,
@@ -49,10 +51,8 @@ MessageView::MessageView(WContainerWidget* parent,
 	case Event::PlanetHarvested:
 		break;
 	case Event::FleetWin:
-	{
 		renderFightReport(ev.value);
-	}
-	break;
+		break;
 	case Event::FleetDraw:
 		break;
 	case Event::FleetsGather:
@@ -60,17 +60,21 @@ MessageView::MessageView(WContainerWidget* parent,
 	case Event::PlanetColonized:
 		break;
 	case Event::FleetLose:
-	{
 		renderFightReport(ev.value);
-	}
-	break;
+		break;
 	case Event::FleetDrop:
+		break;
+	case Event::PlanetLose:
+		renderFightReport(ev.value);
+		break;
+	case Event::PlanetWin:
+		renderFightReport(ev.value);
 		break;
 	default:
 		BOOST_THROW_EXCEPTION(std::out_of_range("Bad event type"));
 	};
 
-	static_assert(Event::FleetDrop + 1 == Event::Count, "Missing event type in MessageView");
+	static_assert(Event::PlanetWin + 1 == Event::Count, "Missing event type in MessageView");
 }
 
 std::string getContentString(Fleet const& fleet)
@@ -82,21 +86,45 @@ std::string getContentString(Fleet const& fleet)
 	for(Ship::Enum shipType = Ship::Enum(0); shipType < Ship::Count; shipType = Ship::Enum(shipType + 1))
 	{
 		if(fleet.shipList[shipType])
-			result += getShipName(shipType)[0] + std::string(":") + boost::lexical_cast<std::string>(fleet.shipList[shipType]) + ";";
+			result += str(format("%c:%s;") % getShipName(shipType) % fleet.shipList[shipType]);
+		//result += getShipName(shipType)[0] + std::string(":") + boost::lexical_cast<std::string>(fleet.shipList[shipType]) + ";";
 	}
 	if(false == result.empty())
 		result.pop_back();
 	return result;
 }
 
+std::string getContentString(Planet const& planet)
+{
+	if(planet.cannonTab.size() != Cannon::Count)
+		BOOST_THROW_EXCEPTION(std::logic_error("planet.cannonTab.size() != Cannon::Count"));
+	std::string result;
+	//BOOST_FOREACH(size_t shipCount, fleet.shipList)
+	for(Cannon::Enum cannonType = Cannon::Enum(0);
+	    cannonType < Cannon::Count;
+	    cannonType = Cannon::Enum(cannonType + 1))
+	{
+		if(planet.cannonTab[cannonType])
+			result += str(format("%c:%s;") % getCannonName(cannonType) % planet.cannonTab[cannonType]);
+		//result += getCannonName(cannonTab)[0] + std::string(":") + boost::lexical_cast<std::string>(planet.cannonTab[cannonTab]) + ";";
+	}
+	if(false == result.empty())
+		result.pop_back();
+	return result;
+}
+
+
 void MessageView::renderFightReport(size_t id)
 {
 	FightReport fightReport = engine_.getFightReport(id);
-	BOOST_FOREACH(FleetReport const & fleetReport, fightReport)
+	BOOST_FOREACH(Report<Fleet> const & fleetReport, fightReport.fleetList)
 	{
 		Wt::WTable* table = new Wt::WTable(this);
 		table->elementAt(0, 0)->addWidget(new Wt::WText("Fleet name :"));
-		table->elementAt(0, 1)->addWidget(new Wt::WText(boost::lexical_cast<std::string>(fleetReport.fleetsBefore.id)));
+
+		Fleet const& before = fleetReport.fightInfo.before;
+		Fleet const& after = fleetReport.fightInfo.after;
+		table->elementAt(0, 1)->addWidget(new Wt::WText(boost::lexical_cast<std::string>(before.id)));
 
 		table->elementAt(1, 0)->addWidget(new Wt::WText("Has fight :"));
 		if(fleetReport.hasFight)
@@ -112,17 +140,44 @@ void MessageView::renderFightReport(size_t id)
 
 		table->elementAt(3, 0)->addWidget(new Wt::WText("Start :"));
 		std::string fleetContentBefore;
-		table->elementAt(3, 1)->addWidget(new Wt::WText(getContentString(fleetReport.fleetsBefore)));
+		table->elementAt(3, 1)->addWidget(new Wt::WText(getContentString(before)));
 		table->elementAt(4, 0)->addWidget(new Wt::WText("End :"));
 		std::string fleetContentAfter;
-		table->elementAt(4, 1)->addWidget(new Wt::WText(getContentString(fleetReport.fleetsAfter)));
+		table->elementAt(4, 1)->addWidget(new Wt::WText(getContentString(after)));
 
 		table->elementAt(5, 0)->addWidget(new Wt::WText("Report ID = " + boost::lexical_cast<std::string>(id)));
+	}
 
-		//bool isDead;
-		//bool hasFight;
-		//std::set<size_t> enemySet; //par index dans le FightReport
-		//Fleet fleetsBefore;
-		//Fleet fleetsAfter;
+	if(fightReport.hasPlanet)
+	{
+		Wt::WTable* table = new Wt::WTable(this);
+		table->elementAt(0, 0)->addWidget(new Wt::WText("Fleet name :"));
+
+		Planet const& before = fightReport.planet.fightInfo.before;
+		Planet const& after = fightReport.planet.fightInfo.after;
+		//table->elementAt(0, 1)->addWidget(new Wt::WText(boost::lexical_cast<std::string>(before.id)));
+		table->elementAt(0, 1)->addWidget(new Wt::WText(
+		                                    str(format("(%1%;%2%;%3%)") % before.coord.X % before.coord.Y % before.coord.Z)));
+
+		table->elementAt(1, 0)->addWidget(new Wt::WText("Has fight :"));
+		if(fightReport.planet.hasFight)
+			table->elementAt(1, 1)->addWidget(new Wt::WText("Yes"));
+		else
+			table->elementAt(1, 1)->addWidget(new Wt::WText("No"));
+
+		table->elementAt(2, 0)->addWidget(new Wt::WText("Is dead :"));
+		if(fightReport.planet.isDead)
+			table->elementAt(2, 1)->addWidget(new Wt::WText("Yes"));
+		else
+			table->elementAt(2, 1)->addWidget(new Wt::WText("No"));
+
+		table->elementAt(3, 0)->addWidget(new Wt::WText("Start :"));
+		std::string fleetContentBefore;
+		table->elementAt(3, 1)->addWidget(new Wt::WText(getContentString(before)));
+		table->elementAt(4, 0)->addWidget(new Wt::WText("End :"));
+		std::string fleetContentAfter;
+		table->elementAt(4, 1)->addWidget(new Wt::WText(getContentString(after)));
+
+		table->elementAt(5, 0)->addWidget(new Wt::WText("Report ID = " + boost::lexical_cast<std::string>(id)));
 	}
 }

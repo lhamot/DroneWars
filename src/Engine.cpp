@@ -23,6 +23,7 @@
 #include "LuaTools.h"
 #include "Tools.h"
 #include "fighting.h"
+#include "Rules.h"
 
 extern "C"
 {
@@ -420,6 +421,8 @@ try
 			drop(fleet, *planet);
 		fleet.eventList.push_back(
 		  Event(univ_.nextEventID++, time, Event::FleetDrop));
+		if(planet->playerId == Player::NoId)
+			BOOST_THROW_EXCEPTION(std::logic_error("planet->playerId == Player::NoId"));
 		planet->eventList.push_back(
 		  Event(univ_.nextEventID++, time, Event::FleetDrop));
 	}
@@ -511,10 +514,14 @@ try
 	{
 		vector<Fleet::ID> deadFleets;
 		deadFleets.reserve(univ_.fleetMap.size());
-		typedef std::multimap<Coord, Fleet*, CompCoord> FleetCoordMultimap;
+		vector<Coord> lostPlanets;
+		lostPlanets.reserve(univ_.planetMap.size());
+		typedef std::multimap<Coord, FighterPtr, CompCoord> FleetCoordMultimap;
 		FleetCoordMultimap fleetMultimap;
 		BOOST_FOREACH(Fleet & fleet, univ_.fleetMap | boost::adaptors::map_values)
 			fleetMultimap.insert(make_pair(fleet.coord, &fleet));
+		BOOST_FOREACH(Planet & planet, univ_.planetMap | boost::adaptors::map_values)
+			fleetMultimap.insert(make_pair(planet.coord, &planet));
 
 		std::vector<Fleet*> fleetVect;
 		// Pour chaque coordonées, on accede au range des flotes
@@ -524,7 +531,7 @@ try
 		{
 			auto fleetRange = make_pair(iter1, iter2);
 
-			//Si 0 ou 1 vaisseau, on passe
+			//Si 0 vaisseau, on passe
 			auto testShipNumber = iter1;
 			if(testShipNumber == iter2)
 				continue;
@@ -534,16 +541,26 @@ try
 
 			//On lance le combat
 			fleetVect.clear();
-			boost::copy(fleetRange | boost::adaptors::map_values, back_inserter(fleetVect));
-			FightReport fightReportVect;
-			fight(fleetVect, fightReportVect);
+			Planet* planetPtr = nullptr;
+			BOOST_FOREACH(FighterPtr const & fighterPtr, fleetRange | boost::adaptors::map_values)
+			{
+				if(fighterPtr.isPlanet())
+					planetPtr = fighterPtr.getPlanet();
+				else
+					fleetVect.push_back(fighterPtr.getFleet());
+			}
+			//boost::copy(fleetRange | boost::adaptors::map_values, back_inserter(fleetVect));
+			FightReport fightReport;
+			fight(fleetVect, planetPtr, fightReport);
 			bool hasFight = false;
-			auto range = make_zip_range(fleetVect, fightReportVect);
+			auto range = make_zip_range(fleetVect, fightReport.fleetList);
 			BOOST_FOREACH(auto fleetReportPair, range)
 			{
-				FleetReport const& report = fleetReportPair.get<1>();
+				Report<Fleet> const& report = fleetReportPair.get<1>();
 				hasFight = hasFight | report.hasFight;
 			}
+			hasFight = hasFight | fightReport.planet.hasFight;
+
 			//Si personne ne c'est batue, on passe
 			if(hasFight == false)
 				continue;
@@ -551,12 +568,13 @@ try
 			//On ajoute le rapport dans la base de donné
 			size_t const reportID = univ_.nextFightID;
 			univ_.nextFightID += 1;
-			univ_.reportMap.insert(make_pair(reportID, fightReportVect));
+			univ_.reportMap.insert(make_pair(reportID, fightReport));
 			//On ajoute les evenement/message dans les flottes/joueur
 			BOOST_FOREACH(auto fleetReportPair, range)
 			{
-				Fleet& fleet = *fleetReportPair.get<0>();
-				FleetReport const& report = fleetReportPair.get<1>();
+				Fleet* fleetPtr = fleetReportPair.get<0>();
+				Report<Fleet> const& report = fleetReportPair.get<1>();
+				Fleet& fleet = *fleetPtr;
 				if(report.isDead)
 				{
 					deadFleets.push_back(fleet.id);
@@ -569,7 +587,30 @@ try
 					  Event(univ_.nextEventID++, univ_.time, Event::FleetWin, reportID));
 				}
 			}
+			if(planetPtr)
+			{
+				Planet& planet = *planetPtr;
+				if(fightReport.planet.isDead)
+				{
+					lostPlanets.push_back(planet.coord);
+					if(planet.playerId != Player::NoId)
+						mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(
+						  Event(univ_.nextEventID++, univ_.time, Event::PlanetLose, reportID));
+				}
+				else if(fightReport.planet.hasFight)
+				{
+					if(planet.playerId == Player::NoId)
+						BOOST_THROW_EXCEPTION(std::logic_error("planet.playerId == Player::NoId"));
+					planet.eventList.push_back(
+					  Event(univ_.nextEventID++, univ_.time, Event::PlanetWin, reportID));
+				}
+			}
 		}
+
+		boost::for_each(lostPlanets, [&](Coord planetCoord)
+		{
+			onPlanetLose(planetCoord, univ_);
+		});
 
 		//Suppression de toute les flottes mortes
 		boost::for_each(deadFleets, [&](Fleet::ID fleetID)
@@ -620,7 +661,7 @@ try
 			player.eventList.erase(player.eventList.begin(), player.eventList.end() - 10);
 		BOOST_FOREACH(Event const & ev, player.eventList)
 		{
-			if(ev.type == Event::FleetLose)
+			if(ev.type == Event::FleetLose || ev.type == Event::PlanetLose)
 				usedReport.insert(ev.value);
 		}
 	}
@@ -636,6 +677,7 @@ try
 	//save(lexical_cast<std::string>(time(0)) + "_save.bta");
 
 	/*
+	//Calcule de l'occupation memoire
 	size_t playerSize = 0;
 	BOOST_FOREACH(auto const& playerKV, univ_.playerMap)
 	{
