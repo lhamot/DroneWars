@@ -70,11 +70,13 @@ MessageView::MessageView(WContainerWidget* parent,
 	case Event::PlanetWin:
 		renderFightReport(ev.value);
 		break;
+	case Event::CannonMade:
+		break;
 	default:
 		BOOST_THROW_EXCEPTION(std::out_of_range("Bad event type"));
 	};
 
-	static_assert(Event::PlanetWin + 1 == Event::Count, "Missing event type in MessageView");
+	static_assert(Event::CannonMade + 1 == Event::Count, "Missing event type in MessageView");
 }
 
 std::string getContentString(Fleet const& fleet)

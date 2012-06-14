@@ -8,11 +8,12 @@ std::string getTaskName(PlanetTask::Enum type)
 	{
 		BTA_STR(UpgradeBuilding)
 		BTA_STR(MakeShip)
+		BTA_STR(MakeCannon)
 	}
 #undef BTA_STR
 
 	BOOST_THROW_EXCEPTION(std::logic_error("Unknown task type"));
-	static_assert(PlanetTask::MakeShip == PlanetTask::Count - 1, "Task cases missing");
+	static_assert(PlanetTask::MakeCannon == PlanetTask::Count - 1, "Task cases missing");
 }
 
 std::string getTaskName(FleetTask::Enum type)
@@ -87,11 +88,12 @@ std::string getEventName(Event::Type evtype)
 		BTA_STR(FleetDrop)
 		BTA_STR(PlanetLose)
 		BTA_STR(PlanetWin)
+		BTA_STR(CannonMade)
 	}
 #undef BTA_STR
 
 	BOOST_THROW_EXCEPTION(std::logic_error("Unknown Ressource type"));
-	static_assert(Event::PlanetWin == Event::Count - 1, "Event cases missing");
+	static_assert(Event::CannonMade == Event::Count - 1, "Event cases missing");
 }
 
 boost::mutex timeToStringMutex;

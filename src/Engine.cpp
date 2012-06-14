@@ -330,10 +330,17 @@ try
 				addTask(planet, univ_.time, action.ship, action.number);
 		}
 		break;
+		case PlanetAction::Cannon:
+		{
+			if(canBuild(planet, action.cannon, action.number))
+				addTask(planet, univ_.time, action.cannon, action.number);
+		}
+		break;
 		default:
 			BOOST_THROW_EXCEPTION(std::logic_error("Unknown PlanetAction::Type"));
 		};
 	}
+	static_assert(PlanetAction::Count == 4, "Missing PlanetAction case");
 }
 catch(luabind::error& ex)
 {

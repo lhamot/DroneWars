@@ -55,6 +55,24 @@ Wt::WContainerWidget* PlanetViewWT::createBuildingsTab(Wt::WContainerWidget* par
 	return buildingsTab;
 }
 
+
+Wt::WContainerWidget* PlanetViewWT::createCannonsTab(Wt::WContainerWidget* parent)
+{
+	WContainerWidget* cannonsTab = new WContainerWidget(parent);
+	Wt::WHBoxLayout* layout = new Wt::WHBoxLayout();
+	cannonsTab->setLayout(layout);
+
+	cannonsView_ = new WTableView(cannonsTab);
+
+	cannonsView_->setAlternatingRowColors(true);
+	cannonsView_->setColumnWidth(0, 100);
+	cannonsView_->setColumnWidth(1, 40);
+	layout->addWidget(cannonsView_);
+
+	return cannonsTab;
+}
+
+
 /*Wt::WContainerWidget* PlanetView::createResearchTab(Wt::WContainerWidget*)
 {
 	WContainerWidget *researchTab = new WContainerWidget(parent);
@@ -74,14 +92,17 @@ PlanetViewWT::PlanetViewWT(
   Coord plaCoord):
 	WContainerWidget(parent),
 	engine_(eng),
-	planetCoord_(plaCoord)
+	planetCoord_(plaCoord),
+	tasksView_(nullptr),
+	buildingsView_(nullptr),
+	cannonsView_(nullptr)
 {
 	Wt::WVBoxLayout* layout = new Wt::WVBoxLayout();
 	setLayout(layout);
 
-
 	WTabWidget* tab = new WTabWidget(this);
 	tab->addTab(createBuildingsTab(this), "Buildings");
+	tab->addTab(createCannonsTab(this), "Cannons");
 	tab->addTab(createTasksTab(this), "Tasks");
 	//tab->addTab(createResearchTab(this), "Research");
 	//tab->addTab(createDefenceTab(this), "Defence");
@@ -94,6 +115,7 @@ PlanetViewWT::PlanetViewWT(
 
 void PlanetViewWT::refresh()
 {
+	//! Tasks
 	int row = 0;
 	Planet planet = engine_.getPlanet(planetCoord_);
 	Wt::WStandardItemModel* taModel = new Wt::WStandardItemModel((int)planet.taskQueue.size(), 4, this);
@@ -123,9 +145,9 @@ void PlanetViewWT::refresh()
 	}
 	tasksView_->setModel(taModel);
 
-
+	//! Buildings
 	row = 0;
-	Wt::WStandardItemModel* buModel = new Wt::WStandardItemModel((int)planet.taskQueue.size(), 4, this);
+	Wt::WStandardItemModel* buModel = new Wt::WStandardItemModel((int)planet.buildingMap.size(), 4, this);
 	buModel->setHeaderData(0, Horizontal, WString("Name"), DisplayRole);
 	buModel->setHeaderData(1, Horizontal, WString("Level"), DisplayRole);
 	BOOST_FOREACH(auto const & typeLevel, planet.buildingMap)
@@ -141,6 +163,25 @@ void PlanetViewWT::refresh()
 		row += 1;
 	}
 	buildingsView_->setModel(buModel);
+
+	//! Cannons
+	row = 0;
+	Wt::WStandardItemModel* caModel = new Wt::WStandardItemModel((int)planet.cannonTab.size(), 4, this);
+	caModel->setHeaderData(0, Horizontal, WString("Name"), DisplayRole);
+	caModel->setHeaderData(1, Horizontal, WString("Level"), DisplayRole);
+	BOOST_FOREACH(auto const & level, planet.cannonTab)
+	{
+		Wt::WStandardItem* item = new Wt::WStandardItem();
+		item->setData(getCannonName(static_cast<Cannon::Enum>(row)), DisplayRole);
+		caModel->setItem(row, 0, item);
+
+		item = new Wt::WStandardItem();
+		item->setData(level, DisplayRole);
+		caModel->setItem(row, 1, item);
+
+		row += 1;
+	}
+	cannonsView_->setModel(caModel);
 
 	WContainerWidget::refresh();
 }

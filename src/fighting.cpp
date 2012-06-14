@@ -122,8 +122,15 @@ void fillFinalFleet(std::vector<ShipInstance> const& shipTab, Planet& planet) th
 }
 
 
+enum FightStatus
+{
+	Fighter1Win,
+	Fighter2Win,
+	NobodyWin,
+	NothingRemains
+};
 template<typename F1, typename F2>
-boost::logic::tribool fight(F1& fleet1, F2& fleet2)
+FightStatus fight(F1& fleet1, F2& fleet2)
 {
 	//Construction de la liste de vaisseaux
 	std::vector<ShipInstance> shipTab1;
@@ -144,12 +151,20 @@ boost::logic::tribool fight(F1& fleet1, F2& fleet2)
 	fillFinalFleet(shipTab1, fleet1);
 	fillFinalFleet(shipTab2, fleet2);
 
-	if(shipTab1.empty() == false && shipTab2.empty())
-		return true;
-	else if(shipTab1.empty() && shipTab2.empty() == false)
-		return false;
+	if(shipTab1.empty())
+	{
+		if(shipTab2.empty())
+			return NothingRemains;
+		else
+			return Fighter2Win;
+	}
 	else
-		return boost::logic::indeterminate;
+	{
+		if(shipTab2.empty())
+			return Fighter1Win;
+		else
+			return NobodyWin;
+	}
 }
 
 
@@ -191,21 +206,27 @@ void handleFighterPair(std::vector<Fleet*> const& fleetList,
                        F2& fighter2
                       )
 {
-	//Report<Fleet>& report2 = reportList.fleetList[fleetPair.index2];
 	report1.enemySet.insert(fleetPair.index2);
 	report2.enemySet.insert(fleetPair.index1);
-	//Fleet *fighterPtr1 = fleetList[fleetPair.index1];
-	//Fleet *fighterPtr2 = fleetList[fleetPair.index2];
 
-	//F1& fighter1 = *fighterPtr1;
-	//F2& fighter2 = *fighterPtr2;
 	report1.hasFight = true;
 	report2.hasFight = true;
-	boost::tribool result = fight(fighter1, fighter2);
-	if(result == false)
-		report1.isDead = true;
-	else if(result == true)
+	FightStatus const status = fight(fighter1, fighter2);
+	switch(status)
+	{
+	case Fighter1Win:
 		report2.isDead = true;
+		break;
+	case Fighter2Win:
+		report1.isDead = true;
+		break;
+	case NobodyWin:
+		break;
+	case NothingRemains:
+		report1.isDead = true;
+		report2.isDead = true;
+		break;
+	}
 	report1.fightInfo.after = fighter1;
 	report1.fightInfo.after.eventList.clear();
 	report2.fightInfo.after = fighter2;

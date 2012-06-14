@@ -23,6 +23,7 @@ public:
 private:
 	Wt::WContainerWidget* createTasksTab(Wt::WContainerWidget*);
 	Wt::WContainerWidget* createBuildingsTab(Wt::WContainerWidget*);
+	Wt::WContainerWidget* createCannonsTab(Wt::WContainerWidget*);
 	Wt::WContainerWidget* createResearchTab(Wt::WContainerWidget*);
 	Wt::WContainerWidget* createDefenceTab(Wt::WContainerWidget*);
 
@@ -30,6 +31,7 @@ private:
 	Coord planetCoord_;
 	Wt::WTableView* tasksView_;
 	Wt::WTableView* buildingsView_;
+	Wt::WTableView* cannonsView_;
 
 };
 

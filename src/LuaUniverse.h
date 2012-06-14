@@ -73,6 +73,21 @@ bool planetIsFree(Planet planet)
 }
 
 
+PlanetAction makeBuilding(Building::Enum building)
+{
+	return PlanetAction(PlanetAction::Building, building);
+}
+
+PlanetAction makeShip(Ship::Enum ship, size_t count)
+{
+	return PlanetAction(PlanetAction::Ship, ship, count);
+}
+
+PlanetAction makeCannon(Cannon::Enum cannon, size_t count)
+{
+	return PlanetAction(PlanetAction::Cannon, cannon, count);
+}
+
 extern "C" int initDroneWars(lua_State* L)
 {
 	using namespace luabind;
@@ -90,6 +105,7 @@ extern "C" int initDroneWars(lua_State* L)
 	  .def_readonly("coord", &Planet::coord)
 	  .def_readonly("playerId", &Planet::playerId)
 	  .def_readonly("buildingMap", &Planet::buildingMap)
+	  .def_readonly("cannonTab", &Planet::cannonTab)
 	  .def_readonly("ressourceSet", &Planet::ressourceSet),
 	  //.def(constructor<Coord>())
 	  class_<RessourceSet>("RessourceSet")
@@ -128,9 +144,22 @@ extern "C" int initDroneWars(lua_State* L)
 	    value("Cargo",        Ship::Cargo),
 	    value("LargeCargo",   Ship::LargeCargo)
 	  ],
+	  class_<Cannon>("Cannon")
+	  .enum_("Enum")
+	  [
+	    value("Cannon1", Cannon::Cannon1),
+	    value("Cannon2", Cannon::Cannon2),
+	    value("Cannon3", Cannon::Cannon3),
+	    value("Cannon4", Cannon::Cannon4),
+	    value("Cannon5", Cannon::Cannon5),
+	    value("Cannon6", Cannon::Cannon6)
+	  ],
 	  class_<Planet::BuildingMap>("BuildingMap")
 	  .def("count", &Planet::BuildingMap::count)
 	  .def("find", findBuilding),
+	  class_<Planet::CannonTab>("CannonTab")
+	  .def("size", &Planet::CannonTab::size)
+	  .def("at", vectorAt<Planet::CannonTab>),
 	  //.def(boost::python::map_indexing_suite<Planet::BuildingMap>())
 	  class_<Fleet::ShipTab>("ShipTab")
 	  .def("size", &Fleet::ShipTab::size)
@@ -156,15 +185,17 @@ extern "C" int initDroneWars(lua_State* L)
 	    value("Z", Universe::MapSizeZ)
 	  ],
 	  class_<PlanetAction>("PlanetAction")
-	  .def(constructor<PlanetAction::Type, Building::Enum>())
-	  .def(constructor<PlanetAction::Type, Ship::Enum, unsigned int>())
 	  .def_readonly("action",   &PlanetAction::action)
 	  .def_readonly("building", &PlanetAction::building)
 	  .enum_("Type")
 	  [
-	    value("Building",  PlanetAction::Building),
-	    value("Ship",  PlanetAction::Ship)
+	    value("Building", PlanetAction::Building),
+	    value("Ship",     PlanetAction::Ship),
+	    value("Cannon",   PlanetAction::Cannon)
 	  ],
+	  def("makeBuilding", makeBuilding),
+	  def("makeShip", makeShip),
+	  def("makeCannon", makeCannon),
 	  class_<PlanetActionList>("PlanetActionList")
 	  //.def(boost::python::vector_indexing_suite<PlanetActionList>());
 	  .def("append", PlanetActionListPushBack),

@@ -58,6 +58,7 @@ struct Event
 		FleetDrop,
 		PlanetLose,
 		PlanetWin,
+		CannonMade,
 		Count
 	};
 
@@ -256,6 +257,7 @@ struct PlanetTask
 	{
 		UpgradeBuilding,
 		MakeShip,
+		MakeCannon,
 		Count
 	};
 
@@ -434,12 +436,15 @@ struct PlanetAction
 		Undefined = -1,
 		Building,
 		StopBuilding,
-		Ship
+		Ship,
+		Cannon,
+		Count
 	};
 
 	Type action;
 	Building::Enum building;
 	Ship::Enum ship;
+	Cannon::Enum cannon;
 	size_t number;
 
 	bool operator==(PlanetAction const& other)
@@ -450,9 +455,10 @@ struct PlanetAction
 		       number == other.number;
 	}
 
-	PlanetAction(): action(Undefined), building(Building::Undefined), ship(Ship::Undefined), number(0) {}
-	PlanetAction(Type a, Building::Enum b): action(a), building(b), ship(Ship::Undefined), number(0) {}
-	PlanetAction(Type a, Ship::Enum s, size_t n): action(a), building(Building::Undefined), ship(s), number(n) {}
+	PlanetAction(): action(Undefined), building(Building::Undefined), ship(Ship::Undefined), cannon(Cannon::Undefined), number(0) {}
+	PlanetAction(Type a, Building::Enum b): action(a), building(b), ship(Ship::Undefined), cannon(Cannon::Undefined), number(0) {}
+	PlanetAction(Type a, Ship::Enum s, size_t n): action(a), building(Building::Undefined), ship(s), cannon(Cannon::Undefined), number(n) {}
+	PlanetAction(Type a, Cannon::Enum c, size_t n): action(a), building(Building::Undefined), ship(Ship::Undefined), cannon(c), number(n) {}
 };
 typedef std::vector<PlanetAction> PlanetActionList;
 
@@ -640,6 +646,10 @@ bool canBuild(Planet const& planet, Building::Enum type);
 void addTask(Planet& planet, time_t time, Building::Enum building);
 
 void addTask(Planet& planet, time_t time, Ship::Enum ship, size_t number);
+
+bool canBuild(Planet const& planet, Cannon::Enum type, size_t number);
+
+void addTask(Planet& planet, time_t time, Cannon::Enum cannon, size_t number);
 
 bool canStop(Planet const& planet, Building::Enum type);
 

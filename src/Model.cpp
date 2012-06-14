@@ -146,17 +146,19 @@ void construct(Universe& univ)
 		player.planetsCode.setCode(
 		  "function AI(planet, fleets, actions)\n"
 		  "  if (not planet.buildingMap:count(Building.MetalMine)) or (planet.buildingMap:find(Building.MetalMine) < 4) then\n"
-		  "    actions:append(PlanetAction(PlanetAction.Building, Building.MetalMine))\n"
+		  "    actions:append(makeBuilding(Building.MetalMine))\n"
 		  "  elseif not planet.buildingMap:count(Building.Factory) then\n"
-		  "    actions:append(PlanetAction(PlanetAction.Building, Building.Factory))\n"
+		  "    actions:append(makeBuilding(Building.Factory))\n"
+		  "  elseif planet.cannonTab:at(Cannon.Cannon1) < 10 then\n"
+		  "    actions:append(makeCannon(Cannon.Cannon1, 1))\n"
 		  "  else\n"
 		  "    for fleet in fleets:range() do\n"
 		  "      if fleet.shipList:at(Ship.Queen) == 0 then\n"
-		  "         actions:append(PlanetAction(PlanetAction.Ship, Ship.Queen, 1))\n"
+		  "         actions:append(makeShip(Ship.Queen, 1))\n"
 		  "         return\n"
 		  "      end\n"
 		  "    end\n"
-		  "    actions:append(PlanetAction(PlanetAction.Ship, Ship.Mosquito, 1))\n"
+		  "    actions:append(makeShip(Ship.Mosquito, 1))\n"
 		  "  end\n"
 		  "end");
 		player.fleetsCode.setCode(
@@ -283,6 +285,9 @@ void pay(Fleet& fleet, RessourceSet const& price)
 }
 bool canBuild(Planet const& planet, Ship::Enum type, size_t number)
 {
+	if(type >= Ship::Count)
+		return false;
+
 	RessourceSet price = Ship::List[type].price;
 	boost::geometry::multiply_value(price.tab, number);
 	for(int i = 0; i < RessourceSet::Tab::static_size; ++i)
@@ -295,6 +300,9 @@ bool canBuild(Planet const& planet, Ship::Enum type, size_t number)
 
 bool canBuild(Planet const& planet, Building::Enum type)
 {
+	if(type >= Building::Count)
+		return false;
+
 	auto const buIter = planet.buildingMap.find(type);
 	size_t const buLevel = (buIter == planet.buildingMap.end()) ? 0 : buIter->second;
 	RessourceSet const price = getBuilingPrice(type, buLevel + 1);
@@ -377,10 +385,18 @@ void execTask(Universe& univ, Planet& planet, PlanetTask& task, time_t time)
 			univ.fleetMap.insert(make_pair(newFleet.id, newFleet));
 		}
 		break;
+		case PlanetTask::MakeCannon:
+			if(task.value < Cannon::Count)
+			{
+				//BOOST_THROW_EXCEPTION(std::logic_error("Unconsistent cannon type"));
+				planet.cannonTab[task.value] += 1;
+				planet.eventList.push_back(Event(univ.nextEventID++, time, Event::CannonMade, "New cannon"));
+			}
+			break;
 		default:
 			BOOST_THROW_EXCEPTION(std::logic_error("Unknown PlanetTask"));
 		}
-		static_assert(PlanetTask::MakeShip == (PlanetTask::Count - 1), "Missing cases in switch");
+		static_assert(PlanetTask::MakeCannon == (PlanetTask::Count - 1), "Missing cases in switch");
 		task.expired = true;
 	}
 }
@@ -544,4 +560,32 @@ void drop(Fleet& fleet, Planet& planet)
 {
 	boost::geometry::add_point(planet.ressourceSet.tab, fleet.ressourceSet.tab);
 	boost::geometry::assign_value(fleet.ressourceSet.tab, 0);
+}
+
+bool canBuild(Planet const& planet, Cannon::Enum type, size_t number)
+{
+	if(type >= Cannon::Count)
+		return false;
+	RessourceSet price = Cannon::List[type].price;
+	boost::geometry::multiply_value(price.tab, number);
+	for(int i = 0; i < RessourceSet::Tab::static_size; ++i)
+	{
+		if(price.tab[i] > planet.ressourceSet.tab[i])
+			return false;
+	}
+	return true;
+}
+
+void addTask(Planet& planet, time_t time, Cannon::Enum cannon, size_t number)
+{
+	size_t const duration = Cannon::List[cannon].price.tab[0] / 30;
+	PlanetTask task(PlanetTask::MakeCannon, time, duration);
+	if(cannon >= Cannon::Count)
+		BOOST_THROW_EXCEPTION(std::logic_error("Unconsistent cannon type"));
+	task.value = cannon;
+	task.value2 = number;
+	RessourceSet const& price = Cannon::List[cannon].price;
+	task.startCost = price;
+	planet.taskQueue.push_back(task);
+	pay(planet, price);
 }
