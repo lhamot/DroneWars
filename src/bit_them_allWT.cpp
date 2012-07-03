@@ -62,7 +62,7 @@ private:
 			delete toDelete;
 		}
 
-		//On recrée son contenue
+		//On recrÃ©e son contenue
 		WContainerWidget* container = new WContainerWidget(this);
 		edit_ = new WTextArea(container);
 		edit_->setRows(80);

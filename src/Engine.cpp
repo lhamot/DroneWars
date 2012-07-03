@@ -467,7 +467,7 @@ try
 
 	univ_.time += RoundSecond;
 
-	//Désactivation de tout les codes qui echoue
+	//DÃ©sactivation de tout les codes qui echoue
 	BOOST_FOREACH(Player const & player, univ_.playerMap | boost::adaptors::map_values)
 	{
 		if(player.planetsCode.getFailCount() >= MaxCodeExecTry)
@@ -476,7 +476,7 @@ try
 			codesMap[player.id].fleetsCode = luabind::object();
 	}
 
-	//Rechargement des codes flote/planet des joueurs dont le code a été changé
+	//Rechargement des codes flote/planet des joueurs dont le code a Ã©tÃ© changÃ©
 	{
 		UniqueLock lockReload(mutex_);
 		BOOST_FOREACH(Player::ID pid, playerToReload_)
@@ -497,7 +497,7 @@ try
 		BOOST_FOREACH(Fleet & fleet, univ_.fleetMap | boost::adaptors::map_values)
 			fleetMap.insert(make_pair(fleet.coord, fleet));
 
-		//Les planètes
+		//Les planÃ¨tes
 		std::vector<Fleet const*> fleetList;
 		BOOST_FOREACH(Universe::PlanetMap::value_type & planetNVP, univ_.planetMap)
 		{
@@ -531,7 +531,7 @@ try
 			fleetMultimap.insert(make_pair(planet.coord, &planet));
 
 		std::vector<Fleet*> fleetVect;
-		// Pour chaque coordonées, on accede au range des flotes
+		// Pour chaque coordonÃ©es, on accede au range des flotes
 		for(FleetCoordMultimap::iterator iter1 = fleetMultimap.begin(), iter2 = nextNot(fleetMultimap, iter1);
 		    iter1 != fleetMultimap.end();
 		    iter1 = iter2, iter2 = nextNot(fleetMultimap, iter1))
@@ -572,7 +572,7 @@ try
 			if(hasFight == false)
 				continue;
 
-			//On ajoute le rapport dans la base de donné
+			//On ajoute le rapport dans la base de donnÃ©
 			size_t const reportID = univ_.nextFightID;
 			univ_.nextFightID += 1;
 			univ_.reportMap.insert(make_pair(reportID, fightReport));

@@ -18,19 +18,19 @@ static size_t const PlanetIndex = size_t(-1);
 //
 //
 //Mechanique, en vrac
-//  Rang avant, moyen , arrière
+//  Rang avant, moyen , arriÃ¨re
 //  Boulier cachant 1 ou  2 rang
 //  Choix de tirer ou non en fonction de la reserve d'energie(coup + fort si energie pleine)
 //  Generateurs d'energie(dans vaisseaux?)
 //  Ravitaillement des missile(vaisseu de fabrication?)
-//  Ravitaillement de ressource(loicium rafiné?)
+//  Ravitaillement de ressource(loicium rafinÃ©?)
 //  Choix du type d'attaque(par type de vaiseau)
 //  Fuite pendant le combat
 //
 //Avant combat
 //
 //A chaque round
-//  Choix du rang pour chaque type(arière, moyen, avant)
+//  Choix du rang pour chaque type(ariÃ¨re, moyen, avant)
 //  Fuire ou pas
 //
 //Algo round
@@ -40,7 +40,7 @@ static size_t const PlanetIndex = size_t(-1);
 //    Demander aux IA si ils tirent ou attendent
 //  Pour chaque type de vaiseau
 //    Si il tire
-//      Chaque vaiseau tire sur un enemie aléatoire(des 2 premier rang?)(difference de precision?)
+//      Chaque vaiseau tire sur un enemie alÃ©atoire(des 2 premier rang?)(difference de precision?)
 struct ShipInstance
 {
 	size_t type;
@@ -173,7 +173,7 @@ struct FleetPair
 	size_t index1;
 	size_t index2;
 
-	FleetPair(size_t f1, size_t f2) //Exceptionellement, je vais laisser de coté la liste d'initialization
+	FleetPair(size_t f1, size_t f2) //Exceptionellement, je vais laisser de cotÃ© la liste d'initialization
 	{
 		if(index1 < index2)
 		{
