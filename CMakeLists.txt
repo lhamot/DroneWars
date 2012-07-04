@@ -68,8 +68,13 @@ target_link_libraries( DroneWars optimized wt )
 target_link_libraries( DroneWars optimized wthttp )
 target_link_libraries( DroneWars optimized wtext )
 
-target_link_libraries( DroneWars debug luabindd )
-target_link_libraries( DroneWars optimized luabind )
+target_link_libraries( DroneWars debug libluabindd )
+target_link_libraries( DroneWars optimized libluabind )
 
 target_link_libraries( DroneWars debug luad )
 target_link_libraries( DroneWars optimized lua )
+
+if(CMAKE_COMPILER_IS_GNUCXX)
+    SET(CMAKE_CXX_FLAGS "-std=c++0x")
+endif()
+
