@@ -33,7 +33,7 @@ public:
 	}
 
 private:
-	void onPlayerLogin(Player::ID& pid)
+	void onPlayerLogin(Player::ID pid)
 	{
 		playerID_ = pid;
 		setInternalPath("/ingame", true);

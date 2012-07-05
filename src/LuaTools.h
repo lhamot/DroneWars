@@ -3,7 +3,7 @@
 
 #include <string>
 #include <sstream>
-#include <luabind\luabind.hpp>
+#include <luabind/luabind.hpp>
 
 /*extern "C"
 {

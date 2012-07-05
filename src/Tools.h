@@ -36,16 +36,16 @@ nextNot(T& map, I const& iter)
 
 template<typename C1, typename C2>
 auto make_zip_range(C1 const& c1, C2 const& c2)
--> decltype(std::make_pair(make_zip_iterator(make_tuple(c1.begin(), c2.begin())),
-                           make_zip_iterator(make_tuple(c1.end(), c2.end()))))
+-> decltype(std::make_pair(make_zip_iterator(boost::make_tuple(c1.begin(), c2.begin())),
+                           make_zip_iterator(boost::make_tuple(c1.end(), c2.end()))))
 {
-	auto begin = make_zip_iterator(make_tuple(c1.begin(), c2.begin()));
-	auto end = make_zip_iterator(make_tuple(c1.end(), c2.end()));
+	auto begin = make_zip_iterator(boost::make_tuple(c1.begin(), c2.begin()));
+	auto end = make_zip_iterator(boost::make_tuple(c1.end(), c2.end()));
 	return make_pair(begin, end);
 }
 
 template<typename M, typename F>
-void map_remove_erase_if(M& map, F& func)
+void map_remove_erase_if(M& map, F const& func)
 {
 	auto iter = map.begin();
 	while(iter != map.end())

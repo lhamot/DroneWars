@@ -92,7 +92,7 @@ std::string getContentString(Fleet const& fleet)
 		//result += getShipName(shipType)[0] + std::string(":") + boost::lexical_cast<std::string>(fleet.shipList[shipType]) + ";";
 	}
 	if(false == result.empty())
-		result.pop_back();
+		result.resize(result.size() - 1);
 	return result;
 }
 
@@ -111,7 +111,7 @@ std::string getContentString(Planet const& planet)
 		//result += getCannonName(cannonTab)[0] + std::string(":") + boost::lexical_cast<std::string>(planet.cannonTab[cannonTab]) + ";";
 	}
 	if(false == result.empty())
-		result.pop_back();
+		result.resize(result.size() - 1);
 	return result;
 }
 
