@@ -17,6 +17,16 @@ namespace LuaTools
 class LuaEngine;
 }
 
+typedef std::unordered_multimap<Coord, Fleet> FleetCoordMap;
+typedef std::pair<FleetCoordMap::const_iterator, FleetCoordMap::const_iterator> FleetRange;
+struct PlayerCodes
+{
+	luabind::object fleetsCode;
+	luabind::object planetsCode;
+};
+typedef std::unordered_map<Player::ID, PlayerCodes> PlayerCodeMap;
+
+
 class Engine
 {
 public:
@@ -85,21 +95,11 @@ private:
 		}
 
 	private:
-		typedef std::unordered_multimap<Coord, Fleet> FleetCoordMap;
-		typedef std::pair<FleetCoordMap::const_iterator, FleetCoordMap::const_iterator> FleetRange;
-		struct PlayerCodes
-		{
-			luabind::object fleetsCode;
-			luabind::object planetsCode;
-		};
-		typedef std::unordered_map<Player::ID, PlayerCodes> PlayerCodeMap;
-
 		void round(LuaTools::LuaEngine&, PlayerCodeMap& codesMap);
-		void execPlanet(LuaTools::LuaEngine& luaEngine, luabind::object, Planet& planet, time_t time, std::vector<Fleet const*> const& fleetList);
-		bool execFleet(LuaTools::LuaEngine& luaEngine, luabind::object, Fleet& fleet, FleetCoordMap& fleetMap, time_t time);
 		luabind::object registerCode(
 		  LuaTools::LuaEngine& luaEngine,
 		  Player::ID const pid, CodeData& code, time_t time, bool isFleet);
+		void updatePlayersCode(LuaTools::LuaEngine& luaEngine, PlayerCodeMap& codesMap);
 
 		boost::shared_mutex mutex_;
 		std::set<Player::ID> playerToReload_;

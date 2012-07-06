@@ -89,5 +89,8 @@
     <ClInclude Include="..\..\src\Rules.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\serialize_unordered_map.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

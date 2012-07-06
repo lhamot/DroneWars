@@ -17,6 +17,7 @@
 #include <boost/optional.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/iterator/zip_iterator.hpp>
+#include <boost/thread/locks.hpp>
 
 //#include "PythonUniverse.h"
 #include "LuaUniverse.h"
@@ -39,6 +40,8 @@ using namespace LuaTools;
 
 typedef boost::unique_lock<Universe::Mutex> UniqueLock;
 typedef boost::shared_lock<Universe::Mutex> SharedLock;
+typedef boost::upgrade_lock<Universe::Mutex> UpgradeLock;
+typedef boost::upgrade_to_unique_lock<Universe::Mutex> UpToUniqueLock;
 
 
 Engine::Engine():
@@ -299,8 +302,13 @@ catch(std::exception const& ex)
 }
 
 
-void Engine::Simulation::execPlanet(
-  LuaEngine& luaEngine, luabind::object code, Planet& planet, time_t time, std::vector<Fleet const*> const& fleetList)
+void execPlanet(
+  Universe& univ_,
+  LuaEngine& luaEngine,
+  luabind::object code,
+  Planet& planet,
+  time_t time,
+  std::vector<Fleet const*> const& fleetList)
 try
 {
 	if(false == code.is_valid() || luabind::type(code) != LUA_TFUNCTION)
@@ -355,7 +363,7 @@ catch(std::exception const& ex)
 	  Event(univ_.nextEventID++, time, Event::FleetCodeError, ex.what()));
 }
 
-bool Engine::Simulation::execFleet(LuaEngine& luaEngine, luabind::object code, Fleet& fleet, FleetCoordMap& fleetMap, time_t time)
+bool execFleet(Universe& univ_, LuaEngine& luaEngine, luabind::object code, Fleet& fleet, FleetCoordMap& fleetMap, time_t time)
 try
 {
 	if(false == code.is_valid())
@@ -457,17 +465,9 @@ static size_t const RoundSecond = 1;
 static size_t const SaveSecond = 60;
 
 
-void Engine::Simulation::round(LuaTools::LuaEngine& luaEngine, PlayerCodeMap& codesMap)
-try
+//! Désactivation de tout les codes qui echoue
+void disableFailingCode(Universe& univ_, PlayerCodeMap& codesMap)
 {
-	std::cout << time(0) << " ";
-
-	//std::cout << "Mise a jour";
-	UniqueLock lock(univ_.mutex);
-
-	univ_.time += RoundSecond;
-
-	//Désactivation de tout les codes qui echoue
 	BOOST_FOREACH(Player const & player, univ_.playerMap | boost::adaptors::map_values)
 	{
 		if(player.planetsCode.getFailCount() >= MaxCodeExecTry)
@@ -475,192 +475,207 @@ try
 		if(player.fleetsCode.getFailCount() >= MaxCodeExecTry)
 			codesMap[player.id].fleetsCode = luabind::object();
 	}
+}
 
-	//Rechargement des codes flote/planet des joueurs dont le code a été changé
+
+//! Rechargement des codes flote/planet des joueurs dont le code a été changé
+void Engine::Simulation::updatePlayersCode(LuaTools::LuaEngine& luaEngine, PlayerCodeMap& codesMap)
+{
+	UniqueLock lockReload(mutex_);
+	BOOST_FOREACH(Player::ID pid, playerToReload_)
 	{
-		UniqueLock lockReload(mutex_);
-		BOOST_FOREACH(Player::ID pid, playerToReload_)
+		Player& player = mapFind(univ_.playerMap, pid)->second;
+		PlayerCodes newCodes =
 		{
-			Player& player = mapFind(univ_.playerMap, pid)->second;
-			PlayerCodes newCodes =
-			{
-				registerCode(luaEngine, player.id, player.fleetsCode, univ_.time, true),
-				registerCode(luaEngine, player.id, player.planetsCode, univ_.time, false)
-			};
-			codesMap[player.id] = newCodes;
-		}
-		playerToReload_.clear();
+			registerCode(luaEngine, player.id, player.fleetsCode, univ_.time, true),
+			registerCode(luaEngine, player.id, player.planetsCode, univ_.time, false)
+		};
+		codesMap[player.id] = newCodes;
 	}
+	playerToReload_.clear();
+}
 
+
+void execPlanets(Universe& univ_, LuaTools::LuaEngine& luaEngine, PlayerCodeMap& codesMap)
+{
+	FleetCoordMap fleetMap;
+	BOOST_FOREACH(Fleet & fleet, univ_.fleetMap | boost::adaptors::map_values)
+		fleetMap.insert(make_pair(fleet.coord, fleet));
+
+	//Les planètes
+	std::vector<Fleet const*> fleetList;
+	BOOST_FOREACH(Universe::PlanetMap::value_type & planetNVP, univ_.planetMap)
 	{
-		FleetCoordMap fleetMap;
-		BOOST_FOREACH(Fleet & fleet, univ_.fleetMap | boost::adaptors::map_values)
-			fleetMap.insert(make_pair(fleet.coord, fleet));
+		Planet& planet = planetNVP.second;
+		if(planet.eventList.size() > 10)
+			planet.eventList.erase(planet.eventList.begin(), planet.eventList.end() - 10);
 
-		//Les planètes
-		std::vector<Fleet const*> fleetList;
-		BOOST_FOREACH(Universe::PlanetMap::value_type & planetNVP, univ_.planetMap)
-		{
-			Planet& planet = planetNVP.second;
-			if(planet.eventList.size() > 10)
-				planet.eventList.erase(planet.eventList.begin(), planet.eventList.end() - 10);
-
-			fleetList.clear();
-			auto localFleets = fleetMap.equal_range(planet.coord);
-			auto getFleetPointer = [](FleetCoordMap::value_type const & coordFleet) {return &coordFleet.second;};
-			boost::transform(localFleets, back_inserter(fleetList), getFleetPointer);
-			//boost::copy(localFleets | boost::adaptors::map_values, back_inserter(fleetList));
-			planetRound(univ_, planet, univ_.time);
-			if(planet.playerId != Player::NoId)
-				execPlanet(luaEngine, codesMap[planet.playerId].planetsCode, planet, univ_.time, fleetList);
-		}
+		fleetList.clear();
+		auto localFleets = fleetMap.equal_range(planet.coord);
+		auto getFleetPointer = [](FleetCoordMap::value_type const & coordFleet) {return &coordFleet.second;};
+		boost::transform(localFleets, back_inserter(fleetList), getFleetPointer);
+		//boost::copy(localFleets | boost::adaptors::map_values, back_inserter(fleetList));
+		planetRound(univ_, planet, univ_.time);
+		if(planet.playerId != Player::NoId)
+			execPlanet(univ_, luaEngine, codesMap[planet.playerId].planetsCode, planet, univ_.time, fleetList);
 	}
+}
 
-	//Les combats
+//! Les combats
+void execFights(Universe& univ_)
+{
 	if(false == univ_.fleetMap.empty()) //si il y as des flottes
+		return;
+
+	vector<Fleet::ID> deadFleets;
+	deadFleets.reserve(univ_.fleetMap.size());
+	vector<Coord> lostPlanets;
+	lostPlanets.reserve(univ_.planetMap.size());
+	typedef std::multimap<Coord, FighterPtr, CompCoord> FleetCoordMultimap;
+	FleetCoordMultimap fleetMultimap;
+	BOOST_FOREACH(Fleet & fleet, univ_.fleetMap | boost::adaptors::map_values)
+		fleetMultimap.insert(make_pair(fleet.coord, &fleet));
+	BOOST_FOREACH(Planet & planet, univ_.planetMap | boost::adaptors::map_values)
+		fleetMultimap.insert(make_pair(planet.coord, &planet));
+
+	std::vector<Fleet*> fleetVect;
+	// Pour chaque coordonées, on accede au range des flotes
+	for(FleetCoordMultimap::iterator iter1 = fleetMultimap.begin(), iter2 = nextNot(fleetMultimap, iter1);
+	    iter1 != fleetMultimap.end();
+	    iter1 = iter2, iter2 = nextNot(fleetMultimap, iter1))
 	{
-		vector<Fleet::ID> deadFleets;
-		deadFleets.reserve(univ_.fleetMap.size());
-		vector<Coord> lostPlanets;
-		lostPlanets.reserve(univ_.planetMap.size());
-		typedef std::multimap<Coord, FighterPtr, CompCoord> FleetCoordMultimap;
-		FleetCoordMultimap fleetMultimap;
-		BOOST_FOREACH(Fleet & fleet, univ_.fleetMap | boost::adaptors::map_values)
-			fleetMultimap.insert(make_pair(fleet.coord, &fleet));
-		BOOST_FOREACH(Planet & planet, univ_.planetMap | boost::adaptors::map_values)
-			fleetMultimap.insert(make_pair(planet.coord, &planet));
+		auto fleetRange = make_pair(iter1, iter2);
 
-		std::vector<Fleet*> fleetVect;
-		// Pour chaque coordonées, on accede au range des flotes
-		for(FleetCoordMultimap::iterator iter1 = fleetMultimap.begin(), iter2 = nextNot(fleetMultimap, iter1);
-		    iter1 != fleetMultimap.end();
-		    iter1 = iter2, iter2 = nextNot(fleetMultimap, iter1))
+		//Si 0 vaisseau, on passe
+		auto testShipNumber = iter1;
+		if(testShipNumber == iter2)
+			continue;
+		++testShipNumber;
+		if(testShipNumber == iter2)
+			continue;
+
+		//On lance le combat
+		fleetVect.clear();
+		Planet* planetPtr = nullptr;
+		BOOST_FOREACH(FighterPtr const & fighterPtr, fleetRange | boost::adaptors::map_values)
 		{
-			auto fleetRange = make_pair(iter1, iter2);
-
-			//Si 0 vaisseau, on passe
-			auto testShipNumber = iter1;
-			if(testShipNumber == iter2)
-				continue;
-			++testShipNumber;
-			if(testShipNumber == iter2)
-				continue;
-
-			//On lance le combat
-			fleetVect.clear();
-			Planet* planetPtr = nullptr;
-			BOOST_FOREACH(FighterPtr const & fighterPtr, fleetRange | boost::adaptors::map_values)
-			{
-				if(fighterPtr.isPlanet())
-					planetPtr = fighterPtr.getPlanet();
-				else
-					fleetVect.push_back(fighterPtr.getFleet());
-			}
-			//boost::copy(fleetRange | boost::adaptors::map_values, back_inserter(fleetVect));
-			FightReport fightReport;
-			fight(fleetVect, planetPtr, fightReport);
-			bool hasFight = false;
-			auto range = make_zip_range(fleetVect, fightReport.fleetList);
-			BOOST_FOREACH(auto fleetReportPair, range)
-			{
-				Report<Fleet> const& report = fleetReportPair.get<1>();
-				hasFight = hasFight | report.hasFight;
-			}
-			hasFight = hasFight | fightReport.planet.hasFight;
-
-			//Si personne ne c'est batue, on passe
-			if(hasFight == false)
-				continue;
-
-			//On ajoute le rapport dans la base de donné
-			size_t const reportID = univ_.nextFightID;
-			univ_.nextFightID += 1;
-			univ_.reportMap.insert(make_pair(reportID, fightReport));
-			//On ajoute les evenement/message dans les flottes/joueur
-			BOOST_FOREACH(auto fleetReportPair, range)
-			{
-				Fleet* fleetPtr = fleetReportPair.get<0>();
-				Report<Fleet> const& report = fleetReportPair.get<1>();
-				Fleet& fleet = *fleetPtr;
-				if(report.isDead)
-				{
-					deadFleets.push_back(fleet.id);
-					mapFind(univ_.playerMap, fleet.playerId)->second.eventList.push_back(
-					  Event(univ_.nextEventID++, univ_.time, Event::FleetLose, reportID));
-				}
-				else if(report.hasFight)
-				{
-					fleet.eventList.push_back(
-					  Event(univ_.nextEventID++, univ_.time, Event::FleetWin, reportID));
-				}
-			}
-			if(planetPtr)
-			{
-				Planet& planet = *planetPtr;
-				if(fightReport.planet.isDead)
-				{
-					lostPlanets.push_back(planet.coord);
-					if(planet.playerId != Player::NoId)
-						mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(
-						  Event(univ_.nextEventID++, univ_.time, Event::PlanetLose, reportID));
-				}
-				else if(fightReport.planet.hasFight)
-				{
-					if(planet.playerId == Player::NoId)
-						BOOST_THROW_EXCEPTION(std::logic_error("planet.playerId == Player::NoId"));
-					planet.eventList.push_back(
-					  Event(univ_.nextEventID++, univ_.time, Event::PlanetWin, reportID));
-				}
-			}
-		}
-
-		boost::for_each(lostPlanets, [&](Coord planetCoord)
-		{
-			onPlanetLose(planetCoord, univ_);
-		});
-
-		//Suppression de toute les flottes mortes
-		boost::for_each(deadFleets, [&](Fleet::ID fleetID)
-		{
-			//cout << "Supresion flotte : " << fleetID << endl;
-			univ_.fleetMap.erase(fleetID);
-		});
-	}
-
-	//Les flottes
-	{
-		FleetCoordMap fleetMap;
-		BOOST_FOREACH(Fleet & fleet, univ_.fleetMap | boost::adaptors::map_values)
-			fleetMap.insert(make_pair(fleet.coord, fleet));
-
-		auto iter = fleetMap.begin();
-		while(iter != fleetMap.end())
-		{
-			fleetRound(univ_, iter->second, univ_.time);
-
-			bool keepFleet = execFleet(luaEngine, codesMap[iter->second.playerId].fleetsCode, iter->second, fleetMap, univ_.time);
-			if(keepFleet == false)
-			{
-				auto condemned = iter;
-				++iter;
-				fleetMap.erase(condemned);
-			}
+			if(fighterPtr.isPlanet())
+				planetPtr = fighterPtr.getPlanet();
 			else
-				++iter;
+				fleetVect.push_back(fighterPtr.getFleet());
 		}
-
-		std::map<Fleet::ID, Fleet> newFleetMap;
-		BOOST_FOREACH(Fleet & fleet, fleetMap | boost::adaptors::map_values)
-			newFleetMap.insert(make_pair(fleet.id, fleet));
-		newFleetMap.swap(univ_.fleetMap);
-
-		BOOST_FOREACH(Fleet & fleet, univ_.fleetMap | boost::adaptors::map_values)
+		//boost::copy(fleetRange | boost::adaptors::map_values, back_inserter(fleetVect));
+		FightReport fightReport;
+		fight(fleetVect, planetPtr, fightReport);
+		bool hasFight = false;
+		auto range = make_zip_range(fleetVect, fightReport.fleetList);
+		BOOST_FOREACH(auto fleetReportPair, range)
 		{
-			if(fleet.eventList.size() > 10)
-				fleet.eventList.erase(fleet.eventList.begin(), fleet.eventList.end() - 10);
+			Report<Fleet> const& report = fleetReportPair.get<1>();
+			hasFight = hasFight | report.hasFight;
+		}
+		hasFight = hasFight | fightReport.planet.hasFight;
+
+		//Si personne ne c'est batue, on passe
+		if(hasFight == false)
+			continue;
+
+		//On ajoute le rapport dans la base de donné
+		size_t const reportID = univ_.nextFightID;
+		univ_.nextFightID += 1;
+		univ_.reportMap.insert(make_pair(reportID, fightReport));
+		//On ajoute les evenement/message dans les flottes/joueur
+		BOOST_FOREACH(auto fleetReportPair, range)
+		{
+			Fleet* fleetPtr = fleetReportPair.get<0>();
+			Report<Fleet> const& report = fleetReportPair.get<1>();
+			Fleet& fleet = *fleetPtr;
+			if(report.isDead)
+			{
+				deadFleets.push_back(fleet.id);
+				mapFind(univ_.playerMap, fleet.playerId)->second.eventList.push_back(
+				  Event(univ_.nextEventID++, univ_.time, Event::FleetLose, reportID));
+			}
+			else if(report.hasFight)
+			{
+				fleet.eventList.push_back(
+				  Event(univ_.nextEventID++, univ_.time, Event::FleetWin, reportID));
+			}
+		}
+		if(planetPtr)
+		{
+			Planet& planet = *planetPtr;
+			if(fightReport.planet.isDead)
+			{
+				lostPlanets.push_back(planet.coord);
+				if(planet.playerId != Player::NoId)
+					mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(
+					  Event(univ_.nextEventID++, univ_.time, Event::PlanetLose, reportID));
+			}
+			else if(fightReport.planet.hasFight)
+			{
+				if(planet.playerId == Player::NoId)
+					BOOST_THROW_EXCEPTION(std::logic_error("planet.playerId == Player::NoId"));
+				planet.eventList.push_back(
+				  Event(univ_.nextEventID++, univ_.time, Event::PlanetWin, reportID));
+			}
 		}
 	}
 
+	boost::for_each(lostPlanets, [&](Coord planetCoord)
+	{
+		onPlanetLose(planetCoord, univ_);
+	});
+
+	//Suppression de toute les flottes mortes
+	boost::for_each(deadFleets, [&](Fleet::ID fleetID)
+	{
+		//cout << "Supresion flotte : " << fleetID << endl;
+		univ_.fleetMap.erase(fleetID);
+	});
+}
+
+//! Excecutes les code des flottes
+void execFleets(
+  Universe& univ_,
+  LuaTools::LuaEngine& luaEngine,
+  PlayerCodeMap& codesMap)
+{
+	FleetCoordMap fleetMap;
+	BOOST_FOREACH(Fleet & fleet, univ_.fleetMap | boost::adaptors::map_values)
+		fleetMap.insert(make_pair(fleet.coord, fleet));
+
+	auto iter = fleetMap.begin();
+	while(iter != fleetMap.end())
+	{
+		fleetRound(univ_, iter->second, univ_.time);
+
+		bool keepFleet = execFleet(univ_, luaEngine,
+		                           codesMap[iter->second.playerId].fleetsCode, iter->second, fleetMap, univ_.time);
+		if(keepFleet == false)
+		{
+			auto condemned = iter;
+			++iter;
+			fleetMap.erase(condemned);
+		}
+		else
+			++iter;
+	}
+
+	std::map<Fleet::ID, Fleet> newFleetMap;
+	BOOST_FOREACH(Fleet & fleet, fleetMap | boost::adaptors::map_values)
+		newFleetMap.insert(make_pair(fleet.id, fleet));
+	newFleetMap.swap(univ_.fleetMap);
+
+	BOOST_FOREACH(Fleet & fleet, univ_.fleetMap | boost::adaptors::map_values)
+	{
+		if(fleet.eventList.size() > 10)
+			fleet.eventList.erase(fleet.eventList.begin(), fleet.eventList.end() - 10);
+	}
+}
+
+void removeDeadFleets(Universe& univ_)
+{
 	set<size_t> usedReport;
 	BOOST_FOREACH(Player & player, univ_.playerMap | boost::adaptors::map_values)
 	{
@@ -678,6 +693,33 @@ try
 	{
 		return usedReport.count(reportKV.first) == false;
 	});
+}
+
+void Engine::Simulation::round(LuaTools::LuaEngine& luaEngine, PlayerCodeMap& codesMap)
+try
+{
+	std::cout << time(0) << " ";
+
+	univ_.time += RoundSecond;
+
+	UniqueLock lock(univ_.mutex);
+
+	//! Désactivation de tout les codes qui echoue
+	disableFailingCode(univ_, codesMap);
+
+	//! Rechargement des codes flote/planet des joueurs dont le code a été changé
+	updatePlayersCode(luaEngine, codesMap);
+
+	execPlanets(univ_, luaEngine, codesMap);
+
+	//! Les combats
+	execFights(univ_);
+
+	//! Les flottes
+	execFleets(univ_, luaEngine, codesMap);
+
+	//! Supprime les flotte mortes
+	removeDeadFleets(univ_);
 
 
 	//std::cout << lexical_cast<std::string>(time(0)) + "_save.bta ";
