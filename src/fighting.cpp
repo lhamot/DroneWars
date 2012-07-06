@@ -64,7 +64,7 @@ void fillShipList(Fleet const& fleet, std::vector<ShipInstance>& shipTab)
 	{
 		Ship const& def = Ship::List[type];
 		size_t const count = fleet.shipList[type];
-		for(int i = 0; i < count; ++i)
+		for(size_t i = 0; i < count; ++i)
 			shipTab.push_back(ShipInstance(type, def.life));
 	}
 }
@@ -81,7 +81,7 @@ void fillShipList(Planet const& planet, std::vector<ShipInstance>& shipTab)
 	{
 		Cannon const& def = Cannon::List[type];
 		size_t const count = planet.cannonTab[type];
-		for(int i = 0; i < count; ++i)
+		for(size_t i = 0; i < count; ++i)
 			shipTab.push_back(ShipInstance(type + Ship::Count, def.life));
 	}
 }
