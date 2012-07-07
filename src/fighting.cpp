@@ -1,7 +1,6 @@
 #include "fighting.h"
 
 #include <vector>
-#include <boost/foreach.hpp>
 #include <boost/range/algorithm.hpp>
 #include <boost/range/algorithm_ext/erase.hpp>
 
@@ -91,7 +90,7 @@ void applyRound(std::vector<ShipInstance>& shipTab1, std::vector<ShipInstance>& 
 {
 	size_t pos = 0;
 	size_t const size = shipTab2.size();
-	BOOST_FOREACH(ShipInstance & ship, shipTab1)
+	for(ShipInstance & ship: shipTab1)
 	{
 		size_t const power =
 		  (ship.type < Ship::Count) ?
@@ -108,7 +107,7 @@ void fillFinalFleet(std::vector<ShipInstance> const& shipTab, Fleet& fleet) thro
 {
 	Fleet::ShipTab& outTab = fleet.shipList;
 	outTab.assign(Ship::Count, 0);
-	BOOST_FOREACH(ShipInstance const & ship, shipTab)
+	for(ShipInstance const & ship: shipTab)
 		++outTab[ship.type];
 }
 
@@ -117,17 +116,17 @@ void fillFinalFleet(std::vector<ShipInstance> const& shipTab, Planet& planet) th
 	Planet::CannonTab& outTab = planet.cannonTab;
 	//outTab.assign(Cannon::Count, 0);
 	outTab.fill(0);
-	BOOST_FOREACH(ShipInstance const & ship, shipTab)
+	for(ShipInstance const & ship: shipTab)
 		++outTab[ship.type - Ship::Count];
 }
 
 
 enum FightStatus
 {
-	Fighter1Win,
-	Fighter2Win,
-	NobodyWin,
-	NothingRemains
+  Fighter1Win,
+  Fighter2Win,
+  NobodyWin,
+  NothingRemains
 };
 template<typename F1, typename F2>
 FightStatus fight(F1& fleet1, F2& fleet2)
@@ -279,7 +278,7 @@ void fight(std::vector<Fleet*> const& fleetList,
 	}
 
 	//! Pour toute les combinaisons de 2 combatant:
-	BOOST_FOREACH(FleetPair const & fleetPair, fightingPair)
+	for(FleetPair const & fleetPair: fightingPair)
 	{
 		//! -Combat
 		if(fleetPair.index1 == PlanetIndex)

@@ -1,7 +1,5 @@
 #include "FleetViewWT.h"
 
-#include <boost/foreach.hpp>
-
 #include "TranslationTools.h"
 
 #pragma warning(push)
@@ -67,7 +65,7 @@ void FleetViewWT::refresh()
 	evModel->setHeaderData(0, Horizontal, WString("Date"), DisplayRole);
 	evModel->setHeaderData(1, Horizontal, WString("Type"), DisplayRole);
 	evModel->setHeaderData(2, Horizontal, WString("Comment"), DisplayRole);
-	BOOST_FOREACH(Event const & ev, fleet.eventList)
+	for(Event const & ev: fleet.eventList)
 	{
 		Wt::WStandardItem* item = new Wt::WStandardItem();
 		item->setData(timeToString(ev.time), DisplayRole);

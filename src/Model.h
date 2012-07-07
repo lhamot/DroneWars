@@ -43,23 +43,23 @@ struct Event
 
 	enum Type
 	{
-		FleetCodeError,
-		FleetCodeExecError,
-		PlanetCodeError,
-		PlanetCodeExecError,
-		Upgraded,
-		ShipMade,
-		PlanetHarvested,
-		FleetWin,
-		FleetDraw,
-		FleetsGather,
-		PlanetColonized,
-		FleetLose,
-		FleetDrop,
-		PlanetLose,
-		PlanetWin,
-		CannonMade,
-		Count
+	  FleetCodeError,
+	  FleetCodeExecError,
+	  PlanetCodeError,
+	  PlanetCodeExecError,
+	  Upgraded,
+	  ShipMade,
+	  PlanetHarvested,
+	  FleetWin,
+	  FleetDraw,
+	  FleetsGather,
+	  PlanetColonized,
+	  FleetLose,
+	  FleetDrop,
+	  PlanetLose,
+	  PlanetWin,
+	  CannonMade,
+	  Count
 	};
 
 	typedef size_t ID;
@@ -213,10 +213,10 @@ struct Ressource
 {
 	enum Enum
 	{
-		Metal,
-		Carbon,
-		Loicium,
-		Count
+	  Metal,
+	  Carbon,
+	  Loicium,
+	  Count
 	};
 };
 
@@ -255,10 +255,10 @@ struct PlanetTask
 
 	enum Enum
 	{
-		UpgradeBuilding,
-		MakeShip,
-		MakeCannon,
-		Count
+	  UpgradeBuilding,
+	  MakeShip,
+	  MakeCannon,
+	  Count
 	};
 
 	Enum type;
@@ -286,10 +286,10 @@ struct FleetTask
 
 	enum Enum
 	{
-		Move,
-		Harvest,
-		Colonize,
-		Count
+	  Move,
+	  Harvest,
+	  Colonize,
+	  Count
 	};
 
 	Enum type;
@@ -310,17 +310,17 @@ struct Building
 {
 	enum Enum
 	{
-		Undefined = -1,
-		CommandCenter,
-		MetalMine,
-		CarbonMine,
-		LoiciumFilter,
-		Factory,
-		Laboratory,
-		CarbonicCentral,
-		SolarCentral,
-		GeothermicCentral,
-		Count
+	  Undefined = -1,
+	  CommandCenter,
+	  MetalMine,
+	  CarbonMine,
+	  LoiciumFilter,
+	  Factory,
+	  Laboratory,
+	  CarbonicCentral,
+	  SolarCentral,
+	  GeothermicCentral,
+	  Count
 	};
 
 	RessourceSet price;
@@ -334,17 +334,17 @@ struct Ship
 {
 	enum Enum
 	{
-		Undefined = -1,
-		Mosquito,
-		Hornet,
-		Vulture,
-		Dragon,
-		Behemoth,
-		Azathoth,
-		Queen,
-		Cargo,
-		LargeCargo,
-		Count
+	  Undefined = -1,
+	  Mosquito,
+	  Hornet,
+	  Vulture,
+	  Dragon,
+	  Behemoth,
+	  Azathoth,
+	  Queen,
+	  Cargo,
+	  LargeCargo,
+	  Count
 	};
 
 	RessourceSet price;
@@ -360,14 +360,14 @@ struct Cannon
 {
 	enum Enum
 	{
-		Undefined = -1,
-		Cannon1,
-		Cannon2,
-		Cannon3,
-		Cannon4,
-		Cannon5,
-		Cannon6,
-		Count
+	  Undefined = -1,
+	  Cannon1,
+	  Cannon2,
+	  Cannon3,
+	  Cannon4,
+	  Cannon5,
+	  Cannon6,
+	  Count
 	};
 
 	RessourceSet price;
@@ -433,12 +433,12 @@ struct PlanetAction
 
 	enum Type
 	{
-		Undefined = -1,
-		Building,
-		StopBuilding,
-		Ship,
-		Cannon,
-		Count
+	  Undefined = -1,
+	  Building,
+	  StopBuilding,
+	  Ship,
+	  Cannon,
+	  Count
 	};
 
 	Type action;
@@ -510,11 +510,11 @@ struct FleetAction
 
 	enum Type
 	{
-		Nothing,
-		Move,
-		Harvest,
-		Colonize,
-		Drop
+	  Nothing,
+	  Move,
+	  Harvest,
+	  Colonize,
+	  Drop
 	};
 
 	Type action;

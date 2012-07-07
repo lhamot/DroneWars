@@ -5,7 +5,6 @@
 #include <functional>
 #pragma warning(push)
 #pragma warning(disable:4244 4310 4100 4512)
-#include <boost/foreach.hpp>
 #include <boost/exception/all.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
@@ -472,19 +471,19 @@ void execBuilding(Planet& planet, Building::Enum type, size_t level)
 
 void planetRound(Universe& univ, Planet& planet, time_t time)
 {
-	BOOST_FOREACH(PlanetTask & task, planet.taskQueue)
+	for(PlanetTask & task: planet.taskQueue)
 		execTask(univ, planet, task, time);
 
 	boost::remove_erase_if(planet.taskQueue, bind(&PlanetTask::expired, placeholders::_1));
 
-	BOOST_FOREACH(auto & buildingNVP, planet.buildingMap)
+	for(auto & buildingNVP: planet.buildingMap)
 		execBuilding(planet, buildingNVP.first, buildingNVP.second);
 }
 
 
 void fleetRound(Universe& univ, Fleet& fleet, time_t time)
 {
-	BOOST_FOREACH(FleetTask & task, fleet.taskQueue)
+	for(FleetTask & task: fleet.taskQueue)
 		execTask(univ, fleet, task, time);
 
 	boost::remove_erase_if(fleet.taskQueue, bind(&FleetTask::expired, placeholders::_1));

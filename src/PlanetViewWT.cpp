@@ -2,7 +2,6 @@
 
 #pragma warning(push)
 #pragma warning(disable:4251 4275 4505)
-#include <boost/foreach.hpp>
 #include <Wt/WBoxLayout>
 #include <Wt/WTabWidget>
 #include <Wt/WText>
@@ -123,7 +122,7 @@ void PlanetViewWT::refresh()
 	taModel->setHeaderData(1, Horizontal, WString("Start"), DisplayRole);
 	taModel->setHeaderData(2, Horizontal, WString("End"), DisplayRole);
 	taModel->setHeaderData(3, Horizontal, WString("What"), DisplayRole);
-	BOOST_FOREACH(PlanetTask const & task, planet.taskQueue)
+	for(PlanetTask const & task: planet.taskQueue)
 	{
 		Wt::WStandardItem* item = new Wt::WStandardItem();
 		item->setData(getTaskName(task.type), DisplayRole);
@@ -150,7 +149,7 @@ void PlanetViewWT::refresh()
 	Wt::WStandardItemModel* buModel = new Wt::WStandardItemModel((int)planet.buildingMap.size(), 4, this);
 	buModel->setHeaderData(0, Horizontal, WString("Name"), DisplayRole);
 	buModel->setHeaderData(1, Horizontal, WString("Level"), DisplayRole);
-	BOOST_FOREACH(auto const & typeLevel, planet.buildingMap)
+	for(auto const & typeLevel: planet.buildingMap)
 	{
 		Wt::WStandardItem* item = new Wt::WStandardItem();
 		item->setData(getBuildingName(typeLevel.first), DisplayRole);
@@ -169,7 +168,7 @@ void PlanetViewWT::refresh()
 	Wt::WStandardItemModel* caModel = new Wt::WStandardItemModel((int)planet.cannonTab.size(), 4, this);
 	caModel->setHeaderData(0, Horizontal, WString("Name"), DisplayRole);
 	caModel->setHeaderData(1, Horizontal, WString("Level"), DisplayRole);
-	BOOST_FOREACH(auto const & level, planet.cannonTab)
+	for(auto const & level: planet.cannonTab)
 	{
 		Wt::WStandardItem* item = new Wt::WStandardItem();
 		item->setData(getCannonName(static_cast<Cannon::Enum>(row)), DisplayRole);

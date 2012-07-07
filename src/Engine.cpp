@@ -1,7 +1,11 @@
 #include "Engine.h"
 
-#include <boost/foreach.hpp>
+#include <iterator>
+#include <utility>
+#include <tuple>
+
 #include <boost/range/adaptor/map.hpp>
+#include <boost/range/iterator_range.hpp>
 #include <boost/filesystem.hpp>
 
 #include "Tools.h"
@@ -18,7 +22,7 @@ Engine::Engine():
 	boost::filesystem::directory_iterator dir("."), end;
 
 	time_t maxtime = 0;
-	BOOST_FOREACH(const boost::filesystem::path & p, std::make_pair(dir, end))
+	for(const boost::filesystem::path & p: boost::make_iterator_range(dir, end))
 	{
 		std::string const fileStr = p.filename().string();
 		if(fileStr.find("_save.bta") == 10 && fileStr.size() == 19)
@@ -105,7 +109,7 @@ std::vector<Fleet> Engine::getPlayerFleets(Player::ID pid) const
 {
 	SharedLock lock(univ_.mutex);
 	std::vector<Fleet> fleetList;
-	BOOST_FOREACH(Fleet const & fleet, univ_.fleetMap | boost::adaptors::map_values)
+	for(Fleet const & fleet: univ_.fleetMap | boost::adaptors::map_values)
 	{
 		if(fleet.playerId == pid)
 			fleetList.push_back(fleet);
@@ -118,7 +122,7 @@ std::vector<Planet> Engine::getPlayerPlanets(Player::ID pid) const
 {
 	SharedLock lock(univ_.mutex);
 	std::vector<Planet> planetList;
-	BOOST_FOREACH(Universe::PlanetMap::value_type const & planetNVP, univ_.planetMap)
+	for(Universe::PlanetMap::value_type const & planetNVP: univ_.planetMap)
 	{
 		if(planetNVP.second.playerId == pid)
 			planetList.push_back(planetNVP.second);
@@ -165,10 +169,7 @@ std::vector<Player> Engine::getPlayers() const
 {
 	SharedLock lock(univ_.mutex);
 	std::vector<Player> playerList;
-	BOOST_FOREACH(Universe::PlayerMap::value_type const & nvp, univ_.playerMap)
-	{
-		playerList.push_back(nvp.second);
-	}
+	boost::copy(univ_.playerMap | boost::adaptors::map_values, back_inserter(playerList));
 	return playerList;
 }
 

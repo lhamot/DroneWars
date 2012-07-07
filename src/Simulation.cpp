@@ -2,7 +2,6 @@
 
 #include <fstream>
 #include <sys/stat.h>
-#include <boost/foreach.hpp>
 #include <boost/range/adaptor/map.hpp>
 #include <boost/exception/diagnostic_information.hpp>
 #include <boost/thread/thread.hpp>
@@ -116,7 +115,7 @@ try
 	lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 	luabind::call_function<void>(code, boost::cref(planet), boost::cref(fleetList), boost::ref(list));
 
-	BOOST_FOREACH(PlanetAction const & action, list)
+	for(PlanetAction const & action: list)
 	{
 		switch(action.action)
 		{
@@ -264,7 +263,7 @@ catch(std::exception const& ex)
 //! Désactivation de tout les codes qui echoue
 void disableFailingCode(Universe& univ_, PlayerCodeMap& codesMap)
 {
-	BOOST_FOREACH(Player const & player, univ_.playerMap | boost::adaptors::map_values)
+	for(Player const & player: univ_.playerMap | boost::adaptors::map_values)
 	{
 		if(player.planetsCode.getFailCount() >= MaxCodeExecTry)
 			codesMap[player.id].planetsCode = luabind::object();
@@ -278,7 +277,7 @@ void disableFailingCode(Universe& univ_, PlayerCodeMap& codesMap)
 void Simulation::updatePlayersCode(LuaTools::LuaEngine& luaEngine, PlayerCodeMap& codesMap)
 {
 	UniqueLock lockReload(mutex_);
-	BOOST_FOREACH(Player::ID pid, playerToReload_)
+	for(Player::ID pid: playerToReload_)
 	{
 		Player& player = mapFind(univ_.playerMap, pid)->second;
 		PlayerCodes newCodes =
@@ -295,12 +294,12 @@ void Simulation::updatePlayersCode(LuaTools::LuaEngine& luaEngine, PlayerCodeMap
 void execPlanets(Universe& univ_, LuaTools::LuaEngine& luaEngine, PlayerCodeMap& codesMap)
 {
 	FleetCoordMap fleetMap;
-	BOOST_FOREACH(Fleet & fleet, univ_.fleetMap | boost::adaptors::map_values)
+	for(Fleet & fleet: univ_.fleetMap | boost::adaptors::map_values)
 		fleetMap.insert(make_pair(fleet.coord, fleet));
 
 	//Les planètes
 	std::vector<Fleet const*> fleetList;
-	BOOST_FOREACH(Universe::PlanetMap::value_type & planetNVP, univ_.planetMap)
+	for(Universe::PlanetMap::value_type & planetNVP: univ_.planetMap)
 	{
 		Planet& planet = planetNVP.second;
 		if(planet.eventList.size() > 10)
@@ -329,10 +328,10 @@ void execFights(Universe& univ_)
 	lostPlanets.reserve(univ_.planetMap.size());
 	typedef std::multimap<Coord, FighterPtr, CompCoord> FleetCoordMultimap;
 	FleetCoordMultimap fleetMultimap;
-	BOOST_FOREACH(Fleet & fleet, univ_.fleetMap | boost::adaptors::map_values)
-		fleetMultimap.insert(make_pair(fleet.coord, &fleet));
-	BOOST_FOREACH(Planet & planet, univ_.planetMap | boost::adaptors::map_values)
-		fleetMultimap.insert(make_pair(planet.coord, &planet));
+	for(Fleet & fleet: univ_.fleetMap | boost::adaptors::map_values)
+		fleetMultimap.insert(make_pair(fleet.coord, FighterPtr(&fleet)));
+	for(Planet & planet: univ_.planetMap | boost::adaptors::map_values)
+		fleetMultimap.insert(make_pair(planet.coord, FighterPtr(&planet)));
 
 	std::vector<Fleet*> fleetVect;
 	// Pour chaque coordonées, on accede au range des flotes
@@ -353,7 +352,7 @@ void execFights(Universe& univ_)
 		//On lance le combat
 		fleetVect.clear();
 		Planet* planetPtr = nullptr;
-		BOOST_FOREACH(FighterPtr const & fighterPtr, fleetRange | boost::adaptors::map_values)
+		for(FighterPtr const & fighterPtr: fleetRange | boost::adaptors::map_values)
 		{
 			if(fighterPtr.isPlanet())
 				planetPtr = fighterPtr.getPlanet();
@@ -365,10 +364,14 @@ void execFights(Universe& univ_)
 		fight(fleetVect, planetPtr, fightReport);
 		bool hasFight = false;
 		auto range = make_zip_range(fleetVect, fightReport.fleetList);
-		BOOST_FOREACH(auto fleetReportPair, range)
+		for(auto fleetReportPair: range)
 		{
 			Report<Fleet> const& report = fleetReportPair.get<1>();
-			hasFight = hasFight | report.hasFight;
+			if(report.hasFight)
+			{
+				hasFight = true;
+				break;
+			}
 		}
 		hasFight = hasFight | fightReport.planet.hasFight;
 
@@ -381,7 +384,7 @@ void execFights(Universe& univ_)
 		univ_.nextFightID += 1;
 		univ_.reportMap.insert(make_pair(reportID, fightReport));
 		//On ajoute les evenement/message dans les flottes/joueur
-		BOOST_FOREACH(auto fleetReportPair, range)
+		for(auto fleetReportPair: range)
 		{
 			Fleet* fleetPtr = fleetReportPair.get<0>();
 			Report<Fleet> const& report = fleetReportPair.get<1>();
@@ -438,7 +441,7 @@ void execFleets(
   PlayerCodeMap& codesMap)
 {
 	FleetCoordMap fleetMap;
-	BOOST_FOREACH(Fleet & fleet, univ_.fleetMap | boost::adaptors::map_values)
+	for(Fleet & fleet: univ_.fleetMap | boost::adaptors::map_values)
 		fleetMap.insert(make_pair(fleet.coord, fleet));
 
 	auto iter = fleetMap.begin();
@@ -459,11 +462,11 @@ void execFleets(
 	}
 
 	std::map<Fleet::ID, Fleet> newFleetMap;
-	BOOST_FOREACH(Fleet & fleet, fleetMap | boost::adaptors::map_values)
+	for(Fleet & fleet: fleetMap | boost::adaptors::map_values)
 		newFleetMap.insert(make_pair(fleet.id, fleet));
 	newFleetMap.swap(univ_.fleetMap);
 
-	BOOST_FOREACH(Fleet & fleet, univ_.fleetMap | boost::adaptors::map_values)
+	for(Fleet & fleet: univ_.fleetMap | boost::adaptors::map_values)
 	{
 		if(fleet.eventList.size() > 10)
 			fleet.eventList.erase(fleet.eventList.begin(), fleet.eventList.end() - 10);
@@ -473,11 +476,11 @@ void execFleets(
 void removeDeadFleets(Universe& univ_)
 {
 	set<size_t> usedReport;
-	BOOST_FOREACH(Player & player, univ_.playerMap | boost::adaptors::map_values)
+	for(Player & player: univ_.playerMap | boost::adaptors::map_values)
 	{
 		if(player.eventList.size() > 10)
 			player.eventList.erase(player.eventList.begin(), player.eventList.end() - 10);
-		BOOST_FOREACH(Event const & ev, player.eventList)
+		for(Event const & ev: player.eventList)
 		{
 			if(ev.type == Event::FleetLose || ev.type == Event::PlanetLose)
 				usedReport.insert(ev.value);
@@ -524,14 +527,14 @@ try
 	/*
 	//Calcule de l'occupation memoire
 	size_t playerSize = 0;
-	BOOST_FOREACH(auto const& playerKV, univ_.playerMap)
+	for(auto const& playerKV: univ_.playerMap)
 	{
 		playerSize += sizeof(playerKV);
 		playerSize += playerKV.second.fleetsCode.getCode().size();
 		playerSize += playerKV.second.planetsCode.getCode().size();
 		playerSize += playerKV.second.login.size();
 		playerSize += playerKV.second.password.size();
-		BOOST_FOREACH(auto const& ev, playerKV.second.eventList)
+		for(auto const& ev: playerKV.second.eventList)
 		{
 			playerSize += sizeof(ev);
 			playerSize += ev.comment.size();
@@ -539,12 +542,12 @@ try
 	}
 
 	size_t planetSize = 0;
-	BOOST_FOREACH(auto const& planetKV, univ_.planetMap)
+	for(auto const& planetKV: univ_.planetMap)
 	{
 		planetSize += sizeof(planetKV);
 		planetSize += planetKV.second.buildingMap.size() * sizeof(Planet::BuildingMap::value_type);
 		planetSize += planetKV.second.taskQueue.size() * sizeof(PlanetTask);
-		BOOST_FOREACH(auto const& ev, planetKV.second.eventList)
+		for(auto const& ev: planetKV.second.eventList)
 		{
 			planetSize += sizeof(ev);
 			planetSize += ev.comment.size();
@@ -552,12 +555,12 @@ try
 	}
 
 	size_t fleetSize = 0;
-	BOOST_FOREACH(auto const& fleetKV, univ_.fleetMap)
+	for(auto const& fleetKV: univ_.fleetMap)
 	{
 		fleetSize += sizeof(fleetKV);
 		fleetSize += fleetKV.second.shipList.size() * sizeof(Fleet::ShipTab::value_type);
 		fleetSize += fleetKV.second.taskQueue.size() * sizeof(PlanetTask);
-		BOOST_FOREACH(auto const& ev, fleetKV.second.eventList)
+		for(auto const& ev: fleetKV.second.eventList)
 		{
 			fleetSize += sizeof(ev);
 			fleetSize += ev.comment.size();
@@ -565,19 +568,19 @@ try
 	}
 
 	size_t reportSize = 0;
-	BOOST_FOREACH(auto const& reportKV, univ_.reportMap)
+	for(auto const& reportKV: univ_.reportMap)
 	{
 		reportSize += sizeof(reportKV);
-		BOOST_FOREACH(auto const& fleetReport, reportKV.second)
+		for(auto const& fleetReport: reportKV.second)
 		{
 			reportSize += sizeof(fleetReport);
 			reportSize += fleetReport.enemySet.size() * sizeof(size_t);
-			BOOST_FOREACH(auto const& ev, fleetReport.fleetsAfter.eventList)
+			for(auto const& ev: fleetReport.fleetsAfter.eventList)
 			{
 				reportSize += sizeof(ev);
 				reportSize += ev.comment.size();
 			}
-			BOOST_FOREACH(auto const& ev, fleetReport.fleetsBefore.eventList)
+			for(auto const& ev: fleetReport.fleetsBefore.eventList)
 			{
 				reportSize += sizeof(ev);
 				reportSize += ev.comment.size();
@@ -622,7 +625,7 @@ void Simulation::loop()
 		UniqueLock lock(univ_.mutex);
 
 		//Chargement de tout les code flote/planet de tout les joueur(chargement dans python)
-		BOOST_FOREACH(Universe::PlayerMap::value_type & playerNVP, univ_.playerMap)
+		for(Universe::PlayerMap::value_type & playerNVP: univ_.playerMap)
 		{
 			Player& player = playerNVP.second;
 			PlayerCodes newCodes =

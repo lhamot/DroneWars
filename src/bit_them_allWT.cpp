@@ -2,7 +2,6 @@
 
 #pragma warning(push)
 #pragma warning(disable:4251 4275 4505)
-#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 //#include <QtGui/QFileDialog>
 #include <Wt/Ext/Menu>
@@ -296,7 +295,7 @@ void bit_them_allWT::refresh()
 	plModel->setHeaderData(3, Horizontal, WString(""), DisplayRole);
 	plModel->setHeaderData(4, Horizontal, WString(""), DisplayRole);
 	plModel->setHeaderData(5, Horizontal, WString("Ressources"), DisplayRole);
-	BOOST_FOREACH(Planet const & planet, planetList)
+	for(Planet const & planet: planetList)
 	{
 		Wt::WStandardItem* item = new Wt::WStandardItem();
 		item->setData(planet.coord.X, DisplayRole);
@@ -339,7 +338,7 @@ void bit_them_allWT::refresh()
 	flModel->setHeaderData(3, Horizontal, WString(""), DisplayRole);
 	flModel->setHeaderData(4, Horizontal, WString("Contents"), DisplayRole);
 	flModel->setHeaderData(5, Horizontal, WString("Ressources"), DisplayRole);
-	BOOST_FOREACH(Fleet const & fleet, fleetList)
+	for(Fleet const & fleet: fleetList)
 	{
 		Wt::WStandardItem* item = new Wt::WStandardItem();
 		item->setData(fleet.coord.X, DisplayRole);
@@ -395,7 +394,7 @@ void bit_them_allWT::refresh()
 	model->setHeaderData(1, Horizontal, WString("Type"), DisplayRole);
 	model->setHeaderData(2, Horizontal, WString("Message"), DisplayRole);
 	row = 0;
-	BOOST_FOREACH(Event const & ev, player.eventList)
+	for(Event const & ev: player.eventList)
 	{
 		//std::cout << "ev.id = " << ev.id << std::endl;
 		Wt::WStandardItem* item = new Wt::WStandardItem();

@@ -64,7 +64,7 @@ struct register_optional : public boost::noncopyable
 		{
 			using namespace boost::python::converter;
 
-			void* const storage = ((rvalue_from_python_storage<boost::optional<T> > *)
+			void* const storage = ((rvalue_from_python_storage<boost::optional<T> >*)
 			                       data)->storage.bytes;
 
 			if(data->convertible == source)             // == None
@@ -114,7 +114,7 @@ struct register_optional<double> : public boost::noncopyable
 
 			using namespace boost::python::converter;
 
-			void* const storage = ((rvalue_from_python_storage<boost::optional<double> > *)
+			void* const storage = ((rvalue_from_python_storage<boost::optional<double> >*)
 			                       data)->storage.bytes;
 
 			if(source == Py_None)         // == None

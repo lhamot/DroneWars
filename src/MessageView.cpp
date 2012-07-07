@@ -1,6 +1,5 @@
 #include "MessageView.h"
 
-#include <boost/foreach.hpp>
 #include <boost/format.hpp>
 #include <Wt/WText>
 #include <Wt/WTable>
@@ -119,7 +118,7 @@ std::string getContentString(Planet const& planet)
 void MessageView::renderFightReport(size_t id)
 {
 	FightReport fightReport = engine_.getFightReport(id);
-	BOOST_FOREACH(Report<Fleet> const & fleetReport, fightReport.fleetList)
+	for(Report<Fleet> const & fleetReport: fightReport.fleetList)
 	{
 		Wt::WTable* table = new Wt::WTable(this);
 		table->elementAt(0, 0)->addWidget(new Wt::WText("Fleet name :"));

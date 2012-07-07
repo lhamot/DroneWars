@@ -18,7 +18,7 @@ namespace serialization
 template<class Archive, class Type, class Key, class Hash, class Compare, class Allocator>
 inline void save(
   Archive& ar,
-  const std::unordered_map<Key, Type, Hash, Compare, Allocator> &t,
+  const std::unordered_map<Key, Type, Hash, Compare, Allocator>& t,
   const unsigned int /* file_version */
 )
 {
@@ -31,7 +31,7 @@ inline void save(
 template<class Archive, class Type, class Key, class Hash, class Compare, class Allocator>
 inline void load(
   Archive& ar,
-  std::unordered_map<Key, Type, Hash, Compare, Allocator> &t,
+  std::unordered_map<Key, Type, Hash, Compare, Allocator>& t,
   const unsigned int /* file_version */
 )
 {
@@ -52,7 +52,7 @@ inline void load(
 template<class Archive, class Type, class Key, class Hash, class Compare, class Allocator>
 inline void serialize(
   Archive& ar,
-  std::unordered_map<Key, Type, Hash, Compare, Allocator> &t,
+  std::unordered_map<Key, Type, Hash, Compare, Allocator>& t,
   const unsigned int file_version
 )
 {
@@ -63,7 +63,7 @@ inline void serialize(
 template<class Archive, class Type, class Key, class Hash, class Compare, class Allocator >
 inline void save(
   Archive& ar,
-  const std::unordered_multimap<Key, Type, Hash, Compare, Allocator> &t,
+  const std::unordered_multimap<Key, Type, Hash, Compare, Allocator>& t,
   const unsigned int /* file_version */
 )
 {
@@ -76,7 +76,7 @@ inline void save(
 template<class Archive, class Type, class Key, class Hash, class Compare, class Allocator >
 inline void load(
   Archive& ar,
-  std::unordered_multimap<Key, Type, Hash, Compare, Allocator> &t,
+  std::unordered_multimap<Key, Type, Hash, Compare, Allocator>& t,
   const unsigned int /* file_version */
 )
 {
@@ -97,7 +97,7 @@ inline void load(
 template<class Archive, class Type, class Key, class Hash, class Compare, class Allocator >
 inline void serialize(
   Archive& ar,
-  std::unordered_multimap<Key, Type, Hash, Compare, Allocator> &t,
+  std::unordered_multimap<Key, Type, Hash, Compare, Allocator>& t,
   const unsigned int file_version
 )
 {
