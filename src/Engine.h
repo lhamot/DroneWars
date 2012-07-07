@@ -1,6 +1,8 @@
 #ifndef __BTA_ENGINE__
 #define __BTA_ENGINE__
 
+#include <unordered_map>
+
 #pragma warning(push)
 #pragma warning(disable:4512 4127 4244 4121 4100)
 //#include <boost/python.hpp>
@@ -10,21 +12,10 @@
 #pragma warning(pop)
 
 #include "Model.h"
-#include <unordered_map>
+#include "Simulation.h"
 
-namespace LuaTools
-{
-class LuaEngine;
-}
 
-typedef std::unordered_multimap<Coord, Fleet> FleetCoordMap;
 typedef std::pair<FleetCoordMap::const_iterator, FleetCoordMap::const_iterator> FleetRange;
-struct PlayerCodes
-{
-	luabind::object fleetsCode;
-	luabind::object planetsCode;
-};
-typedef std::unordered_map<Player::ID, PlayerCodes> PlayerCodeMap;
 
 
 class Engine
@@ -72,40 +63,6 @@ public:
 	void load(std::string const& univName);
 
 private:
-
-	class Simulation
-	{
-		Simulation(Simulation const&);
-		Simulation& operator = (Simulation const&);
-	public:
-		Simulation(Universe& univ);
-
-		void save(std::string const& univName) const;
-
-		void loop();
-
-		void start();
-
-		void stop();
-
-		void reloadPlayer(Player::ID pid)
-		{
-			boost::unique_lock<Universe::Mutex> lock(mutex_);
-			playerToReload_.insert(pid);
-		}
-
-	private:
-		void round(LuaTools::LuaEngine&, PlayerCodeMap& codesMap);
-		luabind::object registerCode(
-		  LuaTools::LuaEngine& luaEngine,
-		  Player::ID const pid, CodeData& code, time_t time, bool isFleet);
-		void updatePlayersCode(LuaTools::LuaEngine& luaEngine, PlayerCodeMap& codesMap);
-
-		boost::shared_mutex mutex_;
-		std::set<Player::ID> playerToReload_;
-		Universe& univ_;
-	};
-
 	Universe univ_;
 	Simulation simulation_;
 	boost::thread simulating_;

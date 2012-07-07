@@ -2,6 +2,8 @@
 #define __BTA_TOOLS__
 
 #include <iostream>
+#include <utility>
+#include <boost/iterator/zip_iterator.hpp>
 
 template<typename M>
 typename M::const_iterator
@@ -36,12 +38,12 @@ nextNot(T& map, I const& iter)
 
 template<typename C1, typename C2>
 auto make_zip_range(C1 const& c1, C2 const& c2)
--> decltype(std::make_pair(make_zip_iterator(boost::make_tuple(c1.begin(), c2.begin())),
-                           make_zip_iterator(boost::make_tuple(c1.end(), c2.end()))))
+-> decltype(std::make_pair(boost::make_zip_iterator(boost::make_tuple(c1.begin(), c2.begin())),
+                           boost::make_zip_iterator(boost::make_tuple(c1.end(), c2.end()))))
 {
-	auto begin = make_zip_iterator(boost::make_tuple(c1.begin(), c2.begin()));
-	auto end = make_zip_iterator(boost::make_tuple(c1.end(), c2.end()));
-	return make_pair(begin, end);
+	auto begin = boost::make_zip_iterator(boost::make_tuple(c1.begin(), c2.begin()));
+	auto end = boost::make_zip_iterator(boost::make_tuple(c1.end(), c2.end()));
+	return std::make_pair(begin, end);
 }
 
 template<typename M, typename F>

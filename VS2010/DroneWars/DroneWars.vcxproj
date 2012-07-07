@@ -28,6 +28,7 @@
     <ClCompile Include="..\..\src\Model.cpp" />
     <ClCompile Include="..\..\src\OutPage.cpp" />
     <ClCompile Include="..\..\src\PlanetViewWT.cpp" />
+    <ClCompile Include="..\..\src\Simulation.cpp" />
     <ClCompile Include="..\..\src\TranslationTools.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -44,6 +45,7 @@
     <ClInclude Include="..\..\src\PlanetViewWT.h" />
     <ClInclude Include="..\..\src\Rules.h" />
     <ClInclude Include="..\..\src\serialize_unordered_map.h" />
+    <ClInclude Include="..\..\src\Simulation.h" />
     <ClInclude Include="..\..\src\Tools.h" />
     <ClInclude Include="..\..\src\TranslationTools.h" />
   </ItemGroup>
