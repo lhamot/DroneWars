@@ -3,6 +3,7 @@
 #include <iterator>
 #include <utility>
 #include <tuple>
+#include <fstream>
 
 #include <boost/range/adaptor/map.hpp>
 #include <boost/range/iterator_range.hpp>

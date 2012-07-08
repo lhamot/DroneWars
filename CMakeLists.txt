@@ -55,6 +55,7 @@ add_executable(
     src/Model.cpp
     src/OutPage.cpp
     src/PlanetViewWT.cpp
+    src/Simulation.cpp
     src/Rules.h
     src/serialize_unordered_map.h
     src/Tools.h
