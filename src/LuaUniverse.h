@@ -92,8 +92,6 @@ extern "C" int initDroneWars(lua_State* L)
 {
 	using namespace luabind;
 
-	//register_optional<Planet>();
-	//register_optional<FleetAction>();
 	open(L);
 
 	module(L)
@@ -166,7 +164,7 @@ extern "C" int initDroneWars(lua_State* L)
 	  .def("at", vectorAt<Fleet::ShipTab>),
 	  //.def(boost::python::vector_indexing_suite<Fleet::ShipTab>());
 	  class_<Fleet>("Fleet")
-	  .def(constructor<Fleet::ID, Player::ID, Coord>())
+	  //.def(constructor<Fleet::ID, Player::ID, Coord>())
 	  .def_readonly("id", &Fleet::id)
 	  .def_readonly("playerId", &Fleet::playerId)
 	  .def_readonly("coord", &Fleet::coord)
@@ -174,16 +172,6 @@ extern "C" int initDroneWars(lua_State* L)
 	  .def_readonly("name", &Fleet::name)
 	  .def_readonly("shipList", &Fleet::shipList)
 	  .def_readonly("ressourceSet", &Fleet::ressourceSet),
-	  class_<Universe>("Universe")
-	  .def_readonly("playerMap", &Universe::playerMap)
-	  .def_readonly("planetMap", &Universe::planetMap)
-	  .def_readonly("fleetMap", &Universe::fleetMap)
-	  .enum_("MapSize")
-	  [
-	    value("X", Universe::MapSizeX),
-	    value("Y", Universe::MapSizeY),
-	    value("Z", Universe::MapSizeZ)
-	  ],
 	  class_<PlanetAction>("PlanetAction")
 	  .def_readonly("action",   &PlanetAction::action)
 	  .def_readonly("building", &PlanetAction::building)
@@ -205,7 +193,7 @@ extern "C" int initDroneWars(lua_State* L)
 	  class_<FleetAction>("FleetAction")
 	  .def(constructor<FleetAction::Type, Coord>())
 	  .def(constructor<FleetAction::Type>())
-	  .def_readonly("action",   &FleetAction::action)
+	  .def_readonly("action", &FleetAction::action)
 	  .def_readonly("target", &FleetAction::target)
 	  .enum_("Type")
 	  [
@@ -214,6 +202,18 @@ extern "C" int initDroneWars(lua_State* L)
 	    value("Harvest",   FleetAction::Harvest),
 	    value("Colonize",  FleetAction::Colonize),
 	    value("Drop",      FleetAction::Drop)
+	  ],
+
+	  //Pour l'instant inutine:
+	  class_<Universe>("Universe")
+	  .def_readonly("playerMap", &Universe::playerMap)
+	  .def_readonly("planetMap", &Universe::planetMap)
+	  .def_readonly("fleetMap", &Universe::fleetMap)
+	  .enum_("MapSize")
+	  [
+	    value("X", Universe::MapSizeX),
+	    value("Y", Universe::MapSizeY),
+	    value("Z", Universe::MapSizeZ)
 	  ]
 	];
 

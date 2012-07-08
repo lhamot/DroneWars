@@ -385,15 +385,15 @@ struct Planet
 	{
 		if(Archive::is_saving::value)
 		{
-			if(playerId >= 100 && playerId != Player::NoId)
-				BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100!!"));
+			if(playerId >= 100000 && playerId != Player::NoId)
+				BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 			if(playerId == Player::NoId && taskQueue.empty() == false)
 				BOOST_THROW_EXCEPTION(std::logic_error("taskQueue shourld be empty"));
 		}
 
 		ar& coord& playerId& buildingMap& taskQueue& ressourceSet& eventList& cannonTab;
-		if(playerId >= 100 && playerId != Player::NoId)
-			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100!!"));
+		if(playerId >= 100000 && playerId != Player::NoId)
+			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 		if(playerId == Player::NoId && taskQueue.empty() == false)
 			BOOST_THROW_EXCEPTION(std::logic_error("taskQueue shourld be empty"));
 	}
@@ -412,8 +412,8 @@ struct Planet
 	Planet(Coord c): coord(c), playerId(Player::NoId)
 	{
 		cannonTab.fill(0);
-		if(playerId >= 100 && playerId != Player::NoId)
-			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100!!"));
+		if(playerId >= 100000 && playerId != Player::NoId)
+			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 	}
 
 	bool isFree() const
@@ -470,12 +470,12 @@ struct Fleet
 	{
 		if(Archive::is_saving::value)
 		{
-			if(playerId >= 100)
-				BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100!!"));
+			if(playerId >= 100000)
+				BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 		}
 		ar& id& playerId& coord& origine& name& shipList& ressourceSet& taskQueue& eventList;
-		if(playerId >= 100)
-			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100!!"));
+		if(playerId >= 100000)
+			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 	}
 
 	typedef size_t ID;
@@ -494,8 +494,8 @@ struct Fleet
 	Fleet(ID fid, Player::ID pid, Coord c):
 		id(fid), playerId(pid), coord(c), origine(c), shipList(Ship::Count)
 	{
-		if(playerId >= 100)
-			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100!!"));
+		if(playerId >= 100000)
+			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 	}
 };
 
