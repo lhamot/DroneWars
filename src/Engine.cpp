@@ -196,6 +196,7 @@ Fleet Engine::getFleet(Fleet::ID fid)
 boost::optional<Player> Engine::getPlayer(
   std::string const& login, std::string const& password) const
 {
+	SharedLock lock(univ_.mutex);
 	auto iter = boost::find_if(univ_.playerMap, [&]
 	                           (Universe::PlayerMap::value_type const & player)
 	{

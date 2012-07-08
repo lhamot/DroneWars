@@ -59,7 +59,8 @@ void Simulation::reloadPlayer(Player::ID pid)
 }
 
 
-luabind::object Simulation::registerCode(
+luabind::object registerCode(
+  Universe& univ_,
   LuaTools::LuaEngine& luaEngine,
   Player::ID const pid, CodeData& code, time_t time, bool isFleet)
 try
@@ -231,13 +232,15 @@ try
 	case FleetAction::Drop:
 	{
 		if(planet && canDrop(fleet, *planet))
+		{
 			drop(fleet, *planet);
-		fleet.eventList.push_back(
-		  Event(univ_.nextEventID++, time, Event::FleetDrop));
-		if(planet->playerId == Player::NoId)
-			BOOST_THROW_EXCEPTION(std::logic_error("planet->playerId == Player::NoId"));
-		planet->eventList.push_back(
-		  Event(univ_.nextEventID++, time, Event::FleetDrop));
+			fleet.eventList.push_back(
+			  Event(univ_.nextEventID++, time, Event::FleetDrop));
+			if(planet->playerId == Player::NoId)
+				BOOST_THROW_EXCEPTION(std::logic_error("planet->playerId == Player::NoId"));
+			planet->eventList.push_back(
+			  Event(univ_.nextEventID++, time, Event::FleetDrop));
+		}
 	}
 	break;
 	}
@@ -261,7 +264,7 @@ catch(std::exception const& ex)
 
 
 //! Désactivation de tout les codes qui echoue
-void disableFailingCode(Universe& univ_, PlayerCodeMap& codesMap)
+void disableFailingCode(Universe const& univ_, PlayerCodeMap& codesMap)
 {
 	for(Player const & player: univ_.playerMap | boost::adaptors::map_values)
 	{
@@ -282,8 +285,8 @@ void Simulation::updatePlayersCode(LuaTools::LuaEngine& luaEngine, PlayerCodeMap
 		Player& player = mapFind(univ_.playerMap, pid)->second;
 		PlayerCodes newCodes =
 		{
-			registerCode(luaEngine, player.id, player.fleetsCode, univ_.time, true),
-			registerCode(luaEngine, player.id, player.planetsCode, univ_.time, false)
+			registerCode(univ_, luaEngine, player.id, player.fleetsCode, univ_.time, true),
+			registerCode(univ_, luaEngine, player.id, player.planetsCode, univ_.time, false)
 		};
 		codesMap[player.id] = newCodes;
 	}
@@ -291,7 +294,7 @@ void Simulation::updatePlayersCode(LuaTools::LuaEngine& luaEngine, PlayerCodeMap
 }
 
 
-void execPlanets(Universe& univ_, LuaTools::LuaEngine& luaEngine, PlayerCodeMap& codesMap)
+void execPlanets(Universe& univ_, UpgradeLock& lock, LuaTools::LuaEngine& luaEngine, PlayerCodeMap& codesMap)
 {
 	FleetCoordMap fleetMap;
 	for(Fleet & fleet: univ_.fleetMap | boost::adaptors::map_values)
@@ -301,6 +304,8 @@ void execPlanets(Universe& univ_, LuaTools::LuaEngine& luaEngine, PlayerCodeMap&
 	std::vector<Fleet const*> fleetList;
 	for(Universe::PlanetMap::value_type & planetNVP: univ_.planetMap)
 	{
+		UpToUniqueLock writeLock(lock);
+
 		Planet& planet = planetNVP.second;
 		if(planet.eventList.size() > 10)
 			planet.eventList.erase(planet.eventList.begin(), planet.eventList.end() - 10);
@@ -317,9 +322,9 @@ void execPlanets(Universe& univ_, LuaTools::LuaEngine& luaEngine, PlayerCodeMap&
 }
 
 //! Les combats
-void execFights(Universe& univ_)
+void execFights(Universe& univ_, UpgradeLock& lock)
 {
-	if(false == univ_.fleetMap.empty()) //si il y as des flottes
+	if(univ_.fleetMap.empty()) //si il y as des flottes
 		return;
 
 	vector<Fleet::ID> deadFleets;
@@ -328,20 +333,22 @@ void execFights(Universe& univ_)
 	lostPlanets.reserve(univ_.planetMap.size());
 	typedef std::multimap<Coord, FighterPtr, CompCoord> FleetCoordMultimap;
 	FleetCoordMultimap fleetMultimap;
+
+	//! Remplissage de la multimap de flote Coord=>flote
 	for(Fleet & fleet: univ_.fleetMap | boost::adaptors::map_values)
 		fleetMultimap.insert(make_pair(fleet.coord, FighterPtr(&fleet)));
 	for(Planet & planet: univ_.planetMap | boost::adaptors::map_values)
 		fleetMultimap.insert(make_pair(planet.coord, FighterPtr(&planet)));
 
 	std::vector<Fleet*> fleetVect;
-	// Pour chaque coordonées, on accede au range des flotes
+	//! Pour chaque coordonées, on accede au range des flotes
 	for(FleetCoordMultimap::iterator iter1 = fleetMultimap.begin(), iter2 = nextNot(fleetMultimap, iter1);
 	    iter1 != fleetMultimap.end();
 	    iter1 = iter2, iter2 = nextNot(fleetMultimap, iter1))
 	{
 		auto fleetRange = make_pair(iter1, iter2);
 
-		//Si 0 vaisseau, on passe
+		//! - Si 0 vaisseau, on passe
 		auto testShipNumber = iter1;
 		if(testShipNumber == iter2)
 			continue;
@@ -349,7 +356,7 @@ void execFights(Universe& univ_)
 		if(testShipNumber == iter2)
 			continue;
 
-		//On lance le combat
+		//! - On remplis le tableau de combatant a cette position
 		fleetVect.clear();
 		Planet* planetPtr = nullptr;
 		for(FighterPtr const & fighterPtr: fleetRange | boost::adaptors::map_values)
@@ -359,7 +366,9 @@ void execFights(Universe& univ_)
 			else
 				fleetVect.push_back(fighterPtr.getFleet());
 		}
-		//boost::copy(fleetRange | boost::adaptors::map_values, back_inserter(fleetVect));
+
+		UpToUniqueLock writeLock(lock);
+		//! - On excecute le combats
 		FightReport fightReport;
 		fight(fleetVect, planetPtr, fightReport);
 		bool hasFight = false;
@@ -375,17 +384,19 @@ void execFights(Universe& univ_)
 		}
 		hasFight = hasFight | fightReport.planet.hasFight;
 
-		//Si personne ne c'est batue, on passe
+		//! - Si personne ne c'est batue, on passe
 		if(hasFight == false)
 			continue;
 
-		//On ajoute le rapport dans la base de donné
+		//! - On ajoute le rapport dans la base de donné
 		size_t const reportID = univ_.nextFightID;
 		univ_.nextFightID += 1;
 		univ_.reportMap.insert(make_pair(reportID, fightReport));
-		//On ajoute les evenement/message dans les flottes/joueur
+
+		//! - On ajoute les evenement/message dans les flottes/joueur
 		for(auto fleetReportPair: range)
 		{
+			//! --Pour les flotes
 			Fleet* fleetPtr = fleetReportPair.get<0>();
 			Report<Fleet> const& report = fleetReportPair.get<1>();
 			Fleet& fleet = *fleetPtr;
@@ -403,6 +414,7 @@ void execFights(Universe& univ_)
 		}
 		if(planetPtr)
 		{
+			//! --Et pour la planete
 			Planet& planet = *planetPtr;
 			if(fightReport.planet.isDead)
 			{
@@ -421,22 +433,20 @@ void execFights(Universe& univ_)
 		}
 	}
 
-	boost::for_each(lostPlanets, [&](Coord planetCoord)
-	{
+	UpToUniqueLock writeLock(lock);
+	//! On gère chaque planete perdues(onPlanetLose)
+	for(Coord planetCoord: lostPlanets)
 		onPlanetLose(planetCoord, univ_);
-	});
 
-	//Suppression de toute les flottes mortes
-	boost::for_each(deadFleets, [&](Fleet::ID fleetID)
-	{
-		//cout << "Supresion flotte : " << fleetID << endl;
+	//! Suppression de toute les flottes mortes
+	for(Fleet::ID fleetID: deadFleets)
 		univ_.fleetMap.erase(fleetID);
-	});
 }
 
 //! Excecutes les code des flottes
 void execFleets(
   Universe& univ_,
+  UpgradeLock& lock,
   LuaTools::LuaEngine& luaEngine,
   PlayerCodeMap& codesMap)
 {
@@ -447,6 +457,8 @@ void execFleets(
 	auto iter = fleetMap.begin();
 	while(iter != fleetMap.end())
 	{
+		UpToUniqueLock writeLock(lock);
+
 		fleetRound(univ_, iter->second, univ_.time);
 
 		bool keepFleet = execFleet(univ_, luaEngine,
@@ -464,6 +476,7 @@ void execFleets(
 	std::map<Fleet::ID, Fleet> newFleetMap;
 	for(Fleet & fleet: fleetMap | boost::adaptors::map_values)
 		newFleetMap.insert(make_pair(fleet.id, fleet));
+	UpToUniqueLock writeLock(lock);
 	newFleetMap.swap(univ_.fleetMap);
 
 	for(Fleet & fleet: univ_.fleetMap | boost::adaptors::map_values)
@@ -473,7 +486,8 @@ void execFleets(
 	}
 }
 
-void removeDeadFleets(Universe& univ_)
+//! Supprime les evenement trop vieux, et les rapport plus réfférencés
+void removeOldEvents(Universe& univ_)
 {
 	set<size_t> usedReport;
 	for(Player & player: univ_.playerMap | boost::adaptors::map_values)
@@ -501,24 +515,31 @@ try
 
 	univ_.time += RoundSecond;
 
-	UniqueLock lock(univ_.mutex);
+	UpgradeLock lock(univ_.mutex);
 
 	//! Désactivation de tout les codes qui echoue
 	disableFailingCode(univ_, codesMap);
 
 	//! Rechargement des codes flote/planet des joueurs dont le code a été changé
-	updatePlayersCode(luaEngine, codesMap);
+	{
+		UpToUniqueLock writeLock(lock);
+		updatePlayersCode(luaEngine, codesMap);
+	}
 
-	execPlanets(univ_, luaEngine, codesMap);
+	//! Excecution du code des planetes(modifie l'univers)
+	execPlanets(univ_, lock, luaEngine, codesMap);
 
 	//! Les combats
-	execFights(univ_);
+	execFights(univ_, lock);
 
 	//! Les flottes
-	execFleets(univ_, luaEngine, codesMap);
+	execFleets(univ_, lock, luaEngine, codesMap);
 
 	//! Supprime les flotte mortes
-	removeDeadFleets(univ_);
+	{
+		UpToUniqueLock writeLock(lock);
+		removeOldEvents(univ_);
+	}
 
 
 	//std::cout << lexical_cast<std::string>(time(0)) + "_save.bta ";
@@ -630,8 +651,8 @@ void Simulation::loop()
 			Player& player = playerNVP.second;
 			PlayerCodes newCodes =
 			{
-				registerCode(luaEngine, player.id, player.fleetsCode, univ_.time, true),
-				registerCode(luaEngine, player.id, player.planetsCode, univ_.time, false)
+				registerCode(univ_, luaEngine, player.id, player.fleetsCode, univ_.time, true),
+				registerCode(univ_, luaEngine, player.id, player.planetsCode, univ_.time, false)
 			};
 			codesMap.insert(make_pair(player.id, newCodes));
 		}

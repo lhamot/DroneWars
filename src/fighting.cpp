@@ -249,7 +249,7 @@ void fight(std::vector<Fleet*> const& fleetList,
 	}
 
 
-	//! On list les paires combatantes
+	//! On liste les paires combatantes
 	std::set<FleetPair> fightingPair;
 	//! - Flotte/Flotte
 	for(auto iter1 = fleetList.begin(), end = fleetList.end(); iter1 != end; ++iter1)

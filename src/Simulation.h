@@ -32,9 +32,9 @@ public:
 
 private:
 	void round(LuaTools::LuaEngine&, PlayerCodeMap& codesMap);
-	luabind::object registerCode(
-	  LuaTools::LuaEngine& luaEngine,
-	  Player::ID const pid, CodeData& code, time_t time, bool isFleet);
+	//luabind::object registerCode(
+	//  LuaTools::LuaEngine& luaEngine,
+	//  Player::ID const pid, CodeData& code, time_t time, bool isFleet);
 	void updatePlayersCode(LuaTools::LuaEngine& luaEngine, PlayerCodeMap& codesMap);
 	void save(std::string const& univName) const;
 
