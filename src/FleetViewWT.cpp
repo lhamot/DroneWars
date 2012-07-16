@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "FleetViewWT.h"
 
 #include "TranslationTools.h"

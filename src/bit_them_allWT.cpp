@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "bit_them_allWT.h"
 
 #pragma warning(push)

@@ -37,6 +37,7 @@ private:
 	//  Player::ID const pid, CodeData& code, time_t time, bool isFleet);
 	void updatePlayersCode(LuaTools::LuaEngine& luaEngine, PlayerCodeMap& codesMap);
 	void save(std::string const& univName) const;
+	void removeOldSaves() const;
 
 	boost::shared_mutex mutex_;
 	std::set<Player::ID> playerToReload_;

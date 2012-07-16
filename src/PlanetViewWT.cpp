@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "PlanetViewWT.h"
 
 #pragma warning(push)
@@ -146,17 +147,17 @@ void PlanetViewWT::refresh()
 
 	//! Buildings
 	row = 0;
-	Wt::WStandardItemModel* buModel = new Wt::WStandardItemModel((int)planet.buildingMap.size(), 4, this);
+	Wt::WStandardItemModel* buModel = new Wt::WStandardItemModel((int)planet.buildingList.size(), 4, this);
 	buModel->setHeaderData(0, Horizontal, WString("Name"), DisplayRole);
 	buModel->setHeaderData(1, Horizontal, WString("Level"), DisplayRole);
-	for(auto const & typeLevel: planet.buildingMap)
+	for(size_t type = 0; type < planet.buildingList.size(); ++type)
 	{
 		Wt::WStandardItem* item = new Wt::WStandardItem();
-		item->setData(getBuildingName(typeLevel.first), DisplayRole);
+		item->setData(getBuildingName(Building::Enum(type)), DisplayRole);
 		buModel->setItem(row, 0, item);
 
 		item = new Wt::WStandardItem();
-		item->setData(typeLevel.second, DisplayRole);
+		item->setData(planet.buildingList[type], DisplayRole);
 		buModel->setItem(row, 1, item);
 
 		row += 1;

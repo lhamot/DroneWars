@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "TranslationTools.h"
 #include <boost/thread/mutex.hpp>
 

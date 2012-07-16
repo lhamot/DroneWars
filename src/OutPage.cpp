@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "OutPage.h"
 
 #pragma warning(push)
@@ -77,6 +78,8 @@ OutPage::OutPage(Wt::WContainerWidget* parent, Engine& engine):
 	passwordEdit2_(nullptr),
 	passwordEdit3_(nullptr)
 {
+	setStyleClass("homepage");
+	setHeight(1024);
 	Wt::WStackedWidget* contents = new Wt::WStackedWidget();
 	Wt::WMenu* menu = new Wt::WMenu(contents, Wt::Horizontal, this);
 	//menu->setInline(true);

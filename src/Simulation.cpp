@@ -1,8 +1,10 @@
+#include "stdafx.h"
 #include "Simulation.h"
 
 #include <fstream>
 #include <sys/stat.h>
 #include <boost/range/adaptor/map.hpp>
+#include <boost/range/iterator_range.hpp>
 #include <boost/exception/diagnostic_information.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/lexical_cast.hpp>
@@ -112,14 +114,20 @@ try
 {
 	if(false == code.is_valid() || luabind::type(code) != LUA_TFUNCTION)
 		return;
-	PlanetActionList list;
 	lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
-	luabind::call_function<void>(code, boost::cref(planet), boost::cref(fleetList), boost::ref(list));
 
-	for(PlanetAction const & action: list)
+	if(planet.buildingList.size() != Building::Count)
+		BOOST_THROW_EXCEPTION(std::logic_error("planet.buildingList.size() != Building::Count"));
+
+	PlanetAction action =	luabind::call_function<PlanetAction>(
+	                        code, boost::cref(planet), boost::cref(fleetList));
+
+	//for(PlanetAction const & action: list)
 	{
 		switch(action.action)
 		{
+		case PlanetAction::Undefined:
+			break;
 		case PlanetAction::Building:
 		{
 			if(canBuild(planet, action.building))
@@ -674,6 +682,7 @@ void Simulation::loop()
 		{
 			std::cout << boost::lexical_cast<std::string>(time(0)) + "_save.bta ";
 			save(boost::lexical_cast<std::string>(time(0)) + "_save.bta");
+			removeOldSaves();
 			std::cout << "OK" << std::endl;
 			newSave += SaveSecond;
 		}
@@ -716,4 +725,59 @@ void Simulation::save(std::string const& saveName) const
 		rename(saveName.c_str(), ansSaveName.c_str());
 	rename(newSaveName.c_str(), saveName.c_str());
 	//std::cout << "OK" << std::endl;
+}
+
+void Simulation::removeOldSaves() const
+{
+	using namespace boost::filesystem;
+	typedef boost::filesystem::directory_iterator DirIter;
+	time_t const now = time(0);
+
+	std::set<time_t> timeSet;
+
+	DirIter beginFileIter("."), endFileIter;
+	for(auto path: boost::make_iterator_range(beginFileIter, endFileIter))
+	{
+		std::string const filename = path.path().filename().string();
+		if(filename.find("_save.bta") != 10 || filename.size() != 19) //Ce n'est pas une archive normal
+			continue;
+
+		std::string const timeStr = path.path().stem().string().substr(0, 10);
+		time_t const timeValue = boost::lexical_cast<time_t>(timeStr);
+		timeSet.insert(timeValue);
+	}
+
+	if(timeSet.size() < 2)
+		return;
+
+	time_t endTime = *boost::prior(timeSet.end());
+	time_t beginTime = endTime;
+	time_t timeLaps = 30;
+
+	//On va supprimer tout les fichier en trop dans laps de temps
+	//La taille du laps augmente au fure et a mesure qu'on recule dans le temps
+	while(true)
+	{
+		timeLaps = (time_t)(timeLaps * 1.1);
+		//timeLaps /= 10;
+		endTime = beginTime;
+
+		beginTime = endTime - timeLaps;
+		//cout << beginTime << " " << endTime << endl;
+		auto begin = timeSet.lower_bound(beginTime);
+		auto end = timeSet.lower_bound(endTime);
+		if(end == timeSet.begin())
+			break;
+
+		size_t fileCount = 0;
+		for(time_t fileTime: boost::make_iterator_range(begin, end))
+		{
+			++fileCount;
+			if(fileCount == 1)
+				continue;
+			std::string const filename = boost::lexical_cast<std::string>(fileTime) + "_save.bta";
+			//cout << filename << endl;
+			remove(filename);
+		}
+	}
 }

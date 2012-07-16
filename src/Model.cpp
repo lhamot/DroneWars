@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Model.h"
 
 #include <algorithm>
@@ -100,7 +101,7 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 		{
 			planet.playerId = newPlayerID;
 
-			planet.buildingMap[Building::CommandCenter] = 1;
+			planet.buildingList[Building::CommandCenter] = 1;
 			planet.ressourceSet = RessourceSet(2000, 200, 0);
 			done = true;
 			//planet.buildingSet.push_back(Building(Building::MetalMine));
@@ -143,21 +144,20 @@ void construct(Universe& univ)
 		Player::ID pid = createPlayer(univ, "admin" + boost::lexical_cast<std::string>(i), password);
 		Player& player = mapFind(univ.playerMap, pid)->second;
 		player.planetsCode.setCode(
-		  "function AI(planet, fleets, actions)\n"
-		  "  if (not planet.buildingMap:count(Building.MetalMine)) or (planet.buildingMap:find(Building.MetalMine) < 4) then\n"
-		  "    actions:append(makeBuilding(Building.MetalMine))\n"
-		  "  elseif not planet.buildingMap:count(Building.Factory) then\n"
-		  "    actions:append(makeBuilding(Building.Factory))\n"
+		  "function AI(planet, fleets)\n"
+		  "  if planet.buildingList:at(Building.MetalMine) < 4 then\n"
+		  "    return makeBuilding(Building.MetalMine)\n"
+		  "  elseif not planet.buildingList:at(Building.Factory) then\n"
+		  "    return makeBuilding(Building.Factory)\n"
 		  "  elseif planet.cannonTab:at(Cannon.Cannon1) < 10 then\n"
-		  "    actions:append(makeCannon(Cannon.Cannon1, 1))\n"
+		  "    return makeCannon(Cannon.Cannon1)\n"
 		  "  else\n"
 		  "    for fleet in fleets:range() do\n"
 		  "      if fleet.shipList:at(Ship.Queen) == 0 then\n"
-		  "         actions:append(makeShip(Ship.Queen, 1))\n"
-		  "         return\n"
+		  "         return makeShip(Ship.Queen)\n"
 		  "      end\n"
 		  "    end\n"
-		  "    actions:append(makeShip(Ship.Mosquito, 1))\n"
+		  "    return makeShip(Ship.Mosquito)\n"
 		  "  end\n"
 		  "end");
 		player.fleetsCode.setCode(
@@ -302,8 +302,7 @@ bool canBuild(Planet const& planet, Building::Enum type)
 	if(type >= Building::Count)
 		return false;
 
-	auto const buIter = planet.buildingMap.find(type);
-	size_t const buLevel = (buIter == planet.buildingMap.end()) ? 0 : buIter->second;
+	size_t const buLevel = planet.buildingList[type];
 	RessourceSet const price = getBuilingPrice(type, buLevel + 1);
 	if(false == canPay(planet, price))
 		return false;
@@ -318,8 +317,7 @@ bool canBuild(Planet const& planet, Building::Enum type)
 
 void addTask(Planet& planet, time_t time, Building::Enum building)
 {
-	auto const buIter = planet.buildingMap.find(building);
-	size_t const buLevel = (buIter == planet.buildingMap.end()) ? 0 : buIter->second;
+	size_t const buLevel =  planet.buildingList[building];
 	size_t const duration = static_cast<size_t>(pow(buLevel + 1., 1.5) * 10);
 	PlanetTask task(PlanetTask::UpgradeBuilding, time, duration);
 	task.value = building;
@@ -374,7 +372,9 @@ void execTask(Universe& univ, Planet& planet, PlanetTask& task, time_t time)
 		switch(task.type)
 		{
 		case PlanetTask::UpgradeBuilding:
-			planet.buildingMap[static_cast<Building::Enum>(task.value)] += 1;
+			if(task.value >= planet.buildingList.size())
+				BOOST_THROW_EXCEPTION(std::logic_error("Unconsistent building type"));
+			planet.buildingList[task.value] += 1;
 			planet.eventList.push_back(Event(univ.nextEventID++, time, Event::Upgraded, "Building upgraded"));
 			break;
 		case PlanetTask::MakeShip:
@@ -428,7 +428,7 @@ void execTask(Universe& univ, Fleet& fleet, FleetTask& task, time_t time)
 				fleet.eventList.push_back(Event(univ.nextEventID++, time, Event::PlanetColonized));
 				fleet.shipList[Ship::Queen] -= 1;
 
-				planet.buildingMap[Building::CommandCenter] = 1;
+				planet.buildingList[Building::CommandCenter] = 1;
 				boost::geometry::add_point(planet.ressourceSet.tab, RessourceSet(2000, 500, 0).tab);
 				planet.playerId = fleet.playerId;
 			}
@@ -476,8 +476,8 @@ void planetRound(Universe& univ, Planet& planet, time_t time)
 
 	boost::remove_erase_if(planet.taskQueue, bind(&PlanetTask::expired, placeholders::_1));
 
-	for(auto & buildingNVP: planet.buildingMap)
-		execBuilding(planet, buildingNVP.first, buildingNVP.second);
+	for(size_t type = 0; type < planet.buildingList.size(); ++type)
+		execBuilding(planet, Building::Enum(type), planet.buildingList[type]);
 }
 
 

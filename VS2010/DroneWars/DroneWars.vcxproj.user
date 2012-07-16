@@ -14,6 +14,7 @@
     <LocalDebuggerCommandArguments>--docroot="I:\C\bit_them_all" --http-address=localhost --http-port=81 --config="I:\C\bit_them_all\wt_config.xml"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)$(Platform)\$(Configuration)\</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerDebuggerType>NativeOnly</LocalDebuggerDebuggerType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerCommandArguments>--docroot="I:\C\bit_them_all" --http-address=localhost --http-port=81 --config="I:\C\bit_them_all\wt_config.xml"</LocalDebuggerCommandArguments>

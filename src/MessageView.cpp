@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "MessageView.h"
 
 #include <boost/format.hpp>

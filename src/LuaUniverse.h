@@ -10,14 +10,6 @@
 #include <luabind/iterator_policy.hpp>
 #include "Tools.h"
 
-size_t findBuilding(Planet::BuildingMap const& buil, Building::Enum type)
-{
-	auto iter = buil.find(type);
-	if(iter == buil.end())
-		return 0;
-	else
-		return iter->second;
-}
 
 void PlanetActionListPushBack(PlanetActionList& list, PlanetAction const& pa) {list.push_back(pa);}
 
@@ -78,14 +70,19 @@ PlanetAction makeBuilding(Building::Enum building)
 	return PlanetAction(PlanetAction::Building, building);
 }
 
-PlanetAction makeShip(Ship::Enum ship, size_t count)
+PlanetAction makeShip(Ship::Enum ship)
 {
-	return PlanetAction(PlanetAction::Ship, ship, count);
+	return PlanetAction(PlanetAction::Ship, ship, 1);
 }
 
-PlanetAction makeCannon(Cannon::Enum cannon, size_t count)
+PlanetAction makeCannon(Cannon::Enum cannon)
 {
-	return PlanetAction(PlanetAction::Cannon, cannon, count);
+	return PlanetAction(PlanetAction::Cannon, cannon, 1);
+}
+
+PlanetAction noPlanetAction()
+{
+	return PlanetAction();
 }
 
 extern "C" int initDroneWars(lua_State* L)
@@ -102,7 +99,7 @@ extern "C" int initDroneWars(lua_State* L)
 	  .def("is_free", &planetIsFree)
 	  .def_readonly("coord", &Planet::coord)
 	  .def_readonly("playerId", &Planet::playerId)
-	  .def_readonly("buildingMap", &Planet::buildingMap)
+	  .def_readonly("buildingList", &Planet::buildingList)
 	  .def_readonly("cannonTab", &Planet::cannonTab)
 	  .def_readonly("ressourceSet", &Planet::ressourceSet),
 	  //.def(constructor<Coord>())
@@ -152,16 +149,19 @@ extern "C" int initDroneWars(lua_State* L)
 	    value("Cannon5", Cannon::Cannon5),
 	    value("Cannon6", Cannon::Cannon6)
 	  ],
-	  class_<Planet::BuildingMap>("BuildingMap")
-	  .def("count", &Planet::BuildingMap::count)
-	  .def("find", findBuilding),
+	  class_<Planet::BuildingTab>("BuildingTab")
+	  .def("size", &Planet::BuildingTab::size)
+	  .def("at", vectorAt<Planet::BuildingTab>)
+	  .def("range", rangeOf<Planet::BuildingTab>, return_stl_iterator),
 	  class_<Planet::CannonTab>("CannonTab")
 	  .def("size", &Planet::CannonTab::size)
-	  .def("at", vectorAt<Planet::CannonTab>),
+	  .def("at", vectorAt<Planet::CannonTab>)
+	  .def("range", rangeOf<Planet::CannonTab>, return_stl_iterator),
 	  //.def(boost::python::map_indexing_suite<Planet::BuildingMap>())
 	  class_<Fleet::ShipTab>("ShipTab")
 	  .def("size", &Fleet::ShipTab::size)
-	  .def("at", vectorAt<Fleet::ShipTab>),
+	  .def("at", vectorAt<Fleet::ShipTab>)
+	  .def("range", rangeOf<Fleet::ShipTab>, return_stl_iterator),
 	  //.def(boost::python::vector_indexing_suite<Fleet::ShipTab>());
 	  class_<Fleet>("Fleet")
 	  //.def(constructor<Fleet::ID, Player::ID, Coord>())
@@ -173,6 +173,7 @@ extern "C" int initDroneWars(lua_State* L)
 	  .def_readonly("shipList", &Fleet::shipList)
 	  .def_readonly("ressourceSet", &Fleet::ressourceSet),
 	  class_<PlanetAction>("PlanetAction")
+	  .def(constructor<>())
 	  .def_readonly("action",   &PlanetAction::action)
 	  .def_readonly("building", &PlanetAction::building)
 	  .enum_("Type")
@@ -184,9 +185,7 @@ extern "C" int initDroneWars(lua_State* L)
 	  def("makeBuilding", makeBuilding),
 	  def("makeShip", makeShip),
 	  def("makeCannon", makeCannon),
-	  class_<PlanetActionList>("PlanetActionList")
-	  //.def(boost::python::vector_indexing_suite<PlanetActionList>());
-	  .def("append", PlanetActionListPushBack),
+	  def("noPlanetAction", noPlanetAction),
 	  class_<std::vector<Fleet const*> >("FleetList")
 	  .def("at", vectorAt<std::vector<Fleet const*> >)
 	  .def("range", rangeOf<std::vector<Fleet const*> >, return_stl_iterator),

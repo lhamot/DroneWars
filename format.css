@@ -1,6 +1,14 @@
 @import url("CodeMirror/theme/cobalt.css");
 @import url("CodeMirror/lib/codemirror.css");
 
+/*.homepage*/
+body
+{
+  background-image: url(img/N9-1280.jpg);
+  background-repeat:no-repeat;
+  background-position:top;
+}
+
 pre
 {
   text-align: left;
@@ -35,7 +43,7 @@ button
     background-image: url(img/bg/bg6.gif);
 }
 
-th
+th, .Wt-tableview .Wt-label
 {
     font-weight: bold;
     color: #E6EBFB;

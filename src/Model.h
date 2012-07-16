@@ -389,27 +389,31 @@ struct Planet
 				BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 			if(playerId == Player::NoId && taskQueue.empty() == false)
 				BOOST_THROW_EXCEPTION(std::logic_error("taskQueue shourld be empty"));
+			if(buildingList.size() != Building::Count)
+				BOOST_THROW_EXCEPTION(std::logic_error("buildingList.size() != Building::Count"));
 		}
 
-		ar& coord& playerId& buildingMap& taskQueue& ressourceSet& eventList& cannonTab;
+		ar& coord& playerId& buildingList& taskQueue& ressourceSet& eventList& cannonTab;
 		if(playerId >= 100000 && playerId != Player::NoId)
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 		if(playerId == Player::NoId && taskQueue.empty() == false)
 			BOOST_THROW_EXCEPTION(std::logic_error("taskQueue shourld be empty"));
+		if(buildingList.size() != Building::Count)
+			BOOST_THROW_EXCEPTION(std::logic_error("buildingList.size() != Building::Count"));
 	}
 
 	Coord coord;
 	Player::ID playerId;
-	typedef std::map<Building::Enum, size_t> BuildingMap;
-	BuildingMap buildingMap;
+	typedef std::vector<size_t> BuildingTab;
+	BuildingTab buildingList;
 	std::vector<PlanetTask> taskQueue;
 	RessourceSet ressourceSet;
 	typedef boost::array<size_t, Cannon::Count> CannonTab;
 	std::vector<Event> eventList;
 	CannonTab cannonTab;
 
-	Planet() {}
-	Planet(Coord c): coord(c), playerId(Player::NoId)
+	Planet(): buildingList(Building::Count) {}
+	Planet(Coord c): coord(c), playerId(Player::NoId), buildingList(Building::Count)
 	{
 		cannonTab.fill(0);
 		if(playerId >= 100000 && playerId != Player::NoId)
