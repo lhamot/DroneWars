@@ -170,7 +170,7 @@ void construct(Universe& univ)
 		  "end\n\n"
 		  "function AI:action(myFleet, planet)\n"
 		  "  if planet then\n"
-		  "    if planet:is_free() then\n"
+		  "    if planet:isFree() then\n"
 		  "      if myFleet.shipList:at(Ship.Queen) > 0 then\n"
 		  "        return FleetAction(FleetAction.Colonize)\n"
 		  "      elseif planet.ressourceSet ~= RessourceSet() then\n"

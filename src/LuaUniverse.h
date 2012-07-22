@@ -89,14 +89,27 @@ extern "C" int initDroneWars(lua_State* L)
 {
 	using namespace luabind;
 
+	typedef std::vector<Fleet const*> FleetList;
+
 	open(L);
 
 	module(L)
 	[
 	  def("directionRandom", directionRandom),
 	  def("directionFromTo", directionFromTo),
+	  def("makeBuilding", makeBuilding),
+	  def("makeShip", makeShip),
+	  def("makeCannon", makeCannon),
+	  def("noPlanetAction", noPlanetAction),
+	  class_<Ressource>("Ressource")
+	  .enum_("Type")
+	  [
+	    value("Metal",   Ressource::Metal),
+	    value("Carbon",  Ressource::Carbon),
+	    value("Loicium", Ressource::Loicium)
+	  ],
 	  class_<Planet>("Planet")
-	  .def("is_free", &planetIsFree)
+	  .def("isFree", &planetIsFree)
 	  .def_readonly("coord", &Planet::coord)
 	  .def_readonly("playerId", &Planet::playerId)
 	  .def_readonly("buildingList", &Planet::buildingList)
@@ -114,7 +127,7 @@ extern "C" int initDroneWars(lua_State* L)
 	  .def_readonly("Y", &Coord::Y)
 	  .def_readonly("Z", &Coord::Z),
 	  class_<Building>("Building")
-	  .enum_("Enum")
+	  .enum_("Type")
 	  [
 	    value("CommandCenter",     Building::CommandCenter),
 	    value("MetalMine",         Building::MetalMine),
@@ -127,7 +140,7 @@ extern "C" int initDroneWars(lua_State* L)
 	    value("GeothermicCentral", Building::GeothermicCentral)
 	  ],
 	  class_<Ship>("Ship")
-	  .enum_("Enum")
+	  .enum_("Type")
 	  [
 	    value("Mosquito",     Ship::Mosquito),
 	    value("Hornet",       Ship::Hornet),
@@ -140,7 +153,7 @@ extern "C" int initDroneWars(lua_State* L)
 	    value("LargeCargo",   Ship::LargeCargo)
 	  ],
 	  class_<Cannon>("Cannon")
-	  .enum_("Enum")
+	  .enum_("Type")
 	  [
 	    value("Cannon1", Cannon::Cannon1),
 	    value("Cannon2", Cannon::Cannon2),
@@ -182,11 +195,7 @@ extern "C" int initDroneWars(lua_State* L)
 	    value("Ship",     PlanetAction::Ship),
 	    value("Cannon",   PlanetAction::Cannon)
 	  ],
-	  def("makeBuilding", makeBuilding),
-	  def("makeShip", makeShip),
-	  def("makeCannon", makeCannon),
-	  def("noPlanetAction", noPlanetAction),
-	  class_<std::vector<Fleet const*> >("FleetList")
+	  class_<FleetList>("FleetList")
 	  .def("at", vectorAt<std::vector<Fleet const*> >)
 	  .def("range", rangeOf<std::vector<Fleet const*> >, return_stl_iterator),
 	  class_<FleetAction>("FleetAction")
@@ -203,7 +212,7 @@ extern "C" int initDroneWars(lua_State* L)
 	    value("Drop",      FleetAction::Drop)
 	  ],
 
-	  //Pour l'instant inutine:
+	  //Pour l'instant inutil:
 	  class_<Universe>("Universe")
 	  .def_readonly("playerMap", &Universe::playerMap)
 	  .def_readonly("planetMap", &Universe::planetMap)
