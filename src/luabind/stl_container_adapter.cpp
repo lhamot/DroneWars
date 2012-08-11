@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 
+#include "stdafx.h"
+
 #define LUABIND_BUILDING
 
 #include <luabind/config.hpp>
