@@ -13,7 +13,8 @@ public:
 	~Editor();
 
 private:
-	void refresh();
+	void refreshBlockly();
+	void refreshCodeMirror();
 	void on_saveCodeButton_clicked();
 	void on_resetCodeButton_clicked();
 

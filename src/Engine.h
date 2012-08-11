@@ -5,8 +5,6 @@
 
 #pragma warning(push)
 #pragma warning(disable:4512 4127 4244 4121 4100)
-//#include <boost/python.hpp>
-#include <luabind/luabind.hpp>
 #include <boost/optional.hpp>
 #include <boost/thread.hpp>
 #pragma warning(pop)

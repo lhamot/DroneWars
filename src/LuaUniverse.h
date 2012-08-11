@@ -8,6 +8,7 @@
 #include <luabind/function.hpp>
 #include <luabind/operator.hpp>
 #include <luabind/iterator_policy.hpp>
+#include <luabind/stl_container_converter.hpp>
 #include "Tools.h"
 
 
@@ -46,18 +47,6 @@ Coord directionFromTo(Coord const& ori, Coord const& targ)
 	return target;
 }
 
-template<typename V>
-typename V::value_type const&
-vectorAt(V const& v, size_t i)
-{
-	return v.at(i);
-}
-
-template<typename V>
-V const& rangeOf(V const& v)
-{
-	return v;
-}
 
 bool planetIsFree(Planet planet)
 {
@@ -67,17 +56,17 @@ bool planetIsFree(Planet planet)
 
 PlanetAction makeBuilding(Building::Enum building)
 {
-	return PlanetAction(PlanetAction::Building, building);
+	return PlanetAction(PlanetAction::Building, Building::Enum(building - 1));
 }
 
 PlanetAction makeShip(Ship::Enum ship)
 {
-	return PlanetAction(PlanetAction::Ship, ship, 1);
+	return PlanetAction(PlanetAction::Ship, Ship::Enum(ship - 1), 1);
 }
 
 PlanetAction makeCannon(Cannon::Enum cannon)
 {
-	return PlanetAction(PlanetAction::Cannon, cannon, 1);
+	return PlanetAction(PlanetAction::Cannon, Cannon::Enum(cannon - 1), 1);
 }
 
 PlanetAction noPlanetAction()
@@ -88,8 +77,6 @@ PlanetAction noPlanetAction()
 extern "C" int initDroneWars(lua_State* L)
 {
 	using namespace luabind;
-
-	typedef std::vector<Fleet const*> FleetList;
 
 	open(L);
 
@@ -115,13 +102,13 @@ extern "C" int initDroneWars(lua_State* L)
 	  .def_readonly("buildingList", &Planet::buildingList)
 	  .def_readonly("cannonTab", &Planet::cannonTab)
 	  .def_readonly("ressourceSet", &Planet::ressourceSet),
-	  //.def(constructor<Coord>())
 	  class_<RessourceSet>("RessourceSet")
 	  .def(constructor<size_t, size_t, size_t>())
 	  .def(constructor<>())
 	  .def(const_self == other<RessourceSet>())
 	  .def("at", getRessource),
 	  class_<Coord>("Coord")
+	  .def(constructor<>())
 	  .def(constructor<Coord::Value, Coord::Value, Coord::Value>())
 	  .def_readonly("X", &Coord::X)
 	  .def_readonly("Y", &Coord::Y)
@@ -129,55 +116,40 @@ extern "C" int initDroneWars(lua_State* L)
 	  class_<Building>("Building")
 	  .enum_("Type")
 	  [
-	    value("CommandCenter",     Building::CommandCenter),
-	    value("MetalMine",         Building::MetalMine),
-	    value("CarbonMine",        Building::CarbonMine),
-	    value("CristalMine",       Building::LoiciumFilter),
-	    value("Factory",           Building::Factory),
-	    value("Laboratory",        Building::Laboratory),
-	    value("CarbonicCentral",   Building::CarbonicCentral),
-	    value("SolarCentral",      Building::SolarCentral),
-	    value("GeothermicCentral", Building::GeothermicCentral)
+	    value("CommandCenter",     Building::CommandCenter + 1),
+	    value("MetalMine",         Building::MetalMine + 1),
+	    value("CarbonMine",        Building::CarbonMine + 1),
+	    value("CristalMine",       Building::LoiciumFilter + 1),
+	    value("Factory",           Building::Factory + 1),
+	    value("Laboratory",        Building::Laboratory + 1),
+	    value("CarbonicCentral",   Building::CarbonicCentral + 1),
+	    value("SolarCentral",      Building::SolarCentral + 1),
+	    value("GeothermicCentral", Building::GeothermicCentral + 1)
 	  ],
 	  class_<Ship>("Ship")
 	  .enum_("Type")
 	  [
-	    value("Mosquito",     Ship::Mosquito),
-	    value("Hornet",       Ship::Hornet),
-	    value("Vulture",      Ship::Vulture),
-	    value("Dragon",       Ship::Dragon),
-	    value("Behemoth",     Ship::Behemoth),
-	    value("Azathoth",     Ship::Azathoth),
-	    value("Queen",        Ship::Queen),
-	    value("Cargo",        Ship::Cargo),
-	    value("LargeCargo",   Ship::LargeCargo)
+	    value("Mosquito",     Ship::Mosquito + 1),
+	    value("Hornet",       Ship::Hornet + 1),
+	    value("Vulture",      Ship::Vulture + 1),
+	    value("Dragon",       Ship::Dragon + 1),
+	    value("Behemoth",     Ship::Behemoth + 1),
+	    value("Azathoth",     Ship::Azathoth + 1),
+	    value("Queen",        Ship::Queen + 1),
+	    value("Cargo",        Ship::Cargo + 1),
+	    value("LargeCargo",   Ship::LargeCargo + 1)
 	  ],
 	  class_<Cannon>("Cannon")
 	  .enum_("Type")
 	  [
-	    value("Cannon1", Cannon::Cannon1),
-	    value("Cannon2", Cannon::Cannon2),
-	    value("Cannon3", Cannon::Cannon3),
-	    value("Cannon4", Cannon::Cannon4),
-	    value("Cannon5", Cannon::Cannon5),
-	    value("Cannon6", Cannon::Cannon6)
+	    value("Cannon1", Cannon::Cannon1 + 1),
+	    value("Cannon2", Cannon::Cannon2 + 1),
+	    value("Cannon3", Cannon::Cannon3 + 1),
+	    value("Cannon4", Cannon::Cannon4 + 1),
+	    value("Cannon5", Cannon::Cannon5 + 1),
+	    value("Cannon6", Cannon::Cannon6 + 1)
 	  ],
-	  class_<Planet::BuildingTab>("BuildingTab")
-	  .def("size", &Planet::BuildingTab::size)
-	  .def("at", vectorAt<Planet::BuildingTab>)
-	  .def("range", rangeOf<Planet::BuildingTab>, return_stl_iterator),
-	  class_<Planet::CannonTab>("CannonTab")
-	  .def("size", &Planet::CannonTab::size)
-	  .def("at", vectorAt<Planet::CannonTab>)
-	  .def("range", rangeOf<Planet::CannonTab>, return_stl_iterator),
-	  //.def(boost::python::map_indexing_suite<Planet::BuildingMap>())
-	  class_<Fleet::ShipTab>("ShipTab")
-	  .def("size", &Fleet::ShipTab::size)
-	  .def("at", vectorAt<Fleet::ShipTab>)
-	  .def("range", rangeOf<Fleet::ShipTab>, return_stl_iterator),
-	  //.def(boost::python::vector_indexing_suite<Fleet::ShipTab>());
 	  class_<Fleet>("Fleet")
-	  //.def(constructor<Fleet::ID, Player::ID, Coord>())
 	  .def_readonly("id", &Fleet::id)
 	  .def_readonly("playerId", &Fleet::playerId)
 	  .def_readonly("coord", &Fleet::coord)
@@ -186,18 +158,12 @@ extern "C" int initDroneWars(lua_State* L)
 	  .def_readonly("shipList", &Fleet::shipList)
 	  .def_readonly("ressourceSet", &Fleet::ressourceSet),
 	  class_<PlanetAction>("PlanetAction")
-	  .def(constructor<>())
-	  .def_readonly("action",   &PlanetAction::action)
-	  .def_readonly("building", &PlanetAction::building)
 	  .enum_("Type")
 	  [
 	    value("Building", PlanetAction::Building),
 	    value("Ship",     PlanetAction::Ship),
 	    value("Cannon",   PlanetAction::Cannon)
 	  ],
-	  class_<FleetList>("FleetList")
-	  .def("at", vectorAt<std::vector<Fleet const*> >)
-	  .def("range", rangeOf<std::vector<Fleet const*> >, return_stl_iterator),
 	  class_<FleetAction>("FleetAction")
 	  .def(constructor<FleetAction::Type, Coord>())
 	  .def(constructor<FleetAction::Type>())

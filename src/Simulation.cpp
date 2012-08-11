@@ -72,7 +72,8 @@ try
 
 	luaL_dostring(luaEngine.state(), "AI = nil");
 
-	if(luaL_dostring(luaEngine.state(), code.getCode().c_str()) != 0)
+	std::string const codeString = "class 'AI'\n" + code.getCode();
+	if(luaL_dostring(luaEngine.state(), codeString.c_str()) != 0)
 	{
 		char const* message = lua_tostring(luaEngine.state(), -1);
 		code.newError(message);
@@ -687,18 +688,29 @@ void Simulation::loop()
 			newSave += SaveSecond;
 		}
 		if(newUpdate <= now)
-		{
-			//std::cout << newUpdate << " " << now << std::endl;
-			round(luaEngine, codesMap);
-			newUpdate += RoundSecond;
-			gcCounter += 1;
-			if((gcCounter % 1) == 0)
+			try
 			{
-				std::cout << "GC : " << lua_gc(luaEngine.state(), LUA_GCCOUNT, 0);
-				lua_gc(luaEngine.state(), LUA_GCCOLLECT, 0);
-				std::cout << " -> " << lua_gc(luaEngine.state(), LUA_GCCOUNT, 0) << std::endl;
+				//std::cout << newUpdate << " " << now << std::endl;
+				round(luaEngine, codesMap);
+				newUpdate += RoundSecond;
+				gcCounter += 1;
+				if((gcCounter % 1) == 0)
+				{
+					std::cout << "GC : " << lua_gc(luaEngine.state(), LUA_GCCOUNT, 0);
+					lua_gc(luaEngine.state(), LUA_GCCOLLECT, 0);
+					std::cout << " -> " << lua_gc(luaEngine.state(), LUA_GCCOUNT, 0) << std::endl;
+				}
 			}
-		}
+			catch(std::exception const& ex)
+			{
+				std::cerr << typeid(ex).name() << " " << ex.what() << std::endl;
+				throw;
+			}
+			catch(...)
+			{
+				std::cerr << "Not standard exception" << std::endl;
+				throw;
+			}
 		else
 			boost::this_thread::sleep(boost::posix_time::milliseconds(100));
 	}

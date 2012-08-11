@@ -51,7 +51,7 @@ inline std::string getPyStdErr()
 }*/
 
 // Calling this in my luabind::error exception handler:
-std::string GetLuabindErrorString(const luabind::error& err)
+inline std::string GetLuabindErrorString(const luabind::error& err)
 {
 	lua_State* L = err.state();
 
