@@ -1,25 +1,6 @@
 #include "stdafx.h"
 #include "Model.h"
 
-#include <algorithm>
-#include <iostream>
-#include <functional>
-#pragma warning(push)
-#pragma warning(disable:4244 4310 4100 4512)
-#include <boost/exception/all.hpp>
-#include <boost/archive/binary_iarchive.hpp>
-#include <boost/archive/binary_oarchive.hpp>
-#include <boost/geometry/geometries/adapted/boost_array.hpp>
-#include <boost/geometry/arithmetic/arithmetic.hpp>
-#include <boost/iterator/zip_iterator.hpp>
-#include <boost/range/algorithm.hpp>
-#include <boost/range/algorithm_ext/erase.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/iostreams/filtering_streambuf.hpp>
-#include <boost/iostreams/copy.hpp>
-#include <boost/iostreams/filter/gzip.hpp>
-#pragma warning(pop)
-
 #include "Tools.h"
 
 

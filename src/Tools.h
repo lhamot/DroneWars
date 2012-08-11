@@ -1,8 +1,9 @@
 #ifndef __BTA_TOOLS__
 #define __BTA_TOOLS__
 
-#include <iostream>
-#include <utility>
+#include "stdafx.h"
+//#include <iostream>
+//#include <utility>
 #include <boost/iterator/zip_iterator.hpp>
 #include <boost/range/iterator_range.hpp>
 

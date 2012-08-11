@@ -1,31 +1,6 @@
 #include "stdafx.h"
 #include "bit_them_allWT.h"
 
-#pragma warning(push)
-#pragma warning(disable:4251 4275 4505)
-#include <boost/lexical_cast.hpp>
-//#include <QtGui/QFileDialog>
-#include <Wt/Ext/Menu>
-#include <Wt/Ext/ToolBar>
-#include <Wt/Ext/Button>
-#include <Wt/WVBoxLayout>
-#include <Wt/WHBoxLayout>
-#include <Wt/WContainerWidget>
-#include <Wt/WTabWidget>
-#include <Wt/WPushButton>
-#include <Wt/WTableView>
-#include <Wt/WTextArea>
-#include <Wt/WAbstractTableModel>
-#include <Wt/WStandardItemModel>
-#include <Wt/WStandardItem>
-#include <Wt/WText>
-#include <Wt/WJavaScript>
-#include <Wt/WMessageBox>
-#include <Wt/WLengthValidator>
-#include <Wt/WBreak>
-#pragma warning(pop)
-
-//#include "PythonHighlighter.h"
 #include "PlanetViewWT.h"
 #include "FleetViewWT.h"
 #include "MessageView.h"

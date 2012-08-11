@@ -1,27 +1,17 @@
 #include "stdafx.h"
 #include "Simulation.h"
 
-#include <fstream>
-#include <sys/stat.h>
-#include <boost/range/adaptor/map.hpp>
-#include <boost/range/iterator_range.hpp>
-#include <boost/exception/diagnostic_information.hpp>
-#include <boost/thread/thread.hpp>
-#include <boost/lexical_cast.hpp>
-
+#include "LuaUniverse.h"
+#include "Rules.h"
 #include "Tools.h"
 #include "LuaTools.h"
 #include "fighting.h"
-#include "Rules.h"
-#include "LuaUniverse.h"
-#include "LuaTools.h"
 
 
 extern "C"
 {
 #include "lua.h"
 #include "lualib.h"
-#include "lauxlib.h"
 }
 
 

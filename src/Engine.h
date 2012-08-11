@@ -1,19 +1,10 @@
 #ifndef __BTA_ENGINE__
 #define __BTA_ENGINE__
 
-#include <unordered_map>
-
-#pragma warning(push)
-#pragma warning(disable:4512 4127 4244 4121 4100)
-#include <boost/optional.hpp>
-#include <boost/thread.hpp>
-#pragma warning(pop)
-
+#include "stdafx.h"
 #include "Model.h"
-#include "Simulation.h"
 
-
-typedef std::pair<FleetCoordMap::const_iterator, FleetCoordMap::const_iterator> FleetRange;
+class Simulation;
 
 
 class Engine
@@ -62,7 +53,7 @@ public:
 
 private:
 	Universe univ_;
-	Simulation simulation_;
+	std::unique_ptr<Simulation> simulation_;
 	boost::thread simulating_;
 };
 

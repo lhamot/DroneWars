@@ -6,7 +6,9 @@
 #include <Wt/WContainerWidget>
 #pragma warning(pop)
 
-#include "Engine.h"
+#include "Model.h"
+
+class Engine;
 
 class FleetViewWT : public Wt::WContainerWidget
 {

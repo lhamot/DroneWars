@@ -1,14 +1,11 @@
 #ifndef __PLANET_VIEW__
 #define __PLANET_VIEW__
 
-#pragma warning(push)
-#pragma warning(disable:4127 4251 4231 4800 4512 4275 4505)
-//#include <QtGui/QDialog>
-//#include "ui_PlanetView.h"
-#include <Wt/WContainerWidget>
-#pragma warning(pop)
+#include "stdafx.h"
 
-#include "Engine.h"
+#include "Model.h"
+
+class Engine;
 
 class PlanetViewWT : public Wt::WContainerWidget
 {

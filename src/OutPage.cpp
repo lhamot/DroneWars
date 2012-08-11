@@ -1,19 +1,8 @@
 #include "stdafx.h"
 #include "OutPage.h"
 
-#pragma warning(push)
-#pragma warning(disable:4251 4275 4505)
-#include <Wt/WText>
-#include <Wt/WLineEdit>
-#include <Wt/WPushButton>
-#include <Wt/WDefaultLayout>
-#include <Wt/WStackedWidget>
-#include <Wt/WMenu>
-#include <Wt/WBreak>
-#include <Wt/WMessageBox>
-#include <Wt/WTable>
-#include <Wt/WLengthValidator>
-#pragma warning(pop)
+
+#include "Engine.h"
 
 
 using namespace Wt;

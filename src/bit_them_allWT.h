@@ -1,14 +1,11 @@
 #ifndef BIT_THEM_ALL_H
 #define BIT_THEM_ALL_H
 
-#pragma warning(push)
-#pragma warning(disable:4127 4251 4231 4800 4505 4512 4275)
-#include <Wt/WContainerWidget>
-#include <Wt/WTreeView>
-//#include "ui_bit_them_all.h"
-#pragma warning(pop)
+#include "stdafx.h"
 
-#include "Engine.h"
+#include "Player.h"
+
+class Engine;
 
 namespace Wt
 {

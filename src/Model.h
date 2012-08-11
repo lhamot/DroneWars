@@ -1,151 +1,10 @@
 #ifndef _BTA_MODEL_
 #define _BTA_MODEL_
 
-//#include <boost/multi_array.hpp>
-#include <set>
-#include <map>
-#include <vector>
-#include <string>
-#include <ctime>
-#include <queue>
-#include <iosfwd>
+#include "stdafx.h"
 
-#pragma warning(push)
-#pragma warning(disable: 4180 4100)
-#include <boost/array.hpp>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/vector.hpp>
-#include <boost/serialization/map.hpp>
-#include <boost/serialization/set.hpp>
-#include <boost/serialization/array.hpp>
-#include <boost/serialization/variant.hpp>
-#include <boost/logic/tribool.hpp>
-#include <boost/range/algorithm.hpp>
-#include <boost/thread/shared_mutex.hpp>
-#include <boost/functional/hash.hpp>
-#include <boost/variant.hpp>
-#pragma warning(pop)
-
-#include <unordered_map>
 #include "serialize_unordered_map.h"
-
-
-//#define CHECK(test) if((test) == false) BOOST_THROW_EXCEPTION(std::logic_error(#test + " test failed"));
-
-
-struct Event
-{
-	template<class Archive>
-	void serialize(Archive& ar, const unsigned int)
-	{
-		ar& id& time& type& comment& value;
-	}
-
-	enum Type
-	{
-	  FleetCodeError,
-	  FleetCodeExecError,
-	  PlanetCodeError,
-	  PlanetCodeExecError,
-	  Upgraded,
-	  ShipMade,
-	  PlanetHarvested,
-	  FleetWin,
-	  FleetDraw,
-	  FleetsGather,
-	  PlanetColonized,
-	  FleetLose,
-	  FleetDrop,
-	  PlanetLose,
-	  PlanetWin,
-	  CannonMade,
-	  Count
-	};
-
-	typedef size_t ID;
-	static ID const NoId = ID(-1);
-	ID id;
-	time_t time;
-	Type type;
-	std::string comment;
-	size_t value;
-	bool viewed;
-
-	Event() {}
-	Event(ID ident, time_t ti, Type ty, size_t val = size_t(-1)):
-		id(ident), time(ti), type(ty), value(val), viewed(false)
-	{
-	}
-	Event(ID ident, time_t ti, Type ty, std::string const& comm):
-		id(ident), time(ti), type(ty), comment(comm), value(size_t(-1)), viewed(false)
-	{
-	}
-};
-
-static size_t const MaxStringSize = 256;
-
-struct CodeData
-{
-private:
-	friend class boost::serialization::access;
-	template<class Archive>
-	void serialize(Archive& ar, const unsigned int)
-	{
-		ar& code_& failCount_& lastError_;
-	}
-
-	std::string code_;
-	size_t failCount_;
-	std::string lastError_;
-
-public:
-	CodeData(): failCount_(0) {}
-
-	std::string const& getCode() const {return code_;}
-
-	size_t getFailCount() const {return failCount_;}
-
-	std::string const& getLastError() const {return lastError_;}
-
-	void setCode(std::string const& newCode)
-	{
-		code_ = newCode;
-		failCount_ = 0;
-		lastError_.clear();
-	}
-
-	void newError(std::string newError)//Pour profiter du NRVO quand newError est temporaire
-	{
-		lastError_.swap(newError);
-		++failCount_;
-	}
-};
-
-struct Player
-{
-private:
-	friend class boost::serialization::access;
-	template<class Archive>
-	void serialize(Archive& ar, const unsigned int)
-	{
-		ar& id& login& password& fleetsCode& planetsCode& eventList;
-	}
-
-public:
-	Player() {} //pour boost::serialization
-
-	typedef size_t ID;
-	static ID const NoId = ID(-1);
-	ID id;
-	std::string login;
-	std::string password;
-	CodeData fleetsCode;
-	CodeData planetsCode;
-	std::vector<Event> eventList;
-	static size_t const MaxCodeSize = 16 * 1024;
-
-	Player(ID i, std::string const& lg, std::string const& pass): id(i), login(lg), password(pass) {}
-};
+#include "Player.h"
 
 
 struct Coord
@@ -633,6 +492,7 @@ struct Universe
 	{
 	}
 };
+
 
 void construct(Universe& univ);
 

@@ -1,12 +1,11 @@
 #ifndef __BTA_OUT_PAGE__
 #define __BTA_OUT_PAGE__
 
-#pragma warning(push)
-#pragma warning(disable:4127 4251 4231 4800 4512 4275 4505)
-#include <Wt/WContainerWidget>
-#pragma warning(pop)
+#include "stdafx.h"
 
-#include "Engine.h"
+#include "Model.h"
+
+class Engine;
 
 namespace Wt
 {

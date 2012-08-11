@@ -1,10 +1,6 @@
 #include "stdafx.h"
 #include "fighting.h"
 
-#include <vector>
-#include <boost/range/algorithm.hpp>
-#include <boost/range/algorithm_ext/erase.hpp>
-
 using namespace std;
 
 static size_t const PlanetIndex = size_t(-1);

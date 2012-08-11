@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include <Wt/WTextArea>
-#include <Wt/WMessageBox>
+//#include <Wt/WMessageBox>
 #include "Editor.h"
 
 using namespace Wt;

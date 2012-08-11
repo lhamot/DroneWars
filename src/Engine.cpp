@@ -1,16 +1,8 @@
 #include "stdafx.h"
 #include "Engine.h"
 
-#include <iterator>
-#include <utility>
-#include <tuple>
-#include <fstream>
-
-#include <boost/range/adaptor/map.hpp>
-#include <boost/range/iterator_range.hpp>
-#include <boost/filesystem.hpp>
-
 #include "Tools.h"
+#include "Simulation.h"
 
 using namespace std;
 using namespace boost;
@@ -19,7 +11,7 @@ typedef boost::unique_lock<Universe::Mutex> UniqueLock;
 typedef boost::shared_lock<Universe::Mutex> SharedLock;
 
 Engine::Engine():
-	simulation_(univ_)
+	simulation_(new Simulation(univ_))
 {
 	boost::filesystem::directory_iterator dir("."), end;
 
@@ -65,7 +57,7 @@ Engine::~Engine()
 
 void Engine::start()
 {
-	simulating_ = boost::thread(&Simulation::loop, boost::ref(simulation_));
+	simulating_ = boost::thread(&Simulation::loop, boost::ref(*simulation_));
 }
 
 
@@ -102,7 +94,7 @@ bool Engine::addPlayer(std::string const& login, std::string const& password)
 		return false;
 
 	Player::ID const pid = createPlayer(univ_, login, password);
-	simulation_.reloadPlayer(pid);
+	simulation_->reloadPlayer(pid);
 	return true;
 }
 
@@ -139,7 +131,7 @@ void Engine::setPlayerFleetCode(Player::ID pid, std::string const& code)
 	if(code.size() > Player::MaxCodeSize)
 		BOOST_THROW_EXCEPTION(InvalidData("code"));
 	mapFind(univ_.playerMap, pid)->second.fleetsCode.setCode(code);
-	simulation_.reloadPlayer(pid);
+	simulation_->reloadPlayer(pid);
 }
 
 
@@ -149,7 +141,7 @@ void Engine::setPlayerPlanetCode(Player::ID pid, std::string const& code)
 	if(code.size() > Player::MaxCodeSize)
 		BOOST_THROW_EXCEPTION(InvalidData("code"));
 	mapFind(univ_.playerMap, pid)->second.planetsCode.setCode(code);
-	simulation_.reloadPlayer(pid);
+	simulation_->reloadPlayer(pid);
 }
 
 

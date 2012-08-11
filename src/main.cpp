@@ -1,17 +1,9 @@
 #include "stdafx.h"
-#include <functional>
-
-#pragma warning(push)
-#pragma warning(disable:4127 4251 4231 4512 4505 4275)
-#include <boost/exception/all.hpp>
-//#include <QtGui/QApplication>
-#include <Wt/WApplication>
-#include <Wt/WMessageBox>
-#pragma warning(pop)
 
 #include "Engine.h"
 #include "bit_them_allWT.h"
 #include "OutPage.h"
+
 
 using namespace Wt;
 using namespace std;

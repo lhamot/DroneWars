@@ -2,10 +2,9 @@
 #include "MessageView.h"
 
 #include <boost/format.hpp>
-#include <Wt/WText>
-#include <Wt/WTable>
 
 #include "TranslationTools.h"
+#include "Engine.h"
 
 
 using namespace Wt;

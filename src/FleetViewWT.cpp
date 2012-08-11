@@ -2,17 +2,8 @@
 #include "FleetViewWT.h"
 
 #include "TranslationTools.h"
+#include "Engine.h"
 
-#pragma warning(push)
-#pragma warning(disable:4251 4275 4505)
-#include <Wt/WTabWidget>
-#include <Wt/WText>
-#include <Wt/WHBoxLayout>
-#include <Wt/WVBoxLayout>
-#include <Wt/WTableView>
-#include <Wt/WStandardItemModel>
-#include <Wt/WStandardItem>
-#pragma warning(pop)
 
 using namespace Wt;
 

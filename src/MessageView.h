@@ -1,12 +1,11 @@
 #ifndef __BTA_MESSAGEVIEW__
 #define __BTA_MESSAGEVIEW__
 
-#pragma warning(push)
-#pragma warning(disable:4127 4251 4231 4800 4512 4275 4505)
-#include <Wt/WContainerWidget>
-#pragma warning(pop)
+#include "stdafx.h"
+#include "Model.h"
 
-#include "Engine.h"
+
+class Engine;
 
 class MessageView : public Wt::WContainerWidget
 {
