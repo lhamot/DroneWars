@@ -121,10 +121,10 @@ Blockly.lua.scrubNakedValue = function(line)
 Blockly.lua.quote_ = function(string)
 {
 	// TODO: This is a quick hack.  Replace with goog.string.quote
-	string = string.replace( / \\ / g, '\\\\')
-	         .replace( / \n / g, '\\\n')
-	         .replace( / \ % / g, '\\%')
-	         .replace( / '/g, '\\\'');
+	string = string.replace('/\\/g', '\\\\')
+	         .replace('/\n/g', '\\\n')
+	         .replace('/\%/g', '\\%')
+	         .replace('/\'/g', '\\\'');
 	return '\'' + string + '\'';
 };
 
@@ -139,7 +139,7 @@ Blockly.lua.quote_ = function(string)
  */
 Blockly.lua.scrub_ = function(block, code)
 {
-	if(code == = null)
+	if(code === null)
 	{
 		// Block has handled code generation itself.
 		return '';

@@ -1,9 +1,11 @@
 #ifndef __BTA_EDITOR__
 #define __BTA_EDITOR__
 
-#include <string>
-#include <Wt/WContainerWidget>
-#include "Engine.h"
+#include "stdafx.h"
+
+#include "Player.h"
+
+class Engine;
 
 class Editor : public Wt::WContainerWidget
 {
@@ -13,10 +15,10 @@ public:
 	~Editor();
 
 private:
-	void refreshBlockly();
-	void refreshCodeMirror();
+	void refreshBlockly(Wt::WContainerWidget*);
+	void refreshCodeMirror(Wt::WContainerWidget*);
 	void on_saveCodeButton_clicked();
-	void on_resetCodeButton_clicked();
+	void on_resetCodeButton_clicked(WContainerWidget*);
 
 	Wt::WTextArea* edit_;
 	std::string name_;

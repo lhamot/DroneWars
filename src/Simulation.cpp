@@ -6,6 +6,7 @@
 #include "Tools.h"
 #include "LuaTools.h"
 #include "fighting.h"
+#include <luabind/stl_container_converter.hpp>
 
 
 extern "C"

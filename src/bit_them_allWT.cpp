@@ -6,6 +6,7 @@
 #include "MessageView.h"
 #include "TranslationTools.h"
 #include "Editor.h"
+#include "Engine.h"
 
 using namespace Wt;
 using namespace boost;

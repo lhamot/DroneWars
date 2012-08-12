@@ -4,6 +4,7 @@
 #include "Model.h"
 #include <luabind/class.hpp>
 #include <luabind/operator.hpp>
+#include <luabind/stl_container_converter.hpp>
 
 
 void PlanetActionListPushBack(PlanetActionList& list, PlanetAction const& pa) {list.push_back(pa);}
