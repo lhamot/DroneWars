@@ -16,14 +16,18 @@ public:
 
 private:
 	void refreshBlockly(Wt::WContainerWidget*);
+	void on_blocklySaveCodeButton_clicked(Wt::WTextArea* hidenLua, Wt::WTextArea* hidenXML);
+	void on_blocklyResetCodeButton_clicked(Wt::WContainerWidget* container);
 	void refreshCodeMirror(Wt::WContainerWidget*);
-	void on_saveCodeButton_clicked();
-	void on_resetCodeButton_clicked(WContainerWidget*);
+	void on_saveCodeButton_clicked(Wt::WTextArea* textarea);
+	void on_resetCodeButton_clicked(Wt::WContainerWidget*);
 
-	Wt::WTextArea* edit_;
+	void createAll();
+
 	std::string name_;
 	Engine& engine_;
 	Player::ID logged_;
+	Wt::WTabWidget* tabWidget_;
 };
 
 

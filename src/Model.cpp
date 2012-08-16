@@ -68,6 +68,18 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 	univ.nextPlayerID += 1;
 
 	Player player(newPlayerID, login, password);
+	std::string blocklyFleetDefaultCode;
+	std::ifstream fleetFile("blocklyFleetDefaultCode.xml");
+	if(fleetFile.is_open() == false)
+		BOOST_THROW_EXCEPTION(std::ios::failure("Can't open blocklyFleetDefaultCode.xml"));
+	std::getline(fleetFile, blocklyFleetDefaultCode);
+	std::string blocklyPlanetDefaultCode;
+	std::ifstream planetFile("blocklyPlanetDefaultCode.xml");
+	if(fleetFile.is_open() == false)
+		BOOST_THROW_EXCEPTION(std::ios::failure("Can't open blocklyPlanetDefaultCode.xml"));
+	std::getline(planetFile, blocklyPlanetDefaultCode);
+	player.planetsCode.setBlocklyCode(blocklyPlanetDefaultCode);
+	player.fleetsCode.setBlocklyCode(blocklyFleetDefaultCode);
 	univ.playerMap.insert(std::make_pair(newPlayerID, player));
 
 	bool done = false;
@@ -123,6 +135,7 @@ void construct(Universe& univ)
 	for(int i = 0; i < 100; ++i)
 	{
 		Player::ID pid = createPlayer(univ, "admin" + boost::lexical_cast<std::string>(i), password);
+		continue;
 		Player& player = mapFind(univ.playerMap, pid)->second;
 		player.planetsCode.setCode(
 		  "function AI(planet, fleets)\n"
@@ -176,27 +189,6 @@ void construct(Universe& univ)
 		  "end\n");
 	}
 };
-
-std::string getBuildingName(Building::Enum type)
-{
-#define BTA_STR(X) case Building::X: return #X;
-	switch(type)
-	{
-		BTA_STR(CommandCenter)
-		BTA_STR(MetalMine)
-		BTA_STR(CarbonMine)
-		BTA_STR(LoiciumFilter)
-		BTA_STR(Factory)
-		BTA_STR(Laboratory)
-		BTA_STR(CarbonicCentral)
-		BTA_STR(SolarCentral)
-		BTA_STR(GeothermicCentral)
-	}
-#undef BTA_STR
-
-	BOOST_THROW_EXCEPTION(std::logic_error("Unknown buiding type"));
-	static_assert(Building::GeothermicCentral == Building::Count - 1, "Building cases missing");
-}
 
 
 void saveToStream(Universe const& univ, std::ostream& out)

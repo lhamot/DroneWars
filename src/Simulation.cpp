@@ -63,7 +63,7 @@ try
 
 	luaL_dostring(luaEngine.state(), "AI = nil");
 
-	std::string const codeString = "class 'AI'\n" + code.getCode();
+	std::string const codeString = (isFleet ? "class 'AI'\n" : "") + code.getCode();
 	if(luaL_dostring(luaEngine.state(), codeString.c_str()) != 0)
 	{
 		char const* message = lua_tostring(luaEngine.state(), -1);
@@ -672,8 +672,8 @@ void Simulation::loop()
 
 		if(newSave <= now)
 		{
-			std::cout << boost::lexical_cast<std::string>(time(0)) + "_save.bta ";
-			save(boost::lexical_cast<std::string>(time(0)) + "_save.bta");
+			std::cout << "save/" << boost::lexical_cast<std::string>(time(0)) + "_save.bta ";
+			save("save/" + boost::lexical_cast<std::string>(time(0)) + "_save.bta");
 			removeOldSaves();
 			std::cout << "OK" << std::endl;
 			newSave += SaveSecond;
@@ -738,7 +738,7 @@ void Simulation::removeOldSaves() const
 
 	std::set<time_t> timeSet;
 
-	DirIter beginFileIter("."), endFileIter;
+	DirIter beginFileIter("save/"), endFileIter;
 	for(auto path: boost::make_iterator_range(beginFileIter, endFileIter))
 	{
 		std::string const filename = path.path().filename().string();
@@ -778,7 +778,7 @@ void Simulation::removeOldSaves() const
 			++fileCount;
 			if(fileCount == 1)
 				continue;
-			std::string const filename = boost::lexical_cast<std::string>(fileTime) + "_save.bta";
+			std::string const filename = "save/" + boost::lexical_cast<std::string>(fileTime) + "_save.bta";
 			//cout << filename << endl;
 			remove(filename);
 		}

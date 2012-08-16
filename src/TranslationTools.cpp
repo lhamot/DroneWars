@@ -2,6 +2,29 @@
 #include "TranslationTools.h"
 #include <boost/thread/mutex.hpp>
 
+
+std::string getBuildingName(Building::Enum type)
+{
+#define BTA_STR(X) case Building::X: return #X;
+	switch(type)
+	{
+		BTA_STR(CommandCenter)
+		BTA_STR(MetalMine)
+		BTA_STR(CarbonMine)
+		BTA_STR(LoiciumFilter)
+		BTA_STR(Factory)
+		BTA_STR(Laboratory)
+		BTA_STR(CarbonicCentral)
+		BTA_STR(SolarCentral)
+		BTA_STR(GeothermicCentral)
+	}
+#undef BTA_STR
+
+	BOOST_THROW_EXCEPTION(std::logic_error("Unknown buiding type"));
+	static_assert(Building::GeothermicCentral == Building::Count - 1, "Building cases missing");
+}
+
+
 std::string getTaskName(PlanetTask::Enum type)
 {
 #define BTA_STR(X) case PlanetTask::X: return #X;
@@ -17,6 +40,7 @@ std::string getTaskName(PlanetTask::Enum type)
 	static_assert(PlanetTask::MakeCannon == PlanetTask::Count - 1, "Task cases missing");
 }
 
+
 std::string getTaskName(FleetTask::Enum type)
 {
 #define BTA_STR(X) case FleetTask::X: return #X;
@@ -31,6 +55,7 @@ std::string getTaskName(FleetTask::Enum type)
 	BOOST_THROW_EXCEPTION(std::logic_error("Unknown task type"));
 	static_assert(FleetTask::Colonize == FleetTask::Count - 1, "Task cases missing");
 }
+
 
 std::string getShipName(Ship::Enum ship)
 {
@@ -52,6 +77,7 @@ std::string getShipName(Ship::Enum ship)
 	BOOST_THROW_EXCEPTION(std::logic_error("Unknown Ship type"));
 	static_assert(Ship::LargeCargo == Ship::Count - 1, "Ship cases missing");
 }
+
 
 std::string getRessourceName(Ressource::Enum ress)
 {
@@ -97,6 +123,7 @@ std::string getEventName(Event::Type evtype)
 	static_assert(Event::CannonMade == Event::Count - 1, "Event cases missing");
 }
 
+
 boost::mutex timeToStringMutex;
 
 std::string timeToString(time_t time)
@@ -108,6 +135,7 @@ std::string timeToString(time_t time)
 	strftime(buffer, BufferSize, "%Y-%m-%d %H:%M:%S", timeinfo);
 	return buffer;
 }
+
 
 std::string getCannonName(Cannon::Enum cannon)
 {
@@ -126,3 +154,5 @@ std::string getCannonName(Cannon::Enum cannon)
 	BOOST_THROW_EXCEPTION(std::logic_error("Unknown Cannon type"));
 	static_assert(Cannon::Cannon6 == Cannon::Count - 1, "Cannon cases missing");
 }
+
+

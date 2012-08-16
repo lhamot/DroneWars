@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\bit_them_allWT.h" />
+    <ClInclude Include="..\..\src\Editor.h" />
     <ClInclude Include="..\..\src\Engine.h" />
     <ClInclude Include="..\..\src\fighting.h" />
     <ClInclude Include="..\..\src\FleetViewWT.h" />

@@ -61,15 +61,18 @@ private:
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
-		ar& code_& failCount_& lastError_;
+		ar& blocklyCode_& code_& failCount_& lastError_;
 	}
 
+	std::string blocklyCode_;
 	std::string code_;
 	size_t failCount_;
 	std::string lastError_;
 
 public:
 	CodeData(): failCount_(0) {}
+
+	std::string const& getBlocklyCode() const {return blocklyCode_;}
 
 	std::string const& getCode() const {return code_;}
 
@@ -82,6 +85,11 @@ public:
 		code_ = newCode;
 		failCount_ = 0;
 		lastError_.clear();
+	}
+
+	void setBlocklyCode(std::string const& newCode)
+	{
+		blocklyCode_ = newCode;
 	}
 
 	void newError(std::string newError)//Pour profiter du NRVO quand newError est temporaire

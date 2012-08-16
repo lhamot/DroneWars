@@ -13,7 +13,7 @@ typedef boost::shared_lock<Universe::Mutex> SharedLock;
 Engine::Engine():
 	simulation_(new Simulation(univ_))
 {
-	boost::filesystem::directory_iterator dir("."), end;
+	boost::filesystem::directory_iterator dir("save/"), end;
 
 	time_t maxtime = 0;
 	for(const boost::filesystem::path & p: boost::make_iterator_range(dir, end))
@@ -29,7 +29,7 @@ Engine::Engine():
 	if(maxtime)
 	{
 		std::stringstream ss;
-		ss << maxtime << "_save.bta";
+		ss << "save/" << maxtime << "_save.bta";
 		load(ss.str());
 	}
 	else
@@ -141,6 +141,26 @@ void Engine::setPlayerPlanetCode(Player::ID pid, std::string const& code)
 	if(code.size() > Player::MaxCodeSize)
 		BOOST_THROW_EXCEPTION(InvalidData("code"));
 	mapFind(univ_.playerMap, pid)->second.planetsCode.setCode(code);
+	simulation_->reloadPlayer(pid);
+}
+
+
+void Engine::setPlayerFleetBlocklyCode(Player::ID pid, std::string const& code)
+{
+	UniqueLock lock(univ_.mutex);
+	if(code.size() > Player::MaxCodeSize)
+		BOOST_THROW_EXCEPTION(InvalidData("code"));
+	mapFind(univ_.playerMap, pid)->second.fleetsCode.setBlocklyCode(code);
+	simulation_->reloadPlayer(pid);
+}
+
+
+void Engine::setPlayerPlanetBlocklyCode(Player::ID pid, std::string const& code)
+{
+	UniqueLock lock(univ_.mutex);
+	if(code.size() > Player::MaxCodeSize)
+		BOOST_THROW_EXCEPTION(InvalidData("code"));
+	mapFind(univ_.playerMap, pid)->second.planetsCode.setBlocklyCode(code);
 	simulation_->reloadPlayer(pid);
 }
 

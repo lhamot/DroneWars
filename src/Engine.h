@@ -33,6 +33,10 @@ public:
 
 	void setPlayerPlanetCode(Player::ID pid, std::string const& code);
 
+	void setPlayerFleetBlocklyCode(Player::ID pid, std::string const& code);
+
+	void setPlayerPlanetBlocklyCode(Player::ID pid, std::string const& code);
+
 	CodeData getPlayerFleetCode(Player::ID pid) const;
 
 	CodeData getPlayerPlanetCode(Player::ID pid) const;

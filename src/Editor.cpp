@@ -8,77 +8,71 @@ using namespace Wt;
 
 Editor::Editor(Wt::WContainerWidget* parent, std::string const& name, Engine& engine, Player::ID pid):
 	Wt::WContainerWidget(parent),
-	edit_(nullptr),
 	name_(name),
 	engine_(engine),
-	logged_(pid)
+	logged_(pid),
+	tabWidget_(nullptr)
 {
-	Wt::WTabWidget* tab = new Wt::WTabWidget(this);
+	tabWidget_ = new Wt::WTabWidget(this);
 	WContainerWidget* blockly = new WContainerWidget(this);
 	refreshBlockly(blockly);
-	tab->addTab(blockly, "Visual");
-	WContainerWidget* codemirror = new WContainerWidget(this);
-	refreshCodeMirror(codemirror);
-	tab->addTab(codemirror, "Text");
-	//refreshBlockly();
-	//refreshCodeMirror();
-
-	//addChild(blockly);
-	//addChild(codemirror);
+	tabWidget_->addTab(blockly, "Visual");
+	WContainerWidget* codeMirrorTab = new WContainerWidget(this);
+	refreshCodeMirror(codeMirrorTab);
+	tabWidget_->addTab(codeMirrorTab, "Text");
 }
+
 
 Editor::~Editor()
 {
 }
 
-void Editor::refreshBlockly(WContainerWidget* container)
+void Editor::refreshBlockly(WContainerWidget* mainContainer)
 {
-	//On recrée son contenue
+	WContainerWidget* container = new WContainerWidget(mainContainer);
 
-	//WContainerWidget* container = new WContainerWidget(this);
-	container->setId("editorTab");
+	CodeData code;
+	if(name_ == "Fleet")
+		code = engine_.getPlayerFleetCode(logged_);
+	else if(name_ == "Planet")
+		code = engine_.getPlayerPlanetCode(logged_);
+	else
+		BOOST_THROW_EXCEPTION(std::logic_error("Unexpected name_ value : " + name_));
+
+	std::cout <<  code.getBlocklyCode() << std::endl;
+
+	container->setId("editorTab" + name_);
 	container->doJavaScript(
-	  "function blocklyLoaded(blockly) {         \n"
-	  "  // Called once Blockly is fully loaded. \n"
-	  "  window.Blockly" + name_ + " = blockly;               \n"
-	  "}                                         \n"
-	  "window.blocklyLoaded = blocklyLoaded;"
+	  "function blocklyLoaded" + name_ + "(blockly) {                         \n"
+	  "  // Called once Blockly is fully loaded.                              \n"
+	  "  window.Blockly" + name_ + " = blockly;                               \n"
+	  "  var xml_text = '" + code.getBlocklyCode() + "';                      \n"
+	  "  var xml = Blockly" + name_ + ".Xml.textToDom(xml_text);              \n"
+	  "  window.Blockly" + name_ + ".Xml.domToWorkspace(Blockly" + name_ + ".mainWorkspace, xml);\n"
+	  "}                                                                      \n"
+	  "window.blocklyLoaded" + name_ + " = blocklyLoaded" + name_ + ";        \n"
 	);
 
 	WText* frame = new WText(container);
 	frame->setTextFormat(Wt::XHTMLUnsafeText);
 	frame->setText(
-	  "<iframe class=\"blocklyEditor\" src=\"frame.html\"></iframe>"
+	  "<iframe class=\"blocklyEditor\" src=\"" + name_ + "Frame.html\"></iframe>"
 	);
 	//frame->setText("<iframe class=\"blocklyEditor\" src=\"frame.html\"></iframe>");
-	frame->setId("blocklyFrame");
+	frame->setId("blocklyFrame" + name_);
 
 	WText* errorMessage = new WText(container);
 	new WBreak(container);
 
-	WPushButton* reset = new WPushButton(container);
-	reset->setText("Reset");
-	if(name_ == "Planet")
-	{
-		reset->setAttributeValue("onclick",
-		                         //"Blockly.clear();\n"
-		                         "var xml_text = '<xml xmlns=\"http://www.w3.org/1999/xhtml\"><block type=\"procedures_defreturn\" inline=\"false\" x=\"56\" y=\"52\"><mutation><arg name=\"planet\"></arg><arg name=\"fleets\"></arg></mutation><title name=\"NAME\">AI</title></block></xml>';\n"
-		                         "var xml = Blockly" + name_ + ".Xml.textToDom(xml_text);\n"
-		                         "Blockly" + name_ + ".Xml.domToWorkspace(Blockly" + name_ + ".mainWorkspace, xml);\n"
-		                        );
-	}
-	else
-	{
-		reset->setAttributeValue("onclick",
-		                         //"Blockly.clear();\n"
-		                         "var xml_text = '<xml xmlns=\"http://www.w3.org/1999/xhtml\"><block type=\"procedures_defreturn\" inline=\"false\" x=\"52\" y=\"-232\"><mutation><arg name=\"myFleet\"></arg><arg name=\"otherFleet\"></arg></mutation><title name=\"NAME\">AI:do_gather</title><value name=\"RETURN\"><block type=\"logic_boolean\"><title name=\"BOOL\">TRUE</title></block></value></block><block type=\"procedures_defreturn\" inline=\"false\" x=\"59\" y=\"-129\"><mutation><arg name=\"myFleet\"></arg><arg name=\"otherFleet\"></arg></mutation><title name=\"NAME\">AI:do_fight</title><value name=\"RETURN\"><block type=\"logic_boolean\"><title name=\"BOOL\">TRUE</title></block></value></block><block type=\"procedures_defreturn\" inline=\"false\" x=\"59\" y=\"-16\"><mutation><arg name=\"myFleet\"></arg><arg name=\"planet\"></arg></mutation><title name=\"NAME\">AI:action</title><value name=\"RETURN\"><block type=\"dronewars_fleetaction\" inline=\"true\"><title name=\"ACTION\">Nothing</title></block></value></block></xml>';\n"
-		                         "var xml = Blockly" + name_ + ".Xml.textToDom(xml_text);\n"
-		                         "Blockly" + name_ + ".Xml.domToWorkspace(Blockly" + name_ + ".mainWorkspace, xml);\n"
-		                        );
-	}
+
+
+	WPushButton* reload = new WPushButton(container);
+	reload->setText("Reload");
+	reload->clicked().connect(
+	  boost::bind(&Editor::on_blocklyResetCodeButton_clicked, this, mainContainer));
 
 	WPushButton* load = new WPushButton(container);
-	load->setText("Load");
+	load->setText("Import");
 	load->setAttributeValue("onclick",
 	                        //"Blockly.clear();\n"
 	                        "var xml_text = prompt('Load', '');\n"
@@ -87,7 +81,7 @@ void Editor::refreshBlockly(WContainerWidget* container)
 	                       );
 
 	WPushButton* saveToXml = new WPushButton(container);
-	saveToXml->setText("Save");
+	saveToXml->setText("Export");
 	saveToXml->setAttributeValue("onclick",
 	                             "var xml = Blockly" + name_ + ".Xml.workspaceToDom(Blockly" + name_ + ".mainWorkspace);\n"
 	                             "var xml_text = Blockly" + name_ + ".Xml.domToText(xml);\n"
@@ -96,87 +90,139 @@ void Editor::refreshBlockly(WContainerWidget* container)
 
 	WPushButton* saveToLua = new WPushButton(container);
 	saveToLua->setText("Valid");
-	saveToLua->setAttributeValue("onclick",
-	                             "var code = window.Blockly" + name_ + ".Generator.workspaceToCode('lua');\n"
-	                             "alert(code);\n"
-	                            );
+	saveToLua->setAttributeValue(
+	  "onClick",
+	  "var code = window.Blockly" + name_ + ".Generator.workspaceToCode('lua');\n"
+	  "document.getElementById(\"hidenLua" + name_ + "\").innerHTML = code;\n"
+	  "var xml = Blockly" + name_ + ".Xml.workspaceToDom(Blockly" + name_ + ".mainWorkspace);\n"
+	  "var xml_text = Blockly" + name_ + ".Xml.domToText(xml);\n"
+	  "document.getElementById(\"hidenXML" + name_ + "\").innerHTML = xml_text;\n"
+	  "document.getElementById(\"saveToLua2" + name_ + "\").click();\n"
+	);
+	WPushButton* saveToLua2 = new WPushButton(container);
+	saveToLua2->setObjectName("saveToLua2");
+	saveToLua2->setId("saveToLua2" + name_);
+	saveToLua2->hide();
 
-	//reset->clicked().connect(this, &Editor::on_resetBlocklyButton_clicked);
+	WTextArea* hidenLua = new WTextArea(container);
+	hidenLua->setId("hidenLua" + name_);
+	hidenLua->setAttributeValue("style", "display:none;");
+
+	WTextArea* hidenXML = new WTextArea(container);
+	hidenXML->setId("hidenXML" + name_);
+	hidenXML->setAttributeValue("style", "display:none;");
+
+	saveToLua2->clicked().connect(
+	  boost::bind(&Editor::on_blocklySaveCodeButton_clicked, this, hidenLua, hidenXML));
 }
+
+void Editor::on_blocklySaveCodeButton_clicked(WTextArea* hidenLua, WTextArea* hidenXML)
+{
+	std::string code = hidenLua->text().toUTF8();
+	std::string xmlCode = hidenXML->text().toUTF8();
+	std::cout << code << std::endl;
+	if(name_ == "Fleet")
+	{
+		engine_.setPlayerFleetBlocklyCode(logged_, xmlCode);
+		engine_.setPlayerFleetCode(logged_, code);
+	}
+	else if(name_ == "Planet")
+	{
+		engine_.setPlayerPlanetBlocklyCode(logged_, xmlCode);
+		engine_.setPlayerPlanetCode(logged_, code);
+	}
+	else
+		BOOST_THROW_EXCEPTION(std::logic_error("Bad code editor type"));
+
+	tabWidget_->removeTab(tabWidget_->widget(1));
+	WContainerWidget* codeMirrorTab = new WContainerWidget(this);
+	refreshCodeMirror(codeMirrorTab);
+	tabWidget_->addTab(codeMirrorTab, "Text");
+}
+
+void Editor::on_blocklyResetCodeButton_clicked(WContainerWidget* container)
+{
+	//On supprime le contenue de codeTab
+	while(container->count())
+	{
+		Wt::WWidget* toDelete = container->widget(0);
+		container->removeWidget(toDelete);
+		delete toDelete;
+	}
+
+	refreshBlockly(container);
+}
+
 
 void Editor::refreshCodeMirror(WContainerWidget* container)
 {
-	//On recrée son contenue
-	//WContainerWidget* container = new WContainerWidget(this);
-	edit_ = new WTextArea(container);
-	edit_->setRows(80);
-	edit_->setColumns(120);
+	WTextArea* edit = new WTextArea(container);
+	edit->setRows(80);
+	edit->setColumns(120);
 
 	WText* errorMessage = new WText(container);
 	new WBreak(container);
 
 	WPushButton* reset = new WPushButton(container);
-	reset->setText("Reset");
+	reset->setText("Reload");
 
 	WPushButton* save = new WPushButton(container);
 	save->setText("Save");
+	save->setId("saveCodeButton" + name_);
 
-	edit_->setId(name_ + "TextArea");
-	edit_->setValidator(new WLengthValidator(0, Player::MaxCodeSize, edit_));
-	edit_->doJavaScript(
-	  "var editor = CodeMirror.fromTextArea(document.getElementById(\"" + name_ + "TextArea\"), {"
+	edit->setId(name_ + "TextArea");
+	edit->setValidator(new WLengthValidator(0, Player::MaxCodeSize, edit));
+	edit->doJavaScript(
+	  "var editor" + name_ + " = CodeMirror.fromTextArea(document.getElementById(\"" + name_ + "TextArea\"), {"
 	  "tabMode: \"indent\","
 	  "matchBrackets: true,"
 	  "lineNumbers: true,"
 	  "theme: \"cobalt\","
-	  "onHighlightComplete: function(editor) {editor.save();}"
-	  "});"
+	  "onHighlightComplete: function(editor) {editor" + name_ + ".save();}"
+	  "});\n"
+	  "window.editor" + name_ + " = editor" + name_ + ";\n"
 	);
 
-	save->clicked().connect(this, &Editor::on_saveCodeButton_clicked);
+	save->clicked().connect(std::bind(&Editor::on_saveCodeButton_clicked, this, edit));
 	reset->clicked().connect(std::bind(&Editor::on_resetCodeButton_clicked, this, container));
 	if(name_ == "Fleet")
 	{
 		CodeData code = engine_.getPlayerFleetCode(logged_);
-		edit_->setText(code.getCode().c_str());
+		edit->setText(code.getCode().c_str());
 		errorMessage->setText(code.getLastError().c_str());
 	}
 	else if(name_ == "Planet")
 	{
 		CodeData code = engine_.getPlayerPlanetCode(logged_);
-		edit_->setText(code.getCode().c_str());
+		edit->setText(code.getCode().c_str());
 		errorMessage->setText(code.getLastError().c_str());
 	}
 	else
 		BOOST_THROW_EXCEPTION(std::logic_error("Bad code editor type"));
 }
 
-void Editor::on_saveCodeButton_clicked()
+void Editor::on_saveCodeButton_clicked(WTextArea* textarea)
 {
-	std::string code = edit_->text().toUTF8();
+	std::string code = textarea->text().toUTF8();
+	std::cout << code << std::endl;
 	if(name_ == "Fleet")
 		engine_.setPlayerFleetCode(logged_, code);
 	else if(name_ == "Planet")
 		engine_.setPlayerPlanetCode(logged_, code);
+	else
+		BOOST_THROW_EXCEPTION(std::logic_error("Bad code editor type"));
 }
 
 void Editor::on_resetCodeButton_clicked(WContainerWidget* container)
 {
-	edit_ = nullptr;
-
 	//On supprime le contenue de codeTab
 	while(container->count())
 	{
 		Wt::WWidget* toDelete = container->widget(0);
-		removeWidget(toDelete);
+		container->removeWidget(toDelete);
 		delete toDelete;
 	}
 
 	refreshCodeMirror(container);
 }
 
-/*void Editor::on_resetBlocklyButton_clicked()
-{
-	WMessageBox *box = new WMessageBox("", "", Wt::Icon(), Ok);
-	box->
-}*/

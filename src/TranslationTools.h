@@ -4,6 +4,8 @@
 
 #include "Model.h"
 
+std::string getBuildingName(Building::Enum type);
+
 std::string getTaskName(FleetTask::Enum type);
 
 std::string getTaskName(PlanetTask::Enum type);
