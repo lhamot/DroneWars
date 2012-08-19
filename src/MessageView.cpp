@@ -5,6 +5,7 @@
 
 #include "TranslationTools.h"
 #include "Engine.h"
+#include "TextGetter.h"
 
 
 using namespace Wt;
@@ -83,12 +84,10 @@ std::string getContentString(Fleet const& fleet)
 	if(fleet.shipList.size() != Ship::Count)
 		BOOST_THROW_EXCEPTION(std::logic_error("fleet.shipList.size() != Ship::Count"));
 	std::string result;
-	//BOOST_FOREACH(size_t shipCount, fleet.shipList)
 	for(Ship::Enum shipType = Ship::Enum(0); shipType < Ship::Count; shipType = Ship::Enum(shipType + 1))
 	{
 		if(fleet.shipList[shipType])
 			result += str(format("%c:%s;") % getShipName(shipType) % fleet.shipList[shipType]);
-		//result += getShipName(shipType)[0] + std::string(":") + boost::lexical_cast<std::string>(fleet.shipList[shipType]) + ";";
 	}
 	if(false == result.empty())
 		result.resize(result.size() - 1);
@@ -100,14 +99,12 @@ std::string getContentString(Planet const& planet)
 	if(planet.cannonTab.size() != Cannon::Count)
 		BOOST_THROW_EXCEPTION(std::logic_error("planet.cannonTab.size() != Cannon::Count"));
 	std::string result;
-	//BOOST_FOREACH(size_t shipCount, fleet.shipList)
 	for(Cannon::Enum cannonType = Cannon::Enum(0);
 	    cannonType < Cannon::Count;
 	    cannonType = Cannon::Enum(cannonType + 1))
 	{
 		if(planet.cannonTab[cannonType])
 			result += str(format("%c:%s;") % getCannonName(cannonType) % planet.cannonTab[cannonType]);
-		//result += getCannonName(cannonTab)[0] + std::string(":") + boost::lexical_cast<std::string>(planet.cannonTab[cannonTab]) + ";";
 	}
 	if(false == result.empty())
 		result.resize(result.size() - 1);
@@ -121,64 +118,66 @@ void MessageView::renderFightReport(size_t id)
 	for(Report<Fleet> const & fleetReport: fightReport.fleetList)
 	{
 		Wt::WTable* table = new Wt::WTable(this);
-		table->elementAt(0, 0)->addWidget(new Wt::WText("Fleet name :"));
+		table->elementAt(0, 0)->addWidget(new Wt::WText(gettext("Fleet ID") + " : "));
 
 		Fleet const& before = fleetReport.fightInfo.before;
 		Fleet const& after = fleetReport.fightInfo.after;
 		table->elementAt(0, 1)->addWidget(new Wt::WText(boost::lexical_cast<std::string>(before.id)));
 
-		table->elementAt(1, 0)->addWidget(new Wt::WText("Has fight :"));
+		table->elementAt(1, 0)->addWidget(new Wt::WText(gettext("Has fight") + " : "));
 		if(fleetReport.hasFight)
-			table->elementAt(1, 1)->addWidget(new Wt::WText("Yes"));
+			table->elementAt(1, 1)->addWidget(new Wt::WText(gettext("Yes")));
 		else
-			table->elementAt(1, 1)->addWidget(new Wt::WText("No"));
+			table->elementAt(1, 1)->addWidget(new Wt::WText(gettext("No")));
 
-		table->elementAt(2, 0)->addWidget(new Wt::WText("Is dead :"));
+		table->elementAt(2, 0)->addWidget(new Wt::WText(gettext("Is dead") + " : "));
 		if(fleetReport.isDead)
-			table->elementAt(2, 1)->addWidget(new Wt::WText("Yes"));
+			table->elementAt(2, 1)->addWidget(new Wt::WText(gettext("Yes")));
 		else
-			table->elementAt(2, 1)->addWidget(new Wt::WText("No"));
+			table->elementAt(2, 1)->addWidget(new Wt::WText(gettext("No")));
 
-		table->elementAt(3, 0)->addWidget(new Wt::WText("Start :"));
+		table->elementAt(3, 0)->addWidget(new Wt::WText(gettext("Start") + " : "));
 		std::string fleetContentBefore;
 		table->elementAt(3, 1)->addWidget(new Wt::WText(getContentString(before)));
-		table->elementAt(4, 0)->addWidget(new Wt::WText("End :"));
+		table->elementAt(4, 0)->addWidget(new Wt::WText(gettext("End") + " : "));
 		std::string fleetContentAfter;
 		table->elementAt(4, 1)->addWidget(new Wt::WText(getContentString(after)));
 
-		table->elementAt(5, 0)->addWidget(new Wt::WText("Report ID = " + boost::lexical_cast<std::string>(id)));
+		table->elementAt(5, 0)->addWidget(
+		  new Wt::WText(WString::fromUTF8(str(format(gettext("Report ID = %i")) % id))));
 	}
 
 	if(fightReport.hasPlanet)
 	{
 		Wt::WTable* table = new Wt::WTable(this);
-		table->elementAt(0, 0)->addWidget(new Wt::WText("Fleet name :"));
+		table->elementAt(0, 0)->addWidget(
+		  new Wt::WText(gettext("Planet coordinate") + " :"));
 
 		Planet const& before = fightReport.planet.fightInfo.before;
 		Planet const& after = fightReport.planet.fightInfo.after;
 		//table->elementAt(0, 1)->addWidget(new Wt::WText(boost::lexical_cast<std::string>(before.id)));
-		table->elementAt(0, 1)->addWidget(new Wt::WText(
-		                                    str(format("(%1%;%2%;%3%)") % before.coord.X % before.coord.Y % before.coord.Z)));
+		table->elementAt(0, 1)->addWidget(
+		  new Wt::WText(str(format("(%1%;%2%;%3%)") %
+		                    before.coord.X % before.coord.Y % before.coord.Z)));
 
-		table->elementAt(1, 0)->addWidget(new Wt::WText("Has fight :"));
+		table->elementAt(1, 0)->addWidget(new Wt::WText(gettext("Has fight") + " : "));
 		if(fightReport.planet.hasFight)
-			table->elementAt(1, 1)->addWidget(new Wt::WText("Yes"));
+			table->elementAt(1, 1)->addWidget(new Wt::WText(gettext("Yes")));
 		else
-			table->elementAt(1, 1)->addWidget(new Wt::WText("No"));
+			table->elementAt(1, 1)->addWidget(new Wt::WText(gettext("No")));
 
-		table->elementAt(2, 0)->addWidget(new Wt::WText("Is dead :"));
+		table->elementAt(2, 0)->addWidget(new Wt::WText(gettext("Is dead") + " : "));
 		if(fightReport.planet.isDead)
-			table->elementAt(2, 1)->addWidget(new Wt::WText("Yes"));
+			table->elementAt(2, 1)->addWidget(new Wt::WText(gettext("Yes")));
 		else
-			table->elementAt(2, 1)->addWidget(new Wt::WText("No"));
+			table->elementAt(2, 1)->addWidget(new Wt::WText(gettext("No")));
 
-		table->elementAt(3, 0)->addWidget(new Wt::WText("Start :"));
-		std::string fleetContentBefore;
+		table->elementAt(3, 0)->addWidget(new Wt::WText(gettext("Start") + " : "));
 		table->elementAt(3, 1)->addWidget(new Wt::WText(getContentString(before)));
-		table->elementAt(4, 0)->addWidget(new Wt::WText("End :"));
-		std::string fleetContentAfter;
+		table->elementAt(4, 0)->addWidget(new Wt::WText(gettext("End") + " : "));
 		table->elementAt(4, 1)->addWidget(new Wt::WText(getContentString(after)));
 
-		table->elementAt(5, 0)->addWidget(new Wt::WText("Report ID = " + boost::lexical_cast<std::string>(id)));
+		table->elementAt(5, 0)->addWidget(new Wt::WText(WString::fromUTF8(
+		                                    str(format(gettext("Report ID = %i")) % id))));
 	}
 }

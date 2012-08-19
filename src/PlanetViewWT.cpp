@@ -3,6 +3,7 @@
 
 #include "TranslationTools.h"
 #include "Engine.h"
+#include "TextGetter.h"
 
 using namespace Wt;
 
@@ -91,9 +92,9 @@ PlanetViewWT::PlanetViewWT(
 	setLayout(layout);
 
 	WTabWidget* tab = new WTabWidget(this);
-	tab->addTab(createBuildingsTab(this), "Buildings");
-	tab->addTab(createCannonsTab(this), "Cannons");
-	tab->addTab(createTasksTab(this), "Tasks");
+	tab->addTab(createBuildingsTab(this), gettext("Buildings"));
+	tab->addTab(createCannonsTab(this),   gettext("Cannons"));
+	tab->addTab(createTasksTab(this),     gettext("Tasks"));
 	//tab->addTab(createResearchTab(this), "Research");
 	//tab->addTab(createDefenceTab(this), "Defence");
 	layout->addWidget(tab);
@@ -109,10 +110,10 @@ void PlanetViewWT::refresh()
 	int row = 0;
 	Planet planet = engine_.getPlanet(planetCoord_);
 	Wt::WStandardItemModel* taModel = new Wt::WStandardItemModel((int)planet.taskQueue.size(), 4, this);
-	taModel->setHeaderData(0, Horizontal, WString("Type"), DisplayRole);
-	taModel->setHeaderData(1, Horizontal, WString("Start"), DisplayRole);
-	taModel->setHeaderData(2, Horizontal, WString("End"), DisplayRole);
-	taModel->setHeaderData(3, Horizontal, WString("What"), DisplayRole);
+	taModel->setHeaderData(0, Horizontal, gettext("Type"), DisplayRole);
+	taModel->setHeaderData(1, Horizontal, gettext("Start"), DisplayRole);
+	taModel->setHeaderData(2, Horizontal, gettext("End"), DisplayRole);
+	taModel->setHeaderData(3, Horizontal, gettext("What"), DisplayRole);
 	for(PlanetTask const & task: planet.taskQueue)
 	{
 		Wt::WStandardItem* item = new Wt::WStandardItem();
@@ -138,8 +139,8 @@ void PlanetViewWT::refresh()
 	//! Buildings
 	row = 0;
 	Wt::WStandardItemModel* buModel = new Wt::WStandardItemModel((int)planet.buildingList.size(), 4, this);
-	buModel->setHeaderData(0, Horizontal, WString("Name"), DisplayRole);
-	buModel->setHeaderData(1, Horizontal, WString("Level"), DisplayRole);
+	buModel->setHeaderData(0, Horizontal, gettext("Name"), DisplayRole);
+	buModel->setHeaderData(1, Horizontal, gettext("Level"), DisplayRole);
 	for(size_t type = 0; type < planet.buildingList.size(); ++type)
 	{
 		Wt::WStandardItem* item = new Wt::WStandardItem();
@@ -157,8 +158,8 @@ void PlanetViewWT::refresh()
 	//! Cannons
 	row = 0;
 	Wt::WStandardItemModel* caModel = new Wt::WStandardItemModel((int)planet.cannonTab.size(), 4, this);
-	caModel->setHeaderData(0, Horizontal, WString("Name"), DisplayRole);
-	caModel->setHeaderData(1, Horizontal, WString("Level"), DisplayRole);
+	caModel->setHeaderData(0, Horizontal, gettext("Name"), DisplayRole);
+	caModel->setHeaderData(1, Horizontal, gettext("Level"), DisplayRole);
 	for(auto const & level: planet.cannonTab)
 	{
 		Wt::WStandardItem* item = new Wt::WStandardItem();

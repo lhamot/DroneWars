@@ -3,6 +3,8 @@
 #include "Engine.h"
 #include "bit_them_allWT.h"
 #include "OutPage.h"
+#include "TextGetter.h"
+#include <boost/program_options/detail/utf8_codecvt_facet.hpp>
 
 
 using namespace Wt;
@@ -94,7 +96,17 @@ Wt::WApplication* createApplication(const Wt::WEnvironment& env, Engine& engine)
 int main(int argc, char* argv[])
 try
 {
+	{
+		//Pour que WT convertise correctement mes string en WString
+		auto uft8CodeCvt = new boost::program_options::detail::utf8_codecvt_facet;
+		std::locale::global(std::locale(std::locale(), uft8CodeCvt));
+	}
+
 	srand(static_cast<unsigned int>(time(NULL)));
+
+	TextGetter& textGetter = TextGetter::GetInstance();
+	textGetter.setLang("FR");
+	textGetter.loadModule("DroneWars");
 
 	Engine engine;
 	return Wt::WRun(argc, argv, [&]

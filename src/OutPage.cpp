@@ -3,6 +3,7 @@
 
 
 #include "Engine.h"
+#include "TextGetter.h"
 
 
 using namespace Wt;
@@ -12,17 +13,17 @@ Wt::WContainerWidget* OutPage::createHomePage(Wt::WContainerWidget* parent)
 	Wt::WContainerWidget* homePage = new WContainerWidget(parent);
 	Wt::WTable* table = new Wt::WTable(homePage);
 
-	table->elementAt(0, 0)->addWidget(new WText("login :", parent));
+	table->elementAt(0, 0)->addWidget(new WText(gettext("Login") + " :", parent));
 	table->elementAt(0, 1)->addWidget(loginEdit_ = new WLineEdit(parent));
 	loginEdit_->setValidator(new WLengthValidator(0, MaxStringSize, loginEdit_));
 	//table->elementAt(0, 0)->->addWidget(new WBreak(parent));
-	table->elementAt(1, 0)->addWidget(new WText("password :", parent));
+	table->elementAt(1, 0)->addWidget(new WText(gettext("Password") + " :", parent));
 	table->elementAt(1, 1)->addWidget(passwordEdit_ = new WLineEdit(parent));
 	passwordEdit_->setEchoMode(WLineEdit::Password);
 	passwordEdit_->setValidator(new WLengthValidator(0, MaxStringSize, passwordEdit_));
 
 	//table->elementAt(0, 0)->->addWidget(new WBreak(parent));
-	WPushButton* okButton = new WPushButton("Log in");
+	WPushButton* okButton = new WPushButton(gettext("Log in"));
 	homePage->addWidget(okButton);
 	//table->elementAt(2, 0)->setColumnSpan(2);
 	//table->setHeaderCount(1, Orientation::Vertical);
@@ -36,21 +37,21 @@ Wt::WContainerWidget* OutPage::createRegisterPage(Wt::WContainerWidget* parent)
 {
 	Wt::WContainerWidget* regPage = new WContainerWidget(parent);
 	Wt::WTable* table = new Wt::WTable(regPage);
-	table->elementAt(0, 0)->addWidget(new WText("login :", parent));
+	table->elementAt(0, 0)->addWidget(new WText(gettext("Login") + " :", parent));
 	table->elementAt(0, 1)->addWidget(loginEdit2_ = new WLineEdit(parent));
 	loginEdit2_->setValidator(new WLengthValidator(0, MaxStringSize, loginEdit2_));
 	//table->elementAt(1, 0)->addWidget(new WBreak(parent));
-	table->elementAt(1, 0)->addWidget(new WText("password :", parent));
+	table->elementAt(1, 0)->addWidget(new WText(gettext("Password") + " :", parent));
 	table->elementAt(1, 1)->addWidget(passwordEdit2_ = new WLineEdit(parent));
 	passwordEdit2_->setValidator(new WLengthValidator(0, MaxStringSize, passwordEdit2_));
 	passwordEdit2_->setEchoMode(WLineEdit::Password);
 	//table->elementAt(1, 0)->addWidget(new WBreak(parent));
-	table->elementAt(2, 0)->addWidget(new WText("password2 :", parent));
+	table->elementAt(2, 0)->addWidget(new WText(gettext("Password2") + " :", parent));
 	table->elementAt(2, 1)->addWidget(passwordEdit3_ = new WLineEdit(parent));
 	passwordEdit3_->setValidator(new WLengthValidator(0, MaxStringSize, passwordEdit3_));
 	passwordEdit3_->setEchoMode(WLineEdit::Password);
 	//table->elementAt(1, 0)->addWidget(new WBreak(parent));
-	WPushButton* regButton = new WPushButton("Register");
+	WPushButton* regButton = new WPushButton(gettext("Register"));
 	regPage->addWidget(regButton);
 
 	regButton->clicked().connect(this, &OutPage::registerButtonClicked);
@@ -77,8 +78,8 @@ OutPage::OutPage(Wt::WContainerWidget* parent, Engine& engine):
 	addWidget(contents);
 	menu->setRenderAsList(false);
 
-	menu->addItem("Home", createHomePage(this));
-	menu->addItem("Register", createRegisterPage(this));
+	menu->addItem(gettext("Home"), createHomePage(this));
+	menu->addItem(gettext("Create account"), createRegisterPage(this));
 }
 
 void OutPage::onLogButtonClicked()
@@ -89,7 +90,7 @@ void OutPage::onLogButtonClicked()
 		onPlayerLogin(player->id);
 	else
 	{
-		WMessageBox::show("Error", "Wrong login or password.", Ok);
+		WMessageBox::show(gettext("Error"), gettext("Wrong login or password."), Ok);
 		return;
 	}
 }
@@ -97,17 +98,17 @@ void OutPage::onLogButtonClicked()
 void OutPage::registerButtonClicked()
 {
 	if(loginEdit2_->text().empty())
-		WMessageBox::show("Error", "Empty login", Ok);
+		WMessageBox::show(gettext("Error"), gettext("Empty login"), Ok);
 	else if(passwordEdit2_->text().empty())
-		WMessageBox::show("Error", "Empty password", Ok);
+		WMessageBox::show(gettext("Error"), gettext("Empty password"), Ok);
 	else if(passwordEdit2_->text() != passwordEdit3_->text())
-		WMessageBox::show("Error", "Passwords don't match!", Ok);
+		WMessageBox::show(gettext("Error"), gettext("Passwords don't match!"), Ok);
 	else if(engine_.addPlayer(loginEdit2_->text().toUTF8(), passwordEdit2_->text().toUTF8()))
 	{
-		WMessageBox::show("Info", "Registration successful", Ok);
+		WMessageBox::show(gettext("Info"), gettext("Registration successful"), Ok);
 		dynamic_cast<WMenu&>(*widget(0)).select(0);
 		refresh();
 	}
 	else
-		WMessageBox::show("Error", "Login still exist.", Ok);
+		WMessageBox::show(gettext("Error"), gettext("Login still exist."), Ok);
 }

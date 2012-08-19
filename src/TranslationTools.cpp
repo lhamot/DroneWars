@@ -1,24 +1,23 @@
 #include "stdafx.h"
 #include "TranslationTools.h"
 #include <boost/thread/mutex.hpp>
+#include "TextGetter.h"
 
 
 std::string getBuildingName(Building::Enum type)
 {
-#define BTA_STR(X) case Building::X: return #X;
 	switch(type)
 	{
-		BTA_STR(CommandCenter)
-		BTA_STR(MetalMine)
-		BTA_STR(CarbonMine)
-		BTA_STR(LoiciumFilter)
-		BTA_STR(Factory)
-		BTA_STR(Laboratory)
-		BTA_STR(CarbonicCentral)
-		BTA_STR(SolarCentral)
-		BTA_STR(GeothermicCentral)
+	case Building::CommandCenter:     return gettext("CommandCenter");
+	case Building::MetalMine:         return gettext("MetalMine");
+	case Building::CarbonMine:        return gettext("CarbonMine");
+	case Building::LoiciumFilter:     return gettext("LoiciumFilter");
+	case Building::Factory:           return gettext("Factory");
+	case Building::Laboratory:        return gettext("Laboratory");
+	case Building::CarbonicCentral:   return gettext("CarbonicCentral");
+	case Building::SolarCentral:      return gettext("SolarCentral");
+	case Building::GeothermicCentral: return gettext("GeothermicCentral");
 	}
-#undef BTA_STR
 
 	BOOST_THROW_EXCEPTION(std::logic_error("Unknown buiding type"));
 	static_assert(Building::GeothermicCentral == Building::Count - 1, "Building cases missing");
@@ -27,14 +26,12 @@ std::string getBuildingName(Building::Enum type)
 
 std::string getTaskName(PlanetTask::Enum type)
 {
-#define BTA_STR(X) case PlanetTask::X: return #X;
 	switch(type)
 	{
-		BTA_STR(UpgradeBuilding)
-		BTA_STR(MakeShip)
-		BTA_STR(MakeCannon)
+	case PlanetTask::UpgradeBuilding: return gettext("UpgradeBuilding");
+	case PlanetTask::MakeShip:        return gettext("MakeShip");
+	case PlanetTask::MakeCannon:      return gettext("MakeCannon");
 	}
-#undef BTA_STR
 
 	BOOST_THROW_EXCEPTION(std::logic_error("Unknown task type"));
 	static_assert(PlanetTask::MakeCannon == PlanetTask::Count - 1, "Task cases missing");
@@ -43,14 +40,12 @@ std::string getTaskName(PlanetTask::Enum type)
 
 std::string getTaskName(FleetTask::Enum type)
 {
-#define BTA_STR(X) case FleetTask::X: return #X;
 	switch(type)
 	{
-		BTA_STR(Move)
-		BTA_STR(Harvest)
-		BTA_STR(Colonize)
+	case FleetTask::Move:     return gettext("Move");
+	case FleetTask::Harvest:  return gettext("Harvest");
+	case FleetTask::Colonize: return gettext("Colonize");
 	}
-#undef BTA_STR
 
 	BOOST_THROW_EXCEPTION(std::logic_error("Unknown task type"));
 	static_assert(FleetTask::Colonize == FleetTask::Count - 1, "Task cases missing");
@@ -59,20 +54,18 @@ std::string getTaskName(FleetTask::Enum type)
 
 std::string getShipName(Ship::Enum ship)
 {
-#define BTA_STR(X) case Ship::X: return #X;
 	switch(ship)
 	{
-		BTA_STR(Mosquito)
-		BTA_STR(Hornet)
-		BTA_STR(Vulture)
-		BTA_STR(Dragon)
-		BTA_STR(Behemoth)
-		BTA_STR(Azathoth)
-		BTA_STR(Queen)
-		BTA_STR(Cargo)
-		BTA_STR(LargeCargo)
+	case Ship::Mosquito:   return gettext("Mosquito");
+	case Ship::Hornet:     return gettext("Hornet");
+	case Ship::Vulture:    return gettext("Vulture");
+	case Ship::Dragon:     return gettext("Dragon");
+	case Ship::Behemoth:   return gettext("Behemoth");
+	case Ship::Azathoth:   return gettext("Azathoth");
+	case Ship::Queen:      return gettext("Queen");
+	case Ship::Cargo:      return gettext("Cargo");
+	case Ship::LargeCargo: return gettext("LargeCargo");
 	}
-#undef BTA_STR
 
 	BOOST_THROW_EXCEPTION(std::logic_error("Unknown Ship type"));
 	static_assert(Ship::LargeCargo == Ship::Count - 1, "Ship cases missing");
@@ -81,14 +74,12 @@ std::string getShipName(Ship::Enum ship)
 
 std::string getRessourceName(Ressource::Enum ress)
 {
-#define BTA_STR(X) case Ressource::X: return #X;
 	switch(ress)
 	{
-		BTA_STR(Metal)
-		BTA_STR(Carbon)
-		BTA_STR(Loicium)
+	case Ressource::Metal:   return gettext("Metal");
+	case Ressource::Carbon:  return gettext("Carbon");
+	case Ressource::Loicium: return gettext("Loicium");
 	}
-#undef BTA_STR
 
 	BOOST_THROW_EXCEPTION(std::logic_error("Unknown Ressource type"));
 	static_assert(Ressource::Loicium == Ressource::Count - 1, "Ressource cases missing");
@@ -97,27 +88,25 @@ std::string getRessourceName(Ressource::Enum ress)
 
 std::string getEventName(Event::Type evtype)
 {
-#define BTA_STR(X) case Event::X: return #X;
 	switch(evtype)
 	{
-		BTA_STR(FleetCodeError)
-		BTA_STR(FleetCodeExecError)
-		BTA_STR(PlanetCodeError)
-		BTA_STR(PlanetCodeExecError)
-		BTA_STR(Upgraded)
-		BTA_STR(ShipMade)
-		BTA_STR(PlanetHarvested)
-		BTA_STR(FleetWin)
-		BTA_STR(FleetDraw)
-		BTA_STR(FleetsGather)
-		BTA_STR(PlanetColonized)
-		BTA_STR(FleetLose)
-		BTA_STR(FleetDrop)
-		BTA_STR(PlanetLose)
-		BTA_STR(PlanetWin)
-		BTA_STR(CannonMade)
+	case Event::FleetCodeError:      return gettext("FleetCodeError");
+	case Event::FleetCodeExecError:  return gettext("FleetCodeExecError");
+	case Event::PlanetCodeError:     return gettext("PlanetCodeError");
+	case Event::PlanetCodeExecError: return gettext("PlanetCodeExecError");
+	case Event::Upgraded:            return gettext("Upgraded");
+	case Event::ShipMade:            return gettext("ShipMade");
+	case Event::PlanetHarvested:     return gettext("PlanetHarvested");
+	case Event::FleetWin:            return gettext("FleetWin");
+	case Event::FleetDraw:           return gettext("FleetDraw");
+	case Event::FleetsGather:        return gettext("FleetsGather");
+	case Event::PlanetColonized:     return gettext("PlanetColonized");
+	case Event::FleetLose:           return gettext("FleetLose");
+	case Event::FleetDrop:           return gettext("FleetDrop");
+	case Event::PlanetLose:          return gettext("PlanetLose");
+	case Event::PlanetWin:           return gettext("PlanetWin");
+	case Event::CannonMade:          return gettext("CannonMade");
 	}
-#undef BTA_STR
 
 	BOOST_THROW_EXCEPTION(std::logic_error("Unknown Ressource type"));
 	static_assert(Event::CannonMade == Event::Count - 1, "Event cases missing");
@@ -139,17 +128,15 @@ std::string timeToString(time_t time)
 
 std::string getCannonName(Cannon::Enum cannon)
 {
-#define BTA_STR(X) case Cannon::X: return #X;
 	switch(cannon)
 	{
-		BTA_STR(Cannon1)
-		BTA_STR(Cannon2)
-		BTA_STR(Cannon3)
-		BTA_STR(Cannon4)
-		BTA_STR(Cannon5)
-		BTA_STR(Cannon6)
+	case Cannon::Cannon1: return gettext("Cannon1");
+	case Cannon::Cannon2: return gettext("Cannon2");
+	case Cannon::Cannon3: return gettext("Cannon3");
+	case Cannon::Cannon4: return gettext("Cannon4");
+	case Cannon::Cannon5: return gettext("Cannon5");
+	case Cannon::Cannon6: return gettext("Cannon6");
 	}
-#undef BTA_STR
 
 	BOOST_THROW_EXCEPTION(std::logic_error("Unknown Cannon type"));
 	static_assert(Cannon::Cannon6 == Cannon::Count - 1, "Cannon cases missing");

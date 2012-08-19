@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include <Wt/WTextArea>
-//#include <Wt/WMessageBox>
 #include "Engine.h"
 #include "Editor.h"
+#include "TextGetter.h"
 
 using namespace Wt;
 
@@ -16,10 +16,10 @@ Editor::Editor(Wt::WContainerWidget* parent, std::string const& name, Engine& en
 	tabWidget_ = new Wt::WTabWidget(this);
 	WContainerWidget* blockly = new WContainerWidget(this);
 	refreshBlockly(blockly);
-	tabWidget_->addTab(blockly, "Visual");
+	tabWidget_->addTab(blockly, gettext("Visual"));
 	WContainerWidget* codeMirrorTab = new WContainerWidget(this);
 	refreshCodeMirror(codeMirrorTab);
-	tabWidget_->addTab(codeMirrorTab, "Text");
+	tabWidget_->addTab(codeMirrorTab, gettext("Text"));
 }
 
 
@@ -38,8 +38,6 @@ void Editor::refreshBlockly(WContainerWidget* mainContainer)
 		code = engine_.getPlayerPlanetCode(logged_);
 	else
 		BOOST_THROW_EXCEPTION(std::logic_error("Unexpected name_ value : " + name_));
-
-	std::cout <<  code.getBlocklyCode() << std::endl;
 
 	container->setId("editorTab" + name_);
 	container->doJavaScript(
@@ -64,15 +62,13 @@ void Editor::refreshBlockly(WContainerWidget* mainContainer)
 	WText* errorMessage = new WText(container);
 	new WBreak(container);
 
-
-
 	WPushButton* reload = new WPushButton(container);
-	reload->setText("Reload");
+	reload->setText(gettext("Reload"));
 	reload->clicked().connect(
 	  boost::bind(&Editor::on_blocklyResetCodeButton_clicked, this, mainContainer));
 
 	WPushButton* load = new WPushButton(container);
-	load->setText("Import");
+	load->setText(gettext("Import"));
 	load->setAttributeValue("onclick",
 	                        //"Blockly.clear();\n"
 	                        "var xml_text = prompt('Load', '');\n"
@@ -81,7 +77,7 @@ void Editor::refreshBlockly(WContainerWidget* mainContainer)
 	                       );
 
 	WPushButton* saveToXml = new WPushButton(container);
-	saveToXml->setText("Export");
+	saveToXml->setText(gettext("Export"));
 	saveToXml->setAttributeValue("onclick",
 	                             "var xml = Blockly" + name_ + ".Xml.workspaceToDom(Blockly" + name_ + ".mainWorkspace);\n"
 	                             "var xml_text = Blockly" + name_ + ".Xml.domToText(xml);\n"
@@ -89,7 +85,7 @@ void Editor::refreshBlockly(WContainerWidget* mainContainer)
 	                            );
 
 	WPushButton* saveToLua = new WPushButton(container);
-	saveToLua->setText("Valid");
+	saveToLua->setText(gettext("Valid"));
 	saveToLua->setAttributeValue(
 	  "onClick",
 	  "var code = window.Blockly" + name_ + ".Generator.workspaceToCode('lua');\n"
@@ -137,7 +133,7 @@ void Editor::on_blocklySaveCodeButton_clicked(WTextArea* hidenLua, WTextArea* hi
 	tabWidget_->removeTab(tabWidget_->widget(1));
 	WContainerWidget* codeMirrorTab = new WContainerWidget(this);
 	refreshCodeMirror(codeMirrorTab);
-	tabWidget_->addTab(codeMirrorTab, "Text");
+	tabWidget_->addTab(codeMirrorTab, gettext("Text"));
 }
 
 void Editor::on_blocklyResetCodeButton_clicked(WContainerWidget* container)
@@ -164,10 +160,10 @@ void Editor::refreshCodeMirror(WContainerWidget* container)
 	new WBreak(container);
 
 	WPushButton* reset = new WPushButton(container);
-	reset->setText("Reload");
+	reset->setText(gettext("Reload"));
 
 	WPushButton* save = new WPushButton(container);
-	save->setText("Save");
+	save->setText(gettext("Save"));
 	save->setId("saveCodeButton" + name_);
 
 	edit->setId(name_ + "TextArea");

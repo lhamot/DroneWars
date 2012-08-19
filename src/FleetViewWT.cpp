@@ -3,6 +3,7 @@
 
 #include "TranslationTools.h"
 #include "Engine.h"
+#include "TextGetter.h"
 
 
 using namespace Wt;
@@ -41,7 +42,7 @@ FleetViewWT::FleetViewWT(
 
 
 	WTabWidget* tab = new WTabWidget(this);
-	tab->addTab(createReportsTab(this), "Reports");
+	tab->addTab(createReportsTab(this), gettext("Reports"));
 	layout->addWidget(tab);
 
 
@@ -54,9 +55,9 @@ void FleetViewWT::refresh()
 	int row = 0;
 	Fleet fleet = engine_.getFleet(fleetID_);
 	Wt::WStandardItemModel* evModel = new Wt::WStandardItemModel((int)fleet.eventList.size(), 3, this);
-	evModel->setHeaderData(0, Horizontal, WString("Date"), DisplayRole);
-	evModel->setHeaderData(1, Horizontal, WString("Type"), DisplayRole);
-	evModel->setHeaderData(2, Horizontal, WString("Comment"), DisplayRole);
+	evModel->setHeaderData(0, Horizontal, gettext("Date"), DisplayRole);
+	evModel->setHeaderData(1, Horizontal, gettext("Type"), DisplayRole);
+	evModel->setHeaderData(2, Horizontal, gettext("Comment"), DisplayRole);
 	for(Event const & ev: fleet.eventList)
 	{
 		Wt::WStandardItem* item = new Wt::WStandardItem();

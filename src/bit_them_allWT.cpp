@@ -7,6 +7,7 @@
 #include "TranslationTools.h"
 #include "Editor.h"
 #include "Engine.h"
+#include "TextGetter.h"
 
 using namespace Wt;
 using namespace boost;
@@ -25,11 +26,11 @@ WWidget* bit_them_allWT::createCodeTab(WContainerWidget* parent)
 
 	Editor* editPlanetCode = new Editor(parent, "Planet", engine_, logged_);
 	planetCode_ = editPlanetCode;
-	codeTab_->addTab(planetCode_, "Planet", WTabWidget::LazyLoading);
+	codeTab_->addTab(planetCode_, gettext("Planet"), WTabWidget::LazyLoading);
 
 	Editor* editFleetCode = new Editor(parent, "Fleet", engine_, logged_);
 	fleetCode_ = editFleetCode;
-	codeTab_->addTab(editFleetCode, "Fleet", WTabWidget::LazyLoading);
+	codeTab_->addTab(editFleetCode, gettext("Fleet"), WTabWidget::LazyLoading);
 
 	return codeTab_;
 }
@@ -133,17 +134,17 @@ bit_them_allWT::bit_them_allWT(Wt::WContainerWidget* parent, Engine& engine, Pla
 
 	WPushButton* refresh = new WPushButton(this);
 	refresh->setMaximumSize(1000, 50);
-	refresh->setText("Refresh");
+	refresh->setText(gettext("Refresh"));
 	refresh->clicked().connect(this, &bit_them_allWT::refresh);
 
 	addWidget(refresh);
 
 	Wt::WTabWidget* tab = new Wt::WTabWidget(this);
 
-	tab->addTab(createPlanetsTab(this), "Planets", WTabWidget::LazyLoading);
-	tab->addTab(createFleetsTab(this),  "Fleets", WTabWidget::LazyLoading);
-	tab->addTab(createCodeTab(this),    "Code", WTabWidget::LazyLoading);
-	tab->addTab(createReportTab(this),  "Reports", WTabWidget::LazyLoading);
+	tab->addTab(createPlanetsTab(this), gettext("Planets"), WTabWidget::LazyLoading);
+	tab->addTab(createFleetsTab(this),  gettext("Fleets"), WTabWidget::LazyLoading);
+	tab->addTab(createCodeTab(this),    gettext("Code"), WTabWidget::LazyLoading);
+	tab->addTab(createReportTab(this),  gettext("Reports"), WTabWidget::LazyLoading);
 
 	addWidget(tab);
 
@@ -166,10 +167,10 @@ void bit_them_allWT::refresh()
 	tab->removeTab(codeTab_);
 	delete codeTab_;
 	codeTab_ = nullptr;
-	tab->addTab(createCodeTab(this), "Code", WTabWidget::LazyLoading);
+	tab->addTab(createCodeTab(this), gettext("Code"), WTabWidget::LazyLoading);
 	WWidget* reports = tab->widget(2);
 	tab->removeTab(reports);
-	tab->addTab(reports, "Reports");
+	tab->addTab(reports, gettext("Reports"));
 	tab->setCurrentIndex(index1);
 
 	int row = 0;
@@ -180,7 +181,7 @@ void bit_them_allWT::refresh()
 	plModel->setHeaderData(2, Horizontal, WString("Z"), DisplayRole);
 	plModel->setHeaderData(3, Horizontal, WString(""), DisplayRole);
 	plModel->setHeaderData(4, Horizontal, WString(""), DisplayRole);
-	plModel->setHeaderData(5, Horizontal, WString("Ressources"), DisplayRole);
+	plModel->setHeaderData(5, Horizontal, WString(gettext("Ressources")), DisplayRole);
 	for(Planet const & planet: planetList)
 	{
 		Wt::WStandardItem* item = new Wt::WStandardItem();
@@ -222,8 +223,8 @@ void bit_them_allWT::refresh()
 	flModel->setHeaderData(1, Horizontal, WString("Y"), DisplayRole);
 	flModel->setHeaderData(2, Horizontal, WString("Z"), DisplayRole);
 	flModel->setHeaderData(3, Horizontal, WString(""), DisplayRole);
-	flModel->setHeaderData(4, Horizontal, WString("Contents"), DisplayRole);
-	flModel->setHeaderData(5, Horizontal, WString("Ressources"), DisplayRole);
+	flModel->setHeaderData(4, Horizontal, gettext("Contents"), DisplayRole);
+	flModel->setHeaderData(5, Horizontal, gettext("Ressources"), DisplayRole);
 	for(Fleet const & fleet: fleetList)
 	{
 		Wt::WStandardItem* item = new Wt::WStandardItem();
@@ -276,9 +277,9 @@ void bit_them_allWT::refresh()
 
 	Player player = engine_.getPlayer(logged_);
 	Wt::WStandardItemModel* model = new Wt::WStandardItemModel((int)player.eventList.size(), 3, this);
-	model->setHeaderData(0, Horizontal, WString("Time"), DisplayRole);
-	model->setHeaderData(1, Horizontal, WString("Type"), DisplayRole);
-	model->setHeaderData(2, Horizontal, WString("Message"), DisplayRole);
+	model->setHeaderData(0, Horizontal, WString(gettext("Time")), DisplayRole);
+	model->setHeaderData(1, Horizontal, WString(gettext("Type")), DisplayRole);
+	model->setHeaderData(2, Horizontal, WString(gettext("Message")), DisplayRole);
 	row = 0;
 	for(Event const & ev: player.eventList)
 	{

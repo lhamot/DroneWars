@@ -135,7 +135,6 @@ void construct(Universe& univ)
 	for(int i = 0; i < 100; ++i)
 	{
 		Player::ID pid = createPlayer(univ, "admin" + boost::lexical_cast<std::string>(i), password);
-		continue;
 		Player& player = mapFind(univ.playerMap, pid)->second;
 		player.planetsCode.setCode(
 		  "function AI(planet, fleets)\n"
