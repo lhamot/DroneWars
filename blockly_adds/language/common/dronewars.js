@@ -7,42 +7,40 @@ function checkNumber(text)
 	return window.isNaN(n) ? null : String(n);
 }
 
-function getShipDropDown()
-{
-	return new Blockly.FieldDropdown([
-	                                   ['Mosquito', 'Mosquito'],
-	                                   ['Hornet', 'Hornet'],
-	                                   ['Vulture', 'Vulture'],
-	                                   ['Dragon', 'Dragon'],
-	                                   ['Behemoth', 'Behemoth'],
-	                                   ['Azathoth', 'Azathoth'],
-	                                   ['Queen', 'Queen'],
-	                                   ['Cargo', 'Cargo'],
-	                                   ['LargeCargo', 'LargeCargo']
-	                                 ]);
+function getShipDropDown() {
+  return new Blockly.FieldDropdown(
+    [[Blockly.LANG_DRONEWARS_SHIP1, 'Mosquito'],
+	   [Blockly.LANG_DRONEWARS_SHIP2, 'Hornet'],
+	   [Blockly.LANG_DRONEWARS_SHIP3, 'Vulture'],
+	   [Blockly.LANG_DRONEWARS_SHIP4, 'Dragon'],
+	   [Blockly.LANG_DRONEWARS_SHIP5, 'Behemoth'],
+	   [Blockly.LANG_DRONEWARS_SHIP6, 'Azathoth'],
+	   [Blockly.LANG_DRONEWARS_SHIP7, 'Queen'],
+	   [Blockly.LANG_DRONEWARS_SHIP8, 'Cargo'],
+	   [Blockly.LANG_DRONEWARS_SHIP9, 'LargeCargo']
+    ]);
 }
 
-function getCannonDropdown()
-{
-	return new Blockly.FieldDropdown([
-	                                   ['Cannon1', 'Cannon1'],
-	                                   ['Cannon2', 'Cannon2'],
-	                                   ['Cannon3', 'Cannon3'],
-	                                   ['Cannon4', 'Cannon4'],
-	                                   ['Cannon5', 'Cannon5'],
-	                                   ['Cannon6', 'Cannon6']
-	                                 ]);
+function getCannonDropdown() {
+  return new Blockly.FieldDropdown(
+    [[Blockly.LANG_DRONEWARS_CANNON1, 'Cannon1'],
+     [Blockly.LANG_DRONEWARS_CANNON2, 'Cannon2'],
+     [Blockly.LANG_DRONEWARS_CANNON3, 'Cannon3'],
+	   [Blockly.LANG_DRONEWARS_CANNON4, 'Cannon4'],
+	   [Blockly.LANG_DRONEWARS_CANNON5, 'Cannon5'],
+	   [Blockly.LANG_DRONEWARS_CANNON6, 'Cannon6']
+    ]);
 }
 
 function getFleetActionDropdown()
 {
-	return new Blockly.FieldDropdown([
-	                                   ['Nothing',  'Nothing'],
-	                                   ['Move',     'Move'],
-	                                   ['Harvest',  'Harvest'],
-	                                   ['Colonize', 'Colonize'],
-	                                   ['Drop',     'Drop'],
-	                                 ]);
+  return new Blockly.FieldDropdown(
+    [[Blockly.LANG_DRONEWARS_FLEETACTION1, 'Nothing'],
+	   [Blockly.LANG_DRONEWARS_FLEETACTION2, 'Move'],
+	   [Blockly.LANG_DRONEWARS_FLEETACTION3, 'Harvest'],
+	   [Blockly.LANG_DRONEWARS_FLEETACTION4, 'Colonize'],
+	   [Blockly.LANG_DRONEWARS_FLEETACTION5, 'Drop']
+    ]);
 }
 
 //******************   COORD    ***********************************************
@@ -127,17 +125,7 @@ category:
 init:
 	function()
 	{
-		var buildingDropdown = new Blockly.FieldDropdown([
-		  ['CommandCenter', 'CommandCenter'],
-		  ['MetalMine', 'MetalMine'],
-		  ['CarbonMine', 'CarbonMine'],
-		  ['LoiciumFilter', 'LoiciumFilter'],
-		  ['Factory', 'Factory'],
-		  ['Laboratory', 'Laboratory'],
-		  ['CarbonicCentral', 'CarbonicCentral'],
-		  ['SolarCentral', 'SolarCentral'],
-		  ['GeothermicCentral', 'GeothermicCentral']
-		]);
+	  var buildingDropdown = new Blockly.FieldDropdown(this.BUILDINGS);
 
 		this.setColour(230);
 		this.appendTitle(Blockly.LANG_CATEGORY_DRONEWARS_MAKE_BUILDING);
@@ -146,7 +134,19 @@ init:
 	}
 };
 
-Blockly.lua.dronewars_makeBuilding = function()
+Blockly.Language.dronewars_makeBuilding.BUILDINGS = [
+		  [Blockly.LANG_DRONEWARS_BUILDING1, 'CommandCenter'],
+		  [Blockly.LANG_DRONEWARS_BUILDING2, 'MetalMine'],
+		  [Blockly.LANG_DRONEWARS_BUILDING3, 'CarbonMine'],
+		  [Blockly.LANG_DRONEWARS_BUILDING4, 'LoiciumFilter'],
+		  [Blockly.LANG_DRONEWARS_BUILDING5, 'Factory'],
+		  [Blockly.LANG_DRONEWARS_BUILDING6, 'Laboratory'],
+		  [Blockly.LANG_DRONEWARS_BUILDING7, 'CarbonicCentral'],
+		  [Blockly.LANG_DRONEWARS_BUILDING8, 'SolarCentral'],
+		  [Blockly.LANG_DRONEWARS_BUILDING9, 'GeothermicCentral']
+];
+
+Blockly.lua.dronewars_makeBuilding = function ()
 {
 	return ['makeBuilding(Building.' + this.getTitleValue('BUILDING') + ')',
 	        Blockly.lua.ORDER_FUNCTION_CALL
@@ -288,17 +288,8 @@ category:
 init:
 	function()
 	{
-		var buildingDropdown = new Blockly.FieldDropdown([
-		  ['CommandCenter', 'CommandCenter'],
-		  ['MetalMine', 'MetalMine'],
-		  ['CarbonMine', 'CarbonMine'],
-		  ['LoiciumFilter', 'LoiciumFilter'],
-		  ['Factory', 'Factory'],
-		  ['Laboratory', 'Laboratory'],
-		  ['CarbonicCentral', 'CarbonicCentral'],
-		  ['SolarCentral', 'SolarCentral'],
-		  ['GeothermicCentral', 'GeothermicCentral']
-		]);
+	  var buildingDropdown = new Blockly.FieldDropdown(
+      Blockly.Language.dronewars_makeBuilding.BUILDINGS);
 
 		this.setColour(230);
 		//this.setInputsInline(true);
