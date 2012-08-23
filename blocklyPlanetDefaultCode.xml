@@ -1,0 +1,1 @@
+<xml xmlns="http://www.w3.org/1999/xhtml"><block type="procedures_defreturn" inline="false" x="56" y="52"><mutation><arg name="planet"></arg><arg name="fleets"></arg></mutation><title name="NAME">AI</title><value name="RETURN"><block type="dronewars_doNothing"></block></value></block></xml>
