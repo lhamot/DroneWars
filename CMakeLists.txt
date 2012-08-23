@@ -47,19 +47,25 @@ link_directories(${LUA_LIBRARY})
 add_executable(
     DroneWars
     src/bit_them_allWT.cpp
+    src/Editor.cpp
     src/Engine.cpp       
     src/fighting.cpp
     src/FleetViewWT.cpp
+    src/LuaTools.cpp
+    src/LuaUniverse.cpp
     src/main.cpp
     src/MessageView.cpp
     src/Model.cpp
     src/OutPage.cpp
     src/PlanetViewWT.cpp
     src/Simulation.cpp
+    src/stdafx.cpp
+    src/stl_container_adapter.cpp
+    src/TextGetter.cpp
+    src/TranslationTools.cpp
     src/Rules.h
     src/serialize_unordered_map.h
     src/Tools.h
-    src/TranslationTools.cpp
 )
 
 target_link_libraries( DroneWars debug wtd )

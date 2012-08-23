@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-19 19:28+0100\n"
-"PO-Revision-Date: 2012-08-21 23:23+0100\n"
+"POT-Creation-Date: 2012-08-23 20:53+0100\n"
+"PO-Revision-Date: 2012-08-23 22:23+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -66,33 +66,37 @@ msgstr "Type"
 msgid "Message"
 msgstr "Message"
 
-#: Editor.cpp:19
+#: Editor.cpp:20
 msgid "Visual"
 msgstr "Visuel"
 
-#: Editor.cpp:22 Editor.cpp:136
+#: Editor.cpp:23 Editor.cpp:137
 msgid "Text"
 msgstr "Texte"
 
-#: Editor.cpp:66 Editor.cpp:163
+#: Editor.cpp:67 Editor.cpp:164
 msgid "Reload"
 msgstr "Recharger"
 
-#: Editor.cpp:71
+#: Editor.cpp:72
 msgid "Import"
 msgstr "Import"
 
-#: Editor.cpp:80
+#: Editor.cpp:81
 msgid "Export"
 msgstr "Export"
 
-#: Editor.cpp:88
+#: Editor.cpp:89
 msgid "Valid"
 msgstr "Valider"
 
-#: Editor.cpp:166
+#: Editor.cpp:167
 msgid "Save"
-msgstr "Enragistrer"
+msgstr "Enregistrer"
+
+#: Editor.cpp:173
+msgid "Help"
+msgstr "Aide"
 
 #: FleetViewWT.cpp:58
 msgid "Date"
@@ -128,11 +132,11 @@ msgstr "Est détruit"
 msgid "Start"
 msgstr "Debut"
 
-#: MessageView.cpp:142 MessageView.cpp:178 PlanetViewWT.cpp:115
+#: MessageView.cpp:142 MessageView.cpp:177 PlanetViewWT.cpp:115
 msgid "End"
 msgstr "Fin"
 
-#: MessageView.cpp:147 MessageView.cpp:183
+#: MessageView.cpp:147 MessageView.cpp:181
 #, c-format
 msgid "Report ID = %i"
 msgstr "ID Raport = %i"
@@ -141,64 +145,105 @@ msgstr "ID Raport = %i"
 msgid "Planet coordinate"
 msgstr "Coordonées de planete"
 
-#: OutPage.cpp:16 OutPage.cpp:40
+#: OutPage.cpp:20 OutPage.cpp:53
 msgid "Login"
 msgstr "Idantifiant"
 
-#: OutPage.cpp:20 OutPage.cpp:44
+#: OutPage.cpp:23 OutPage.cpp:57
 msgid "Password"
 msgstr "Mot de passe"
 
-#: OutPage.cpp:26
+#: OutPage.cpp:30
 msgid "Log in"
 msgstr "Connexion"
 
-#: OutPage.cpp:49
+#: OutPage.cpp:41
+msgid "INTRO_TEXT"
+msgstr ""
+"<h1>Neutrynos - DroneWars</h1>\n"
+"L'univers est infinie, tous comme votre soiffe de conquête.<br>\n"
+"Mettez a profit votre ingeniosité pour exterminer vos advaisaires.<br>\n"
+"Commandez vos généraux et mennez les a la victoire.<br>"
+
+#: OutPage.cpp:62
 msgid "Password2"
 msgstr "Mot de passe (verif)"
 
-#: OutPage.cpp:54
+#: OutPage.cpp:67
 msgid "Register"
 msgstr "Enregistrer"
 
-#: OutPage.cpp:81
+#: OutPage.cpp:84
+msgid "ABOUT_TEXT"
+msgstr ""
+"<h1>Introduction</h1><br>\n"
+"Neutrynos - DroneWars<br>\n"
+"L'univers est infinie, tous comme votre soiffe de conquête.<br>\n"
+"Pour conquérir la galaxie, définissez la ligne de conduite de vos généraux. "
+"Assurez vous qu'ils ...<br>\n"
+"<h2>Déroulement du jeu</h2><br>\n"
+"<h3>Création du compte</h3><br>\n"
+"A la création du compte, le joueur reçois une planète avec le minimum "
+"nécessaire pour commencer le jeu.<br>\n"
+"Le joueur est l'empereur tout puissant d'un empire qui peut contenir des "
+"millier de planètes et de flottes.<br>\n"
+"Puisqu'il serait impossible de gérer autant de ressources, l'empereurs doit "
+"définir la ligne de conduite de ses généraux (un par planète et un par "
+"flotte).<br>\n"
+"<h3>Tour à tour<h3><br>\n"
+"A chaque tours:<br>\n"
+"<ol>\n"
+"<li>Les mines extrairont des ressources</li><br>\n"
+"<li>Le commandant de chaque planète fait son choix d'action(comme lancer une "
+"construction ou une amélioration)</li><br>\n"
+"<li>Les combats sont résolue, entrainant la destruction de certaines flotte "
+"et le pillage de certaine planètes.</li><br>\n"
+"<li>Les commandants des flottes restantes font leur choix d'action(comme se "
+"déplacer ou conquérir une planète libre).<br></li>\n"
+"</ol>"
+
+#: OutPage.cpp:107
 msgid "Home"
 msgstr "Acceuil"
 
-#: OutPage.cpp:82
+#: OutPage.cpp:108
 msgid "Create account"
 msgstr "Créer un compte"
 
-#: OutPage.cpp:93 OutPage.cpp:101 OutPage.cpp:103 OutPage.cpp:105
-#: OutPage.cpp:113
+#: OutPage.cpp:109
+msgid "About DroneWars"
+msgstr "A propos"
+
+#: OutPage.cpp:121 OutPage.cpp:130 OutPage.cpp:132 OutPage.cpp:134
+#: OutPage.cpp:142
 msgid "Error"
 msgstr "Erreur"
 
-#: OutPage.cpp:93
+#: OutPage.cpp:121
 msgid "Wrong login or password."
 msgstr "Mauvais idanifiant ou mot de passe"
 
-#: OutPage.cpp:101
+#: OutPage.cpp:130
 msgid "Empty login"
 msgstr "Idantifiant vide."
 
-#: OutPage.cpp:103
+#: OutPage.cpp:132
 msgid "Empty password"
 msgstr "Mot de passe vide."
 
-#: OutPage.cpp:105
+#: OutPage.cpp:134
 msgid "Passwords don't match!"
 msgstr "Les mots de passes ne corespondent pas!"
 
-#: OutPage.cpp:108
+#: OutPage.cpp:137
 msgid "Info"
 msgstr "Info"
 
-#: OutPage.cpp:108
+#: OutPage.cpp:137
 msgid "Registration successful"
 msgstr "L'enregistrement as reussit."
 
-#: OutPage.cpp:113
+#: OutPage.cpp:142
 msgid "Login still exist."
 msgstr "Cet identifiant existe déja."
 

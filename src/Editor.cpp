@@ -166,6 +166,11 @@ void Editor::refreshCodeMirror(WContainerWidget* container)
 	save->setText(gettext("Save"));
 	save->setId("saveCodeButton" + name_);
 
+	WPushButton* help = new WPushButton(container);
+	help->setText(gettext("Help"));
+	help->setLink(WLink(TextGetter::GetInstance().getLang() + "/API.htm"));
+	help->setLinkTarget(Wt::TargetNewWindow);
+
 	edit->setId(name_ + "TextArea");
 	edit->setValidator(new WLengthValidator(0, Player::MaxCodeSize, edit));
 	edit->doJavaScript(

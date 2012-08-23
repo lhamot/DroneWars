@@ -36,6 +36,19 @@ void TextGetter::loadModule(std::string const& modueName)
 			if(line.find("msgstr ") != 0)
 				return;
 			std::string value = line.substr(8, line.size() - 9);
+			while(std::getline(file, line) && (line.empty() == false))
+				value += line.substr(1, line.size() - 2);
+			if(value.size() > 1)
+			{
+				for(auto chIter = value.begin(), end = value.end() - 1; chIter != end; ++chIter)
+				{
+					if(*chIter == '\\' && *(chIter + 1) == 'n')
+					{
+						*chIter = ' ';
+						*(chIter + 1) = '\n';
+					}
+				}
+			}
 			translation_.insert(std::make_pair(key, value));
 		}
 	}

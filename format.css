@@ -15,6 +15,20 @@ body
   height:600px;
 }
 
+.manual
+{
+  background-color:#314162;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+}
+
+.manual *
+{
+  text-align: left;
+}
+
+
 pre
 {
   text-align: left;
@@ -70,150 +84,96 @@ td
     background-image: url(img/bg/bg3.gif);
 }
 
-/*th, input, select, textarea, img, td, tr
-{
-    border: 1px #415680 solid;
-    font-size: 11px;
-    font-family: Tahoma,sans-serif;
-}*/
-
-/*
-a
-{
-    color: #E6EBFB;
-    text-decoration: none;
-    font-weight: bold;
+a.item {
+  cursor: pointer; 
+  color: blue;
+  text-decoration: underline;
 }
 
-
-textarea
-{
-    width: 100%;
-    background-image: url(img/bg/bg5.gif);
+a.itemselected {
+  color: blue;
+  text-decoration: underline;
+  font-weight: bold; 
 }
 
-td, tr
-{
-    vertical-align: top;
+a.item {
+	/* Anciens navigateurs */
+	background: #00408f url("a-itemselected-a-item-bg.png") repeat-x top;
+	-o-background-size: 100% 100%;
+	-moz-background-size: 100% 100%;
+	-webkit-background-size: 100% 100%;
+	background-size: 100% 100%;
+	/* Navigateurs récents */
+	background: -webkit-gradient(
+		linear,
+		left top, left bottom,
+		from(rgba(0,64,143,1)),
+		to(rgba(0,64,143,1)),
+		color-stop(0.5, rgba(41,137,188,1))
+	);
+	background: -webkit-linear-gradient(
+		top,
+		rgba(0,64,143,1),
+		rgba(41,137,188,1) 50%,
+		rgba(0,64,143,1)
+	);
+	background: -moz-linear-gradient(
+		top,
+		rgba(0,64,143,1),
+		rgba(41,137,188,1) 50%,
+		rgba(0,64,143,1)
+	);
+	background: -o-linear-gradient(
+		top,
+		rgba(0,64,143,1),
+		rgba(41,137,188,1) 50%,
+		rgba(0,64,143,1)
+	);
+	background: linear-gradient(
+		top,
+		rgba(0,64,143,1),
+		rgba(41,137,188,1) 50%,
+		rgba(0,64,143,1)
+	);
 }
 
-
-td.l
-{
-    text-align: left;
-    padding: 3px;
-    background-image: url(img/bg/bg3.gif);
+a.itemselected {
+	/* Anciens navigateurs */
+	background: #00408f url("a-itemselected-bg.png") repeat-x top;
+	-o-background-size: 100% 100%;
+	-moz-background-size: 100% 100%;
+	-webkit-background-size: 100% 100%;
+	background-size: 100% 100%;
+	/* Navigateurs récents */
+	background: -webkit-gradient(
+		linear,
+		left top, left bottom,
+		from(rgba(0,64,143,1)),
+		to(rgba(0,64,143,1)),
+		color-stop(0.5, rgba(173,215,237,1))
+	);
+	background: -webkit-linear-gradient(
+		top,
+		rgba(0,64,143,1),
+		rgba(173,215,237,1) 50%,
+		rgba(0,64,143,1)
+	);
+	background: -moz-linear-gradient(
+		top,
+		rgba(0,64,143,1),
+		rgba(173,215,237,1) 50%,
+		rgba(0,64,143,1)
+	);
+	background: -o-linear-gradient(
+		top,
+		rgba(0,64,143,1),
+		rgba(173,215,237,1) 50%,
+		rgba(0,64,143,1)
+	);
+	background: linear-gradient(
+		top,
+		rgba(0,64,143,1),
+		rgba(173,215,237,1) 50%,
+		rgba(0,64,143,1)
+	);
 }
-
-
-td.t, td.t font
-{
-    font-weight: bold;
-    color: #E6EBFB;
-    font-size: 22px;
-    font-family:Garamond;
-    background-image: url(img/bg/bg1.gif);
-}
-
-*.em, *.em3, *.em6, *.em9
-{
-    background-image: url("");
-    padding:0px;
-    border:0px;
-    margin:0px;
-    color:Red;
-    font-weight:normal;
-    font-size:small;
-    color:Red;
-}
-
-*.em3
-{
-    font-weight:normal;
-    font-size:small;
-}
-
-*.em6
-{
-    font-weight:normal;
-    font-size:small;
-}
-
-*.em9
-{
-    font-weight:normal;
-    font-size:small;
-}
-
-td.em, td.em3, td.em6, td.em9
-{
-    width:15px;
-    height:15px;
-}
-
-
-font.E
-{
-    color: #FF0000;
-    font-size: 15px;
-}
-
-table
-{
-    margin: auto;
-    vertical-align: top;
-}
-
-table.g
-{
-    width: 728px;
-    vertical-align: top;
-}
-
-table.p
-{
-    width: 468px;
-    vertical-align: top;
-}
-
-table.m
-{
-    width: 80%
-}
-
-.left
-{
-    margin:inherit;
-    float:left;
-}
-
-body
-{
-    vertical-align: top;
-    text-align: center;
-    margin: auto;
-    background-color: #000000;
-    color: #E6EBFB;
-    margin-top: 1px;
-    margin-left: 1px;
-    background-image: url(img/neutrynos.jpg);
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    background-position: -140px 0px;
-    font-size: 11px;
-    font-family: Tahoma,sans-serif;
-}
-
-body.Menu
-{
-    background-position: top left;
-}
-
-div.mess
-{
-    background-image: url(img/res/message.gif);
-    width: 30px;
-    height: 30px;
-}
-
-*/

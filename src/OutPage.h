@@ -24,6 +24,7 @@ private:
 	void registerButtonClicked();
 	Wt::WContainerWidget* createHomePage(Wt::WContainerWidget* parent);
 	Wt::WContainerWidget* createRegisterPage(Wt::WContainerWidget* parent);
+	Wt::WContainerWidget* createAboutPage(Wt::WContainerWidget* parent);
 
 	Engine& engine_;
 	Wt::WLineEdit* loginEdit_;

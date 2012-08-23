@@ -147,7 +147,9 @@ void construct(Universe& univ)
 		  "  order = makeCannon(Cannon.Cannon1)\n"
 		  "else\n"
 		  "  for _,fleet in ipairs(fleets) do\n"
-		  "    if fleet.shipList[Ship.Mosquito] == (0) then\n"
+		  "    if fleet.shipList[Ship.Queen] == (0) then\n"
+		  "      order = makeShip(Ship.Queen)\n"
+		  "    elseif fleet.shipList[Ship.Mosquito] < (10) then\n"
 		  "      order = makeShip(Ship.Mosquito)\n"
 		  "    end\n"
 		  "    break\n"
@@ -165,7 +167,7 @@ void construct(Universe& univ)
 		  "end\n"
 		  "function AI:action(myFleet, planet)\n"
 		  "  if myFleet.ressourceSet:at(Ressource.Metal) > (2000) then\n"
-		  "    order = FleetAction(FleetAction.Move,directionFromTo(myFleet.coord,planet.coord))\n"
+		  "    order = FleetAction(FleetAction.Move,directionFromTo(myFleet.coord,myFleet.origine))\n"
 		  "  else\n"
 		  "    order = FleetAction(FleetAction.Move,directionRandom())\n"
 		  "  end\n"
@@ -419,6 +421,8 @@ void execTask(Universe& univ, Fleet& fleet, FleetTask& task, time_t time)
 
 void execBuilding(Planet& planet, Building::Enum type, size_t level)
 {
+	if(level == 0)
+		return;
 	switch(type)
 	{
 	case Building::CommandCenter:

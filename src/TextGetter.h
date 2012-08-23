@@ -19,6 +19,8 @@ public:
 
 	void setLang(std::string const& lang) {lang_ = lang;}
 
+	std::string getLang() const {return lang_;}
+
 	void loadModule(std::string const& modueName);
 
 	std::string const& gettext(std::string const& message);
