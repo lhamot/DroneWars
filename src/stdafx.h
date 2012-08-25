@@ -79,4 +79,4 @@
 #include <boost/variant.hpp>
 #pragma warning(pop)
 
-
+#include <libintl.h>

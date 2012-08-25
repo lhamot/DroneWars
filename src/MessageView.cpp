@@ -5,11 +5,11 @@
 
 #include "TranslationTools.h"
 #include "Engine.h"
-#include "TextGetter.h"
 
 
-using namespace Wt;
+using namespace std;
 using namespace boost;
+using namespace Wt;
 
 MessageView::MessageView(WContainerWidget* parent,
                          Engine& eng,
@@ -118,28 +118,28 @@ void MessageView::renderFightReport(size_t id)
 	for(Report<Fleet> const & fleetReport: fightReport.fleetList)
 	{
 		Wt::WTable* table = new Wt::WTable(this);
-		table->elementAt(0, 0)->addWidget(new Wt::WText(gettext("Fleet ID") + " : "));
+		table->elementAt(0, 0)->addWidget(new Wt::WText(gettext("Fleet ID") + string(" : ")));
 
 		Fleet const& before = fleetReport.fightInfo.before;
 		Fleet const& after = fleetReport.fightInfo.after;
 		table->elementAt(0, 1)->addWidget(new Wt::WText(boost::lexical_cast<std::string>(before.id)));
 
-		table->elementAt(1, 0)->addWidget(new Wt::WText(gettext("Has fight") + " : "));
+		table->elementAt(1, 0)->addWidget(new Wt::WText(gettext("Has fight") + string(" : ")));
 		if(fleetReport.hasFight)
 			table->elementAt(1, 1)->addWidget(new Wt::WText(gettext("Yes")));
 		else
 			table->elementAt(1, 1)->addWidget(new Wt::WText(gettext("No")));
 
-		table->elementAt(2, 0)->addWidget(new Wt::WText(gettext("Is dead") + " : "));
+		table->elementAt(2, 0)->addWidget(new Wt::WText(gettext("Is dead") + string(" : ")));
 		if(fleetReport.isDead)
 			table->elementAt(2, 1)->addWidget(new Wt::WText(gettext("Yes")));
 		else
 			table->elementAt(2, 1)->addWidget(new Wt::WText(gettext("No")));
 
-		table->elementAt(3, 0)->addWidget(new Wt::WText(gettext("Start") + " : "));
+		table->elementAt(3, 0)->addWidget(new Wt::WText(gettext("Start") + string(" : ")));
 		std::string fleetContentBefore;
 		table->elementAt(3, 1)->addWidget(new Wt::WText(getContentString(before)));
-		table->elementAt(4, 0)->addWidget(new Wt::WText(gettext("End") + " : "));
+		table->elementAt(4, 0)->addWidget(new Wt::WText(gettext("End") + string(" : ")));
 		std::string fleetContentAfter;
 		table->elementAt(4, 1)->addWidget(new Wt::WText(getContentString(after)));
 
@@ -151,7 +151,7 @@ void MessageView::renderFightReport(size_t id)
 	{
 		Wt::WTable* table = new Wt::WTable(this);
 		table->elementAt(0, 0)->addWidget(
-		  new Wt::WText(gettext("Planet coordinate") + " :"));
+		  new Wt::WText(gettext("Planet coordinate") + string(" : ")));
 
 		Planet const& before = fightReport.planet.fightInfo.before;
 		Planet const& after = fightReport.planet.fightInfo.after;
@@ -160,21 +160,21 @@ void MessageView::renderFightReport(size_t id)
 		  new Wt::WText(str(format("(%1%;%2%;%3%)") %
 		                    before.coord.X % before.coord.Y % before.coord.Z)));
 
-		table->elementAt(1, 0)->addWidget(new Wt::WText(gettext("Has fight") + " : "));
+		table->elementAt(1, 0)->addWidget(new Wt::WText(gettext("Has fight") + string(" : ")));
 		if(fightReport.planet.hasFight)
 			table->elementAt(1, 1)->addWidget(new Wt::WText(gettext("Yes")));
 		else
 			table->elementAt(1, 1)->addWidget(new Wt::WText(gettext("No")));
 
-		table->elementAt(2, 0)->addWidget(new Wt::WText(gettext("Is dead") + " : "));
+		table->elementAt(2, 0)->addWidget(new Wt::WText(gettext("Is dead") + string(" : ")));
 		if(fightReport.planet.isDead)
 			table->elementAt(2, 1)->addWidget(new Wt::WText(gettext("Yes")));
 		else
 			table->elementAt(2, 1)->addWidget(new Wt::WText(gettext("No")));
 
-		table->elementAt(3, 0)->addWidget(new Wt::WText(gettext("Start") + " : "));
+		table->elementAt(3, 0)->addWidget(new Wt::WText(gettext("Start") + string(" : ")));
 		table->elementAt(3, 1)->addWidget(new Wt::WText(getContentString(before)));
-		table->elementAt(4, 0)->addWidget(new Wt::WText(gettext("End") + " : "));
+		table->elementAt(4, 0)->addWidget(new Wt::WText(gettext("End") + string(" : ")));
 		table->elementAt(4, 1)->addWidget(new Wt::WText(getContentString(after)));
 
 		table->elementAt(5, 0)->addWidget(new Wt::WText(WString::fromUTF8(

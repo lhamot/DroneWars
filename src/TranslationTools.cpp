@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "TranslationTools.h"
 #include <boost/thread/mutex.hpp>
-#include "TextGetter.h"
 
 
 std::string getBuildingName(Building::Enum type)

@@ -3,7 +3,6 @@
 
 #include "TranslationTools.h"
 #include "Engine.h"
-#include "TextGetter.h"
 
 
 using namespace Wt;

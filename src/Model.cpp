@@ -152,7 +152,6 @@ void construct(Universe& univ)
 		  "    elseif fleet.shipList[Ship.Mosquito] < (10) then\n"
 		  "      order = makeShip(Ship.Mosquito)\n"
 		  "    end\n"
-		  "    break\n"
 		  "    ::continue::\n"
 		  "  end\n"
 		  "end\n"

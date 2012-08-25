@@ -2,7 +2,6 @@
 #include <Wt/WTextArea>
 #include "Engine.h"
 #include "Editor.h"
-#include "TextGetter.h"
 
 using namespace Wt;
 
@@ -168,7 +167,7 @@ void Editor::refreshCodeMirror(WContainerWidget* container)
 
 	WPushButton* help = new WPushButton(container);
 	help->setText(gettext("Help"));
-	help->setLink(WLink(TextGetter::GetInstance().getLang() + "/API.htm"));
+	help->setLink(WLink(getenv("LANG") + std::string("/API.htm")));
 	help->setLinkTarget(Wt::TargetNewWindow);
 
 	edit->setId(name_ + "TextArea");

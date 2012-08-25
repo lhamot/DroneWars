@@ -3,9 +3,9 @@
 
 
 #include "Engine.h"
-#include "TextGetter.h"
 
 
+using namespace std;
 using namespace Wt;
 
 Wt::WContainerWidget* OutPage::createHomePage(Wt::WContainerWidget* parent)
@@ -17,10 +17,10 @@ Wt::WContainerWidget* OutPage::createHomePage(Wt::WContainerWidget* parent)
 
 	Wt::WTable* table = new Wt::WTable(homePage);
 
-	table->elementAt(0, 0)->addWidget(new WText(gettext("Login") + " :", parent));
+	table->elementAt(0, 0)->addWidget(new WText(gettext("Login") + string(" : "), parent));
 	table->elementAt(0, 1)->addWidget(loginEdit_ = new WLineEdit(parent));
 	loginEdit_->setValidator(new WLengthValidator(0, MaxStringSize, loginEdit_));
-	table->elementAt(1, 0)->addWidget(new WText(gettext("Password") + " :", parent));
+	table->elementAt(1, 0)->addWidget(new WText(gettext("Password") + string(" : "), parent));
 	table->elementAt(1, 1)->addWidget(passwordEdit_ = new WLineEdit(parent));
 	passwordEdit_->setEchoMode(WLineEdit::Password);
 	passwordEdit_->setValidator(new WLengthValidator(0, MaxStringSize, passwordEdit_));
@@ -50,16 +50,16 @@ Wt::WContainerWidget* OutPage::createRegisterPage(Wt::WContainerWidget* parent)
 {
 	Wt::WContainerWidget* regPage = new WContainerWidget(parent);
 	Wt::WTable* table = new Wt::WTable(regPage);
-	table->elementAt(0, 0)->addWidget(new WText(gettext("Login") + " :", parent));
+	table->elementAt(0, 0)->addWidget(new WText(gettext("Login") + string(" : "), parent));
 	table->elementAt(0, 1)->addWidget(loginEdit2_ = new WLineEdit(parent));
 	loginEdit2_->setValidator(new WLengthValidator(0, MaxStringSize, loginEdit2_));
 
-	table->elementAt(1, 0)->addWidget(new WText(gettext("Password") + " :", parent));
+	table->elementAt(1, 0)->addWidget(new WText(gettext("Password") + string(" : "), parent));
 	table->elementAt(1, 1)->addWidget(passwordEdit2_ = new WLineEdit(parent));
 	passwordEdit2_->setValidator(new WLengthValidator(0, MaxStringSize, passwordEdit2_));
 	passwordEdit2_->setEchoMode(WLineEdit::Password);
 
-	table->elementAt(2, 0)->addWidget(new WText(gettext("Password2") + " :", parent));
+	table->elementAt(2, 0)->addWidget(new WText(gettext("Password2") + string(" : "), parent));
 	table->elementAt(2, 1)->addWidget(passwordEdit3_ = new WLineEdit(parent));
 	passwordEdit3_->setValidator(new WLengthValidator(0, MaxStringSize, passwordEdit3_));
 	passwordEdit3_->setEchoMode(WLineEdit::Password);

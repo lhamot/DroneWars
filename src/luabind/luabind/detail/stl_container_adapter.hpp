@@ -74,6 +74,9 @@ struct stl_container__index;
 template <class Container_tt>
 struct stl_container__next;
 
+template <class Container_tt >
+struct stl_container__ipairs;
+
 //----------------------------------------
 void stl_register_collection(lua_State* L, void* p);
 bool stl_find_table_for_collection(lua_State* L, void* p);

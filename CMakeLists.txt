@@ -22,6 +22,7 @@ include_directories(${BOOST_INCLUDE_DIR})
 include_directories(${WT_INCLUDE_DIR})
 include_directories(${LUABIND_INCLUDE_DIR})
 include_directories(${LUA_INCLUDE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/luabind)
 
 find_path(BOOST_LIBRARY NAMES boost
           DOC "The boost libraries path"
@@ -61,7 +62,6 @@ add_executable(
     src/Simulation.cpp
     src/stdafx.cpp
     src/stl_container_adapter.cpp
-    src/TextGetter.cpp
     src/TranslationTools.cpp
     src/Rules.h
     src/serialize_unordered_map.h

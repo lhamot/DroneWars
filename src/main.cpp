@@ -3,7 +3,6 @@
 #include "Engine.h"
 #include "bit_them_allWT.h"
 #include "OutPage.h"
-#include "TextGetter.h"
 #include <boost/program_options/detail/utf8_codecvt_facet.hpp>
 
 
@@ -104,9 +103,10 @@ try
 
 	srand(static_cast<unsigned int>(time(NULL)));
 
-	TextGetter& textGetter = TextGetter::GetInstance();
-	textGetter.setLang("FR");
-	textGetter.loadModule("DroneWars");
+	putenv("LANG=fr");
+	printf("Locale is: %s\n", setlocale(LC_ALL, "fr"));
+	bindtextdomain("DroneWars", "./");
+	textdomain("DroneWars");
 
 	Engine engine;
 	return Wt::WRun(argc, argv, [&]
