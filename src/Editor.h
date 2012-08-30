@@ -21,6 +21,7 @@ private:
 	void refreshCodeMirror(Wt::WContainerWidget*);
 	void on_saveCodeButton_clicked(Wt::WTextArea* textarea);
 	void on_resetCodeButton_clicked(Wt::WContainerWidget*);
+	void on_tab_changed(int index);
 
 	void createAll();
 

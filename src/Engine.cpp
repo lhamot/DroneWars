@@ -228,3 +228,9 @@ FightReport Engine::getFightReport(size_t id)
 	return mapFind(univ_.reportMap, id)->second;
 }
 
+void Engine::incrementTutoDisplayed(Player::ID pid, std::string const& tutoName)
+{
+	UniqueLock lock(univ_.mutex);
+	mapFind(univ_.playerMap, pid)->second.tutoDisplayed[tutoName] += 1;
+}
+

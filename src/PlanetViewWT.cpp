@@ -79,6 +79,7 @@ Wt::WContainerWidget* PlanetView::createDefenceTab(Wt::WContainerWidget*)
 PlanetViewWT::PlanetViewWT(
   WContainerWidget* parent,
   Engine& eng,
+  Player::ID playerID,
   Coord plaCoord):
 	WContainerWidget(parent),
 	engine_(eng),
@@ -94,10 +95,7 @@ PlanetViewWT::PlanetViewWT(
 	tab->addTab(createBuildingsTab(this), gettext("Buildings"));
 	tab->addTab(createCannonsTab(this),   gettext("Cannons"));
 	tab->addTab(createTasksTab(this),     gettext("Tasks"));
-	//tab->addTab(createResearchTab(this), "Research");
-	//tab->addTab(createDefenceTab(this), "Defence");
 	layout->addWidget(tab);
-
 
 	refresh();
 }

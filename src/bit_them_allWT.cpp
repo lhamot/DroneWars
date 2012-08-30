@@ -140,14 +140,68 @@ bit_them_allWT::bit_them_allWT(Wt::WContainerWidget* parent, Engine& engine, Pla
 
 	Wt::WTabWidget* tab = new Wt::WTabWidget(this);
 
+	//Si l'ordre est changer: Penser a la répercuter dans onTabChanged
 	tab->addTab(createPlanetsTab(this), gettext("Planets"), WTabWidget::LazyLoading);
 	tab->addTab(createFleetsTab(this),  gettext("Fleets"), WTabWidget::LazyLoading);
 	tab->addTab(createCodeTab(this),    gettext("Code"), WTabWidget::LazyLoading);
 	tab->addTab(createReportTab(this),  gettext("Reports"), WTabWidget::LazyLoading);
 
+	tab->currentChanged().connect(this, &bit_them_allWT::onTabChanged);
+
 	addWidget(tab);
 
 	bit_them_allWT::refresh();
+}
+
+void bit_them_allWT::onTabChanged(int index)
+{
+	switch(index)
+	{
+	case 0:
+	{
+		static char const* const PlanetViewTutoTag = "PlanetView" ;
+		Player const player = engine_.getPlayer(logged_);
+		if(player.tutoDisplayed.find(PlanetViewTutoTag) == player.tutoDisplayed.end())
+		{
+			Wt::WMessageBox::show(gettext("Tutorial"), gettext("PLANET_TUTOS"), Wt::Ok);
+			engine_.incrementTutoDisplayed(logged_, PlanetViewTutoTag);
+		}
+	}
+	break;
+	case 1:
+	{
+		static char const* const FleetViewTutoTag = "FleetView" ;
+		Player const player = engine_.getPlayer(logged_);
+		if(player.tutoDisplayed.find(FleetViewTutoTag) == player.tutoDisplayed.end())
+		{
+			Wt::WMessageBox::show(gettext("Tutorial"), gettext("FLEET_TUTOS"), Wt::Ok);
+			engine_.incrementTutoDisplayed(logged_, FleetViewTutoTag);
+		}
+	}
+	break;
+	case 2:
+	{
+		static char const* const CodeViewTutoTag = "CodeView" ;
+		Player const player = engine_.getPlayer(logged_);
+		if(player.tutoDisplayed.find(CodeViewTutoTag) == player.tutoDisplayed.end())
+		{
+			Wt::WMessageBox::show(gettext("Tutorial"), gettext("CODE_TUTOS"), Wt::Ok);
+			engine_.incrementTutoDisplayed(logged_, CodeViewTutoTag);
+		}
+	}
+	break;
+	case 3:
+	{
+		static char const* const ReportViewTutoTag = "ReportView" ;
+		Player const player = engine_.getPlayer(logged_);
+		if(player.tutoDisplayed.find(ReportViewTutoTag) == player.tutoDisplayed.end())
+		{
+			Wt::WMessageBox::show(gettext("Tutorial"), gettext("REPORT_TUTOS"), Wt::Ok);
+			engine_.incrementTutoDisplayed(logged_, ReportViewTutoTag);
+		}
+	}
+	break;
+	}
 }
 
 bit_them_allWT::~bit_them_allWT()
@@ -315,7 +369,7 @@ void bit_them_allWT::on_planetTable_itemDoubleClicked(WModelIndex const& index, 
 	Coord::Value const y = any_cast<Coord::Value>(model.data(index.row(), 1, DisplayRole));
 	Coord::Value const z = any_cast<Coord::Value>(model.data(index.row(), 2, DisplayRole));
 
-	PlanetViewWT* planetView = new PlanetViewWT(this, engine_, Coord(x, y, z));
+	PlanetViewWT* planetView = new PlanetViewWT(this, engine_, logged_, Coord(x, y, z));
 
 	if(planetLayout_->count() > 1)
 	{
@@ -335,7 +389,7 @@ void bit_them_allWT::on_fleetTable_itemDoubleClicked(WModelIndex const& index, W
 		WLayoutItem* item = fleetLayout_->itemAt(1);
 		fleetLayout_->removeItem(item);
 	}
-	FleetViewWT* fleetView = new FleetViewWT(this, engine_, fleetID);
+	FleetViewWT* fleetView = new FleetViewWT(this, engine_, logged_, fleetID);
 	fleetLayout_->addWidget(fleetView);
 }
 

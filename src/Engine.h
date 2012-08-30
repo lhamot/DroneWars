@@ -55,6 +55,8 @@ public:
 
 	void load(std::string const& univName);
 
+	void incrementTutoDisplayed(Player::ID pid, std::string const& tutoName);
+
 private:
 	Universe univ_;
 	std::unique_ptr<Simulation> simulation_;

@@ -15,6 +15,7 @@ public:
 	PlanetViewWT(
 	  WContainerWidget* parent,
 	  Engine& eng,
+	  Player::ID playerID,
 	  Coord planet);
 
 private:

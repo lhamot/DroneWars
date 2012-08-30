@@ -32,10 +32,11 @@ public:
 	~bit_them_allWT();
 
 private:
-	WWidget* createCodeTab(WContainerWidget* parent);
-	WWidget* createReportTab(WContainerWidget* parent);
-	WWidget* createPlanetsTab(WContainerWidget* parent);
-	WWidget* createFleetsTab(WContainerWidget* parent);
+	Wt::WWidget* createCodeTab(Wt::WContainerWidget* parent);
+	Wt::WWidget* createReportTab(Wt::WContainerWidget* parent);
+	Wt::WWidget* createPlanetsTab(Wt::WContainerWidget* parent);
+	Wt::WWidget* createFleetsTab(Wt::WContainerWidget* parent);
+	void onTabChanged(int);
 
 	Player::ID logged_;
 	Engine& engine_;

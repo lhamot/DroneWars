@@ -31,6 +31,7 @@ Wt::WContainerWidget* FleetViewWT::createReportsTab(Wt::WContainerWidget* parent
 FleetViewWT::FleetViewWT(
   WContainerWidget* parent,
   Engine& eng,
+  Player::ID playerID,
   Fleet::ID fleetID):
 	WContainerWidget(parent),
 	engine_(eng),

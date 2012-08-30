@@ -1,12 +1,12 @@
 ﻿Blockly.LANG_CATEGORY_DRONEWARS = 'DroneWars';
-Blockly.LANG_CATEGORY_DRONEWARS_COORD = 'coorconées';
+Blockly.LANG_CATEGORY_DRONEWARS_COORD = 'coordonées';
 Blockly.LANG_CATEGORY_DRONEWARS_RANDDIR = 'direction aléatoire';
 Blockly.LANG_CATEGORY_DRONEWARS_DIR_FROM_TO_1 = 'direction de';
 Blockly.LANG_CATEGORY_DRONEWARS_DIR_FROM_TO_2 = 'vers';
 Blockly.LANG_CATEGORY_DRONEWARS_MAKE_BUILDING = 'ordre de créer un batiment ';
 Blockly.LANG_CATEGORY_DRONEWARS_MAKE_SHIP = 'ordre de créer un vaisseau ';
 Blockly.LANG_CATEGORY_DRONEWARS_MAKE_CANNON = 'ordre de créer un canon';
-Blockly.LANG_CATEGORY_DRONEWARS_DO_NOTHING = 'ordre de rester en position';
+Blockly.LANG_CATEGORY_DRONEWARS_PLANET_DO_NOTHING = 'ordre de ne rien faire';
 Blockly.LANG_CATEGORY_DRONEWARS_IS_PLANET_FREE_1 = 'la planète';
 Blockly.LANG_CATEGORY_DRONEWARS_IS_PLANET_FREE_2 = 'est libre';
 Blockly.LANG_CATEGORY_DRONEWARS_PLANET_COORD = 'coordonées de la planète';
@@ -42,12 +42,12 @@ Blockly.LANG_DRONEWARS_SHIP7 = 'Queen';
 Blockly.LANG_DRONEWARS_SHIP8 = 'Cargo';
 Blockly.LANG_DRONEWARS_SHIP9 = 'Grand cargo';
 
-Blockly.LANG_DRONEWARS_CANNON1 = 'Cannon1';
-Blockly.LANG_DRONEWARS_CANNON2 = 'Cannon2';
-Blockly.LANG_DRONEWARS_CANNON3 = 'Cannon3';
-Blockly.LANG_DRONEWARS_CANNON4 = 'Cannon4';
-Blockly.LANG_DRONEWARS_CANNON5 = 'Cannon5';
-Blockly.LANG_DRONEWARS_CANNON6 = 'Cannon6';
+Blockly.LANG_DRONEWARS_CANNON1 = 'Canon1';
+Blockly.LANG_DRONEWARS_CANNON2 = 'Canon2';
+Blockly.LANG_DRONEWARS_CANNON3 = 'Canon3';
+Blockly.LANG_DRONEWARS_CANNON4 = 'Canon4';
+Blockly.LANG_DRONEWARS_CANNON5 = 'Canon5';
+Blockly.LANG_DRONEWARS_CANNON6 = 'Canon6';
 
 Blockly.LANG_DRONEWARS_FLEETACTION1 = 'Rien';
 Blockly.LANG_DRONEWARS_FLEETACTION2 = 'Voyage';

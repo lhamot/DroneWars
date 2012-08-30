@@ -18,6 +18,7 @@ public:
 	FleetViewWT(
 	  WContainerWidget* parent,
 	  Engine& eng,
+	  Player::ID playerID,
 	  Fleet::ID fleetID);
 
 private:

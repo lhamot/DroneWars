@@ -104,9 +104,11 @@ struct Player
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
-	void serialize(Archive& ar, const unsigned int)
+	void serialize(Archive& ar, const unsigned int version)
 	{
 		ar& id& login& password& fleetsCode& planetsCode& eventList;
+		if(version > 0)
+			ar& tutoDisplayed;
 	}
 
 public:
@@ -121,9 +123,11 @@ public:
 	CodeData planetsCode;
 	std::vector<Event> eventList;
 	static size_t const MaxCodeSize = 16 * 1024;
+	std::map<std::string, size_t> tutoDisplayed;
 
 	Player(ID i, std::string const& lg, std::string const& pass): id(i), login(lg), password(pass) {}
 };
 
+BOOST_CLASS_VERSION(Player, 1)
 
 #endif //__DRONEWARS_PLAYER__

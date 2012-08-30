@@ -63,7 +63,7 @@ button
     background-image: url(img/bg/bg6.gif);
 }
 
-th, .Wt-tableview .Wt-label
+th, .Wt-tableview .Wt-label, .Wt-dialog .titlebar
 {
     font-weight: bold;
     color: #E6EBFB;
@@ -77,7 +77,7 @@ span, a
   background-color:transparent;
 }
 
-td
+td, .Wt-dialog .body
 {
     text-align: center;
     color: #E6EBFB;

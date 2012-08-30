@@ -205,7 +205,7 @@ init:
 	function()
 	{
 		this.setColour(230);
-		this.appendTitle(Blockly.LANG_CATEGORY_DRONEWARS_DO_NOTHING);
+		this.appendTitle(Blockly.LANG_CATEGORY_DRONEWARS_PLANET_DO_NOTHING);
 		this.setOutput(true, 'PlanetAction');
 	}
 };

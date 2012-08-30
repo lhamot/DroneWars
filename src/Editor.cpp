@@ -19,6 +19,44 @@ Editor::Editor(Wt::WContainerWidget* parent, std::string const& name, Engine& en
 	WContainerWidget* codeMirrorTab = new WContainerWidget(this);
 	refreshCodeMirror(codeMirrorTab);
 	tabWidget_->addTab(codeMirrorTab, gettext("Text"));
+
+	tabWidget_->currentChanged().connect(this, &Editor::on_tab_changed);
+}
+
+
+void Editor::on_tab_changed(int index)
+{
+	/*switch(index)
+	{
+	case 0:
+	{
+		std::cout << name_ << std::endl;
+		char const* const TutoTag = (name_ == "Fleet")?
+			"BlocklyFleetView":
+			"BlocklyPlanetView";
+		char const* const text = (name_ == "Fleet")?
+			gettext("BLOCKLY_FLEET_TUTOS"):
+			gettext("BLOCKLY_PLANET_TUTOS");
+		Player const player = engine_.getPlayer(logged_);
+		if(player.tutoDisplayed.find(TutoTag) == player.tutoDisplayed.end())
+		{
+			Wt::WMessageBox::show(gettext("Tutorial"), text, Wt::Ok);
+			engine_.incrementTutoDisplayed(logged_, TutoTag);
+		}
+	}
+	break;
+	case 1:
+	{
+		char const* const TutoTag = "CodeMirrorView";
+		Player const player = engine_.getPlayer(logged_);
+		if(player.tutoDisplayed.find(TutoTag) == player.tutoDisplayed.end())
+		{
+			Wt::WMessageBox::show(gettext("Tutorial"), gettext("CODE_MIRROR_TUTOS"), Wt::Ok);
+			engine_.incrementTutoDisplayed(logged_, TutoTag);
+		}
+	}
+	break;
+	}*/
 }
 
 

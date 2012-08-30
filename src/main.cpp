@@ -103,8 +103,12 @@ try
 
 	srand(static_cast<unsigned int>(time(NULL)));
 
-	putenv("LANG=fr");
+	putenv("LANG=fr_FR");
+#ifdef _WIN32
 	printf("Locale is: %s\n", setlocale(LC_ALL, "fr"));
+#else
+	printf("Locale is: %s\n", setlocale(LC_ALL, "fr_FR.UTF8"));
+#endif
 	bindtextdomain("DroneWars", "./");
 	textdomain("DroneWars");
 
