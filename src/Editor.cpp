@@ -2,6 +2,9 @@
 #include <Wt/WTextArea>
 #include "Engine.h"
 #include "Editor.h"
+#include <boost/filesystem/operations.hpp>
+#include <boost/format.hpp>
+#include <fstream>
 
 using namespace Wt;
 
@@ -88,12 +91,81 @@ void Editor::refreshBlockly(WContainerWidget* mainContainer)
 	  "window.blocklyLoaded" + name_ + " = blocklyLoaded" + name_ + ";        \n"
 	);
 
+	boost::format const filename = boost::format("%1%Frame%2%.html") % name_ % 0;
+	{
+		size_t const plLvl = engine_.getPlayer(logged_).tutoDisplayed["BlocklyCodding"];
+		auto filter = [&](char const * str, size_t needed)
+		{
+			return needed <= plLvl ? str : "";
+		};
+
+		auto forName = [&](char const * str, char const * name)
+		{
+			return name == name_ ? str : "";
+		};
+
+		std::ofstream file(filename.str().c_str());
+		file <<
+		     "<html>\n"
+		     "  <head>\n"
+		     "    <meta charset=\"utf-8\">\n"
+		     "    <script type=\"text/javascript\" src=\"blockly/demos/blockly_compressed.js\"></script>\n"
+		     "    <script type=\"text/javascript\" src=\"blockly/generators/JavaScript.js\">         </script>\n"
+		     "    <script type=\"text/javascript\" src=\"blockly_adds/language/fr/_messages.js\">    </script>\n" <<
+		     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/control.js\">       </script>\n", 0) <<
+		     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/text.js\">          </script>\n", 1) <<
+		     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/lists.js\">         </script>\n", 1) <<
+		     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/logic.js\">         </script>\n", 0) <<
+		     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/math.js\">          </script>\n", 0) <<
+		     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/procedures.js\">    </script>\n", 0) <<
+		     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/variables.js\">     </script>\n", 0) <<
+		     "    <script type=\"text/javascript\" src=\"blockly_adds/generators/lua.js\">           </script>\n"
+		     "    <script type=\"text/javascript\" src=\"blockly_adds/generators/lua/control.js\">   </script>\n"
+		     "    <script type=\"text/javascript\" src=\"blockly_adds/generators/lua/text.js\">      </script>\n"
+		     "    <script type=\"text/javascript\" src=\"blockly_adds/generators/lua/lists.js\">     </script>\n"
+		     "    <script type=\"text/javascript\" src=\"blockly_adds/generators/lua/logic.js\">     </script>\n"
+		     "    <script type=\"text/javascript\" src=\"blockly_adds/generators/lua/math.js\">      </script>\n"
+		     "    <script type=\"text/javascript\" src=\"blockly_adds/generators/lua/procedures.js\"></script>\n"
+		     "    <script type=\"text/javascript\" src=\"blockly_adds/generators/lua/variables.js\"> </script>\n"
+		     "    <script type=\"text/javascript\" src=\"blockly_adds/language/fr/dronewars.js\">    </script>\n"
+		     "    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars.js\"></script>\n"
+		     "    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_Fleet.js\">       </script>\n"
+		     "    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_Planet.js\">      </script>\n"
+		     "    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_RessourceSet.js\"></script>\n" <<
+		     forName("    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_Coord.js\">       </script>\n", "Fleet") <<
+		     forName("    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_FleetAction.js\"> </script>\n", "Fleet") <<
+		     forName("    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_PlanetAction.js\"></script>\n", "Planet") <<
+		     "    <style>\n"
+		     "      html, body {\n"
+		     "        background-color: #fff;\n"
+		     "        margin: 0;\n"
+		     "        padding:0;\n"
+		     "        overflow: hidden;\n"
+		     "      }\n"
+		     "      .blocklySvg {\n"
+		     "        height: 100%;\n"
+		     "        width: 100%;\n"
+		     "      }\n"
+		     "    </style>\n" <<
+		     boost::format(
+		       "    <script>\n"
+		       "        function init() {\n"
+		       "            Blockly.inject(document.body, { path: 'blockly/' });\n"
+		       "            window.parent.blocklyLoaded%1%(Blockly);\n"
+		       "        }\n"
+		       "    </script>\n"
+		       "  </head>\n"
+		       "  <body onload=\"init()\">\n"
+		       "  </body>\n"
+		       "</html>"
+		     ) % name_;
+	}
+
 	WText* frame = new WText(container);
 	frame->setTextFormat(Wt::XHTMLUnsafeText);
 	frame->setText(
-	  "<iframe class=\"blocklyEditor\" src=\"" + name_ + "Frame.html\"></iframe>"
+	  "<iframe class=\"blocklyEditor\" src=\"" + filename.str() + "\"></iframe>"
 	);
-	//frame->setText("<iframe class=\"blocklyEditor\" src=\"frame.html\"></iframe>");
 	frame->setId("blocklyFrame" + name_);
 
 	WText* errorMessage = new WText(container);

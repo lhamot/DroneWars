@@ -36,10 +36,6 @@
     <script>
         function init() {
             Blockly.inject(document.body, { path: 'blockly/' });
-            // Let the top-level application know that Blockly is ready.
-            //var xml_text = '<xml xmlns=\"http://www.w3.org/1999/xhtml\"><block type=\"procedures_defreturn\" inline=\"false\" x=\"56\" y=\"52\"><mutation><arg name=\"planet\"></arg><arg name=\"fleets\"></arg></mutation><title name=\"NAME\">AI</title></block></xml>';
-            //var xml = Blockly.Xml.textToDom(xml_text);
-            //Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
             window.parent.blocklyLoadedFleet(Blockly);
         }
     </script>

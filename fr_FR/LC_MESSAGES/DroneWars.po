@@ -7,29 +7,29 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-24 22:54+0100\n"
-"PO-Revision-Date: 2012-08-24 22:55+0100\n"
+"POT-Creation-Date: 2012-08-30 19:55+0100\n"
+"PO-Revision-Date: 2012-08-30 20:10+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-KeywordsList: gettext;gettextWT\n"
 "X-Poedit-Basepath: I:\\C\\Bit_them_all\\src\n"
-"Language: fr\n"
 "Plural-Forms: s\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: bit_them_allWT.cpp:29
+#: bit_them_allWT.cpp:28
 msgid "Planet"
 msgstr "Planète"
 
-#: bit_them_allWT.cpp:33
+#: bit_them_allWT.cpp:32
 msgid "Fleet"
-msgstr "Flote"
+msgstr "Flotte"
 
-#: bit_them_allWT.cpp:137
+#: bit_them_allWT.cpp:136
 msgid "Refresh"
 msgstr "Mettre a jour"
 
@@ -39,65 +39,94 @@ msgstr "Planètes"
 
 #: bit_them_allWT.cpp:145
 msgid "Fleets"
-msgstr "Flotes"
+msgstr "Flottes"
 
-#: bit_them_allWT.cpp:146 bit_them_allWT.cpp:170
+#: bit_them_allWT.cpp:146 bit_them_allWT.cpp:223
 msgid "Code"
 msgstr "Code"
 
-#: bit_them_allWT.cpp:147 bit_them_allWT.cpp:173 FleetViewWT.cpp:45
+#: bit_them_allWT.cpp:147 bit_them_allWT.cpp:226 FleetViewWT.cpp:45
 msgid "Reports"
 msgstr "Raports"
 
-#: bit_them_allWT.cpp:184 bit_them_allWT.cpp:227
+#: bit_them_allWT.cpp:166 bit_them_allWT.cpp:177 bit_them_allWT.cpp:188
+#: bit_them_allWT.cpp:199
+msgid "Tutorial"
+msgstr "Tutoriel"
+
+#: bit_them_allWT.cpp:166
+msgid "PLANET_TUTOS"
+msgstr ""
+"Ici, vous verez la liste de vos planètes. Cliquez sur l'une d'elle pour en "
+"savoir plus."
+
+#: bit_them_allWT.cpp:177
+msgid "FLEET_TUTOS"
+msgstr ""
+"Ici, vous verrez la liste de vos flottes. Si vous n'en avais pas demandez a "
+"vos planètes d'en fabliquer."
+
+#: bit_them_allWT.cpp:188
+msgid "CODE_TUTOS"
+msgstr ""
+"Ici, vous pourrez définir la ligne de conduite de vos amiraux(flottes) et "
+"gouverneurs(planètes)."
+
+#: bit_them_allWT.cpp:199
+msgid "REPORT_TUTOS"
+msgstr ""
+"Ici vous verrez les 10 dernier évenement important qui ce sont produit dans "
+"votre empire."
+
+#: bit_them_allWT.cpp:237 bit_them_allWT.cpp:280
 msgid "Ressources"
 msgstr "Resources"
 
-#: bit_them_allWT.cpp:226
+#: bit_them_allWT.cpp:279
 msgid "Contents"
 msgstr "Contenue"
 
-#: bit_them_allWT.cpp:280
+#: bit_them_allWT.cpp:333
 msgid "Time"
 msgstr "Temps"
 
-#: bit_them_allWT.cpp:281 FleetViewWT.cpp:59 PlanetViewWT.cpp:113
+#: bit_them_allWT.cpp:334 FleetViewWT.cpp:59 PlanetViewWT.cpp:110
 msgid "Type"
 msgstr "Type"
 
-#: bit_them_allWT.cpp:282
+#: bit_them_allWT.cpp:335
 msgid "Message"
 msgstr "Message"
 
-#: Editor.cpp:19
+#: Editor.cpp:18
 msgid "Visual"
 msgstr "Visuel"
 
-#: Editor.cpp:22 Editor.cpp:136
+#: Editor.cpp:21 Editor.cpp:172
 msgid "Text"
 msgstr "Texte"
 
-#: Editor.cpp:66 Editor.cpp:163
+#: Editor.cpp:102 Editor.cpp:199
 msgid "Reload"
 msgstr "Recharger"
 
-#: Editor.cpp:71
+#: Editor.cpp:107
 msgid "Import"
 msgstr "Import"
 
-#: Editor.cpp:80
+#: Editor.cpp:116
 msgid "Export"
 msgstr "Export"
 
-#: Editor.cpp:88
+#: Editor.cpp:124
 msgid "Valid"
 msgstr "Valider"
 
-#: Editor.cpp:166
+#: Editor.cpp:202
 msgid "Save"
 msgstr "Enregistrer"
 
-#: Editor.cpp:170
+#: Editor.cpp:206
 msgid "Help"
 msgstr "Aide"
 
@@ -109,58 +138,58 @@ msgstr "Date"
 msgid "Comment"
 msgstr "Commentaire"
 
-#: MessageView.cpp:122
+#: MessageView.cpp:121
 msgid "Fleet ID"
-msgstr "ID de flote"
+msgstr "ID de flotte"
 
-#: MessageView.cpp:128 MessageView.cpp:164
+#: MessageView.cpp:127 MessageView.cpp:163
 msgid "Has fight"
 msgstr "As combatue"
 
-#: MessageView.cpp:130 MessageView.cpp:136 MessageView.cpp:166
-#: MessageView.cpp:172
+#: MessageView.cpp:129 MessageView.cpp:135 MessageView.cpp:165
+#: MessageView.cpp:171
 msgid "Yes"
 msgstr "Oui"
 
-#: MessageView.cpp:132 MessageView.cpp:138 MessageView.cpp:168
-#: MessageView.cpp:174
+#: MessageView.cpp:131 MessageView.cpp:137 MessageView.cpp:167
+#: MessageView.cpp:173
 msgid "No"
 msgstr "Non"
 
-#: MessageView.cpp:134 MessageView.cpp:170
+#: MessageView.cpp:133 MessageView.cpp:169
 msgid "Is dead"
 msgstr "Est détruit"
 
-#: MessageView.cpp:140 MessageView.cpp:176 PlanetViewWT.cpp:114
+#: MessageView.cpp:139 MessageView.cpp:175 PlanetViewWT.cpp:111
 msgid "Start"
 msgstr "Debut"
 
-#: MessageView.cpp:143 MessageView.cpp:178 PlanetViewWT.cpp:115
+#: MessageView.cpp:142 MessageView.cpp:177 PlanetViewWT.cpp:112
 msgid "End"
 msgstr "Fin"
 
-#: MessageView.cpp:148 MessageView.cpp:182
+#: MessageView.cpp:147 MessageView.cpp:181
 #, c-format
 msgid "Report ID = %i"
 msgstr "ID Raport = %i"
 
-#: MessageView.cpp:155
+#: MessageView.cpp:154
 msgid "Planet coordinate"
 msgstr "Coordonées de planete"
 
-#: OutPage.cpp:21 OutPage.cpp:54
+#: OutPage.cpp:20 OutPage.cpp:53
 msgid "Login"
 msgstr "Idantifiant"
 
-#: OutPage.cpp:24 OutPage.cpp:58
+#: OutPage.cpp:23 OutPage.cpp:57
 msgid "Password"
 msgstr "Mot de passe"
 
-#: OutPage.cpp:31
+#: OutPage.cpp:30
 msgid "Log in"
 msgstr "Connexion"
 
-#: OutPage.cpp:42
+#: OutPage.cpp:41
 msgid "INTRO_TEXT"
 msgstr ""
 "<h1>Neutrynos - DroneWars</h1>\n"
@@ -168,15 +197,15 @@ msgstr ""
 "Mettez a profit votre ingeniosité pour exterminer vos advaisaires.<br>\n"
 "Commandez vos généraux et mennez les a la victoire.<br>"
 
-#: OutPage.cpp:63
+#: OutPage.cpp:62
 msgid "Password2"
 msgstr "Mot de passe (verif)"
 
-#: OutPage.cpp:68
+#: OutPage.cpp:67
 msgid "Register"
 msgstr "Enregistrer"
 
-#: OutPage.cpp:85
+#: OutPage.cpp:84
 msgid "ABOUT_TEXT"
 msgstr ""
 "<h1>Introduction</h1><br>\n"
@@ -205,48 +234,48 @@ msgstr ""
 "déplacer ou conquérir une planète libre).<br></li>\n"
 "</ol>"
 
-#: OutPage.cpp:108
+#: OutPage.cpp:107
 msgid "Home"
 msgstr "Acceuil"
 
-#: OutPage.cpp:109
+#: OutPage.cpp:108
 msgid "Create account"
 msgstr "Créer un compte"
 
-#: OutPage.cpp:110
+#: OutPage.cpp:109
 msgid "About DroneWars"
 msgstr "A propos"
 
-#: OutPage.cpp:122 OutPage.cpp:131 OutPage.cpp:133 OutPage.cpp:135
-#: OutPage.cpp:143
+#: OutPage.cpp:121 OutPage.cpp:130 OutPage.cpp:132 OutPage.cpp:134
+#: OutPage.cpp:142
 msgid "Error"
 msgstr "Erreur"
 
-#: OutPage.cpp:122
+#: OutPage.cpp:121
 msgid "Wrong login or password."
 msgstr "Mauvais idanifiant ou mot de passe"
 
-#: OutPage.cpp:131
+#: OutPage.cpp:130
 msgid "Empty login"
 msgstr "Idantifiant vide."
 
-#: OutPage.cpp:133
+#: OutPage.cpp:132
 msgid "Empty password"
 msgstr "Mot de passe vide."
 
-#: OutPage.cpp:135
+#: OutPage.cpp:134
 msgid "Passwords don't match!"
 msgstr "Les mots de passes ne corespondent pas!"
 
-#: OutPage.cpp:138
+#: OutPage.cpp:137
 msgid "Info"
 msgstr "Info"
 
-#: OutPage.cpp:138
+#: OutPage.cpp:137
 msgid "Registration successful"
 msgstr "L'enregistrement as reussit."
 
-#: OutPage.cpp:143
+#: OutPage.cpp:142
 msgid "Login still exist."
 msgstr "Cet identifiant existe déja."
 
@@ -262,211 +291,211 @@ msgstr "Canons"
 msgid "Tasks"
 msgstr "Taches"
 
-#: PlanetViewWT.cpp:116
+#: PlanetViewWT.cpp:113
 msgid "What"
 msgstr "Quoi"
 
-#: PlanetViewWT.cpp:142 PlanetViewWT.cpp:161
+#: PlanetViewWT.cpp:139 PlanetViewWT.cpp:158
 msgid "Name"
 msgstr "Nom"
 
-#: PlanetViewWT.cpp:143 PlanetViewWT.cpp:162
+#: PlanetViewWT.cpp:140 PlanetViewWT.cpp:159
 msgid "Level"
 msgstr "Niveau"
 
-#: TranslationTools.cpp:11
+#: TranslationTools.cpp:10
 msgid "CommandCenter"
 msgstr "Centre de commande"
 
-#: TranslationTools.cpp:12
+#: TranslationTools.cpp:11
 msgid "MetalMine"
 msgstr "Mine de métal"
 
-#: TranslationTools.cpp:13
+#: TranslationTools.cpp:12
 msgid "CarbonMine"
 msgstr "Mine de carbone"
 
-#: TranslationTools.cpp:14
+#: TranslationTools.cpp:13
 msgid "LoiciumFilter"
 msgstr "Filtre a Loïcium"
 
-#: TranslationTools.cpp:15
+#: TranslationTools.cpp:14
 msgid "Factory"
 msgstr "Fabrique"
 
-#: TranslationTools.cpp:16
+#: TranslationTools.cpp:15
 msgid "Laboratory"
 msgstr "Laboratoire"
 
-#: TranslationTools.cpp:17
+#: TranslationTools.cpp:16
 msgid "CarbonicCentral"
 msgstr "Centrale carbonique"
 
-#: TranslationTools.cpp:18
+#: TranslationTools.cpp:17
 msgid "SolarCentral"
 msgstr "Central solaire"
 
-#: TranslationTools.cpp:19
+#: TranslationTools.cpp:18
 msgid "GeothermicCentral"
 msgstr "Central geothermique"
 
-#: TranslationTools.cpp:31
+#: TranslationTools.cpp:30
 msgid "UpgradeBuilding"
 msgstr "Amelioration du batiments"
 
-#: TranslationTools.cpp:32
+#: TranslationTools.cpp:31
 msgid "MakeShip"
 msgstr "Fabrique un vaisseau"
 
-#: TranslationTools.cpp:33
+#: TranslationTools.cpp:32
 msgid "MakeCannon"
 msgstr "Fabriquaction d'un canon"
 
-#: TranslationTools.cpp:45
+#: TranslationTools.cpp:44
 msgid "Move"
 msgstr "Déplacement"
 
-#: TranslationTools.cpp:46
+#: TranslationTools.cpp:45
 msgid "Harvest"
 msgstr "Récolte"
 
-#: TranslationTools.cpp:47
+#: TranslationTools.cpp:46
 msgid "Colonize"
 msgstr "Colonize"
 
-#: TranslationTools.cpp:59
+#: TranslationTools.cpp:58
 msgid "Mosquito"
 msgstr "Mosquito"
 
-#: TranslationTools.cpp:60
+#: TranslationTools.cpp:59
 msgid "Hornet"
 msgstr "Hornet"
 
-#: TranslationTools.cpp:61
+#: TranslationTools.cpp:60
 msgid "Vulture"
 msgstr "Vulture"
 
-#: TranslationTools.cpp:62
+#: TranslationTools.cpp:61
 msgid "Dragon"
 msgstr "Dragon"
 
-#: TranslationTools.cpp:63
+#: TranslationTools.cpp:62
 msgid "Behemoth"
 msgstr "Behemoth"
 
-#: TranslationTools.cpp:64
+#: TranslationTools.cpp:63
 msgid "Azathoth"
 msgstr "Azathoth"
 
-#: TranslationTools.cpp:65
+#: TranslationTools.cpp:64
 msgid "Queen"
 msgstr "Queen"
 
-#: TranslationTools.cpp:66
+#: TranslationTools.cpp:65
 msgid "Cargo"
 msgstr "Cargo"
 
-#: TranslationTools.cpp:67
+#: TranslationTools.cpp:66
 msgid "LargeCargo"
 msgstr "Grand cargo"
 
-#: TranslationTools.cpp:79
+#: TranslationTools.cpp:78
 msgid "Metal"
 msgstr "Métal"
 
-#: TranslationTools.cpp:80
+#: TranslationTools.cpp:79
 msgid "Carbon"
 msgstr "Carbone"
 
-#: TranslationTools.cpp:81
+#: TranslationTools.cpp:80
 msgid "Loicium"
 msgstr "Loïcium"
 
-#: TranslationTools.cpp:93
+#: TranslationTools.cpp:92
 msgid "FleetCodeError"
 msgstr "Erreur du code de flote"
 
-#: TranslationTools.cpp:94
+#: TranslationTools.cpp:93
 msgid "FleetCodeExecError"
 msgstr "Erreur d'excecution des flotes"
 
-#: TranslationTools.cpp:95
+#: TranslationTools.cpp:94
 msgid "PlanetCodeError"
 msgstr "Erreure de code de planète"
 
-#: TranslationTools.cpp:96
+#: TranslationTools.cpp:95
 msgid "PlanetCodeExecError"
 msgstr "Erreur d'excecution des planètes"
 
-#: TranslationTools.cpp:97
+#: TranslationTools.cpp:96
 msgid "Upgraded"
 msgstr "Amélioré"
 
-#: TranslationTools.cpp:98
+#: TranslationTools.cpp:97
 msgid "ShipMade"
 msgstr "Vaisseau fabriqué"
 
-#: TranslationTools.cpp:99
+#: TranslationTools.cpp:98
 msgid "PlanetHarvested"
 msgstr "Planète récoltée"
 
-#: TranslationTools.cpp:100
+#: TranslationTools.cpp:99
 msgid "FleetWin"
 msgstr "Victoire d'un flotte"
 
-#: TranslationTools.cpp:101
+#: TranslationTools.cpp:100
 msgid "FleetDraw"
 msgstr "Egalité des flotes"
 
-#: TranslationTools.cpp:102
+#: TranslationTools.cpp:101
 msgid "FleetsGather"
 msgstr "Flottes rassemblées"
 
-#: TranslationTools.cpp:103
+#: TranslationTools.cpp:102
 msgid "PlanetColonized"
 msgstr "Planète colonisée"
 
-#: TranslationTools.cpp:104
+#: TranslationTools.cpp:103
 msgid "FleetLose"
 msgstr "Perte d'une flotte"
 
-#: TranslationTools.cpp:105
+#: TranslationTools.cpp:104
 msgid "FleetDrop"
 msgstr "Déchargement éfféctué"
 
-#: TranslationTools.cpp:106
+#: TranslationTools.cpp:105
 msgid "PlanetLose"
 msgstr "Planète perdue"
 
-#: TranslationTools.cpp:107
+#: TranslationTools.cpp:106
 msgid "PlanetWin"
 msgstr "Victoire d'une planète"
 
-#: TranslationTools.cpp:108
+#: TranslationTools.cpp:107
 msgid "CannonMade"
 msgstr "Canon fabriqué"
 
-#: TranslationTools.cpp:133
+#: TranslationTools.cpp:132
 msgid "Cannon1"
 msgstr "Canon1"
 
-#: TranslationTools.cpp:134
+#: TranslationTools.cpp:133
 msgid "Cannon2"
 msgstr "Canon2"
 
-#: TranslationTools.cpp:135
+#: TranslationTools.cpp:134
 msgid "Cannon3"
 msgstr "Canon3"
 
-#: TranslationTools.cpp:136
+#: TranslationTools.cpp:135
 msgid "Cannon4"
 msgstr "Canon4"
 
-#: TranslationTools.cpp:137
+#: TranslationTools.cpp:136
 msgid "Cannon5"
 msgstr "Canon5"
 
-#: TranslationTools.cpp:138
+#: TranslationTools.cpp:137
 msgid "Cannon6"
 msgstr "Canon6"
 

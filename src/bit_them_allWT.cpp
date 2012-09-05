@@ -21,15 +21,17 @@ T* getWidget(WContainerWidget* parent, int index)
 
 WWidget* bit_them_allWT::createCodeTab(WContainerWidget* parent)
 {
-	codeTab_ = new Wt::WTabWidget(parent);
+	WContainerWidget* codeTab_ = new WContainerWidget(parent);
+	WTabWidget* innerCodeTab = new Wt::WTabWidget(codeTab_);
+	innerCodeTab->setTabIndex(2);
 
 	Editor* editPlanetCode = new Editor(parent, "Planet", engine_, logged_);
 	planetCode_ = editPlanetCode;
-	codeTab_->addTab(planetCode_, gettext("Planet"), WTabWidget::LazyLoading);
+	innerCodeTab->addTab(planetCode_, gettext("Planet"), WTabWidget::LazyLoading);
 
 	Editor* editFleetCode = new Editor(parent, "Fleet", engine_, logged_);
 	fleetCode_ = editFleetCode;
-	codeTab_->addTab(editFleetCode, gettext("Fleet"), WTabWidget::LazyLoading);
+	innerCodeTab->addTab(editFleetCode, gettext("Fleet"), WTabWidget::LazyLoading);
 
 	return codeTab_;
 }
@@ -38,6 +40,7 @@ WWidget* bit_them_allWT::createCodeTab(WContainerWidget* parent)
 WWidget* bit_them_allWT::createReportTab(WContainerWidget* parent)
 {
 	WContainerWidget* reportsTab = new WContainerWidget(parent);
+	reportsTab->setTabIndex(3);
 	Wt::WHBoxLayout* layout = new Wt::WHBoxLayout();
 	reportsTab->setLayout(layout);
 
@@ -59,6 +62,7 @@ WWidget* bit_them_allWT::createReportTab(WContainerWidget* parent)
 WWidget* bit_them_allWT::createPlanetsTab(WContainerWidget* parent)
 {
 	WContainerWidget* planetsTab = new WContainerWidget(parent);
+	planetsTab->setTabIndex(0);
 	Wt::WHBoxLayout* layout = new Wt::WHBoxLayout();
 	planetsTab->setLayout(layout);
 
@@ -86,6 +90,7 @@ WWidget* bit_them_allWT::createPlanetsTab(WContainerWidget* parent)
 WWidget* bit_them_allWT::createFleetsTab(WContainerWidget* parent)
 {
 	WContainerWidget* fleetsTab = new WContainerWidget(parent);
+	fleetsTab->setTabIndex(1);
 	Wt::WHBoxLayout* layout = new Wt::WHBoxLayout();
 	fleetsTab->setLayout(layout);
 
@@ -124,12 +129,7 @@ bit_them_allWT::bit_them_allWT(Wt::WContainerWidget* parent, Engine& engine, Pla
 	fleetLayout_(nullptr),
 	planetLayout_(nullptr)
 {
-	//setupUi();
 
-	//logged_ = 0;
-
-	//Wt::WBoxLayout *layout = new Wt::WBoxLayout(WBoxLayout::TopToBottom);
-	//setLayout(layout);
 
 	WPushButton* refresh = new WPushButton(this);
 	refresh->setMaximumSize(1000, 50);
@@ -138,24 +138,35 @@ bit_them_allWT::bit_them_allWT(Wt::WContainerWidget* parent, Engine& engine, Pla
 
 	addWidget(refresh);
 
-	Wt::WTabWidget* tab = new Wt::WTabWidget(this);
+	Wt::WStackedWidget* contents = new Wt::WStackedWidget();
+	Wt::WMenu* tab = new Wt::WMenu(contents, Wt::Horizontal, this);
+	addWidget(contents);
+
+	tab->setRenderAsList(false);
+
+	/*
+	menu->addItem(gettext("Home"),            createHomePage(this));
+	menu->addItem(gettext("Create account"),  createRegisterPage(this));
+	menu->addItem(gettext("About DroneWars"), createAboutPage(this));
+	*/
+
+
+	//Wt::WTabWidget* tab = new Wt::WTabWidget(this);
 
 	//Si l'ordre est changer: Penser a la répercuter dans onTabChanged
-	tab->addTab(createPlanetsTab(this), gettext("Planets"), WTabWidget::LazyLoading);
-	tab->addTab(createFleetsTab(this),  gettext("Fleets"), WTabWidget::LazyLoading);
-	tab->addTab(createCodeTab(this),    gettext("Code"), WTabWidget::LazyLoading);
-	tab->addTab(createReportTab(this),  gettext("Reports"), WTabWidget::LazyLoading);
+	tab->addItem(gettext("Planets"), createPlanetsTab(this));
+	tab->addItem(gettext("Fleets"), createFleetsTab(this));
+	tab->addItem(gettext("Code"), createCodeTab(this));
+	tab->addItem(gettext("Reports"), createReportTab(this));
 
-	tab->currentChanged().connect(this, &bit_them_allWT::onTabChanged);
-
-	addWidget(tab);
+	tab->itemSelected().connect(this, &bit_them_allWT::onTabChanged);
 
 	bit_them_allWT::refresh();
 }
 
-void bit_them_allWT::onTabChanged(int index)
+void bit_them_allWT::onTabChanged(Wt::WMenuItem* item)
 {
-	switch(index)
+	switch(item->menu()->currentIndex())
 	{
 	case 0:
 	{
@@ -213,18 +224,19 @@ void bit_them_allWT::refresh()
 {
 	Wt::WContainerWidget::refresh();
 
-	WTabWidget* tab = &dynamic_cast<WTabWidget&>(*widget(1));
+	WMenu* tab = &dynamic_cast<WMenu&>(*widget(1));
 	int const index1 = tab->currentIndex();
-	int const index2 = codeTab_->currentIndex();
 
-	tab->removeTab(codeTab_);
-	delete codeTab_;
+	WMenuItem* codeItem = tab->items()[2];
+	tab->removeItem(codeItem);
+	delete codeItem;
+	codeItem = nullptr;
 	codeTab_ = nullptr;
-	tab->addTab(createCodeTab(this), gettext("Code"), WTabWidget::LazyLoading);
-	WWidget* reports = tab->widget(2);
-	tab->removeTab(reports);
-	tab->addTab(reports, gettext("Reports"));
-	tab->setCurrentIndex(index1);
+	tab->addItem(gettext("Code"), createCodeTab(this));
+	WMenuItem* reports = tab->items()[2];
+	tab->removeItem(reports);
+	tab->addItem(reports);
+	tab->select(index1);
 
 	int row = 0;
 	std::vector<Planet> planetList = engine_.getPlayerPlanets(logged_);

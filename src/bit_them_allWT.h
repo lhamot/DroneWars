@@ -36,14 +36,14 @@ private:
 	Wt::WWidget* createReportTab(Wt::WContainerWidget* parent);
 	Wt::WWidget* createPlanetsTab(Wt::WContainerWidget* parent);
 	Wt::WWidget* createFleetsTab(Wt::WContainerWidget* parent);
-	void onTabChanged(int);
+	void onTabChanged(Wt::WMenuItem* item);
 
 	Player::ID logged_;
 	Engine& engine_;
 
 	Wt::WContainerWidget* fleetCode_;
 	Wt::WContainerWidget* planetCode_;
-	Wt::WTabWidget* codeTab_;
+	Wt::WContainerWidget* codeTab_;
 	Wt::WTableView* eventView_;
 	Wt::WTableView* planetsView_;
 	Wt::WTableView* fleetsView_;
