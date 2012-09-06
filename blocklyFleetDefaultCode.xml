@@ -1,1 +1,48 @@
-<xml xmlns="http://www.w3.org/1999/xhtml"><block type="procedures_defreturn" inline="false" x="52" y="-232"><mutation><arg name="myFleet"></arg><arg name="otherFleet"></arg></mutation><title name="NAME">AI:do_gather</title><value name="RETURN"><block type="logic_boolean"><title name="BOOL">TRUE</title></block></value></block><block type="procedures_defreturn" inline="false" x="59" y="-129"><mutation><arg name="myFleet"></arg><arg name="otherFleet"></arg></mutation><title name="NAME">AI:do_fight</title><value name="RETURN"><block type="logic_boolean"><title name="BOOL">TRUE</title></block></value></block><block type="procedures_defreturn" inline="false" x="59" y="-16"><mutation><arg name="myFleet"></arg><arg name="planet"></arg></mutation><title name="NAME">AI:action</title><value name="RETURN"><block type="dronewars_fleetaction" inline="true"><title name="ACTION">Nothing</title></block></value></block></xml>
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <block type="procedures_defreturn" inline="false" x="52" y="-232">
+    <mutation>
+      <arg name="myFleet"></arg>
+      <arg name="otherFleet"></arg>
+    </mutation>
+    <title name="NAME">AI:do_gather</title>
+    <value name="RETURN">
+      <block type="logic_boolean">
+        <title name="BOOL">TRUE</title>
+      </block>
+    </value>
+  </block>
+  <block type="procedures_defreturn" inline="false" x="59" y="-129">
+    <mutation>
+      <arg name="myFleet"></arg>
+      <arg name="otherFleet"></arg>
+    </mutation>
+    <title name="NAME">AI:do_fight</title>
+    <value name="RETURN">
+      <block type="logic_boolean">
+        <title name="BOOL">TRUE</title>
+      </block>
+    </value>
+  </block>
+  <block type="procedures_defreturn" inline="false" x="59" y="-16">
+    <mutation>
+      <arg name="myFleet"></arg>
+      <arg name="planet"></arg>
+    </mutation>
+    <title name="NAME">AI:action</title>
+    <statement name="STACK">
+      <block type="variables_set" inline="false">
+        <title name="VAR">order</title>
+        <value name="VALUE">
+          <block type="dronewars_fleetaction" inline="true">
+            <title name="ACTION">Nothing</title>
+          </block>
+        </value>
+      </block>
+    </statement>
+    <value name="RETURN">
+      <block type="variables_get">
+        <title name="VAR">order</title>
+      </block>
+    </value>
+  </block>
+</xml>

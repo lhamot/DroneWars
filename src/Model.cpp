@@ -67,19 +67,46 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 	Player::ID newPlayerID = univ.nextPlayerID;
 	univ.nextPlayerID += 1;
 
+	auto escape = [](std::string const & code) -> std::string
+	{
+		std::string escaped;
+		escaped.reserve(code.size() * 2);
+		for(char c: code)
+		{
+			switch(c)
+			{
+			case '\"': escaped += "\\\""; break;
+			case '\'': escaped += "\\\'"; break;
+			case '\\': escaped += "\\\\"; break;
+			case '\n': break;
+			default: escaped += c;
+			}
+		}
+		return escaped;
+	};
+
 	Player player(newPlayerID, login, password);
-	std::string blocklyFleetDefaultCode;
-	std::ifstream fleetFile("blocklyFleetDefaultCode.xml");
-	if(fleetFile.is_open() == false)
-		BOOST_THROW_EXCEPTION(std::ios::failure("Can't open blocklyFleetDefaultCode.xml"));
-	std::getline(fleetFile, blocklyFleetDefaultCode);
-	std::string blocklyPlanetDefaultCode;
-	std::ifstream planetFile("blocklyPlanetDefaultCode.xml");
-	if(fleetFile.is_open() == false)
-		BOOST_THROW_EXCEPTION(std::ios::failure("Can't open blocklyPlanetDefaultCode.xml"));
-	std::getline(planetFile, blocklyPlanetDefaultCode);
-	player.planetsCode.setBlocklyCode(blocklyPlanetDefaultCode);
-	player.fleetsCode.setBlocklyCode(blocklyFleetDefaultCode);
+	{
+		std::stringstream blocklyFleetDefaultCode;
+		{
+			std::ifstream fleetFile("blocklyFleetDefaultCode.xml");
+			if(fleetFile.is_open() == false)
+				BOOST_THROW_EXCEPTION(std::ios::failure("Can't open blocklyFleetDefaultCode.xml"));
+			boost::iostreams::copy(fleetFile, blocklyFleetDefaultCode);
+		}
+		player.fleetsCode.setBlocklyCode(escape(blocklyFleetDefaultCode.str()));
+	}
+
+	{
+		std::stringstream blocklyPlanetDefaultCode;
+		{
+			std::ifstream planetFile("blocklyPlanetDefaultCode.xml");
+			if(planetFile.is_open() == false)
+				BOOST_THROW_EXCEPTION(std::ios::failure("Can't open blocklyPlanetDefaultCode.xml"));
+			boost::iostreams::copy(planetFile, blocklyPlanetDefaultCode);
+		}
+		player.planetsCode.setBlocklyCode(escape(blocklyPlanetDefaultCode.str()));
+	}
 	univ.playerMap.insert(std::make_pair(newPlayerID, player));
 
 	bool done = false;
