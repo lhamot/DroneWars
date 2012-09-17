@@ -17,15 +17,17 @@ Blockly.LANG_DRONEWARS_PLANET_DO_NOTHING = 'ordre de ne rien faire';
 Blockly.LANG_DRONEWARS_IS_PLANET_FREE_1 = 'la planète';
 Blockly.LANG_DRONEWARS_IS_PLANET_FREE_2 = 'est libre';
 Blockly.LANG_DRONEWARS_PLANET_COORD = 'coordonées de la planète';
-Blockly.LANG_DRONEWARS_PLANET_PLAYERID = "id de l'habitant de la planète";
+Blockly.LANG_DRONEWARS_PLANET_PLAYERID = "id du propriétaire de la planète";
 Blockly.LANG_DRONEWARS_PLANET_BUILDINGLIST = 'batiments de la planète';
 Blockly.LANG_DRONEWARS_PLANET_CANNONLIST = 'canons de la planète';
 Blockly.LANG_DRONEWARS_PLANET_RESSOURCESET = 'resources de la planète';
 Blockly.LANG_DRONEWARS_RESSOURCESET = 'resources';
 Blockly.LANG_DRONEWARS_RESSOURCESET_AT = ' présent dans les ressources';
 Blockly.LANG_DRONEWARS_BUILDING_IN_PLANET = ' présent sur la planète ';
-Blockly.LANG_DRONEWARS_CANNON_IN_PLANET = Blockly.LANG_CATEGORY_DRONEWARS_BUILDING_IN_PLANET;
+Blockly.LANG_DRONEWARS_CANNON_IN_PLANET = ' présent sur la planète ';
 Blockly.LANG_DRONEWARS_SHIP_IN_FLEET = ' présent dans la flotte ';
+Blockly.LANG_DRONEWARS_RESSOURCE_IN_PLANET = ' présent sur la planète ';
+Blockly.LANG_DRONEWARS_RESSOURCE_IN_FLEET = ' transproté par la flotte ';
 
 Blockly.LANG_DRONEWARS_FLEET_ID = 'id de la flotte';
 Blockly.LANG_DRONEWARS_FLEET_PLAYER_ID = 'id du propriétaire de la flotte';
@@ -71,3 +73,7 @@ Blockly.LANG_DRONEWARS_BUILDING6 = 'Laboratoire';
 Blockly.LANG_DRONEWARS_BUILDING7 = 'Centrale carbonique';
 Blockly.LANG_DRONEWARS_BUILDING8 = 'Central solaire';
 Blockly.LANG_DRONEWARS_BUILDING9 = 'Central géothermique';
+
+Blockly.LANG_DRONEWARS_RESSOURCE1 = "Métal";
+Blockly.LANG_DRONEWARS_RESSOURCE2 = "Carbone";
+Blockly.LANG_DRONEWARS_RESSOURCE3 = "Loïcium";

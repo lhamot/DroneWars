@@ -43,6 +43,30 @@ function getFleetActionDropdown()
     ]);
 }
 
+function getBuildingDropdown() {
+  return new Blockly.FieldDropdown(
+    [[Blockly.LANG_DRONEWARS_BUILDING1, 'CommandCenter'],
+     [Blockly.LANG_DRONEWARS_BUILDING2, 'MetalMine'],
+     [Blockly.LANG_DRONEWARS_BUILDING3, 'CarbonMine'],
+     [Blockly.LANG_DRONEWARS_BUILDING4, 'LoiciumFilter'],
+     [Blockly.LANG_DRONEWARS_BUILDING5, 'Factory'],
+     [Blockly.LANG_DRONEWARS_BUILDING6, 'Laboratory'],
+     [Blockly.LANG_DRONEWARS_BUILDING7, 'CarbonicCentral'],
+     [Blockly.LANG_DRONEWARS_BUILDING8, 'SolarCentral'],
+     [Blockly.LANG_DRONEWARS_BUILDING9, 'GeothermicCentral']
+    ]);
+}
+
+
+function getRessourceDropDown() {
+  return new Blockly.FieldDropdown(
+    [[Blockly.LANG_DRONEWARS_RESSOURCE1, 'Metal'],
+	   [Blockly.LANG_DRONEWARS_RESSOURCE2, 'Carbon'],
+	   [Blockly.LANG_DRONEWARS_RESSOURCE3, 'Loicium'],
+    ]);
+}
+
+
 function addProperty(className, propName, returnType, label, categ) {
   jsFuncName = 'dronewars_' + className + '_' + propName;
   upperClassName = className.toUpperCase();

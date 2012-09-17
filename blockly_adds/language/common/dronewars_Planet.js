@@ -55,8 +55,7 @@ category:
 init:
 	function()
 	{
-	  var buildingDropdown = new Blockly.FieldDropdown(
-      Blockly.Language.dronewars_makeBuilding.BUILDINGS);
+	  var buildingDropdown = getBuildingDropdown();
 
 		this.setColour(230);
 		//this.setInputsInline(true);
@@ -102,3 +101,28 @@ Blockly.lua.dronewars_cannon_in_planet = function()
 	       ];
 };
 
+//RessourceSet
+Blockly.Language.dronewars_ressource_in_planet =
+{
+  category:
+    Blockly.LANG_CATEGORY_DRONEWARS_PLANET,
+  init:
+    function () {
+      var buildingDropdown = getRessourceDropDown();
+
+      this.setColour(230);
+      //this.setInputsInline(true);
+      this.appendTitle(buildingDropdown, 'RESSOURCE');
+      this.appendInput(Blockly.LANG_DRONEWARS_RESSOURCE_IN_PLANET,
+      Blockly.INPUT_VALUE, 'PLANET', 'Planet');
+      this.setOutput(true, Number);
+    }
+};
+
+Blockly.lua.dronewars_ressource_in_planet = function () {
+  var object = Blockly.lua.valueToCode(
+	               this, 'PLANET', Blockly.lua.ORDER_NONE) || 'nil';
+  return [object + '.ressourceSet:at(Ressource.' + this.getTitleValue('RESSOURCE') + ')',
+	        Blockly.lua.ORDER_FUNCTION_CALL
+  ];
+};

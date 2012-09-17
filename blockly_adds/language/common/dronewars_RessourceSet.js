@@ -37,11 +37,7 @@ init:
 	{
 		this.setColour(230);
 		//this.setInputsInline(true);
-		var dropdown = new Blockly.FieldDropdown([
-		  ['Metal', 'Metal'],
-		  ['Carbon', 'Carbon'],
-		  ['Loicium', 'Loicium']
-		]);
+		var dropdown = getRessourceDropDown();
 		this.appendTitle(dropdown, 'RESSOURCE');
 		this.appendInput(Blockly.LANG_DRONEWARS_RESSOURCESET_AT,
 		Blockly.INPUT_VALUE, 'RESSOURCESET', 'RessourceSet');

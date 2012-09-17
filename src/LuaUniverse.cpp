@@ -148,7 +148,7 @@ extern "C" int initDroneWars(lua_State* L)
 	  .def_readonly("id", &Fleet::id)
 	  .def_readonly("playerId", &Fleet::playerId)
 	  .def_readonly("coord", &Fleet::coord)
-	  .def_readonly("origine", &Fleet::origine)
+	  .def_readonly("origin", &Fleet::origin)
 	  .def_readonly("name", &Fleet::name)
 	  .def_readonly("shipList", &Fleet::shipList)
 	  .def_readonly("ressourceSet", &Fleet::ressourceSet),

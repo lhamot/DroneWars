@@ -336,7 +336,7 @@ struct Fleet
 			if(playerId >= 100000)
 				BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 		}
-		ar& id& playerId& coord& origine& name& shipList& ressourceSet& taskQueue& eventList;
+		ar& id& playerId& coord& origin& name& shipList& ressourceSet& taskQueue& eventList;
 		if(playerId >= 100000)
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 	}
@@ -345,7 +345,7 @@ struct Fleet
 	ID id;
 	Player::ID playerId;
 	Coord coord;
-	Coord origine;
+	Coord origin;
 	std::string name;
 	typedef std::vector<size_t> ShipTab;
 	ShipTab shipList;
@@ -355,7 +355,7 @@ struct Fleet
 
 	Fleet() {}
 	Fleet(ID fid, Player::ID pid, Coord c):
-		id(fid), playerId(pid), coord(c), origine(c), shipList(Ship::Count)
+		id(fid), playerId(pid), coord(c), origin(c), shipList(Ship::Count)
 	{
 		if(playerId >= 100000)
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));

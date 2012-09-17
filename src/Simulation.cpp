@@ -7,6 +7,7 @@
 #include "LuaTools.h"
 #include "fighting.h"
 #include <luabind/stl_container_converter.hpp>
+#include <boost/range/numeric.hpp>
 
 
 extern "C"
@@ -187,7 +188,12 @@ try
 				fleetMap.erase(condemned);
 				fleet.eventList.push_back(
 				  Event(univ_.nextEventID++, time, Event::FleetsGather));
-				//mapFind(univ_.planetMap, fleet)
+
+				Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
+				size_t const coddingLevel = player.getTutoLevel(CoddingLevelTag);
+				if(coddingLevel == 2 && fleet.shipList[Ship::Mosquito] >= 10)
+					player.tutoDisplayed[CoddingLevelTag] = 3;
+
 				continue;
 			}
 		}
@@ -220,19 +226,35 @@ try
 	}
 	break;
 	case FleetAction::Harvest:
-	{
 		if(planet && canHarvest(fleet, *planet))
+		{
+			Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
+			size_t const coddingLevel = player.getTutoLevel(CoddingLevelTag);
+			if(coddingLevel == 3)
+				player.tutoDisplayed[CoddingLevelTag] = 4;
 			addTaskHarvest(fleet, univ_.time, *planet);
-	}
-	break;
+		}
+		break;
 	case FleetAction::Colonize:
 		if(planet && canColonize(fleet, *planet))
+		{
+			Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
+			size_t const coddingLevel = player.getTutoLevel(CoddingLevelTag);
+			if(coddingLevel == 5)
+				player.tutoDisplayed[CoddingLevelTag] = 6;
 			addTaskColonize(fleet, univ_.time, *planet);
+		}
 		break;
 	case FleetAction::Drop:
-	{
 		if(planet && canDrop(fleet, *planet))
 		{
+			Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
+			size_t const coddingLevel = player.getTutoLevel(CoddingLevelTag);
+			if(coddingLevel == 4)
+			{
+				if(boost::accumulate(fleet.ressourceSet.tab, 0) > 0)
+					player.tutoDisplayed[CoddingLevelTag] = 5;
+			}
 			drop(fleet, *planet);
 			fleet.eventList.push_back(
 			  Event(univ_.nextEventID++, time, Event::FleetDrop));
@@ -241,8 +263,7 @@ try
 			planet->eventList.push_back(
 			  Event(univ_.nextEventID++, time, Event::FleetDrop));
 		}
-	}
-	break;
+		break;
 	}
 
 	return true;
@@ -257,8 +278,10 @@ catch(luabind::error& ex)
 }
 catch(std::exception const& ex)
 {
-	mapFind(univ_.playerMap, fleet.playerId)->second.eventList.push_back(
-	  Event(univ_.nextEventID++, time, Event::FleetCodeError, ex.what()));
+	std::string const message = typeid(ex).name() + string(" ") + ex.what();
+	Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
+	player.fleetsCode.newError(message);
+	player.eventList.push_back(Event(univ_.nextEventID++, time, Event::FleetCodeError, message));
 	return true;
 }
 
@@ -317,7 +340,18 @@ void execPlanets(Universe& univ_, UpgradeLock& lock, LuaTools::LuaEngine& luaEng
 		//boost::copy(localFleets | boost::adaptors::map_values, back_inserter(fleetList));
 		planetRound(univ_, planet, univ_.time);
 		if(planet.playerId != Player::NoId)
+		{
 			execPlanet(univ_, luaEngine, codesMap[planet.playerId].planetsCode, planet, univ_.time, fleetList);
+			Player& player = mapFind(univ_.playerMap, planet.playerId)->second;
+			size_t const coddingLevel = player.getTutoLevel(CoddingLevelTag);
+			if(coddingLevel == 0 &&
+			   planet.buildingList[Building::MetalMine] > 0)
+				player.tutoDisplayed[CoddingLevelTag] = 1;
+			if(coddingLevel == 1 &&
+			   planet.buildingList[Building::MetalMine] >= 4 &&
+			   planet.buildingList[Building::Factory] > 0)
+				player.tutoDisplayed[CoddingLevelTag] = 2;
+		}
 	}
 }
 
@@ -624,14 +658,56 @@ catch(std::exception const& ex)
 	std::cout << boost::diagnostic_information(ex) << std::endl;
 }
 
+static const luaL_Reg loadedlibs[] =
+{
+	{"_G", luaopen_base},
+	//{LUA_LOADLIBNAME, luaopen_package},
+	//{LUA_COLIBNAME, luaopen_coroutine},
+	//{LUA_TABLIBNAME, luaopen_table},
+	//{LUA_IOLIBNAME, luaopen_io},
+	//{LUA_OSLIBNAME, luaopen_os},
+	//{LUA_STRLIBNAME, luaopen_string},
+	//{LUA_BITLIBNAME, luaopen_bit32},
+	{LUA_MATHLIBNAME, luaopen_math},
+	//{LUA_DBLIBNAME, luaopen_debug},
+	{NULL, NULL}
+};
+
+
+static const luaL_Reg preloadedlibs[] =
+{
+	{NULL, NULL}
+};
+
+
+void openlibs(lua_State* L)
+{
+	const luaL_Reg* lib;
+	//call open functions from 'loadedlibs' and set results to global table
+	for(lib = loadedlibs; lib->func; lib++)
+	{
+		luaL_requiref(L, lib->name, lib->func, 1);
+		lua_pop(L, 1);  //remove lib
+	}
+	//add open functions from 'preloadedlibs' into 'package.preload' table
+	luaL_getsubtable(L, LUA_REGISTRYINDEX, "_PRELOAD");
+	for(lib = preloadedlibs; lib->func; lib++)
+	{
+		lua_pushcfunction(L, lib->func);
+		lua_setfield(L, -2, lib->name);
+	}
+	lua_pop(L, 1);  //remove _PRELOAD table
+}
+
 void Simulation::loop()
 {
 	LuaTools::LuaEngine luaEngine;
 	//lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, 20000);
 	PlayerCodeMap codesMap;
 
+	openlibs(luaEngine.state());
 	//luaL_openlibs(luaEngine.state());
-	luaopen_base(luaEngine.state());
+	//luaopen_base(luaEngine.state());
 	//luaopen_package(luaEngine.state());
 	//luaopen_string(luaEngine.state());
 	//luaopen_table(luaEngine.state());

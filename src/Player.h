@@ -126,8 +126,18 @@ public:
 	std::map<std::string, size_t> tutoDisplayed;
 
 	Player(ID i, std::string const& lg, std::string const& pass): id(i), login(lg), password(pass) {}
+
+	size_t getTutoLevel(char const* const tag) const
+	{
+		auto iter = tutoDisplayed.find(tag);
+		return iter == tutoDisplayed.end() ?
+		       0 :
+		       iter->second;
+	}
 };
 
 BOOST_CLASS_VERSION(Player, 1)
+
+static char const* const CoddingLevelTag = "BlocklyCodding";
 
 #endif //__DRONEWARS_PLAYER__

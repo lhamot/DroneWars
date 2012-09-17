@@ -1,10 +1,11 @@
 #include "stdafx.h"
-#include <Wt/WTextArea>
 #include "Engine.h"
 #include "Editor.h"
+#include "Tools.h"
+#include <fstream>
 #include <boost/filesystem/operations.hpp>
 #include <boost/format.hpp>
-#include <fstream>
+#include <Wt/WTextArea>
 
 using namespace Wt;
 
@@ -71,29 +72,29 @@ void Editor::refreshBlockly(WContainerWidget* mainContainer)
 {
 	WContainerWidget* container = new WContainerWidget(mainContainer);
 
-	CodeData code;
-	if(name_ == "Fleet")
-		code = engine_.getPlayerFleetCode(logged_);
-	else if(name_ == "Planet")
-		code = engine_.getPlayerPlanetCode(logged_);
-	else
+	Player const player = engine_.getPlayer(logged_);
+	CodeData const& code = (name_ == "Fleet") ?
+	                       player.fleetsCode :
+	                       player.planetsCode;
+	if(name_ != "Fleet" && name_ != "Planet")
 		BOOST_THROW_EXCEPTION(std::logic_error("Unexpected name_ value : " + name_));
+
 
 	container->setId("editorTab" + name_);
 	container->doJavaScript(
 	  "function blocklyLoaded" + name_ + "(blockly) {                         \n"
 	  "  // Called once Blockly is fully loaded.                              \n"
 	  "  window.Blockly" + name_ + " = blockly;                               \n"
-	  "  var xml_text = '" + code.getBlocklyCode() + "';                      \n"
+	  "  var xml_text = '" + escape(code.getBlocklyCode()) + "';                      \n"
 	  "  var xml = Blockly" + name_ + ".Xml.textToDom(xml_text);              \n"
 	  "  window.Blockly" + name_ + ".Xml.domToWorkspace(Blockly" + name_ + ".mainWorkspace, xml);\n"
 	  "}                                                                      \n"
 	  "window.blocklyLoaded" + name_ + " = blocklyLoaded" + name_ + ";        \n"
 	);
 
+	size_t const plLvl = player.getTutoLevel(CoddingLevelTag);
 	boost::format const filename = boost::format("%1%Frame%2%.html") % name_ % 0;
 	{
-		size_t const plLvl = engine_.getPlayer(logged_).tutoDisplayed["BlocklyCodding"];
 		auto filter = [&](char const * str, size_t needed)
 		{
 			return needed <= plLvl ? str : "";
@@ -113,8 +114,8 @@ void Editor::refreshBlockly(WContainerWidget* mainContainer)
 		     "    <script type=\"text/javascript\" src=\"blockly/generators/JavaScript.js\">         </script>\n"
 		     "    <script type=\"text/javascript\" src=\"blockly_adds/language/fr/_messages.js\">    </script>\n" <<
 		     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/control.js\">       </script>\n", 0) <<
-		     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/text.js\">          </script>\n", 1) <<
-		     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/lists.js\">         </script>\n", 1) <<
+		     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/text.js\">          </script>\n", 10) <<
+		     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/lists.js\">         </script>\n", 10) <<
 		     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/logic.js\">         </script>\n", 0) <<
 		     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/math.js\">          </script>\n", 0) <<
 		     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/procedures.js\">    </script>\n", 0) <<
@@ -159,6 +160,19 @@ void Editor::refreshBlockly(WContainerWidget* mainContainer)
 		       "  </body>\n"
 		       "</html>"
 		     ) % name_;
+	}
+
+	WText* totuText = new WText(container);
+	totuText->addStyleClass("manual");
+	totuText->setTextFormat(Wt::XHTMLUnsafeText);
+	switch(plLvl)
+	{
+	case 0: totuText->setText(gettext("BLOCKLY_TUTO_0")); break;
+	case 1: totuText->setText(gettext("BLOCKLY_TUTO_1")); break;
+	case 2: totuText->setText(gettext("BLOCKLY_TUTO_2")); break;
+	case 3: totuText->setText(gettext("BLOCKLY_TUTO_3")); break;
+	case 4: totuText->setText(gettext("BLOCKLY_TUTO_4")); break;
+	case 5: totuText->setText(gettext("BLOCKLY_TUTO_5")); break;
 	}
 
 	WText* frame = new WText(container);
@@ -225,7 +239,6 @@ void Editor::on_blocklySaveCodeButton_clicked(WTextArea* hidenLua, WTextArea* hi
 {
 	std::string code = hidenLua->text().toUTF8();
 	std::string xmlCode = hidenXML->text().toUTF8();
-	std::cout << code << std::endl;
 	if(name_ == "Fleet")
 	{
 		engine_.setPlayerFleetBlocklyCode(logged_, xmlCode);
@@ -314,7 +327,6 @@ void Editor::refreshCodeMirror(WContainerWidget* container)
 void Editor::on_saveCodeButton_clicked(WTextArea* textarea)
 {
 	std::string code = textarea->text().toUTF8();
-	std::cout << code << std::endl;
 	if(name_ == "Fleet")
 		engine_.setPlayerFleetCode(logged_, code);
 	else if(name_ == "Planet")

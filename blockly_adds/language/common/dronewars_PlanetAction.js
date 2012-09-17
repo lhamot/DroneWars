@@ -10,7 +10,7 @@ category:
 init:
 	function()
 	{
-	  var buildingDropdown = new Blockly.FieldDropdown(this.BUILDINGS);
+	  var buildingDropdown = getBuildingDropdown();
 
 		this.setColour(230);
 		this.appendTitle(Blockly.LANG_DRONEWARS_MAKE_BUILDING);
@@ -19,17 +19,6 @@ init:
 	}
 };
 
-Blockly.Language.dronewars_makeBuilding.BUILDINGS = [
-		  [Blockly.LANG_DRONEWARS_BUILDING1, 'CommandCenter'],
-		  [Blockly.LANG_DRONEWARS_BUILDING2, 'MetalMine'],
-		  [Blockly.LANG_DRONEWARS_BUILDING3, 'CarbonMine'],
-		  [Blockly.LANG_DRONEWARS_BUILDING4, 'LoiciumFilter'],
-		  [Blockly.LANG_DRONEWARS_BUILDING5, 'Factory'],
-		  [Blockly.LANG_DRONEWARS_BUILDING6, 'Laboratory'],
-		  [Blockly.LANG_DRONEWARS_BUILDING7, 'CarbonicCentral'],
-		  [Blockly.LANG_DRONEWARS_BUILDING8, 'SolarCentral'],
-		  [Blockly.LANG_DRONEWARS_BUILDING9, 'GeothermicCentral']
-];
 
 Blockly.lua.dronewars_makeBuilding = function ()
 {

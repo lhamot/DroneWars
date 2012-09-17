@@ -4,8 +4,29 @@
 #include "stdafx.h"
 //#include <iostream>
 //#include <utility>
+#include <string>
 #include <boost/iterator/zip_iterator.hpp>
 #include <boost/range/iterator_range.hpp>
+
+
+inline std::string escape(std::string const& code)
+{
+	std::string escaped;
+	escaped.reserve(code.size() * 2);
+	for(char c: code)
+	{
+		switch(c)
+		{
+		case '\"': escaped += "\\\""; break;
+		case '\'': escaped += "\\\'"; break;
+		case '\\': escaped += "\\\\"; break;
+		case '\n': break;
+		default: escaped += c;
+		}
+	}
+	return escaped;
+};
+
 
 template<typename M>
 typename M::const_iterator

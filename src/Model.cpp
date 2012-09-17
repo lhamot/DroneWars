@@ -67,24 +67,6 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 	Player::ID newPlayerID = univ.nextPlayerID;
 	univ.nextPlayerID += 1;
 
-	auto escape = [](std::string const & code) -> std::string
-	{
-		std::string escaped;
-		escaped.reserve(code.size() * 2);
-		for(char c: code)
-		{
-			switch(c)
-			{
-			case '\"': escaped += "\\\""; break;
-			case '\'': escaped += "\\\'"; break;
-			case '\\': escaped += "\\\\"; break;
-			case '\n': break;
-			default: escaped += c;
-			}
-		}
-		return escaped;
-	};
-
 	Player player(newPlayerID, login, password);
 	{
 		std::stringstream blocklyFleetDefaultCode;
@@ -95,6 +77,18 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 			boost::iostreams::copy(fleetFile, blocklyFleetDefaultCode);
 		}
 		player.fleetsCode.setBlocklyCode(escape(blocklyFleetDefaultCode.str()));
+		player.fleetsCode.setCode(
+		  "function AI:do_gather(myFleet, otherFleet)\n"
+		  "  return true\n"
+		  "end\n"
+		  "function AI:do_fight(myFleet, otherFleet)\n"
+		  "  return true\n"
+		  "end\n"
+		  "function AI:action(myFleet, planet)\n"
+		  "  order = FleetAction(FleetAction.Nothing,Coord())\n"
+		  "  return order\n"
+		  "end"
+		);
 	}
 
 	{
@@ -106,6 +100,10 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 			boost::iostreams::copy(planetFile, blocklyPlanetDefaultCode);
 		}
 		player.planetsCode.setBlocklyCode(escape(blocklyPlanetDefaultCode.str()));
+		player.planetsCode.setCode(
+		  "function AI(planet, fleets)\n"
+		  "  return noPlanetAction()\n"
+		  "end");
 	}
 	univ.playerMap.insert(std::make_pair(newPlayerID, player));
 
@@ -193,7 +191,7 @@ void construct(Universe& univ)
 		  "end\n"
 		  "function AI:action(myFleet, planet)\n"
 		  "  if myFleet.ressourceSet:at(Ressource.Metal) > (2000) then\n"
-		  "    order = FleetAction(FleetAction.Move,directionFromTo(myFleet.coord,myFleet.origine))\n"
+		  "    order = FleetAction(FleetAction.Move,directionFromTo(myFleet.coord,myFleet.origin))\n"
 		  "  else\n"
 		  "    order = FleetAction(FleetAction.Move,directionRandom())\n"
 		  "  end\n"

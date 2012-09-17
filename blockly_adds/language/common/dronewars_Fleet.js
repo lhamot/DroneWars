@@ -44,3 +44,26 @@ Blockly.lua.dronewars_ship_in_fleet = function()
 	       ];
 };
 
+//ShipList
+Blockly.Language.dronewars_ressource_in_fleet =
+{
+  category:
+    Blockly.LANG_CATEGORY_DRONEWARS_FLEET,
+  init:
+    function () {
+      this.setColour(230);
+      this.appendTitle(getRessourceDropDown(), 'RESSOURCE');
+      this.appendInput(Blockly.LANG_DRONEWARS_RESSOURCE_IN_FLEET,
+      Blockly.INPUT_VALUE, 'FLEET', 'Fleet');
+      this.setOutput(true, Number);
+    }
+};
+
+Blockly.lua.dronewars_ressource_in_fleet = function () {
+  var object = Blockly.lua.valueToCode(
+	               this, 'FLEET', Blockly.lua.ORDER_NONE) || 'nil';
+  return [object + '.ressourceSet:at(Ressource.' + this.getTitleValue('RESSOURCE') + ')',
+	        Blockly.lua.ORDER_FUNCTION_CALL
+  ];
+};
+
