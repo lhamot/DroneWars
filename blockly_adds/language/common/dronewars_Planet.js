@@ -13,10 +13,10 @@ init:
 	{
 		this.setColour(230);
 		this.setInputsInline(true);
-		this.appendInput(Blockly.LANG_DRONEWARS_IS_PLANET_FREE_1,
-		Blockly.INPUT_VALUE, 'PLANET', 'Planet');
-		this.appendInput(Blockly.LANG_DRONEWARS_IS_PLANET_FREE_2,
-		Blockly.DUMMY_INPUT);
+		this.appendInput(Blockly.INPUT_VALUE, 'PLANET', 'Planet').appendTitle(
+      Blockly.LANG_DRONEWARS_IS_PLANET_FREE_1);
+		this.appendInput(Blockly.DUMMY_INPUT).appendTitle(
+      Blockly.LANG_DRONEWARS_IS_PLANET_FREE_2);
 		this.setOutput(true, Boolean);
 	}
 };
@@ -60,8 +60,8 @@ init:
 		this.setColour(230);
 		//this.setInputsInline(true);
 		this.appendTitle(buildingDropdown, 'BUILDING');
-		this.appendInput(Blockly.LANG_DRONEWARS_BUILDING_IN_PLANET,
-		Blockly.INPUT_VALUE, 'PLANET', 'Planet');
+		this.appendInput(Blockly.INPUT_VALUE, 'PLANET', 'Planet').appendTitle(
+      Blockly.LANG_DRONEWARS_BUILDING_IN_PLANET);
 		this.setOutput(true, Number);
 	}
 };
@@ -86,8 +86,8 @@ init:
 		this.setColour(230);
 		//this.setInputsInline(true);
 		this.appendTitle(getCannonDropdown(), 'CANNON');
-		this.appendInput(Blockly.LANG_DRONEWARS_CANNON_IN_PLANET,
-		Blockly.INPUT_VALUE, 'PLANET', 'Planet');
+		this.appendInput(Blockly.INPUT_VALUE, 'PLANET', 'Planet').appendTitle(
+      Blockly.LANG_DRONEWARS_CANNON_IN_PLANET);
 		this.setOutput(true, Number);
 	}
 };
@@ -113,8 +113,8 @@ Blockly.Language.dronewars_ressource_in_planet =
       this.setColour(230);
       //this.setInputsInline(true);
       this.appendTitle(buildingDropdown, 'RESSOURCE');
-      this.appendInput(Blockly.LANG_DRONEWARS_RESSOURCE_IN_PLANET,
-      Blockly.INPUT_VALUE, 'PLANET', 'Planet');
+      this.appendInput(Blockly.INPUT_VALUE, 'PLANET', 'Planet').appendTitle(
+        Blockly.LANG_DRONEWARS_RESSOURCE_IN_PLANET);
       this.setOutput(true, Number);
     }
 };

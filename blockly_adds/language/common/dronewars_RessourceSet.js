@@ -39,8 +39,8 @@ init:
 		//this.setInputsInline(true);
 		var dropdown = getRessourceDropDown();
 		this.appendTitle(dropdown, 'RESSOURCE');
-		this.appendInput(Blockly.LANG_DRONEWARS_RESSOURCESET_AT,
-		Blockly.INPUT_VALUE, 'RESSOURCESET', 'RessourceSet');
+		this.appendInput(Blockly.INPUT_VALUE, 'RESSOURCESET', 'RessourceSet').appendTitle(
+      Blockly.LANG_DRONEWARS_RESSOURCESET_AT);
 		this.setOutput(true, Number);
 	}
 };

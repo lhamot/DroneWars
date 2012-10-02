@@ -58,10 +58,10 @@ init:
 	{
 		this.setColour(230);
 		this.setInputsInline(true);
-		this.appendInput(Blockly.LANG_DRONEWARS_DIR_FROM_TO_1,
-		Blockly.INPUT_VALUE, 'FROM', 'Coord');
-		this.appendInput(Blockly.LANG_DRONEWARS_DIR_FROM_TO_2,
-		Blockly.INPUT_VALUE, 'TO', 'Coord');
+		this.appendInput(Blockly.INPUT_VALUE, 'FROM', 'Coord').appendTitle(
+      Blockly.LANG_DRONEWARS_DIR_FROM_TO_1);
+		this.appendInput(Blockly.INPUT_VALUE, 'TO', 'Coord').appendTitle(
+      Blockly.LANG_DRONEWARS_DIR_FROM_TO_2);
 		this.setOutput(true, 'Coord');
 	}
 };

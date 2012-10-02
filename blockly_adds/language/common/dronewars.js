@@ -78,8 +78,8 @@ function addProperty(className, propName, returnType, label, categ) {
         function () {
           this.setColour(230);
           //this.setInputsInline(true);
-          this.appendInput(label,
-          Blockly.INPUT_VALUE, upperClassName, className);
+          this.appendInput(
+            Blockly.INPUT_VALUE, upperClassName, className).appendTitle(label);
           this.setOutput(true, returnType);
         }
 	};
