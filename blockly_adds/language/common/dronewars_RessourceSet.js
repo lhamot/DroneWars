@@ -11,10 +11,11 @@ init:
 	function()
 	{
 		this.setColour(230);
-		this.appendTitle(Blockly.LANG_DRONEWARS_RESSOURCESET);
-		this.appendTitle(new Blockly.FieldTextInput('0', checkNumber), 'R1');
-		this.appendTitle(new Blockly.FieldTextInput('0', checkNumber), 'R2');
-		this.appendTitle(new Blockly.FieldTextInput('0', checkNumber), 'R3');
+		this.appendDummyInput()
+      .appendTitle(Blockly.LANG_DRONEWARS_RESSOURCESET)
+      .appendTitle(new Blockly.FieldTextInput('0', checkNumber), 'R1')
+      .appendTitle(new Blockly.FieldTextInput('0', checkNumber), 'R2')
+      .appendTitle(new Blockly.FieldTextInput('0', checkNumber), 'R3');
 		this.setOutput(true, 'RessourceSet');
 	}
 };
@@ -36,11 +37,13 @@ init:
 	function()
 	{
 		this.setColour(230);
-		//this.setInputsInline(true);
+		this.setInputsInline(true);
 		var dropdown = getRessourceDropDown();
-		this.appendTitle(dropdown, 'RESSOURCE');
-		this.appendInput(Blockly.INPUT_VALUE, 'RESSOURCESET', 'RessourceSet').appendTitle(
-      Blockly.LANG_DRONEWARS_RESSOURCESET_AT);
+		this.appendDummyInput()
+      .appendTitle(dropdown, 'RESSOURCE');
+	  this.appendValueInput('RESSOURCESET')
+      .setCheck('RessourceSet')
+      .appendTitle(Blockly.LANG_DRONEWARS_RESSOURCESET_AT);
 		this.setOutput(true, Number);
 	}
 };

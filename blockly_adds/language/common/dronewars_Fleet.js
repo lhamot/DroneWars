@@ -27,10 +27,12 @@ init:
 	function()
 	{
 		this.setColour(230);
-		//this.setInputsInline(true);
-		this.appendTitle(getShipDropDown(), 'SHIP');
-		this.appendInput(Blockly.INPUT_VALUE, 'FLEET', 'Fleet').appendTitle(
-      Blockly.LANG_DRONEWARS_SHIP_IN_FLEET);
+		this.setInputsInline(true);
+		this.appendDummyInput()
+      .appendTitle(getShipDropDown(), 'SHIP');
+	  this.appendValueInput('FLEET')
+      .setCheck('Fleet')
+      .appendTitle(Blockly.LANG_DRONEWARS_SHIP_IN_FLEET);
 		this.setOutput(true, Number);
 	}
 };
@@ -52,9 +54,12 @@ Blockly.Language.dronewars_ressource_in_fleet =
   init:
     function () {
       this.setColour(230);
-      this.appendTitle(getRessourceDropDown(), 'RESSOURCE');
-      this.appendInput(Blockly.INPUT_VALUE, 'FLEET', 'Fleet').appendTitle(
-        Blockly.LANG_DRONEWARS_RESSOURCE_IN_FLEET);
+      this.setInputsInline(true);
+      this.appendDummyInput()
+        .appendTitle(getRessourceDropDown(), 'RESSOURCE');
+      this.appendValueInput('FLEET')
+        .setCheck('Fleet')
+        .appendTitle(Blockly.LANG_DRONEWARS_RESSOURCE_IN_FLEET);
       this.setOutput(true, Number);
     }
 };

@@ -11,10 +11,11 @@ init:
 	function()
 	{
 		this.setColour(230);
-		this.appendTitle(Blockly.LANG_DRONEWARS_COORD);
-		this.appendTitle(new Blockly.FieldTextInput('0', checkNumber), 'X');
-		this.appendTitle(new Blockly.FieldTextInput('0', checkNumber), 'Y');
-		this.appendTitle(new Blockly.FieldTextInput('0', checkNumber), 'Z');
+		this.appendDummyInput()
+      .appendTitle(Blockly.LANG_DRONEWARS_COORD)
+      .appendTitle(new Blockly.FieldTextInput('0', checkNumber), 'X')
+      .appendTitle(new Blockly.FieldTextInput('0', checkNumber), 'Y')
+      .appendTitle(new Blockly.FieldTextInput('0', checkNumber), 'Z');
 		this.setOutput(true, 'Coord');
 	}
 };
@@ -36,7 +37,7 @@ init:
 	function()
 	{
 		this.setColour(230);
-		this.appendTitle(Blockly.LANG_DRONEWARS_RANDDIR);
+		this.appendDummyInput().appendTitle(Blockly.LANG_DRONEWARS_RANDDIR);
 		this.setOutput(true, 'Coord');
 	}
 };

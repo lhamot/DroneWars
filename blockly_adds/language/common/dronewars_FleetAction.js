@@ -13,10 +13,11 @@ init:
 	{
 		this.setColour(230);
 		this.setInputsInline(true);
-		this.appendTitle(Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_1);
-		this.appendTitle(getFleetActionDropdown(), 'ACTION');
-		this.appendInput(Blockly.INPUT_VALUE, 'COORD', 'Coord').appendTitle(
-      Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_2);
+		this.appendDummyInput().appendTitle(Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_1);
+		this.appendDummyInput().appendTitle(getFleetActionDropdown(), 'ACTION');
+	  this.appendValueInput('COORD')
+      .setCheck('Coord')
+      .appendTitle(Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_2);
 		this.setOutput(true, 'FleetAction');
 	}
 };

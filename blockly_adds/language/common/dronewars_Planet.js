@@ -13,10 +13,11 @@ init:
 	{
 		this.setColour(230);
 		this.setInputsInline(true);
-		this.appendInput(Blockly.INPUT_VALUE, 'PLANET', 'Planet').appendTitle(
-      Blockly.LANG_DRONEWARS_IS_PLANET_FREE_1);
-		this.appendInput(Blockly.DUMMY_INPUT).appendTitle(
-      Blockly.LANG_DRONEWARS_IS_PLANET_FREE_2);
+	  this.appendValueInput('PLANET')
+      .setCheck('Planet')
+      .appendTitle(Blockly.LANG_DRONEWARS_IS_PLANET_FREE_1);
+	  this.appendDummyInput()
+      .appendTitle(Blockly.LANG_DRONEWARS_IS_PLANET_FREE_2);
 		this.setOutput(true, Boolean);
 	}
 };
@@ -58,10 +59,11 @@ init:
 	  var buildingDropdown = getBuildingDropdown();
 
 		this.setColour(230);
-		//this.setInputsInline(true);
-		this.appendTitle(buildingDropdown, 'BUILDING');
-		this.appendInput(Blockly.INPUT_VALUE, 'PLANET', 'Planet').appendTitle(
-      Blockly.LANG_DRONEWARS_BUILDING_IN_PLANET);
+		this.setInputsInline(true);
+		this.appendDummyInput().appendTitle(buildingDropdown, 'BUILDING');
+	  this.appendValueInput('PLANET')
+      .setCheck('Planet')
+      .appendTitle(Blockly.LANG_DRONEWARS_BUILDING_IN_PLANET);
 		this.setOutput(true, Number);
 	}
 };
@@ -84,10 +86,12 @@ init:
 	function()
 	{
 		this.setColour(230);
-		//this.setInputsInline(true);
-		this.appendTitle(getCannonDropdown(), 'CANNON');
-		this.appendInput(Blockly.INPUT_VALUE, 'PLANET', 'Planet').appendTitle(
-      Blockly.LANG_DRONEWARS_CANNON_IN_PLANET);
+		this.setInputsInline(true);
+		this.appendDummyInput()
+		  .appendTitle(getCannonDropdown(), 'CANNON');
+	  this.appendValueInput('PLANET')
+      .setCheck('Planet')
+      .appendTitle(Blockly.LANG_DRONEWARS_CANNON_IN_PLANET);
 		this.setOutput(true, Number);
 	}
 };
@@ -111,10 +115,12 @@ Blockly.Language.dronewars_ressource_in_planet =
       var buildingDropdown = getRessourceDropDown();
 
       this.setColour(230);
-      //this.setInputsInline(true);
-      this.appendTitle(buildingDropdown, 'RESSOURCE');
-      this.appendInput(Blockly.INPUT_VALUE, 'PLANET', 'Planet').appendTitle(
-        Blockly.LANG_DRONEWARS_RESSOURCE_IN_PLANET);
+      this.setInputsInline(true);
+      this.appendDummyInput()
+        .appendTitle(buildingDropdown, 'RESSOURCE');
+      this.appendValueInput('PLANET')
+        .setCheck('Planet')
+        .appendTitle(Blockly.LANG_DRONEWARS_RESSOURCE_IN_PLANET);
       this.setOutput(true, Number);
     }
 };

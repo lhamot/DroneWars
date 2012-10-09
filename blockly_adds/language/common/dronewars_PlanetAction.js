@@ -13,8 +13,9 @@ init:
 	  var buildingDropdown = getBuildingDropdown();
 
 		this.setColour(230);
-		this.appendTitle(Blockly.LANG_DRONEWARS_MAKE_BUILDING);
-		this.appendTitle(buildingDropdown, 'BUILDING');
+		this.appendDummyInput()
+      .appendTitle(Blockly.LANG_DRONEWARS_MAKE_BUILDING)
+      .appendTitle(buildingDropdown, 'BUILDING');
 		this.setOutput(true, 'PlanetAction');
 	}
 };
@@ -36,8 +37,9 @@ init:
 	function()
 	{
 		this.setColour(230);
-		this.appendTitle(Blockly.LANG_DRONEWARS_MAKE_SHIP);
-		this.appendTitle(getShipDropDown(), 'SHIP');
+	  this.appendDummyInput()
+      .appendTitle(Blockly.LANG_DRONEWARS_MAKE_SHIP)
+      .appendTitle(getShipDropDown(), 'SHIP');
 		this.setOutput(true, 'PlanetAction');
 	}
 };
@@ -58,8 +60,9 @@ init:
 	function()
 	{
 		this.setColour(230);
-		this.appendTitle(Blockly.LANG_DRONEWARS_MAKE_CANNON);
-		this.appendTitle(getCannonDropdown(), 'CANNON');
+		this.appendDummyInput()
+      .appendTitle(Blockly.LANG_DRONEWARS_MAKE_CANNON)
+      .appendTitle(getCannonDropdown(), 'CANNON');
 		this.setOutput(true, 'PlanetAction');
 	}
 };
@@ -79,7 +82,8 @@ init:
 	function()
 	{
 		this.setColour(230);
-		this.appendTitle(Blockly.LANG_DRONEWARS_PLANET_DO_NOTHING);
+	  this.appendDummyInput()
+        .appendTitle(Blockly.LANG_DRONEWARS_PLANET_DO_NOTHING);
 		this.setOutput(true, 'PlanetAction');
 	}
 };
