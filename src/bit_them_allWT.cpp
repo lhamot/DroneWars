@@ -21,19 +21,51 @@ T* getWidget(WContainerWidget* parent, int index)
 
 WWidget* bit_them_allWT::createCodeTab(WContainerWidget* parent)
 {
-	WContainerWidget* codeTab_ = new WContainerWidget(parent);
-	WTabWidget* innerCodeTab = new Wt::WTabWidget(codeTab_);
+	int currentIndex = 0;
+	int subIndex1 = 0;
+	int subIndex2 = 0;
+	if(codeTab_)
+	{
+		WContainerWidget& oldContainer = *codeTab_;
+		std::cout << __LINE__ << std::endl;
+		WTabWidget& oldTab = dynamic_cast<WTabWidget&>(*oldContainer.children().front());
+		std::cout << __LINE__ << std::endl;
+		currentIndex = oldTab.currentIndex();
+		std::cout << __LINE__ << typeid(*oldTab.widget(0)).name() << std::endl;
+		Editor& oldPlanetEditor = dynamic_cast<Editor&>(*oldTab.widget(0));
+		std::cout << __LINE__ << std::endl;
+		subIndex1 = oldPlanetEditor.currentIndex();
+		std::cout << __LINE__ << std::endl;
+		Editor& oldFleetEditor = dynamic_cast<Editor&>(*oldTab.widget(1));
+		std::cout << __LINE__ << std::endl;
+		subIndex2 = oldFleetEditor.currentIndex();
+		std::cout << __LINE__ << std::endl;
+	}
+
+	WContainerWidget* codeTab = new WContainerWidget(parent);
+	codeTab->setObjectName("CodeTab");
+	WTabWidget* innerCodeTab = new Wt::WTabWidget(codeTab);
 	innerCodeTab->setTabIndex(2);
 
-	Editor* editPlanetCode = new Editor(parent, "Planet", engine_, logged_);
+	innerCodeTab->addTab(new WContainerWidget(parent), "dummy", WTabWidget::LazyLoading);
+
+	Editor* editPlanetCode = new Editor(parent, "Planet", engine_, logged_, subIndex1);
 	planetCode_ = editPlanetCode;
 	innerCodeTab->addTab(planetCode_, gettext("Planet"), WTabWidget::LazyLoading);
 
-	Editor* editFleetCode = new Editor(parent, "Fleet", engine_, logged_);
+	Editor* editFleetCode = new Editor(parent, "Fleet", engine_, logged_, subIndex2);
 	fleetCode_ = editFleetCode;
 	innerCodeTab->addTab(editFleetCode, gettext("Fleet"), WTabWidget::LazyLoading);
 
-	return codeTab_;
+	innerCodeTab->setCurrentIndex(currentIndex + 1);
+
+	WWidget* dummy = innerCodeTab->widget(0);
+	innerCodeTab->removeTab(dummy);
+	delete dummy;
+	dummy = nullptr;
+
+	codeTab_ = codeTab;
+	return codeTab;
 }
 
 
@@ -48,7 +80,6 @@ WWidget* bit_them_allWT::createReportTab(WContainerWidget* parent)
 
 	eventView_->setHeight(600);
 
-	//eventView_->setModel(new EventModel(reportsTab, engine_, logged_));
 	eventView_->setAlternatingRowColors(true);
 	eventView_->clicked().connect(this, &bit_them_allWT::on_messageTable_itemDoubleClicked);
 	eventView_->setColumnWidth(2, 400);
@@ -78,7 +109,6 @@ WWidget* bit_them_allWT::createPlanetsTab(WContainerWidget* parent)
 	planetsView_->setColumnWidth(3, 20);
 	planetsView_->setColumnWidth(4, 20);
 	planetsView_->setColumnWidth(5, 200);
-	//planetsView_->setColumnWidth(2, 400);
 	layout->addWidget(planetsView_);
 
 	planetLayout_ = layout;
@@ -106,7 +136,6 @@ WWidget* bit_them_allWT::createFleetsTab(WContainerWidget* parent)
 	fleetsView_->setColumnWidth(3, 20);
 	fleetsView_->setColumnWidth(4, 100);
 	fleetsView_->setColumnWidth(5, 100);
-	//planetsView_->setColumnWidth(2, 400);
 	layout->addWidget(fleetsView_);
 
 	fleetLayout_ = layout;
@@ -140,18 +169,11 @@ bit_them_allWT::bit_them_allWT(Wt::WContainerWidget* parent, Engine& engine, Pla
 
 	Wt::WStackedWidget* contents = new Wt::WStackedWidget();
 	Wt::WMenu* tab = new Wt::WMenu(contents, Wt::Horizontal, this);
+	tab->setInternalPathEnabled("main");
+
 	addWidget(contents);
 
 	tab->setRenderAsList(false);
-
-	/*
-	menu->addItem(gettext("Home"),            createHomePage(this));
-	menu->addItem(gettext("Create account"),  createRegisterPage(this));
-	menu->addItem(gettext("About DroneWars"), createAboutPage(this));
-	*/
-
-
-	//Wt::WTabWidget* tab = new Wt::WTabWidget(this);
 
 	//Si l'ordre est changer: Penser a la répercuter dans onTabChanged
 	tab->addItem(gettext("Planets"), createPlanetsTab(this));
@@ -222,20 +244,30 @@ bit_them_allWT::~bit_them_allWT()
 
 void bit_them_allWT::refresh()
 {
-	Wt::WContainerWidget::refresh();
-
 	WMenu* tab = &dynamic_cast<WMenu&>(*widget(1));
 	int const index1 = tab->currentIndex();
 
+	WMenuItem* planetItem = tab->items()[0];
+	WMenuItem* fleetItem = tab->items()[1];
 	WMenuItem* codeItem = tab->items()[2];
+	WMenuItem* reports = tab->items()[3];
+	tab->removeItem(reports);
 	tab->removeItem(codeItem);
+	tab->removeItem(fleetItem);
+	tab->removeItem(planetItem);
+	tab->addItem(gettext("Planets"), createPlanetsTab(this));
+	tab->addItem(gettext("Fleets"), createFleetsTab(this));
+	tab->addItem(gettext("Code"), createCodeTab(this));
+	tab->addItem(gettext("Reports"), createReportTab(this));
+	delete reports;
+	reports = nullptr;
 	delete codeItem;
 	codeItem = nullptr;
-	codeTab_ = nullptr;
-	tab->addItem(gettext("Code"), createCodeTab(this));
-	WMenuItem* reports = tab->items()[2];
-	tab->removeItem(reports);
-	tab->addItem(reports);
+	delete fleetItem;
+	fleetItem = nullptr;
+	delete planetItem;
+	planetItem = nullptr;
+
 	tab->select(index1);
 
 	int row = 0;
@@ -288,8 +320,8 @@ void bit_them_allWT::refresh()
 	flModel->setHeaderData(1, Horizontal, WString("Y"), DisplayRole);
 	flModel->setHeaderData(2, Horizontal, WString("Z"), DisplayRole);
 	flModel->setHeaderData(3, Horizontal, WString(""), DisplayRole);
-	flModel->setHeaderData(4, Horizontal, gettext("Contents"), DisplayRole);
-	flModel->setHeaderData(5, Horizontal, gettext("Ressources"), DisplayRole);
+	flModel->setHeaderData(4, Horizontal, WString(gettext("Contents")), DisplayRole); //Pas bon
+	flModel->setHeaderData(5, Horizontal, WString(gettext("Ressources")), DisplayRole); //Pas bon
 	for(Fleet const & fleet: fleetList)
 	{
 		Wt::WStandardItem* item = new Wt::WStandardItem();
@@ -348,7 +380,6 @@ void bit_them_allWT::refresh()
 	row = 0;
 	for(Event const & ev: player.eventList)
 	{
-		//std::cout << "ev.id = " << ev.id << std::endl;
 		Wt::WStandardItem* item = new Wt::WStandardItem();
 		item->setData(timeToString(ev.time), DisplayRole);
 		item->setData(ev.id, UserRole);
@@ -381,7 +412,8 @@ void bit_them_allWT::on_planetTable_itemDoubleClicked(WModelIndex const& index, 
 	Coord::Value const y = any_cast<Coord::Value>(model.data(index.row(), 1, DisplayRole));
 	Coord::Value const z = any_cast<Coord::Value>(model.data(index.row(), 2, DisplayRole));
 
-	PlanetViewWT* planetView = new PlanetViewWT(this, engine_, logged_, Coord(x, y, z));
+	PlanetViewWT* planetView = new PlanetViewWT(
+	  &dynamic_cast<WContainerWidget&>(*planetLayout_->parent()), engine_, logged_, Coord(x, y, z));
 
 	if(planetLayout_->count() > 1)
 	{
@@ -401,7 +433,8 @@ void bit_them_allWT::on_fleetTable_itemDoubleClicked(WModelIndex const& index, W
 		WLayoutItem* item = fleetLayout_->itemAt(1);
 		fleetLayout_->removeItem(item);
 	}
-	FleetViewWT* fleetView = new FleetViewWT(this, engine_, logged_, fleetID);
+	FleetViewWT* fleetView = new FleetViewWT(
+	  &dynamic_cast<WContainerWidget&>(*fleetLayout_->parent()), engine_, logged_, fleetID);
 	fleetLayout_->addWidget(fleetView);
 }
 
@@ -411,31 +444,15 @@ void bit_them_allWT::on_messageTable_itemDoubleClicked(WModelIndex const& index,
 	WStandardItemModel& model = dynamic_cast<WStandardItemModel&>(*eventView_->model());
 	Event::ID eventID = any_cast<Event::ID>(model.data(index.row(), 0, UserRole));
 
-	//std::cout << "ev.id = " << eventID << std::endl;
-
 	if(messageLayout_->count() > 1)
 	{
 		WLayoutItem* item = messageLayout_->itemAt(1);
 		messageLayout_->removeItem(item);
 	}
-	MessageView* messageView = new MessageView(this, engine_, logged_, eventID);
+	MessageView* messageView = new MessageView(
+	  &dynamic_cast<WContainerWidget&>(*messageLayout_->parent()), engine_, logged_, eventID);
 	messageView->setInline(true);
 	messageLayout_->addWidget(messageView);
 }
 
 
-void bit_them_allWT::on_actionLoad_activated()
-{
-	//QString fileName = QFileDialog::getOpenFileName(this,
-	//                   tr("Open Archive"), "", tr("Archive Files (*.bta)"));
-	//engine_.load(fileName.toStdString());
-	refresh();
-}
-
-
-void bit_them_allWT::on_actionSave_activated()
-{
-	//QString fileName = QFileDialog::getSaveFileName(this,
-	//                   tr("Open Archive"), "", tr("Archive Files (*.bta)"));
-	//engine_.save(fileName.toStdString());
-}

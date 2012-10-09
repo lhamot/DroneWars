@@ -21,7 +21,7 @@ inline std::string escape(std::string const& code)
 		case '\'': escaped += "\\\'"; break;
 		case '\\': escaped += "\\\\"; break;
 		case '\n': break;
-		default: escaped += c;
+		default: escaped.push_back(c);
 		}
 	}
 	return escaped;

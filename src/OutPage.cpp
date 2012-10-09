@@ -15,26 +15,26 @@ Wt::WContainerWidget* OutPage::createHomePage(Wt::WContainerWidget* parent)
 
 	Wt::WTable* outTable = new WTable(homePage);
 
-	Wt::WTable* table = new Wt::WTable(homePage);
+	Wt::WTable* table = new Wt::WTable();
 
-	table->elementAt(0, 0)->addWidget(new WText(gettext("Login") + string(" : "), parent));
-	table->elementAt(0, 1)->addWidget(loginEdit_ = new WLineEdit(parent));
+	table->elementAt(0, 0)->addWidget(new WText(gettext("Login") + string(" : ")));
+	table->elementAt(0, 1)->addWidget(loginEdit_ = new WLineEdit());
 	loginEdit_->setValidator(new WLengthValidator(0, MaxStringSize, loginEdit_));
-	table->elementAt(1, 0)->addWidget(new WText(gettext("Password") + string(" : "), parent));
-	table->elementAt(1, 1)->addWidget(passwordEdit_ = new WLineEdit(parent));
+	table->elementAt(1, 0)->addWidget(new WText(gettext("Password") + string(" : ")));
+	table->elementAt(1, 1)->addWidget(passwordEdit_ = new WLineEdit());
 	passwordEdit_->setEchoMode(WLineEdit::Password);
 	passwordEdit_->setValidator(new WLengthValidator(0, MaxStringSize, passwordEdit_));
 
 	WPushButton* okButton = nullptr;
 	table->elementAt(2, 0)->addWidget(
-	  okButton = new WPushButton(gettext("Log in"), parent));
+	  okButton = new WPushButton(gettext("Log in")));
 	table->elementAt(2, 0)->setColumnSpan(2);
 	table->setInline(true);
 	outTable->elementAt(0, 0)->addWidget(table);
 
 	okButton->clicked().connect(this, &OutPage::onLogButtonClicked);
 
-	WText* intro = new WText(homePage);
+	WText* intro = new WText();
 	intro->setStyleClass("manual");
 	intro->setWidth(500);
 	intro->setTextFormat(Wt::XHTMLUnsafeText);
@@ -50,21 +50,21 @@ Wt::WContainerWidget* OutPage::createRegisterPage(Wt::WContainerWidget* parent)
 {
 	Wt::WContainerWidget* regPage = new WContainerWidget(parent);
 	Wt::WTable* table = new Wt::WTable(regPage);
-	table->elementAt(0, 0)->addWidget(new WText(gettext("Login") + string(" : "), parent));
-	table->elementAt(0, 1)->addWidget(loginEdit2_ = new WLineEdit(parent));
+	table->elementAt(0, 0)->addWidget(new WText(gettext("Login") + string(" : ")));
+	table->elementAt(0, 1)->addWidget(loginEdit2_ = new WLineEdit());
 	loginEdit2_->setValidator(new WLengthValidator(0, MaxStringSize, loginEdit2_));
 
-	table->elementAt(1, 0)->addWidget(new WText(gettext("Password") + string(" : "), parent));
-	table->elementAt(1, 1)->addWidget(passwordEdit2_ = new WLineEdit(parent));
+	table->elementAt(1, 0)->addWidget(new WText(gettext("Password") + string(" : ")));
+	table->elementAt(1, 1)->addWidget(passwordEdit2_ = new WLineEdit());
 	passwordEdit2_->setValidator(new WLengthValidator(0, MaxStringSize, passwordEdit2_));
 	passwordEdit2_->setEchoMode(WLineEdit::Password);
 
-	table->elementAt(2, 0)->addWidget(new WText(gettext("Password2") + string(" : "), parent));
-	table->elementAt(2, 1)->addWidget(passwordEdit3_ = new WLineEdit(parent));
+	table->elementAt(2, 0)->addWidget(new WText(gettext("Password2") + string(" : ")));
+	table->elementAt(2, 1)->addWidget(passwordEdit3_ = new WLineEdit());
 	passwordEdit3_->setValidator(new WLengthValidator(0, MaxStringSize, passwordEdit3_));
 	passwordEdit3_->setEchoMode(WLineEdit::Password);
 
-	WPushButton* regButton = new WPushButton(gettext("Register"));
+	WPushButton* regButton = new WPushButton(gettext("Register"), regPage);
 	regPage->addWidget(regButton);
 
 	regButton->clicked().connect(this, &OutPage::registerButtonClicked);

@@ -24,8 +24,6 @@ class bit_them_allWT : public Wt::WContainerWidget
 	void on_planetTable_itemDoubleClicked(Wt::WModelIndex const& index, Wt::WMouseEvent const& me);
 	void on_fleetTable_itemDoubleClicked(Wt::WModelIndex const& index, Wt::WMouseEvent const& me);
 	void on_messageTable_itemDoubleClicked(Wt::WModelIndex const& index, Wt::WMouseEvent const& me);
-	void on_actionLoad_activated();
-	void on_actionSave_activated();
 
 public:
 	bit_them_allWT(Wt::WContainerWidget* parent, Engine& engine, Player::ID pid);

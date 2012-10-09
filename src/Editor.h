@@ -10,9 +10,15 @@ class Engine;
 class Editor : public Wt::WContainerWidget
 {
 public:
-	Editor(Wt::WContainerWidget* parent, std::string const& name, Engine& engine, Player::ID pid);
+	Editor(Wt::WContainerWidget* parent,
+	       std::string const& name,
+	       Engine& engine,
+	       Player::ID pid,
+	       int tabIndex);
 
 	~Editor();
+
+	int currentIndex() const;
 
 private:
 	void refreshBlockly(Wt::WContainerWidget*);
@@ -21,7 +27,6 @@ private:
 	void refreshCodeMirror(Wt::WContainerWidget*);
 	void on_saveCodeButton_clicked(Wt::WTextArea* textarea);
 	void on_resetCodeButton_clicked(Wt::WContainerWidget*);
-	void on_tab_changed(int index);
 
 	void createAll();
 

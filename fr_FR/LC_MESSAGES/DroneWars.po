@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-10 19:38+0100\n"
-"PO-Revision-Date: 2012-09-10 21:59+0100\n"
+"POT-Creation-Date: 2012-10-03 22:06+0100\n"
+"PO-Revision-Date: 2012-10-03 22:07+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "Language: fr\n"
@@ -21,99 +21,91 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: bit_them_allWT.cpp:30
+#: bit_them_allWT.cpp:56
 msgid "Planet"
 msgstr "Planète"
 
-#: bit_them_allWT.cpp:34
+#: bit_them_allWT.cpp:60
 msgid "Fleet"
 msgstr "Flotte"
 
-#: bit_them_allWT.cpp:136
+#: bit_them_allWT.cpp:170
 msgid "Refresh"
 msgstr "Mettre a jour"
 
-#: bit_them_allWT.cpp:157
+#: bit_them_allWT.cpp:184
 msgid "Planets"
 msgstr "Planètes"
 
-#: bit_them_allWT.cpp:158
+#: bit_them_allWT.cpp:185
 msgid "Fleets"
 msgstr "Flottes"
 
-#: bit_them_allWT.cpp:159 bit_them_allWT.cpp:235
+#: bit_them_allWT.cpp:186 bit_them_allWT.cpp:270
 msgid "Code"
 msgstr "Code"
 
-#: bit_them_allWT.cpp:160 FleetViewWT.cpp:45
+#: bit_them_allWT.cpp:187 FleetViewWT.cpp:45
 msgid "Reports"
 msgstr "Raports"
 
-#: bit_them_allWT.cpp:177 bit_them_allWT.cpp:188 bit_them_allWT.cpp:199
-#: bit_them_allWT.cpp:210
+#: bit_them_allWT.cpp:204 bit_them_allWT.cpp:215 bit_them_allWT.cpp:226
+#: bit_them_allWT.cpp:237
 msgid "Tutorial"
 msgstr "Tutoriel"
 
-#: bit_them_allWT.cpp:177
+#: bit_them_allWT.cpp:204
 msgid "PLANET_TUTOS"
 msgstr ""
 "Ici, vous verez la liste de vos planètes. Cliquez sur l'une d'elle pour en "
 "savoir plus."
 
-#: bit_them_allWT.cpp:188
+#: bit_them_allWT.cpp:215
 msgid "FLEET_TUTOS"
 msgstr ""
 "Ici, vous verrez la liste de vos flottes. Si vous n'en avais pas demandez a "
 "vos planètes d'en fabliquer."
 
-#: bit_them_allWT.cpp:199
+#: bit_them_allWT.cpp:226
 msgid "CODE_TUTOS"
 msgstr ""
 "Ici, vous pourrez définir la ligne de conduite de vos amiraux(flottes) et "
 "gouverneurs(planètes)."
 
-#: bit_them_allWT.cpp:210
+#: bit_them_allWT.cpp:237
 msgid "REPORT_TUTOS"
 msgstr ""
 "Ici vous verrez les 10 dernier évenement important qui ce sont produit dans "
 "votre empire."
 
-#: bit_them_allWT.cpp:249 bit_them_allWT.cpp:292
+#: bit_them_allWT.cpp:297 bit_them_allWT.cpp:340
 msgid "Ressources"
 msgstr "Resources"
 
-#: bit_them_allWT.cpp:291
+#: bit_them_allWT.cpp:339
 msgid "Contents"
 msgstr "Contenue"
 
-#: bit_them_allWT.cpp:345
+#: bit_them_allWT.cpp:393
 msgid "Time"
 msgstr "Temps"
 
-#: bit_them_allWT.cpp:346 FleetViewWT.cpp:59 PlanetViewWT.cpp:110
+#: bit_them_allWT.cpp:394 FleetViewWT.cpp:59 PlanetViewWT.cpp:110
 msgid "Type"
 msgstr "Type"
 
-#: bit_them_allWT.cpp:347
+#: bit_them_allWT.cpp:395
 msgid "Message"
 msgstr "Message"
 
-#: Editor.cpp:21
-msgid "Visual"
-msgstr "Visuel"
-
-#: Editor.cpp:24 Editor.cpp:258
-msgid "Text"
-msgstr "Texte"
-
-#: Editor.cpp:169
+#: Editor.cpp:155
 msgid "BLOCKLY_TUTO_0"
 msgstr ""
 "Ceci est la première étape du tutorial:<br>\n"
 "Essayez de créer une mine de metal.<br>\n"
 "Tips: Allez voir dans l'onglet planète si la mine est en cour de fabrication."
 
-#: Editor.cpp:170
+#: Editor.cpp:156
 msgid "BLOCKLY_TUTO_1"
 msgstr ""
 "Ceci est la deuxieme étape du tutorial:<br/>\n"
@@ -122,52 +114,60 @@ msgstr ""
 "Tips: N'oubliez pas que vous aurez d'autre planètes qui auront besoin d'une "
 "mine de metal."
 
-#: Editor.cpp:171
+#: Editor.cpp:157
 msgid "BLOCKLY_TUTO_2"
 msgstr ""
 "Ceci est la troisième étape du tutorial:<br/>\n"
 "Pour continuer, vous aurrez besoin d'une flotte de Mosquito.<br/>\n"
 "Fabriquez en au moins 10 et réunissez les en une seul flotte."
 
-#: Editor.cpp:172
+#: Editor.cpp:158
 msgid "BLOCKLY_TUTO_3"
 msgstr ""
 "Pour réussir la quatrième étape du tutorial,<br/>\n"
 "récoltez un maximum de ressources sur les planètes inhabitées."
 
-#: Editor.cpp:173
+#: Editor.cpp:159
 msgid "BLOCKLY_TUTO_4"
 msgstr ""
 "Votre prochain objectif est de rapporter des ressources récoltées sur votre "
 "planètes mère."
 
-#: Editor.cpp:174
+#: Editor.cpp:160
 msgid "BLOCKLY_TUTO_5"
 msgstr "Votre prochain objectif est de colonizer d'autres planètes."
 
-#: Editor.cpp:188 Editor.cpp:285
+#: Editor.cpp:174 Editor.cpp:324
 msgid "Reload"
 msgstr "Recharger"
 
-#: Editor.cpp:193
+#: Editor.cpp:179
 msgid "Import"
 msgstr "Import"
 
-#: Editor.cpp:202
+#: Editor.cpp:188
 msgid "Export"
 msgstr "Export"
 
-#: Editor.cpp:210
+#: Editor.cpp:196
 msgid "Valid"
 msgstr "Valider"
 
-#: Editor.cpp:288
+#: Editor.cpp:327
 msgid "Save"
 msgstr "Enregistrer"
 
-#: Editor.cpp:292
+#: Editor.cpp:331
 msgid "Help"
 msgstr "Aide"
+
+#: Editor.cpp:397
+msgid "Visual"
+msgstr "Visuel"
+
+#: Editor.cpp:398
+msgid "Text"
+msgstr "Texte"
 
 #: FleetViewWT.cpp:58
 msgid "Date"

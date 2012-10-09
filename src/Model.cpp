@@ -76,7 +76,7 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 				BOOST_THROW_EXCEPTION(std::ios::failure("Can't open blocklyFleetDefaultCode.xml"));
 			boost::iostreams::copy(fleetFile, blocklyFleetDefaultCode);
 		}
-		player.fleetsCode.setBlocklyCode(escape(blocklyFleetDefaultCode.str()));
+		player.fleetsCode.setBlocklyCode(blocklyFleetDefaultCode.str());
 		player.fleetsCode.setCode(
 		  "function AI:do_gather(myFleet, otherFleet)\n"
 		  "  return true\n"
@@ -99,7 +99,7 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 				BOOST_THROW_EXCEPTION(std::ios::failure("Can't open blocklyPlanetDefaultCode.xml"));
 			boost::iostreams::copy(planetFile, blocklyPlanetDefaultCode);
 		}
-		player.planetsCode.setBlocklyCode(escape(blocklyPlanetDefaultCode.str()));
+		player.planetsCode.setBlocklyCode(blocklyPlanetDefaultCode.str());
 		player.planetsCode.setCode(
 		  "function AI(planet, fleets)\n"
 		  "  return noPlanetAction()\n"

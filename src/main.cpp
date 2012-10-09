@@ -40,7 +40,7 @@ private:
 			root()->removeWidget(root()->widget(0));
 			root()->addWidget(new bit_them_allWT(root(), engine_, playerID_));
 		}
-		else
+		else if(internalPath == "/")
 		{
 			setInternalPath("", false);
 			playerID_ = Player::NoId;
