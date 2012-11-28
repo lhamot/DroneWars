@@ -29,7 +29,7 @@ Blockly.lua = Blockly.Generator.get('lua');
 Blockly.lua.text = function()
 {
 	// Text value.
-	var code = Blockly.lua.quote_(this.getTitleText('TEXT'));
+	var code = Blockly.lua.quote_(this.getTitleValue('TEXT'));
 	return [code, Blockly.lua.ORDER_ATOMIC];
 };
 

@@ -23,8 +23,14 @@
  * Due to the frequency of long strings, the 80-column wrap rule need not apply
  * to language files.
  */
+'use strict';
 
 Blockly.lua = Blockly.Generator.get('lua');
+
+if (!Blockly.lua.RESERVED_WORDS_) {
+  Blockly.lua.RESERVED_WORDS_ = '';
+}
+
 
 /**
  * List of illegal variable names.
@@ -67,7 +73,7 @@ Blockly.lua.init = function()
 		if(!Blockly.lua.variableDB_)
 		{
 			Blockly.lua.variableDB_ =
-			  new Blockly.Names(Blockly.lua.RESERVED_WORDS_.split(','));
+			  new Blockly.Names(Blockly.lua.RESERVED_WORDS_);
 		}
 		else
 		{
@@ -137,42 +143,34 @@ Blockly.lua.quote_ = function(string)
  * @return {string} Python code with comments and subsequent blocks added.
  * @private
  */
-Blockly.lua.scrub_ = function(block, code)
-{
-	if(code === null)
-	{
-		// Block has handled code generation itself.
-		return '';
-	}
-	var commentCode = '';
-	// Only collect comments for blocks that aren't inline.
-	if(!block.outputConnection || !block.outputConnection.targetConnection)
-	{
-		// Collect comment for this block.
-		var comment = block.getCommentText();
-		if(comment)
-		{
-			commentCode += Blockly.Generator.prefixLines(comment, '-- ') + '\n';
-		}
-		// Collect comments for all value arguments.
-		// Don't collect comments for nested statements.
-		for(var x = 0; x < block.inputList.length; x++)
-		{
-			if(block.inputList[x].type == Blockly.INPUT_VALUE)
-			{
-				var childBlock = block.inputList[x].targetBlock();
-				if(childBlock)
-				{
-					var comment = Blockly.Generator.allNestedComments(childBlock);
-					if(comment)
-					{
-						commentCode += Blockly.Generator.prefixLines(comment, '-- ');
-					}
-				}
-			}
-		}
-	}
-	var nextBlock = block.nextConnection && block.nextConnection.targetBlock();
-	var nextCode = this.blockToCode(nextBlock);
-	return commentCode + code + nextCode;
+Blockly.lua.scrub_ = function (block, code) {
+  if (code === null) {
+    // Block has handled code generation itself.
+    return '';
+  }
+  var commentCode = '';
+  // Only collect comments for blocks that aren't inline.
+  if (!block.outputConnection || !block.outputConnection.targetConnection) {
+    // Collect comment for this block.
+    var comment = block.getCommentText();
+    if (comment) {
+      commentCode += Blockly.Generator.prefixLines(comment, '-- ') + '\n';
+    }
+    // Collect comments for all value arguments.
+    // Don't collect comments for nested statements.
+    for (var x = 0; x < block.inputList.length; x++) {
+      if (block.inputList[x].type == Blockly.INPUT_VALUE) {
+        var childBlock = block.inputList[x].connection.targetBlock();
+        if (childBlock) {
+          var comment = Blockly.Generator.allNestedComments(childBlock);
+          if (comment) {
+            commentCode += Blockly.Generator.prefixLines(comment, '-- ');
+          }
+        }
+      }
+    }
+  }
+  var nextBlock = block.nextConnection && block.nextConnection.targetBlock();
+  var nextCode = this.blockToCode(nextBlock);
+  return commentCode + code + nextCode;
 };

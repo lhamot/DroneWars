@@ -23,13 +23,13 @@
  * Due to the frequency of long strings, the 80-column wrap rule need not apply
  * to language files.
  */
-
+'use strict';
 Blockly.lua = Blockly.Generator.get('lua');
 
 Blockly.lua.math_number = function()
 {
 	// Numeric value.
-	var code = window.parseFloat(this.getTitleText('NUM'));
+  var code = window.parseFloat(this.getTitleValue('NUM'));
 	return [code, Blockly.lua.ORDER_UNARY_SIGN];
 };
 
@@ -65,7 +65,7 @@ Blockly.lua.math_change = function()
 	// Add to a variable in place.
 	var argument0 = Blockly.lua.valueToCode(this, 'DELTA',
 	                                        Blockly.lua.ORDER_ADDITIVE) || '0';
-	var varName = Blockly.lua.variableDB_.getName(this.getTitleText('VAR'),
+	var varName = Blockly.lua.variableDB_.getName(this.getTitleValue('VAR'),
 	              Blockly.Variables.NAME_TYPE);
 	return varName + ' = (type(' + varName + ') == \'number\' and ' + varName + ' or 0) + 5';
 };

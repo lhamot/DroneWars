@@ -85,7 +85,6 @@ public:
 				     "  <head>\n"
 				     "    <meta charset=\"utf-8\">\n"
 				     "    <script type=\"text/javascript\" src=\"blockly/demos/blockly_compressed.js\"></script>\n"
-				     "    <script type=\"text/javascript\" src=\"blockly/generators/JavaScript.js\">         </script>\n"
 				     "    <script type=\"text/javascript\" src=\"blockly_adds/language/fr/_messages.js\">    </script>\n" <<
 				     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/control.js\">       </script>\n", 0) <<
 				     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/text.js\">          </script>\n", 10) <<
@@ -376,10 +375,14 @@ Editor::Editor(Wt::WContainerWidget* parent,
 	std::cout << "Construction Editor " << name_ << " avec index " << tabIndex << std::endl;
 	tabWidget_ = new Wt::WTabWidget(this);
 
+	BlocklyEditor* bled = nullptr;
+	TextEditor* ted = nullptr;
 	tabWidget_->addTab(new WContainerWidget(this), "dummy");
-	tabWidget_->addTab(new BlocklyEditor(this, name_, engine_, logged_), gettext("Visual"));
-	tabWidget_->addTab(new TextEditor(this, name_, engine_, logged_), gettext("Text"));
+	tabWidget_->addTab(bled = new BlocklyEditor(this, name_, engine_, logged_), gettext("Visual"));
+	tabWidget_->addTab(ted = new TextEditor(this, name_, engine_, logged_), gettext("Text"));
 	tabWidget_->setCurrentIndex(tabIndex + 1);
+
+	bled->savedSignal = [ = ]() {ted->refresh();};
 
 	WWidget* dummy = tabWidget_->widget(0);
 	tabWidget_->removeTab(dummy);
@@ -394,5 +397,5 @@ Editor::~Editor()
 
 int Editor::currentIndex() const
 {
-	return tabWidget_->currentIndex();;
+	return tabWidget_->currentIndex();
 }

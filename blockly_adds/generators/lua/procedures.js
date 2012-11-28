@@ -41,7 +41,7 @@ Blockly.lua.procedures_defreturn = function()
 	  }
 	}
 	globals = globals.length ? '  global ' + globals.join(', ') + '\n' : '';  */
-	var funcName = this.getTitleText('NAME');
+	var funcName = this.getTitleValue('NAME');
 	if(funcName.indexOf("AI:") != 0)
 		funcName = Blockly.lua.variableDB_.getName(funcName,
 		           Blockly.Procedures.NAME_TYPE);
@@ -77,7 +77,7 @@ Blockly.lua.procedures_defnoreturn =
 Blockly.lua.procedures_callreturn = function()
 {
 	// Call a procedure with a return value.
-	var funcName = Blockly.lua.variableDB_.getName(this.getTitleText('NAME'),
+	var funcName = Blockly.lua.variableDB_.getName(this.getTitleValue('NAME'),
 	               Blockly.Procedures.NAME_TYPE);
 	var args = [];
 	for(var x = 0; x < this.arguments_.length; x++)
@@ -92,7 +92,7 @@ Blockly.lua.procedures_callreturn = function()
 Blockly.lua.procedures_callnoreturn = function()
 {
 	// Call a procedure with no return value.
-	var funcName = Blockly.lua.variableDB_.getName(this.getTitleText('NAME'),
+	var funcName = Blockly.lua.variableDB_.getName(this.getTitleValue('NAME'),
 	               Blockly.Procedures.NAME_TYPE);
 	var args = [];
 	for(var x = 0; x < this.arguments_.length; x++)

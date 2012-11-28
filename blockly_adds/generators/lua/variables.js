@@ -27,7 +27,7 @@ Blockly.lua = Blockly.Generator.get('lua');
 Blockly.lua.variables_get = function()
 {
 	// Variable getter.
-	code = Blockly.lua.variableDB_.getName(this.getTitleText('VAR'),
+	code = Blockly.lua.variableDB_.getName(this.getTitleValue('VAR'),
 	                                       Blockly.Variables.NAME_TYPE);
 	return [code, Blockly.lua.ORDER_ATOMIC];
 };
@@ -37,7 +37,7 @@ Blockly.lua.variables_set = function()
 	// Variable setter.
 	var argument0 = Blockly.lua.valueToCode(this, 'VALUE',
 	                                        Blockly.lua.ORDER_NONE) || 'nil';
-	var varName = Blockly.lua.variableDB_.getName(this.getTitleText('VAR'),
+	var varName = Blockly.lua.variableDB_.getName(this.getTitleValue('VAR'),
 	              Blockly.Variables.NAME_TYPE);
 	return varName + ' = ' + argument0 + '\n';
 };
