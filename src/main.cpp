@@ -103,7 +103,7 @@ try
 
 	srand(static_cast<unsigned int>(time(NULL)));
 
-	putenv("LANG=fr_FR");
+	putenv(const_cast<char*>("LANG=fr_FR"));
 #ifdef _WIN32
 	printf("Locale is: %s\n", setlocale(LC_ALL, "fr"));
 #else

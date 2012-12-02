@@ -71,7 +71,7 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 	{
 		std::stringstream blocklyFleetDefaultCode;
 		{
-			std::ifstream fleetFile("blocklyFleetDefaultCode.xml");
+			std::ifstream fleetFile("blocklyFleetDefaultCode.xml", std::ios::binary | std::ios::in);
 			if(fleetFile.is_open() == false)
 				BOOST_THROW_EXCEPTION(std::ios::failure("Can't open blocklyFleetDefaultCode.xml"));
 			boost::iostreams::copy(fleetFile, blocklyFleetDefaultCode);
@@ -94,7 +94,7 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 	{
 		std::stringstream blocklyPlanetDefaultCode;
 		{
-			std::ifstream planetFile("blocklyPlanetDefaultCode.xml");
+			std::ifstream planetFile("blocklyPlanetDefaultCode.xml", std::ios::binary | std::ios::in);
 			if(planetFile.is_open() == false)
 				BOOST_THROW_EXCEPTION(std::ios::failure("Can't open blocklyPlanetDefaultCode.xml"));
 			boost::iostreams::copy(planetFile, blocklyPlanetDefaultCode);
