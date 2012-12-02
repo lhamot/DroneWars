@@ -59,18 +59,20 @@ init:
 	{
 		this.setColour(230);
 		this.setInputsInline(true);
-		this.appendInput(Blockly.INPUT_VALUE, 'FROM', 'Coord').appendTitle(
-      Blockly.LANG_DRONEWARS_DIR_FROM_TO_1);
-		this.appendInput(Blockly.INPUT_VALUE, 'TO', 'Coord').appendTitle(
-      Blockly.LANG_DRONEWARS_DIR_FROM_TO_2);
+	  this.appendValueInput('FROM')
+      .setCheck('Coord')
+      .appendTitle(Blockly.LANG_DRONEWARS_DIR_FROM_TO_1);
+	  this.appendValueInput('TO')
+      .setCheck('Coord')
+      .appendTitle(Blockly.LANG_DRONEWARS_DIR_FROM_TO_2);
 		this.setOutput(true, 'Coord');
 	}
 };
 
 Blockly.lua.dronewars_dir_from_to = function()
 {
-	var from = Blockly.lua.valueToCode(this, 'FROM', Blockly.JavaScript.ORDER_NONE) || 'Coord()';
-	var to = Blockly.lua.valueToCode(this, 'TO', Blockly.JavaScript.ORDER_NONE) || 'Coord()';
+	var from = Blockly.lua.valueToCode(this, 'FROM', Blockly.lua.ORDER_NONE) || 'Coord()';
+	var to = Blockly.lua.valueToCode(this, 'TO', Blockly.lua.ORDER_NONE) || 'Coord()';
 
 	return ['directionFromTo(' + from + ',' + to + ')',
 	        Blockly.lua.ORDER_FUNCTION_CALL

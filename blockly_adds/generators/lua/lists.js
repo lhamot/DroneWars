@@ -29,7 +29,7 @@ Blockly.lua = Blockly.Generator.get('lua');
 Blockly.lua.lists_create_empty = function()
 {
 	// Create an empty list.
-	return ['{}', Blockly.JavaScript.ORDER_ATOMIC];
+	return ['{}', Blockly.lua.ORDER_ATOMIC];
 };
 
 Blockly.lua.lists_create_with = function()
@@ -39,19 +39,19 @@ Blockly.lua.lists_create_with = function()
 	for(var n = 0; n < this.itemCount_; n++)
 	{
 		code[n] = Blockly.lua.valueToCode(this, 'ADD' + n,
-		                                  Blockly.JavaScript.ORDER_NONE) || 'None';
+		                                  Blockly.lua.ORDER_NONE) || 'None';
 	}
 	code = '{' + code.join(', ') + '}';
-	return [code, Blockly.JavaScript.ORDER_ATOMIC];
+	return [code, Blockly.lua.ORDER_ATOMIC];
 };
 
 Blockly.lua.lists_repeat = function()
 {
 	// Create a list with one element repeated.
 	var value = Blockly.lua.valueToCode(this, 'ITEM',
-	                                    Blockly.JavaScript.ORDER_NONE) || 'None';
+	                                    Blockly.lua.ORDER_NONE) || 'None';
 	var count = Blockly.lua.valueToCode(this, 'NUM',
-	                                    Blockly.JavaScript.ORDER_MULTIPLICATIVE) || '0';
+	                                    Blockly.lua.ORDER_MULTIPLICATIVE) || '0';
 	//var code = '{' + argument0 + '} * ' + argument1;
 	var code =
 	  '(' +
@@ -61,7 +61,7 @@ Blockly.lua.lists_repeat = function()
 	  'return result ' +
 	  'end' +
 	  ')()';
-	return [code, Blockly.JavaScript.ORDER_MULTIPLICATIVE];
+	return [code, Blockly.lua.ORDER_MULTIPLICATIVE];
 };
 
 Blockly.lua.lists_length = function()

@@ -63,23 +63,10 @@ Wt::WContainerWidget* PlanetViewWT::createCannonsTab(Wt::WContainerWidget* paren
 }
 
 
-/*Wt::WContainerWidget* PlanetView::createResearchTab(Wt::WContainerWidget*)
-{
-	WContainerWidget *researchTab = new WContainerWidget(parent);
-	return researchTab;
-}
-
-Wt::WContainerWidget* PlanetView::createDefenceTab(Wt::WContainerWidget*)
-{
-	WContainerWidget *defenceTab = new WContainerWidget(parent);
-	return defenceTab;
-}*/
-
-
 PlanetViewWT::PlanetViewWT(
   WContainerWidget* parent,
   Engine& eng,
-  Player::ID playerID,
+  Player::ID, //playerID,
   Coord plaCoord):
 	WContainerWidget(parent),
 	engine_(eng),
@@ -126,7 +113,21 @@ void PlanetViewWT::refresh()
 		taModel->setItem(row, 2, item);
 
 		item = new Wt::WStandardItem();
-		item->setData(task.value, DisplayRole);
+		switch(task.type)
+		{
+		case PlanetTask::UpgradeBuilding:
+			item->setData(getBuildingName(Building::Enum(task.value)), DisplayRole);
+			break;
+		case PlanetTask::MakeShip:
+			item->setData(getShipName(Ship::Enum(task.value)), DisplayRole);
+			break;
+		case PlanetTask::MakeCannon:
+			item->setData(getCannonName(Cannon::Enum(task.value)), DisplayRole);
+			break;
+		default:
+			BOOST_THROW_EXCEPTION(std::logic_error("Unconsistent PlanetTask"));
+		}
+		static_assert(PlanetTask::Count == 3, "Have to update the switch");
 		taModel->setItem(row, 3, item);
 
 		row += 1;

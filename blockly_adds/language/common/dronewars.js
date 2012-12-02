@@ -87,7 +87,7 @@ function addProperty(className, propName, returnType, label, categ) {
 
   Blockly.lua[jsFuncName] = function () {
     var object = Blockly.lua.valueToCode(
-		               this, upperClassName, Blockly.JavaScript.ORDER_NONE) || 'nil';
+		               this, upperClassName, Blockly.lua.ORDER_NONE) || 'nil';
     return [object + '.' + propName, Blockly.lua.ORDER_FUNCTION_CALL];
   };
 }

@@ -193,8 +193,8 @@ struct FleetPair
 };
 
 template<typename F1, typename F2>
-void handleFighterPair(std::vector<Fleet*> const& fleetList,
-                       FightReport& reportList,
+void handleFighterPair(std::vector<Fleet*> const&, //fleetList,
+                       FightReport&, //reportList,
                        FleetPair const& fleetPair,
                        Report<F1>& report1,
                        F1& fighter1,

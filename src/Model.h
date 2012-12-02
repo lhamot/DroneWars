@@ -242,7 +242,7 @@ struct Planet
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
-		if(Archive::is_saving::value)
+		staticIf<Archive::is_saving::value>([&]()
 		{
 			if(playerId >= 100000 && playerId != Player::NoId)
 				BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
@@ -250,7 +250,7 @@ struct Planet
 				BOOST_THROW_EXCEPTION(std::logic_error("taskQueue shourld be empty"));
 			if(buildingList.size() != Building::Count)
 				BOOST_THROW_EXCEPTION(std::logic_error("buildingList.size() != Building::Count"));
-		}
+		});
 
 		ar& coord& playerId& buildingList& taskQueue& ressourceSet& eventList& cannonTab;
 		if(playerId >= 100000 && playerId != Player::NoId)
@@ -331,11 +331,11 @@ struct Fleet
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
-		if(Archive::is_saving::value)
+		staticIf<Archive::is_saving::value>([&]()
 		{
 			if(playerId >= 100000)
 				BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
-		}
+		});
 		ar& id& playerId& coord& origin& name& shipList& ressourceSet& taskQueue& eventList;
 		if(playerId >= 100000)
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));

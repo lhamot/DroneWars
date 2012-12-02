@@ -236,11 +236,12 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;LIBINTL_STATIC;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C_libs\wt-3.2.1\src;I:\C_libs\wt-3.2.1_$(Platform);I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4505;4251</DisableSpecificWarnings>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -272,7 +273,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -281,6 +282,7 @@
       <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C_libs\wt-3.2.1\src;I:\C_libs\wt-3.2.1_$(Platform);I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4505;4251</DisableSpecificWarnings>
       <AdditionalOptions>-Zm124 %(AdditionalOptions)</AdditionalOptions>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

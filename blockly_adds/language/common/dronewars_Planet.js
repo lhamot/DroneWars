@@ -25,7 +25,7 @@ init:
 Blockly.lua.dronewars_is_planet_free = function()
 {
 	var planet = Blockly.lua.valueToCode(
-	               this, 'PLANET', Blockly.JavaScript.ORDER_NONE) || 'nil';
+	               this, 'PLANET', Blockly.lua.ORDER_NONE) || 'nil';
 	return [ planet + ':isFree()', Blockly.lua.ORDER_FUNCTION_CALL];
 };
 

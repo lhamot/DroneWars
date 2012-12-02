@@ -51,7 +51,7 @@ init:
 Blockly.lua.dronewars_ressourceSet_at = function()
 {
 	var object = Blockly.lua.valueToCode(
-	               this, 'RESSOURCESET', Blockly.JavaScript.ORDER_NONE) || 'nil';
+	               this, 'RESSOURCESET', Blockly.lua.ORDER_NONE) || 'nil';
 	return [object + ':at(Ressource.' + this.getTitleValue('RESSOURCE') + ')',
 	        Blockly.lua.ORDER_FUNCTION_CALL
 	       ];

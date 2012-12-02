@@ -43,7 +43,7 @@
 
 
 #pragma warning(push)
-#pragma warning(disable:4244 4310 4100 4512)
+#pragma warning(disable:4244 4310 4100 4512 4127 4706 4702)
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/array.hpp>

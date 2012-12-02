@@ -162,7 +162,7 @@ public:
 		);
 		frame->setId("blocklyFrame" + name_);
 
-		WText* errorMessage = new WText(container);
+		new WText(container); //errorMessage
 		new WBreak(container);
 
 		WPushButton* reload = new WPushButton(container);

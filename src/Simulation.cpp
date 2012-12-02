@@ -6,7 +6,10 @@
 #include "Tools.h"
 #include "LuaTools.h"
 #include "fighting.h"
+#pragma warning(push)
+#pragma warning(disable: 4189 4100)
 #include <luabind/stl_container_converter.hpp>
+#pragma warning(pop)
 #include <boost/range/numeric.hpp>
 
 
@@ -30,7 +33,9 @@ using namespace std;
 static size_t const LuaMaxInstruction = 20000;
 static size_t const MaxCodeExecTry = 10;
 
-void luaCountHook(lua_State* L, lua_Debug* ar)
+void luaCountHook(lua_State* L,
+                  lua_Debug* //ar
+                 )
 {
 	lua_sethook(L, luaCountHook, LUA_MASKCOUNT, 1);
 	luaL_error(L, "timeout was reached");
@@ -810,7 +815,6 @@ void Simulation::removeOldSaves() const
 {
 	using namespace boost::filesystem;
 	typedef boost::filesystem::directory_iterator DirIter;
-	time_t const now = time(0);
 
 	std::set<time_t> timeSet;
 
@@ -835,7 +839,9 @@ void Simulation::removeOldSaves() const
 
 	//On va supprimer tout les fichier en trop dans laps de temps
 	//La taille du laps augmente au fure et a mesure qu'on recule dans le temps
-	while(true)
+	std::set<time_t>::const_iterator begin;
+	std::set<time_t>::const_iterator end;
+	do
 	{
 		timeLaps = (time_t)(timeLaps * 1.1);
 		//timeLaps /= 10;
@@ -843,10 +849,8 @@ void Simulation::removeOldSaves() const
 
 		beginTime = endTime - timeLaps;
 		//cout << beginTime << " " << endTime << endl;
-		auto begin = timeSet.lower_bound(beginTime);
-		auto end = timeSet.lower_bound(endTime);
-		if(end == timeSet.begin())
-			break;
+		begin = timeSet.lower_bound(beginTime);
+		end = timeSet.lower_bound(endTime);
 
 		size_t fileCount = 0;
 		for(time_t fileTime: boost::make_iterator_range(begin, end))
@@ -859,4 +863,5 @@ void Simulation::removeOldSaves() const
 			remove(filename);
 		}
 	}
+	while(end != timeSet.begin());
 }

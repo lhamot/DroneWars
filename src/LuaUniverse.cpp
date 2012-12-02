@@ -2,9 +2,12 @@
 #include "LuaUniverse.h"
 
 #include "Model.h"
+#pragma warning(push)
+#pragma warning(disable: 4189 4100)
 #include <luabind/class.hpp>
 #include <luabind/operator.hpp>
 #include <luabind/stl_container_converter.hpp>
+#pragma warning(pop)
 
 
 void PlanetActionListPushBack(PlanetActionList& list, PlanetAction const& pa) {list.push_back(pa);}
@@ -43,7 +46,7 @@ Coord directionFromTo(Coord const& ori, Coord const& targ)
 }
 
 
-bool planetIsFree(Planet planet)
+bool planetIsFree(Planet const& planet)
 {
 	return planet.playerId == Player::NoId;
 }
@@ -111,7 +114,7 @@ extern "C" int initDroneWars(lua_State* L)
 	  class_<Building>("Building")
 	  .enum_("Type")
 	  [
-	    value("CommandCenter",     Building::CommandCenter     + 1),
+	    value("CommandCenter",     Building::CommandCenter     + 1), //+1 pour correspondre au tableau de batiment (comment a 1 en lua)
 	    value("MetalMine",         Building::MetalMine         + 1),
 	    value("CarbonMine",        Building::CarbonMine        + 1),
 	    value("CristalMine",       Building::LoiciumFilter     + 1),

@@ -25,7 +25,7 @@ init:
 Blockly.lua.dronewars_fleetaction = function()
 {
 	var coord = Blockly.lua.valueToCode(
-	              this, 'COORD', Blockly.JavaScript.ORDER_NONE) || 'Coord()';
+	              this, 'COORD', Blockly.lua.ORDER_NONE) || 'Coord()';
 	return ['FleetAction(FleetAction.' + this.getTitleValue('ACTION') + ',' +
 	        coord + ')',
 	        Blockly.lua.ORDER_FUNCTION_CALL

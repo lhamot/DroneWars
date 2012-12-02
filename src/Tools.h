@@ -83,6 +83,35 @@ void map_remove_erase_if(M& map, F const& func)
 }
 
 
+template<bool B>
+struct StaticIf;
+
+template<>
+struct StaticIf<true>
+{
+	template<typename F>
+	static void exec(F f)
+	{
+		f();
+	}
+};
+
+template<>
+struct StaticIf<false>
+{
+	template<typename F>
+	static void exec(F)
+	{
+	}
+};
+
+template<bool B, typename F>
+void staticIf(F f)
+{
+	StaticIf<B>::exec(f);
+}
+
+
 #define TRACE std::cout << __FILE__ << " " << __LINE__ << std::endl;
 
 #endif //__BTA_TOOLS__
