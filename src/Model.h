@@ -8,33 +8,6 @@
 #include "Tools.h"
 
 
-struct Coord
-{
-	template<class Archive>
-	void serialize(Archive& ar, const unsigned int)
-	{
-		ar& X& Y& Z;
-	}
-
-	typedef long Value;
-	Value X;
-	Value Y;
-	Value Z;
-
-	Coord(): X(0), Y(0), Z(0) {}
-
-	Coord(Value x, Value y, Value z):
-		X(x),
-		Y(y),
-		Z(z)
-	{
-	}
-};
-
-inline bool operator == (Coord const& a, Coord const& b)
-{
-	return (a.X == b.X) && (a.Y == b.Y) && (a.Z == b.Z);
-}
 
 namespace std
 {
@@ -475,7 +448,6 @@ struct Universe
 	PlayerMap playerMap;
 	typedef std::unordered_map<Coord, Planet> PlanetMap;
 	PlanetMap planetMap;
-	//std::multimap<Coord, Fleet, CompCoord> fleetMap;
 	typedef std::map<Fleet::ID, Fleet> FleetMap;
 	FleetMap fleetMap;
 	typedef std::map<size_t, FightReport> ReportMap;
@@ -492,7 +464,57 @@ struct Universe
 	Universe(): nextPlayerID(0), nextFleetID(0), nextEventID(0), nextFightID(0), time(0)
 	{
 	}
+
+	Universe(Universe const& other):
+		playerMap(other.playerMap),
+		planetMap(other.planetMap),
+		fleetMap(other.fleetMap),
+		reportMap(other.reportMap),
+		nextPlayerID(other.nextPlayerID),
+		nextFleetID(other.nextFleetID),
+		nextEventID(other.nextEventID),
+		nextFightID(other.nextFightID),
+		time(other.time)
+	{
+	}
+
+	Universe& operator=(Universe other)
+	{
+		swap(other);
+		return *this;
+	}
+
+	void swap(Universe& other)
+	{
+		playerMap.swap(other.playerMap);
+		planetMap.swap(other.planetMap);
+		fleetMap.swap(other.fleetMap);
+		reportMap.swap(other.reportMap);
+		std::swap(nextPlayerID, other.nextPlayerID);
+		std::swap(nextFleetID, other.nextFleetID);
+		std::swap(nextEventID, other.nextEventID);
+		std::swap(nextFightID, other.nextFightID);
+		std::swap(time, other.time);
+	}
 };
+
+
+struct Signal
+{
+	Player::ID playerID;
+	//Coord planetCoord;
+	Event event;
+
+	Signal(Player::ID player,
+	       //Coord planet,
+	       Event const& event_):
+		playerID(player),
+		//planetCoord(planet),
+		event(event_)
+	{
+	}
+};
+
 
 
 void construct(Universe& univ);
@@ -518,7 +540,7 @@ bool canStop(Planet const& planet, Building::Enum type);
 
 void stopTask(Planet& planet, PlanetTask::Enum tasktype, Building::Enum building);
 
-void planetRound(Universe& univ, Planet& planet, time_t time);
+void planetRound(Universe& univ, Planet& planet, time_t time, std::vector<::Signal>& signals);
 
 void fleetRound(Universe& univ, Fleet& fleet, time_t time);
 

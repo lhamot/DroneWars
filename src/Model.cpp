@@ -2,6 +2,8 @@
 #include "Model.h"
 
 #include "Tools.h"
+#include <boost/range/numeric.hpp>
+#include <boost/format.hpp>
 
 
 BOOST_GEOMETRY_REGISTER_BOOST_ARRAY_CS(cs::cartesian)
@@ -105,7 +107,9 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 		  "  return noPlanetAction()\n"
 		  "end");
 	}
-	univ.playerMap.insert(std::make_pair(newPlayerID, player));
+	Universe::PlayerMap::iterator playerIter;
+	bool added = false;
+	tie(playerIter, added) = univ.playerMap.insert(make_pair(newPlayerID, player));
 
 	bool done = false;
 
@@ -118,6 +122,7 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 		if(planet.playerId == Player::NoId)
 		{
 			planet.playerId = newPlayerID;
+			playerIter->second.mainPlanet = planet.coord;
 
 			planet.buildingList[Building::CommandCenter] = 1;
 			planet.ressourceSet = RessourceSet(2000, 200, 0);
@@ -159,7 +164,7 @@ void construct(Universe& univ)
 	std::string const& password = "test";
 	for(int i = 0; i < 100; ++i)
 	{
-		Player::ID pid = createPlayer(univ, "admin" + boost::lexical_cast<std::string>(i), password);
+		Player::ID pid = createPlayer(univ, (boost::format("admin%1%") % i).str(), password);
 		Player& player = mapFind(univ.playerMap, pid)->second;
 		player.planetsCode.setCode(
 		  "function AI(planet, fleets)\n"
@@ -366,7 +371,11 @@ void stopTask(Planet& planet, PlanetTask::Enum tasktype, Building::Enum building
 }
 
 
-void execTask(Universe& univ, Planet& planet, PlanetTask& task, time_t time)
+void execTask(Universe& univ,
+              Planet& planet,
+              PlanetTask& task,
+              time_t time,
+              std::vector<Signal>& signals)
 {
 	if(time_t(task.lauchTime + task.duration) <= univ.time)
 	{
@@ -375,14 +384,21 @@ void execTask(Universe& univ, Planet& planet, PlanetTask& task, time_t time)
 		case PlanetTask::UpgradeBuilding:
 			if(task.value >= planet.buildingList.size())
 				BOOST_THROW_EXCEPTION(std::logic_error("Unconsistent building type"));
-			planet.buildingList[task.value] += 1;
-			planet.eventList.push_back(Event(univ.nextEventID++, time, Event::Upgraded, "Building upgraded"));
+			else
+			{
+				planet.buildingList[task.value] += 1;
+				Event event(univ.nextEventID++, time, Event::Upgraded, "Building upgraded");
+				planet.eventList.push_back(event);
+				signals.push_back(Signal(planet.playerId, event));
+			}
 			break;
 		case PlanetTask::MakeShip:
 		{
 			Fleet newFleet(univ.nextFleetID++, planet.playerId, planet.coord);
 			newFleet.shipList[task.value] += task.value2;
 			univ.fleetMap.insert(make_pair(newFleet.id, newFleet));
+			Event event(univ.nextEventID++, time, Event::ShipMade, "Ship made");
+			signals.push_back(Signal(planet.playerId, event));
 		}
 		break;
 		case PlanetTask::MakeCannon:
@@ -390,7 +406,9 @@ void execTask(Universe& univ, Planet& planet, PlanetTask& task, time_t time)
 			{
 				//BOOST_THROW_EXCEPTION(std::logic_error("Unconsistent cannon type"));
 				planet.cannonTab[task.value] += 1;
-				planet.eventList.push_back(Event(univ.nextEventID++, time, Event::CannonMade, "New cannon"));
+				Event event(univ.nextEventID++, time, Event::CannonMade, "New cannon");
+				planet.eventList.push_back(event);
+				signals.push_back(Signal(planet.playerId, event));
 			}
 			break;
 		default:
@@ -472,10 +490,10 @@ void execBuilding(Planet& planet, Building::Enum type, size_t level)
 	};
 }
 
-void planetRound(Universe& univ, Planet& planet, time_t time)
+void planetRound(Universe& univ, Planet& planet, time_t time, std::vector<Signal>& signals)
 {
 	for(PlanetTask & task: planet.taskQueue)
-		execTask(univ, planet, task, time);
+		execTask(univ, planet, task, time, signals);
 
 	boost::remove_erase_if(planet.taskQueue, bind(&PlanetTask::expired, placeholders::_1));
 
@@ -555,7 +573,8 @@ void addTaskColonize(Fleet& fleet, time_t time, Planet const& planet)
 
 bool canDrop(Fleet const& fleet, Planet const& planet)
 {
-	return planet.playerId == fleet.playerId;
+	size_t const ressCount = boost::accumulate(fleet.ressourceSet.tab, 0);
+	return planet.playerId == fleet.playerId && ressCount > 0;
 }
 
 void drop(Fleet& fleet, Planet& planet)

@@ -20,4 +20,6 @@ std::string getEventName(Event::Type evtype);
 
 std::string timeToString(time_t time);
 
+std::string getTutoText(size_t tutoLevel);
+
 #endif //__BTA_TRANSLATION_TOOLS__

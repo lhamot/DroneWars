@@ -142,3 +142,31 @@ std::string getCannonName(Cannon::Enum cannon)
 }
 
 
+std::string getTutoText(size_t tutoLevel)
+{
+	static char const* tagTab[] =
+	{
+		gettext("BLOCKLY_TUTO_0"),
+		gettext("BLOCKLY_TUTO_1"),
+		gettext("BLOCKLY_TUTO_2"),
+		gettext("BLOCKLY_TUTO_3"),
+		gettext("BLOCKLY_TUTO_4"),
+		gettext("BLOCKLY_TUTO_5"),
+		gettext("BLOCKLY_TUTO_6"),
+		gettext("BLOCKLY_TUTO_7"),
+		gettext("BLOCKLY_TUTO_8"),
+		gettext("BLOCKLY_TUTO_9"),
+		gettext("BLOCKLY_TUTO_10"),
+		gettext("BLOCKLY_TUTO_11"),
+		gettext("BLOCKLY_TUTO_12"),
+		gettext("BLOCKLY_TUTO_13"),
+		gettext("BLOCKLY_TUTO_14"),
+		gettext("BLOCKLY_TUTO_15"),
+		gettext("BLOCKLY_TUTO_16"),
+		gettext("BLOCKLY_TUTO_17"),
+		gettext("BLOCKLY_TUTO_18"),
+		gettext("BLOCKLY_TUTO_19"),
+		gettext("BLOCKLY_TUTO_20")
+	};
+	return tagTab[tutoLevel];
+}

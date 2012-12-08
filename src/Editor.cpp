@@ -2,10 +2,14 @@
 #include "Engine.h"
 #include "Editor.h"
 #include "Tools.h"
+#include "Rules.h"
+#include "TranslationTools.h"
 #include <fstream>
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/fstream.hpp>
 #include <boost/format.hpp>
 #include <boost/thread/locks.hpp>
+#include <boost/system/error_code.hpp>
 #include <Wt/WTextArea>
 
 using namespace Wt;
@@ -63,102 +67,27 @@ public:
 		);
 
 		size_t const plLvl = player.getTutoLevel(CoddingLevelTag);
-		boost::format const filename = boost::format("%1%Frame%2%.html") % name_ % 0;
+		boost::filesystem::path const filename = boost::str(boost::format("%1%Frame%2%.html") % name_ % 0);
 		{
-			auto filter = [&](char const * str, size_t needed)
-			{
-				return needed <= plLvl ? str : "";
-			};
-
-			auto forName = [&](char const * str, char const * name)
-			{
-				return name == name_ ? str : "";
-			};
-
-			std::string const filenameStr = filename.str();
 			boost::unique_lock<boost::mutex> lock(BlocklyFrameMutex_);
-			if(boost::filesystem::exists(filenameStr) == false)
+			if(boost::filesystem::exists(filename) == false)
 			{
-				std::ofstream file(filenameStr.c_str());
-				file <<
-				     "<html>\n"
-				     "  <head>\n"
-				     "    <meta charset=\"utf-8\">\n"
-				     "    <script type=\"text/javascript\" src=\"blockly/demos/blockly_compressed.js\"></script>\n"
-				     "    <script type=\"text/javascript\" src=\"blockly_adds/language/fr/_messages.js\">    </script>\n" <<
-				     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/control.js\">       </script>\n", 0) <<
-				     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/text.js\">          </script>\n", 10) <<
-				     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/lists.js\">         </script>\n", 10) <<
-				     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/logic.js\">         </script>\n", 0) <<
-				     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/math.js\">          </script>\n", 0) <<
-				     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/procedures.js\">    </script>\n", 0) <<
-				     filter("    <script type=\"text/javascript\" src=\"blockly/language/common/variables.js\">     </script>\n", 0) <<
-				     "    <script type=\"text/javascript\" src=\"blockly_adds/generators/lua.js\">           </script>\n"
-				     "    <script type=\"text/javascript\" src=\"blockly_adds/generators/lua/control.js\">   </script>\n"
-				     "    <script type=\"text/javascript\" src=\"blockly_adds/generators/lua/text.js\">      </script>\n"
-				     "    <script type=\"text/javascript\" src=\"blockly_adds/generators/lua/lists.js\">     </script>\n"
-				     "    <script type=\"text/javascript\" src=\"blockly_adds/generators/lua/logic.js\">     </script>\n"
-				     "    <script type=\"text/javascript\" src=\"blockly_adds/generators/lua/math.js\">      </script>\n"
-				     "    <script type=\"text/javascript\" src=\"blockly_adds/generators/lua/procedures.js\"></script>\n"
-				     "    <script type=\"text/javascript\" src=\"blockly_adds/generators/lua/variables.js\"> </script>\n"
-				     "    <script type=\"text/javascript\" src=\"blockly_adds/language/fr/dronewars.js\">    </script>\n"
-				     "    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars.js\"></script>\n"
-				     "    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_Fleet.js\">       </script>\n"
-				     "    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_Planet.js\">      </script>\n"
-				     "    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_RessourceSet.js\"></script>\n" <<
-				     forName("    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_Coord.js\">       </script>\n", "Fleet") <<
-				     forName("    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_FleetAction.js\"> </script>\n", "Fleet") <<
-				     forName("    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_PlanetAction.js\"></script>\n", "Planet") <<
-				     "    <style>\n"
-				     "      html, body {\n"
-				     "        background-color: #fff;\n"
-				     "        margin: 0;\n"
-				     "        padding:0;\n"
-				     "        overflow: hidden;\n"
-				     "      }\n"
-				     "      .blocklySvg {\n"
-				     "        height: 100%;\n"
-				     "        width: 100%;\n"
-				     "      }\n"
-				     "    </style>\n" <<
-				     boost::format(
-				       "    <script>\n"
-				       "			  function load() {\n"
-				       "				  	if (window.parent.blocklyLoaded%1%)\n"
-				       "					  		window.parent.blocklyLoaded%1%(Blockly);\n"
-				       "					  else\n"
-				       "						  	setTimeout(function () { load();}, 100);\n"
-				       "			  }\n"
-				       "        function init() {\n"
-				       "            Blockly.inject(document.body, { path: 'blockly/' });\n"
-				       "            load();"
-				       "        }\n"
-				       "    </script>\n"
-				       "  </head>\n"
-				       "  <body onload=\"init()\">\n"
-				       "  </body>\n"
-				       "</html>"
-				     ) % name_;
+				boost::filesystem::ofstream file(filename, std::ios::out | std::ios::binary);
+				if(file.is_open() == false)
+					BOOST_THROW_EXCEPTION(std::ios::failure("Can't open file to write : " + filename.string()));
+				getBlocklyHTML(plLvl, name_, file);
 			}
 		}
 
 		WText* totuText = new WText(container);
 		totuText->addStyleClass("manual");
 		totuText->setTextFormat(Wt::XHTMLUnsafeText);
-		switch(plLvl)
-		{
-		case 0: totuText->setText(gettext("BLOCKLY_TUTO_0")); break;
-		case 1: totuText->setText(gettext("BLOCKLY_TUTO_1")); break;
-		case 2: totuText->setText(gettext("BLOCKLY_TUTO_2")); break;
-		case 3: totuText->setText(gettext("BLOCKLY_TUTO_3")); break;
-		case 4: totuText->setText(gettext("BLOCKLY_TUTO_4")); break;
-		case 5: totuText->setText(gettext("BLOCKLY_TUTO_5")); break;
-		}
+		totuText->setText(getTutoText(plLvl));
 
 		WText* frame = new WText(container);
 		frame->setTextFormat(Wt::XHTMLUnsafeText);
 		frame->setText(
-		  "<iframe class=\"blocklyEditor\" src=\"" + filename.str() + "\"></iframe>"
+		  "<iframe class=\"blocklyEditor\" src=\"" + filename.string() + "\"></iframe>"
 		);
 		frame->setId("blocklyFrame" + name_);
 

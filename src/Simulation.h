@@ -31,11 +31,15 @@ public:
 	void loop();
 
 private:
-	void round(LuaTools::LuaEngine&, PlayerCodeMap& codesMap);
+	void round(LuaTools::LuaEngine&,
+	           PlayerCodeMap& codesMap,
+	           std::vector<Signal>& signals);
 	//luabind::object registerCode(
 	//  LuaTools::LuaEngine& luaEngine,
 	//  Player::ID const pid, CodeData& code, time_t time, bool isFleet);
-	void updatePlayersCode(LuaTools::LuaEngine& luaEngine, PlayerCodeMap& codesMap);
+	void updatePlayersCode(LuaTools::LuaEngine& luaEngine,
+	                       PlayerCodeMap& codesMap,
+	                       std::vector<Signal>& signals);
 	void save(std::string const& univName) const;
 	void removeOldSaves() const;
 

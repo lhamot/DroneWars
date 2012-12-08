@@ -11,6 +11,7 @@
 #include <luabind/stl_container_converter.hpp>
 #pragma warning(pop)
 #include <boost/range/numeric.hpp>
+#include <boost/format.hpp>
 
 
 extern "C"
@@ -61,7 +62,11 @@ void Simulation::reloadPlayer(Player::ID pid)
 luabind::object registerCode(
   Universe& univ_,
   LuaTools::LuaEngine& luaEngine,
-  Player::ID const pid, CodeData& code, time_t time, bool isFleet)
+  Player::ID const pid,
+  CodeData& code,
+  time_t time,
+  bool isFleet,
+  std::vector<Signal>& signals)
 try
 {
 	using namespace luabind;
@@ -74,8 +79,9 @@ try
 	{
 		char const* message = lua_tostring(luaEngine.state(), -1);
 		code.newError(message);
-		mapFind(univ_.playerMap, pid)->second.eventList.push_back(
-		  Event(univ_.nextEventID++, time, isFleet ? Event::FleetCodeError : Event::PlanetCodeError, message ? message : ""));
+		Event event(univ_.nextEventID++, time, isFleet ? Event::FleetCodeError : Event::PlanetCodeError, message ? message : "");
+		mapFind(univ_.playerMap, pid)->second.eventList.push_back(event);
+		signals.push_back(Signal(pid, event));
 		return luabind::object();
 	}
 	else
@@ -88,15 +94,17 @@ catch(luabind::error& ex)
 {
 	std::string message = GetLuabindErrorString(ex);
 	code.newError(message);
-	mapFind(univ_.playerMap, pid)->second.eventList.push_back(
-	  Event(univ_.nextEventID++, time, isFleet ? Event::FleetCodeError : Event::PlanetCodeError, message));
+	Event event(univ_.nextEventID++, time, isFleet ? Event::FleetCodeError : Event::PlanetCodeError, message);
+	mapFind(univ_.playerMap, pid)->second.eventList.push_back(event);
+	signals.push_back(Signal(pid, event));
 	return luabind::object();
 }
 catch(std::exception const& ex)
 {
 	char const* message = lua_tostring(luaEngine.state(), -1);
-	mapFind(univ_.playerMap, pid)->second.eventList.push_back(
-	  Event(univ_.nextEventID++, time, isFleet ? Event::FleetCodeError : Event::PlanetCodeError, ex.what() + string(" ") + (message ? message : "")));
+	Event event(univ_.nextEventID++, time, isFleet ? Event::FleetCodeError : Event::PlanetCodeError, ex.what() + string(" ") + (message ? message : ""));
+	mapFind(univ_.playerMap, pid)->second.eventList.push_back(event);
+	signals.push_back(Signal(pid, event));
 	return luabind::object();
 }
 
@@ -107,7 +115,8 @@ void execPlanet(
   luabind::object code,
   Planet& planet,
   time_t time,
-  std::vector<Fleet const*> const& fleetList)
+  std::vector<Fleet const*> const& fleetList,
+  std::vector<Signal>& signals)
 try
 {
 	if(false == code.is_valid() || luabind::type(code) != LUA_TFUNCTION)
@@ -160,15 +169,24 @@ catch(luabind::error& ex)
 	std::string const message = GetLuabindErrorString(ex);
 	Player& player = mapFind(univ_.playerMap, planet.playerId)->second;
 	player.planetsCode.newError(message);//ex.what() + string(" ") + ss.str());
-	player.eventList.push_back(Event(univ_.nextEventID++, time, Event::PlanetCodeError, message));//ex.what() + string(" ") + ss.str()));
+	Event event(univ_.nextEventID++, time, Event::PlanetCodeError, message);
+	player.eventList.push_back(event);//ex.what() + string(" ") + ss.str()));
+	signals.push_back(Signal(player.id, event));
 }
 catch(std::exception const& ex)
 {
-	mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(
-	  Event(univ_.nextEventID++, time, Event::FleetCodeError, ex.what()));
+	Event event(univ_.nextEventID++, time, Event::FleetCodeError, ex.what());
+	mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(event);
+	signals.push_back(Signal(planet.playerId, event));
 }
 
-bool execFleet(Universe& univ_, LuaEngine& luaEngine, luabind::object code, Fleet& fleet, FleetCoordMap& fleetMap, time_t time)
+bool execFleet(Universe& univ_,
+               LuaEngine& luaEngine,
+               luabind::object code,
+               Fleet& fleet,
+               FleetCoordMap& fleetMap,
+               time_t time,
+               std::vector<Signal>& signals)
 try
 {
 	if(false == code.is_valid())
@@ -191,13 +209,9 @@ try
 				auto condemned = fleetIter;
 				++fleetIter;
 				fleetMap.erase(condemned);
-				fleet.eventList.push_back(
-				  Event(univ_.nextEventID++, time, Event::FleetsGather));
-
-				Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
-				size_t const coddingLevel = player.getTutoLevel(CoddingLevelTag);
-				if(coddingLevel == 2 && fleet.shipList[Ship::Mosquito] >= 10)
-					player.tutoDisplayed[CoddingLevelTag] = 3;
+				Event event(univ_.nextEventID++, time, Event::FleetsGather);
+				fleet.eventList.push_back(event);
+				signals.push_back(Signal(fleet.playerId, event));
 
 				continue;
 			}
@@ -233,40 +247,31 @@ try
 	case FleetAction::Harvest:
 		if(planet && canHarvest(fleet, *planet))
 		{
-			Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
-			size_t const coddingLevel = player.getTutoLevel(CoddingLevelTag);
-			if(coddingLevel == 3)
-				player.tutoDisplayed[CoddingLevelTag] = 4;
 			addTaskHarvest(fleet, univ_.time, *planet);
+			Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
+			Event event(univ_.nextEventID++, time, Event::PlanetHarvested);
+			signals.push_back(Signal(player.id, event));
 		}
 		break;
 	case FleetAction::Colonize:
 		if(planet && canColonize(fleet, *planet))
 		{
-			Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
-			size_t const coddingLevel = player.getTutoLevel(CoddingLevelTag);
-			if(coddingLevel == 5)
-				player.tutoDisplayed[CoddingLevelTag] = 6;
 			addTaskColonize(fleet, univ_.time, *planet);
+			Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
+			Event event(univ_.nextEventID++, time, Event::PlanetColonized);
+			signals.push_back(Signal(player.id, event));
 		}
 		break;
 	case FleetAction::Drop:
 		if(planet && canDrop(fleet, *planet))
 		{
-			Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
-			size_t const coddingLevel = player.getTutoLevel(CoddingLevelTag);
-			if(coddingLevel == 4)
-			{
-				if(boost::accumulate(fleet.ressourceSet.tab, 0) > 0)
-					player.tutoDisplayed[CoddingLevelTag] = 5;
-			}
 			drop(fleet, *planet);
-			fleet.eventList.push_back(
-			  Event(univ_.nextEventID++, time, Event::FleetDrop));
+			Event event(univ_.nextEventID++, time, Event::FleetDrop);
+			fleet.eventList.push_back(event);
 			if(planet->playerId == Player::NoId)
 				BOOST_THROW_EXCEPTION(std::logic_error("planet->playerId == Player::NoId"));
-			planet->eventList.push_back(
-			  Event(univ_.nextEventID++, time, Event::FleetDrop));
+			planet->eventList.push_back(event);
+			signals.push_back(Signal(planet->playerId, event));
 		}
 		break;
 	}
@@ -278,7 +283,9 @@ catch(luabind::error& ex)
 	std::string const message = GetLuabindErrorString(ex);
 	Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
 	player.fleetsCode.newError(message);
-	player.eventList.push_back(Event(univ_.nextEventID++, time, Event::FleetCodeError, message));
+	Event event(univ_.nextEventID++, time, Event::FleetCodeError, message);
+	player.eventList.push_back(event);
+	signals.push_back(Signal(player.id, event));
 	return true;
 }
 catch(std::exception const& ex)
@@ -286,7 +293,9 @@ catch(std::exception const& ex)
 	std::string const message = typeid(ex).name() + string(" ") + ex.what();
 	Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
 	player.fleetsCode.newError(message);
-	player.eventList.push_back(Event(univ_.nextEventID++, time, Event::FleetCodeError, message));
+	Event event(univ_.nextEventID++, time, Event::FleetCodeError, message);
+	player.eventList.push_back(event);
+	signals.push_back(Signal(player.id, event));
 	return true;
 }
 
@@ -305,7 +314,9 @@ void disableFailingCode(Universe const& univ_, PlayerCodeMap& codesMap)
 
 
 //! Rechargement des codes flote/planet des joueurs dont le code a été changé
-void Simulation::updatePlayersCode(LuaTools::LuaEngine& luaEngine, PlayerCodeMap& codesMap)
+void Simulation::updatePlayersCode(LuaTools::LuaEngine& luaEngine,
+                                   PlayerCodeMap& codesMap,
+                                   std::vector<Signal>& signals)
 {
 	UniqueLock lockReload(mutex_);
 	for(Player::ID pid: playerToReload_)
@@ -313,8 +324,8 @@ void Simulation::updatePlayersCode(LuaTools::LuaEngine& luaEngine, PlayerCodeMap
 		Player& player = mapFind(univ_.playerMap, pid)->second;
 		PlayerCodes newCodes =
 		{
-			registerCode(univ_, luaEngine, player.id, player.fleetsCode, univ_.time, true),
-			registerCode(univ_, luaEngine, player.id, player.planetsCode, univ_.time, false)
+			registerCode(univ_, luaEngine, player.id, player.fleetsCode, univ_.time, true, signals),
+			registerCode(univ_, luaEngine, player.id, player.planetsCode, univ_.time, false, signals)
 		};
 		codesMap[player.id] = newCodes;
 	}
@@ -322,7 +333,11 @@ void Simulation::updatePlayersCode(LuaTools::LuaEngine& luaEngine, PlayerCodeMap
 }
 
 
-void execPlanets(Universe& univ_, UpgradeLock& lock, LuaTools::LuaEngine& luaEngine, PlayerCodeMap& codesMap)
+void execPlanets(Universe& univ_,
+                 UpgradeLock& lock,
+                 LuaTools::LuaEngine& luaEngine,
+                 PlayerCodeMap& codesMap,
+                 std::vector<Signal>& signals)
 {
 	FleetCoordMap fleetMap;
 	for(Fleet & fleet: univ_.fleetMap | boost::adaptors::map_values)
@@ -343,25 +358,14 @@ void execPlanets(Universe& univ_, UpgradeLock& lock, LuaTools::LuaEngine& luaEng
 		auto getFleetPointer = [](FleetCoordMap::value_type const & coordFleet) {return &coordFleet.second;};
 		boost::transform(localFleets, back_inserter(fleetList), getFleetPointer);
 		//boost::copy(localFleets | boost::adaptors::map_values, back_inserter(fleetList));
-		planetRound(univ_, planet, univ_.time);
+		planetRound(univ_, planet, univ_.time, signals);
 		if(planet.playerId != Player::NoId)
-		{
-			execPlanet(univ_, luaEngine, codesMap[planet.playerId].planetsCode, planet, univ_.time, fleetList);
-			Player& player = mapFind(univ_.playerMap, planet.playerId)->second;
-			size_t const coddingLevel = player.getTutoLevel(CoddingLevelTag);
-			if(coddingLevel == 0 &&
-			   planet.buildingList[Building::MetalMine] > 0)
-				player.tutoDisplayed[CoddingLevelTag] = 1;
-			if(coddingLevel == 1 &&
-			   planet.buildingList[Building::MetalMine] >= 4 &&
-			   planet.buildingList[Building::Factory] > 0)
-				player.tutoDisplayed[CoddingLevelTag] = 2;
-		}
+			execPlanet(univ_, luaEngine, codesMap[planet.playerId].planetsCode, planet, univ_.time, fleetList, signals);
 	}
 }
 
 //! Les combats
-void execFights(Universe& univ_, UpgradeLock& lock)
+void execFights(Universe& univ_, UpgradeLock& lock, std::vector<Signal>& signals)
 {
 	if(univ_.fleetMap.empty()) //si il y as des flottes
 		return;
@@ -442,13 +446,15 @@ void execFights(Universe& univ_, UpgradeLock& lock)
 			if(report.isDead)
 			{
 				deadFleets.push_back(fleet.id);
-				mapFind(univ_.playerMap, fleet.playerId)->second.eventList.push_back(
-				  Event(univ_.nextEventID++, univ_.time, Event::FleetLose, reportID));
+				Event event(univ_.nextEventID++, univ_.time, Event::FleetLose, reportID);
+				mapFind(univ_.playerMap, fleet.playerId)->second.eventList.push_back(event);
+				signals.push_back(Signal(fleet.playerId, event));
 			}
 			else if(report.hasFight)
 			{
-				fleet.eventList.push_back(
-				  Event(univ_.nextEventID++, univ_.time, Event::FleetWin, reportID));
+				Event event(univ_.nextEventID++, univ_.time, Event::FleetWin, reportID);
+				fleet.eventList.push_back(event);
+				signals.push_back(Signal(fleet.playerId, event));
 			}
 		}
 		if(planetPtr)
@@ -459,15 +465,19 @@ void execFights(Universe& univ_, UpgradeLock& lock)
 			{
 				lostPlanets.push_back(planet.coord);
 				if(planet.playerId != Player::NoId)
-					mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(
-					  Event(univ_.nextEventID++, univ_.time, Event::PlanetLose, reportID));
+				{
+					Event event(univ_.nextEventID++, univ_.time, Event::PlanetLose, reportID);
+					mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(event);
+					signals.push_back(Signal(planet.playerId, event));
+				}
 			}
 			else if(fightReport.planet.hasFight)
 			{
 				if(planet.playerId == Player::NoId)
 					BOOST_THROW_EXCEPTION(std::logic_error("planet.playerId == Player::NoId"));
-				planet.eventList.push_back(
-				  Event(univ_.nextEventID++, univ_.time, Event::PlanetWin, reportID));
+				Event event(univ_.nextEventID++, univ_.time, Event::PlanetWin, reportID);
+				planet.eventList.push_back(event);
+				signals.push_back(Signal(planet.playerId, event));
 			}
 		}
 	}
@@ -487,7 +497,8 @@ void execFleets(
   Universe& univ_,
   UpgradeLock& lock,
   LuaTools::LuaEngine& luaEngine,
-  PlayerCodeMap& codesMap)
+  PlayerCodeMap& codesMap,
+  std::vector<Signal>& signals)
 {
 	FleetCoordMap fleetMap;
 	for(Fleet & fleet: univ_.fleetMap | boost::adaptors::map_values)
@@ -500,8 +511,13 @@ void execFleets(
 
 		fleetRound(univ_, iter->second, univ_.time);
 
-		bool keepFleet = execFleet(univ_, luaEngine,
-		                           codesMap[iter->second.playerId].fleetsCode, iter->second, fleetMap, univ_.time);
+		bool keepFleet = execFleet(univ_,
+		                           luaEngine,
+		                           codesMap[iter->second.playerId].fleetsCode,
+		                           iter->second,
+		                           fleetMap,
+		                           univ_.time,
+		                           signals);
 		if(keepFleet == false)
 		{
 			auto condemned = iter;
@@ -525,6 +541,7 @@ void execFleets(
 	}
 }
 
+
 //! Supprime les evenement trop vieux, et les rapport plus réfférencés
 void removeOldEvents(Universe& univ_)
 {
@@ -547,7 +564,9 @@ void removeOldEvents(Universe& univ_)
 	});
 }
 
-void Simulation::round(LuaTools::LuaEngine& luaEngine, PlayerCodeMap& codesMap)
+void Simulation::round(LuaTools::LuaEngine& luaEngine,
+                       PlayerCodeMap& codesMap,
+                       std::vector<Signal>& signals)
 try
 {
 	std::cout << time(0) << " ";
@@ -562,23 +581,26 @@ try
 	//! Rechargement des codes flote/planet des joueurs dont le code a été changé
 	{
 		UpToUniqueLock writeLock(lock);
-		updatePlayersCode(luaEngine, codesMap);
+		updatePlayersCode(luaEngine, codesMap, signals);
 	}
 
 	//! Excecution du code des planetes(modifie l'univers)
-	execPlanets(univ_, lock, luaEngine, codesMap);
+	execPlanets(univ_, lock, luaEngine, codesMap, signals);
 
 	//! Les combats
-	execFights(univ_, lock);
+	execFights(univ_, lock, signals);
 
 	//! Les flottes
-	execFleets(univ_, lock, luaEngine, codesMap);
+	execFleets(univ_, lock, luaEngine, codesMap, signals);
 
 	//! Supprime les flotte mortes
 	{
 		UpToUniqueLock writeLock(lock);
 		removeOldEvents(univ_);
 	}
+
+	//! CheckTutos
+	checkTutos(univ_, lock, signals);
 
 
 	//std::cout << lexical_cast<std::string>(time(0)) + "_save.bta ";
@@ -723,6 +745,8 @@ void Simulation::loop()
 
 	initDroneWars(luaEngine.state());
 
+	std::vector<Signal> signals;
+
 	{
 		UniqueLock lock(univ_.mutex);
 
@@ -732,8 +756,8 @@ void Simulation::loop()
 			Player& player = playerNVP.second;
 			PlayerCodes newCodes =
 			{
-				registerCode(univ_, luaEngine, player.id, player.fleetsCode, univ_.time, true),
-				registerCode(univ_, luaEngine, player.id, player.planetsCode, univ_.time, false)
+				registerCode(univ_, luaEngine, player.id, player.fleetsCode, univ_.time, true, signals),
+				registerCode(univ_, luaEngine, player.id, player.planetsCode, univ_.time, false, signals)
 			};
 			codesMap.insert(make_pair(player.id, newCodes));
 		}
@@ -753,8 +777,8 @@ void Simulation::loop()
 
 		if(newSave <= now)
 		{
-			std::cout << "save/" << boost::lexical_cast<std::string>(time(0)) + "_save.bta ";
-			save("save/" + boost::lexical_cast<std::string>(time(0)) + "_save.bta");
+			std::string const filename = (boost::format("save/%1%_save.bta") % time(0)).str();
+			save(filename);
 			removeOldSaves();
 			std::cout << "OK" << std::endl;
 			newSave += SaveSecond;
@@ -763,7 +787,8 @@ void Simulation::loop()
 			try
 			{
 				//std::cout << newUpdate << " " << now << std::endl;
-				round(luaEngine, codesMap);
+				round(luaEngine, codesMap, signals);
+				signals.clear();
 				newUpdate += RoundSecond;
 				gcCounter += 1;
 				if((gcCounter % 1) == 0)
@@ -792,7 +817,11 @@ void Simulation::loop()
 
 void Simulation::save(std::string const& saveName) const
 {
-	SharedLock lock(univ_.mutex);
+	Universe clone;
+	{
+		SharedLock lock(univ_.mutex);
+		clone = univ_;
+	}
 
 	using namespace std;
 	std::string const newSaveName = saveName + ".new";
@@ -800,7 +829,7 @@ void Simulation::save(std::string const& saveName) const
 		ofstream saveFile(newSaveName.c_str(), ios::out | ios::binary);
 		if(saveFile.is_open() == false)
 			BOOST_THROW_EXCEPTION(std::ios::failure("Can't save in " + newSaveName));
-		saveToStream(univ_, saveFile);
+		saveToStream(clone, saveFile);
 	}
 	std::string const ansSaveName = saveName + ".ans";
 	remove(ansSaveName.c_str());
@@ -858,7 +887,7 @@ void Simulation::removeOldSaves() const
 			++fileCount;
 			if(fileCount == 1)
 				continue;
-			std::string const filename = "save/" + boost::lexical_cast<std::string>(fileTime) + "_save.bta";
+			boost::filesystem::path const filename = (boost::format("save/%1%_save.bta") % fileTime).str();
 			//cout << filename << endl;
 			remove(filename);
 		}

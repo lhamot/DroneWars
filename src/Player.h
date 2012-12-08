@@ -3,6 +3,35 @@
 
 #include "stdafx.h"
 
+struct Coord
+{
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int)
+	{
+		ar& X& Y& Z;
+	}
+
+	typedef long Value;
+	Value X;
+	Value Y;
+	Value Z;
+
+	Coord(): X(0), Y(0), Z(0) {}
+
+	Coord(Value x, Value y, Value z):
+		X(x),
+		Y(y),
+		Z(z)
+	{
+	}
+};
+
+inline bool operator == (Coord const& a, Coord const& b)
+{
+	return (a.X == b.X) && (a.Y == b.Y) && (a.Z == b.Z);
+}
+
+
 struct Event
 {
 	template<class Archive>
@@ -109,6 +138,8 @@ private:
 		ar& id& login& password& fleetsCode& planetsCode& eventList;
 		if(version > 0)
 			ar& tutoDisplayed;
+		if(version > 1)
+			ar& mainPlanet;
 	}
 
 public:
@@ -124,6 +155,7 @@ public:
 	std::vector<Event> eventList;
 	static size_t const MaxCodeSize = 16 * 1024;
 	std::map<std::string, size_t> tutoDisplayed;
+	Coord mainPlanet;
 
 	Player(ID i, std::string const& lg, std::string const& pass): id(i), login(lg), password(pass) {}
 
@@ -136,7 +168,7 @@ public:
 	}
 };
 
-BOOST_CLASS_VERSION(Player, 1)
+BOOST_CLASS_VERSION(Player, 2)
 
 static char const* const CoddingLevelTag = "BlocklyCodding";
 

@@ -63,6 +63,9 @@
     <ClCompile Include="..\..\src\stl_container_adapter.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\Rules.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\bit_them_allWT.h">
