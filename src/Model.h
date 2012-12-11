@@ -226,7 +226,7 @@ struct Planet
 				BOOST_THROW_EXCEPTION(std::logic_error("buildingList.size() != Building::Count"));
 		});
 
-		ar& coord& playerId& buildingList& taskQueue& ressourceSet& eventList& cannonTab;
+		ar& name& coord& playerId& buildingList& taskQueue& ressourceSet& eventList& cannonTab;
 		if(playerId >= 100000 && playerId != Player::NoId)
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 		if(playerId == Player::NoId && taskQueue.empty() == false)
@@ -235,6 +235,7 @@ struct Planet
 			BOOST_THROW_EXCEPTION(std::logic_error("buildingList.size() != Building::Count"));
 	}
 
+	std::string name;
 	Coord coord;
 	Player::ID playerId;
 	typedef std::vector<size_t> BuildingTab;
@@ -542,7 +543,7 @@ void stopTask(Planet& planet, PlanetTask::Enum tasktype, Building::Enum building
 
 void planetRound(Universe& univ, Planet& planet, time_t time, std::vector<::Signal>& signals);
 
-void fleetRound(Universe& univ, Fleet& fleet, time_t time);
+void fleetRound(Universe& univ, Fleet& fleet, time_t time, std::vector<Signal>& signals);
 
 void gather(Fleet& fleet, Fleet const& otherFleet);
 

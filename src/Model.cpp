@@ -2,6 +2,7 @@
 #include "Model.h"
 
 #include "Tools.h"
+#include "NameGen.h"
 #include <boost/range/numeric.hpp>
 #include <boost/format.hpp>
 
@@ -156,6 +157,7 @@ void construct(Universe& univ)
 		{
 			Planet planet(coord);
 			planet.ressourceSet = ress;
+			planet.name = nameGen();
 			univ.planetMap.insert(std::make_pair(coord, planet));
 			coordSet.insert(coord);
 		}
@@ -419,7 +421,11 @@ void execTask(Universe& univ,
 	}
 }
 
-void execTask(Universe& univ, Fleet& fleet, FleetTask& task, time_t time)
+void execTask(Universe& univ,
+              Fleet& fleet,
+              FleetTask& task,
+              time_t time,
+              std::vector<Signal>& signals)
 {
 	if(time_t(task.lauchTime + task.duration) <= univ.time)
 	{
@@ -435,7 +441,9 @@ void execTask(Universe& univ, Fleet& fleet, FleetTask& task, time_t time)
 			{
 				boost::geometry::add_point(fleet.ressourceSet.tab, planet.ressourceSet.tab);
 				boost::geometry::assign_value(planet.ressourceSet.tab, 0);
-				fleet.eventList.push_back(Event(univ.nextEventID++, time, Event::PlanetHarvested));
+				Event event(univ.nextEventID++, time, Event::PlanetHarvested);
+				fleet.eventList.push_back(event);
+				signals.push_back(Signal(planet.playerId, event));
 			}
 		}
 		break;
@@ -444,7 +452,9 @@ void execTask(Universe& univ, Fleet& fleet, FleetTask& task, time_t time)
 			Planet& planet = mapFind(univ.planetMap, task.position)->second;
 			if(planet.playerId == Player::NoId && fleet.shipList[Ship::Queen])
 			{
-				fleet.eventList.push_back(Event(univ.nextEventID++, time, Event::PlanetColonized));
+				Event event(univ.nextEventID++, time, Event::PlanetColonized);
+				fleet.eventList.push_back(event);
+				signals.push_back(Signal(planet.playerId, event));
 				fleet.shipList[Ship::Queen] -= 1;
 
 				planet.buildingList[Building::CommandCenter] = 1;
@@ -502,10 +512,10 @@ void planetRound(Universe& univ, Planet& planet, time_t time, std::vector<Signal
 }
 
 
-void fleetRound(Universe& univ, Fleet& fleet, time_t time)
+void fleetRound(Universe& univ, Fleet& fleet, time_t time, std::vector<Signal>& signals)
 {
 	for(FleetTask & task: fleet.taskQueue)
-		execTask(univ, fleet, task, time);
+		execTask(univ, fleet, task, time, signals);
 
 	boost::remove_erase_if(fleet.taskQueue, bind(&FleetTask::expired, placeholders::_1));
 }

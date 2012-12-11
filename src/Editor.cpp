@@ -38,7 +38,6 @@ public:
 
 	~BlocklyEditor()
 	{
-		std::cout << __FUNCTION__ << std::endl;
 	}
 
 
@@ -56,31 +55,36 @@ public:
 
 		container->setId("editorTab" + name_);
 		container->doJavaScript(
-		  "function blocklyLoaded" + name_ + "(blockly) {                         \n"
-		  "  // Called once Blockly is fully loaded.                              \n"
-		  "  window.Blockly" + name_ + " = blockly;                               \n"
-		  "  var xml_text = '" + escape(code.getBlocklyCode()) + "';              \n"
-		  "  var xml = Blockly" + name_ + ".Xml.textToDom(xml_text);              \n"
-		  "  window.Blockly" + name_ + ".Xml.domToWorkspace(Blockly" + name_ + ".mainWorkspace, xml);\n"
-		  "}                                                                      \n"
-		  "window.blocklyLoaded" + name_ + " = blocklyLoaded" + name_ + ";        \n"
+		  (boost::format(
+		     "function blocklyLoaded%1%(blockly) {                                  \n"
+		     "  // Called once Blockly is fully loaded.                             \n"
+		     "  window.Blockly%1% = blockly;                                        \n"
+		     "  var xml_text = '%2%';                                               \n"
+		     "  var xml = Blockly%1%.Xml.textToDom(xml_text);                       \n"
+		     "  window.Blockly%1%.Xml.domToWorkspace(Blockly%1%.mainWorkspace, xml);\n"
+		     "}                                                                     \n"
+		     "window.blocklyLoaded%1% = blocklyLoaded%1%;                           \n"
+		   ) % name_ % escape(code.getBlocklyCode())).str()
 		);
 
 		size_t const plLvl = player.getTutoLevel(CoddingLevelTag);
-		boost::filesystem::path const filename = boost::str(boost::format("%1%Frame%2%.html") % name_ % 0);
+		boost::filesystem::path const filename =
+		  boost::str(boost::format("%1%Frame%2%.html") % name_ % 0);
 		{
 			boost::unique_lock<boost::mutex> lock(BlocklyFrameMutex_);
 			if(boost::filesystem::exists(filename) == false)
 			{
 				boost::filesystem::ofstream file(filename, std::ios::out | std::ios::binary);
 				if(file.is_open() == false)
-					BOOST_THROW_EXCEPTION(std::ios::failure("Can't open file to write : " + filename.string()));
+					BOOST_THROW_EXCEPTION(std::ios::failure(
+					                        "Can't open file to write : " + filename.string()));
 				getBlocklyHTML(plLvl, name_, file);
 			}
 		}
 
-		WText* totuText = new WText(container);
-		totuText->addStyleClass("manual");
+		WContainerWidget* tutosContainer = new WContainerWidget(container);
+		tutosContainer->addStyleClass("manual");
+		WText* totuText = new WText(tutosContainer);
 		totuText->setTextFormat(Wt::XHTMLUnsafeText);
 		totuText->setText(getTutoText(plLvl));
 
@@ -99,32 +103,43 @@ public:
 		reload->clicked().connect(
 		  boost::bind(&BlocklyEditor::refresh, this));
 
-		WPushButton* load = new WPushButton(container);
-		load->setText(gettext("Import"));
-		load->setAttributeValue("onclick",
-		                        "var xml_text = prompt('Load', '');\n"
-		                        "var xml = Blockly" + name_ + ".Xml.textToDom(xml_text);\n"
-		                        "Blockly" + name_ + ".Xml.domToWorkspace(Blockly" + name_ + ".mainWorkspace, xml);\n"
-		                       );
+		if(plLvl > 6)
+		{
+			WPushButton* load = new WPushButton(container);
+			load->setText(gettext("Import"));
+			load->setAttributeValue(
+			  "onclick",
+			  (boost::format(
+			     "var xml_text = prompt('Load', '');\n"
+			     "var xml = Blockly%1%.Xml.textToDom(xml_text);\n"
+			     "Blockly%1%.Xml.domToWorkspace(Blockly%1%.mainWorkspace, xml);\n"
+			   ) % name_).str()
+			);
 
-		WPushButton* saveToXml = new WPushButton(container);
-		saveToXml->setText(gettext("Export"));
-		saveToXml->setAttributeValue("onclick",
-		                             "var xml = Blockly" + name_ + ".Xml.workspaceToDom(Blockly" + name_ + ".mainWorkspace);\n"
-		                             "var xml_text = Blockly" + name_ + ".Xml.domToText(xml);\n"
-		                             "alert(xml_text);\n"
-		                            );
+			WPushButton* saveToXml = new WPushButton(container);
+			saveToXml->setText(gettext("Export"));
+			saveToXml->setAttributeValue(
+			  "onclick",
+			  (boost::format(
+			     "var xml = Blockly%1%.Xml.workspaceToDom(Blockly%1%.mainWorkspace);\n"
+			     "var xml_text = Blockly%1%.Xml.domToText(xml);\n"
+			     "alert(xml_text);\n"
+			   ) % name_).str()
+			);
+		}
 
 		WPushButton* saveToLua = new WPushButton(container);
 		saveToLua->setText(gettext("Valid"));
 		saveToLua->setAttributeValue(
 		  "onClick",
-		  "var code = window.Blockly" + name_ + ".Generator.workspaceToCode('lua');\n"
-		  "document.getElementById(\"hidenLua" + name_ + "\").innerHTML = code;\n"
-		  "var xml = Blockly" + name_ + ".Xml.workspaceToDom(Blockly" + name_ + ".mainWorkspace);\n"
-		  "var xml_text = Blockly" + name_ + ".Xml.domToText(xml);\n"
-		  "document.getElementById(\"hidenXML" + name_ + "\").innerHTML = xml_text;\n"
-		  "document.getElementById(\"saveToLua2" + name_ + "\").click();\n"
+		  (boost::format(
+		     "var code = window.Blockly%1%.Generator.workspaceToCode('lua');\n"
+		     "document.getElementById(\"hidenLua%1%\").innerHTML = code;\n"
+		     "var xml = Blockly%1%.Xml.workspaceToDom(Blockly%1%.mainWorkspace);\n"
+		     "var xml_text = Blockly%1%.Xml.domToText(xml);\n"
+		     "document.getElementById(\"hidenXML%1%\").innerHTML = xml_text;\n"
+		     "document.getElementById(\"saveToLua2%1%\").click();\n"
+		   ) % name_).str()
 		);
 		WPushButton* saveToLua2 = new WPushButton(container);
 		saveToLua2->setObjectName("saveToLua2");
@@ -145,7 +160,7 @@ public:
 
 	void refresh()
 	{
-		std::cout << __FUNCTION__ << std::endl;
+		//std::cout << __FUNCTION__ << std::endl;
 		WWidget* container = widget(0);
 		Player const player = engine_.getPlayer(logged_);
 		CodeData const& code = (name_ == "Fleet") ?
@@ -154,18 +169,20 @@ public:
 		if(name_ != "Fleet" && name_ != "Planet")
 			BOOST_THROW_EXCEPTION(std::logic_error("Unexpected name_ value : " + name_));
 		container->doJavaScript(
-		  "function blocklyLoaded" + name_ + "(blockly) {                         \n"
-		  "  // Called once Blockly is fully loaded.                              \n"
-		  "  window.Blockly" + name_ + " = blockly;                               \n"
-		  "  var xml_text = '" + escape(code.getBlocklyCode()) + "';                      \n"
-		  "  var xml = window.Blockly" + name_ + ".Xml.textToDom(xml_text);              \n"
-		  "  window.Blockly" + name_ + ".Xml.domToWorkspace(Blockly" + name_ + ".mainWorkspace, xml);\n"
-		  "}                                                                      \n"
-		  "window.blocklyLoaded" + name_ + " = blocklyLoaded" + name_ + ";        \n"
-		  "window.Blockly" + name_ + ".mainWorkspace.clear();\n"
-		  "var xml_text = '" + escape(code.getBlocklyCode()) + "';                      \n"
-		  "var xml = window.Blockly" + name_ + ".Xml.textToDom(xml_text);              \n"
-		  "window.Blockly" + name_ + ".Xml.domToWorkspace(Blockly" + name_ + ".mainWorkspace, xml);\n"
+		  (boost::format(
+		     "function blocklyLoaded%1%(blockly) {                               \n"
+		     "  // Called once Blockly is fully loaded.                          \n"
+		     "  window.Blockly%1% = blockly;                                     \n"
+		     "  var xml_text = '%2%';                                            \n"
+		     "  var xml = window.Blockly%1%.Xml.textToDom(xml_text);             \n"
+		     "  window.Blockly%1%.Xml.domToWorkspace(Blockly%1%.mainWorkspace, xml);\n"
+		     "}                                                                  \n"
+		     "window.blocklyLoaded%1% = blocklyLoaded%1%;                        \n"
+		     "window.Blockly%1%.mainWorkspace.clear();                           \n"
+		     "var xml_text = '%2%';                                              \n"
+		     "var xml = window.Blockly%1%.Xml.textToDom(xml_text);               \n"
+		     "window.Blockly%1%.Xml.domToWorkspace(Blockly%1%.mainWorkspace, xml);\n"
+		   ) % name_ % escape(code.getBlocklyCode())).str()
 		);
 	}
 
@@ -186,6 +203,7 @@ public:
 		}
 		else
 			BOOST_THROW_EXCEPTION(std::logic_error("Bad code editor type"));
+		Wt::WMessageBox::show(gettext("Info"), gettext("Code successfully saved"), Wt::Ok);
 
 		if(savedSignal)
 			savedSignal();
@@ -247,14 +265,16 @@ public:
 		edit->setId(name_ + "TextArea");
 		edit->setValidator(new WLengthValidator(0, Player::MaxCodeSize, edit));
 		edit->doJavaScript(
-		  "var editor" + name_ + " = CodeMirror.fromTextArea(document.getElementById(\"" + name_ + "TextArea\"), {"
-		  "tabMode: \"indent\","
-		  "matchBrackets: true,"
-		  "lineNumbers: true,"
-		  "theme: \"cobalt\","
-		  "onHighlightComplete: function(editor) {editor" + name_ + ".save();}"
-		  "});\n"
-		  "window.editor" + name_ + " = editor" + name_ + ";\n"
+		  (boost::format(
+		     "var editor%1% = CodeMirror.fromTextArea(document.getElementById(\"%1%TextArea\"), {"
+		     "  tabMode: \"indent\","
+		     "  matchBrackets: true,"
+		     "  lineNumbers: true,"
+		     "  theme: \"cobalt\","
+		     "  onHighlightComplete: function(editor) {editor%1%.save();}"
+		     "});\n"
+		     "window.editor%1% = editor%1%;\n"
+		   ) % name_).str()
 		);
 
 		save->clicked().connect(std::bind(&TextEditor::on_saveCodeButton_clicked, this, edit));
@@ -285,6 +305,7 @@ public:
 			engine_.setPlayerPlanetCode(logged_, code);
 		else
 			BOOST_THROW_EXCEPTION(std::logic_error("Bad code editor type"));
+		Wt::WMessageBox::show(gettext("Info"), gettext("Code successfully saved"), Wt::Ok);
 	}
 };
 
@@ -301,7 +322,6 @@ Editor::Editor(Wt::WContainerWidget* parent,
 	logged_(pid),
 	tabWidget_(nullptr)
 {
-	std::cout << "Construction Editor " << name_ << " avec index " << tabIndex << std::endl;
 	tabWidget_ = new Wt::WTabWidget(this);
 
 	BlocklyEditor* bled = nullptr;

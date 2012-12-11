@@ -133,13 +133,10 @@ struct Player
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
-	void serialize(Archive& ar, const unsigned int version)
+	void serialize(Archive& ar, const unsigned int) //version
 	{
-		ar& id& login& password& fleetsCode& planetsCode& eventList;
-		if(version > 0)
-			ar& tutoDisplayed;
-		if(version > 1)
-			ar& mainPlanet;
+		ar& id& login& password& fleetsCode& planetsCode&
+		eventList& tutoDisplayed& mainPlanet;
 	}
 
 public:
@@ -167,8 +164,6 @@ public:
 		       iter->second;
 	}
 };
-
-BOOST_CLASS_VERSION(Player, 2)
 
 static char const* const CoddingLevelTag = "BlocklyCodding";
 

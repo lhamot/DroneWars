@@ -7,6 +7,7 @@
 #include "TranslationTools.h"
 #include "Editor.h"
 #include "Engine.h"
+#include <boost/format.hpp>
 
 using namespace Wt;
 using namespace boost;
@@ -27,19 +28,12 @@ WWidget* bit_them_allWT::createCodeTab(WContainerWidget* parent)
 	if(codeTab_)
 	{
 		WContainerWidget& oldContainer = *codeTab_;
-		std::cout << __LINE__ << std::endl;
 		WTabWidget& oldTab = dynamic_cast<WTabWidget&>(*oldContainer.children().front());
-		std::cout << __LINE__ << std::endl;
 		currentIndex = oldTab.currentIndex();
-		std::cout << __LINE__ << typeid(*oldTab.widget(0)).name() << std::endl;
 		Editor& oldPlanetEditor = dynamic_cast<Editor&>(*oldTab.widget(0));
-		std::cout << __LINE__ << std::endl;
 		subIndex1 = oldPlanetEditor.currentIndex();
-		std::cout << __LINE__ << std::endl;
 		Editor& oldFleetEditor = dynamic_cast<Editor&>(*oldTab.widget(1));
-		std::cout << __LINE__ << std::endl;
 		subIndex2 = oldFleetEditor.currentIndex();
-		std::cout << __LINE__ << std::endl;
 	}
 
 	WContainerWidget* codeTab = new WContainerWidget(parent);
@@ -92,7 +86,12 @@ WWidget* bit_them_allWT::createReportTab(WContainerWidget* parent)
 
 WWidget* bit_them_allWT::createPlanetsTab(WContainerWidget* parent)
 {
-	WContainerWidget* planetsTab = new WContainerWidget(parent);
+	WContainerWidget* superPlanetsTab = new WContainerWidget(parent);
+	WContainerWidget* titleCont = new WContainerWidget(superPlanetsTab);
+	titleCont->addStyleClass("manual");
+	new WText(gettext("List of your planets"), titleCont);
+
+	WContainerWidget* planetsTab = new WContainerWidget(superPlanetsTab);
 	planetsTab->setTabIndex(0);
 	Wt::WHBoxLayout* layout = new Wt::WHBoxLayout();
 	planetsTab->setLayout(layout);
@@ -103,17 +102,17 @@ WWidget* bit_them_allWT::createPlanetsTab(WContainerWidget* parent)
 
 	planetsView_->setAlternatingRowColors(true);
 	planetsView_->clicked().connect(this, &bit_them_allWT::on_planetTable_itemDoubleClicked);
-	planetsView_->setColumnWidth(0, 40);
 	planetsView_->setColumnWidth(1, 40);
 	planetsView_->setColumnWidth(2, 40);
-	planetsView_->setColumnWidth(3, 20);
+	planetsView_->setColumnWidth(3, 40);
 	planetsView_->setColumnWidth(4, 20);
-	planetsView_->setColumnWidth(5, 200);
+	planetsView_->setColumnWidth(5, 20);
+	planetsView_->setColumnWidth(6, 200);
 	layout->addWidget(planetsView_);
 
 	planetLayout_ = layout;
 
-	return planetsTab;
+	return superPlanetsTab;
 }
 
 
@@ -272,40 +271,44 @@ void bit_them_allWT::refresh()
 
 	int row = 0;
 	std::vector<Planet> planetList = engine_.getPlayerPlanets(logged_);
-	Wt::WStandardItemModel* plModel = new Wt::WStandardItemModel((int)planetList.size(), 6, this);
-	plModel->setHeaderData(0, Horizontal, WString("X"), DisplayRole);
-	plModel->setHeaderData(1, Horizontal, WString("Y"), DisplayRole);
-	plModel->setHeaderData(2, Horizontal, WString("Z"), DisplayRole);
-	plModel->setHeaderData(3, Horizontal, WString(""), DisplayRole);
+	Wt::WStandardItemModel* plModel = new Wt::WStandardItemModel((int)planetList.size(), 7, this);
+	plModel->setHeaderData(0, Horizontal, WString(gettext("Name")), DisplayRole);
+	plModel->setHeaderData(1, Horizontal, WString("X"), DisplayRole);
+	plModel->setHeaderData(2, Horizontal, WString("Y"), DisplayRole);
+	plModel->setHeaderData(3, Horizontal, WString("Z"), DisplayRole);
 	plModel->setHeaderData(4, Horizontal, WString(""), DisplayRole);
-	plModel->setHeaderData(5, Horizontal, WString(gettext("Ressources")), DisplayRole);
+	plModel->setHeaderData(5, Horizontal, WString(""), DisplayRole);
+	plModel->setHeaderData(6, Horizontal, WString(gettext("Ressources")), DisplayRole);
 	for(Planet const & planet: planetList)
 	{
 		Wt::WStandardItem* item = new Wt::WStandardItem();
-		item->setData(planet.coord.X, DisplayRole);
+		item->setData(planet.name, DisplayRole);
 		plModel->setItem(row, 0, item);
 
 		item = new Wt::WStandardItem();
-		item->setData(planet.coord.Y, DisplayRole);
+		item->setData(planet.coord.X, DisplayRole);
 		plModel->setItem(row, 1, item);
 
 		item = new Wt::WStandardItem();
-		item->setData(planet.coord.Z, DisplayRole);
+		item->setData(planet.coord.Y, DisplayRole);
 		plModel->setItem(row, 2, item);
+
+		item = new Wt::WStandardItem();
+		item->setData(planet.coord.Z, DisplayRole);
+		plModel->setItem(row, 3, item);
 
 		std::string ressStr;
 		for(int i = 0; i < Ressource::Count; ++i)
 		{
-			ressStr +=
-			  getRessourceName(static_cast<Ressource::Enum>(i))[0] +
-			  std::string(":") +
-			  boost::lexical_cast<std::string>(planet.ressourceSet.tab[i]) +
-			  std::string("; ");
+			ressStr += (
+			             boost::format("%1$c:%2%; ") %
+			             getRessourceName(static_cast<Ressource::Enum>(i)) %
+			             planet.ressourceSet.tab[i]).str();
 		}
 
 		item = new Wt::WStandardItem();
 		item->setData(ressStr, DisplayRole);
-		plModel->setItem(row, 5, item);
+		plModel->setItem(row, 6, item);
 
 		row += 1;
 	}
@@ -345,11 +348,9 @@ void bit_them_allWT::refresh()
 		for(int i = 0; i < Ship::Count; ++i)
 		{
 			if(fleet.shipList[i])
-				content +=
-				  getShipName(static_cast<Ship::Enum>(i))[0] +
-				  std::string(":") +
-				  boost::lexical_cast<std::string>(fleet.shipList[i]) +
-				  std::string("; ");
+				content += (boost::format("%1$c:%2%; ") %
+				            getShipName(static_cast<Ship::Enum>(i)) %
+				            fleet.shipList[i]).str();
 		}
 		item = new Wt::WStandardItem();
 		item->setData(content, DisplayRole);
@@ -358,11 +359,9 @@ void bit_them_allWT::refresh()
 		std::string ressStr;
 		for(int i = 0; i < Ressource::Count; ++i)
 		{
-			ressStr +=
-			  getRessourceName(static_cast<Ressource::Enum>(i))[0] +
-			  std::string(":") +
-			  boost::lexical_cast<std::string>(fleet.ressourceSet.tab[i]) +
-			  std::string("; ");
+			ressStr += (boost::format("%1$c:%2%; ") %
+			            getRessourceName(static_cast<Ressource::Enum>(i)) %
+			            fleet.ressourceSet.tab[i]).str();
 		}
 		item = new Wt::WStandardItem();
 		item->setData(ressStr, DisplayRole);
@@ -408,9 +407,9 @@ void bit_them_allWT::on_refreshButton_clicked()
 void bit_them_allWT::on_planetTable_itemDoubleClicked(WModelIndex const& index, WMouseEvent const&)
 {
 	WStandardItemModel& model = dynamic_cast<WStandardItemModel&>(*planetsView_->model());
-	Coord::Value const x = any_cast<Coord::Value>(model.data(index.row(), 0, DisplayRole));
-	Coord::Value const y = any_cast<Coord::Value>(model.data(index.row(), 1, DisplayRole));
-	Coord::Value const z = any_cast<Coord::Value>(model.data(index.row(), 2, DisplayRole));
+	Coord::Value const x = any_cast<Coord::Value>(model.data(index.row(), 1, DisplayRole));
+	Coord::Value const y = any_cast<Coord::Value>(model.data(index.row(), 2, DisplayRole));
+	Coord::Value const z = any_cast<Coord::Value>(model.data(index.row(), 3, DisplayRole));
 
 	PlanetViewWT* planetView = new PlanetViewWT(
 	  &dynamic_cast<WContainerWidget&>(*planetLayout_->parent()), engine_, logged_, Coord(x, y, z));

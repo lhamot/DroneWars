@@ -74,7 +74,7 @@ try
 
 	luaL_dostring(luaEngine.state(), "AI = nil");
 
-	std::string const codeString = (isFleet ? "class 'AI'\n" : "") + code.getCode();
+	std::string const codeString = (isFleet ? "class 'AI' " : "") + code.getCode();
 	if(luaL_dostring(luaEngine.state(), codeString.c_str()) != 0)
 	{
 		char const* message = lua_tostring(luaEngine.state(), -1);
@@ -203,6 +203,7 @@ try
 			bool const wantGather1 = luabind::call_member<bool>(code, "do_gather", boost::cref(fleet), boost::cref(otherFleet));
 			lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 			bool const wantGather2 = luabind::call_member<bool>(code, "do_gather", boost::cref(otherFleet), boost::cref(fleet));
+			//TODO: Décoreler script et traitement
 			if(wantGather1 && wantGather2)
 			{
 				gather(fleet, otherFleet);
@@ -229,7 +230,7 @@ try
 	if(planet)
 		action = luabind::call_member<FleetAction>(code, "action", boost::cref(fleet), boost::cref(*planet));
 	else
-		action = luabind::call_member<FleetAction>(code, "action", boost::cref(fleet), false);
+		action = luabind::call_member<FleetAction>(code, "action", boost::cref(fleet), (Planet*)nullptr);
 	switch(action.action)
 	{
 	case FleetAction::Nothing:
@@ -246,21 +247,11 @@ try
 	break;
 	case FleetAction::Harvest:
 		if(planet && canHarvest(fleet, *planet))
-		{
 			addTaskHarvest(fleet, univ_.time, *planet);
-			Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
-			Event event(univ_.nextEventID++, time, Event::PlanetHarvested);
-			signals.push_back(Signal(player.id, event));
-		}
 		break;
 	case FleetAction::Colonize:
 		if(planet && canColonize(fleet, *planet))
-		{
 			addTaskColonize(fleet, univ_.time, *planet);
-			Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
-			Event event(univ_.nextEventID++, time, Event::PlanetColonized);
-			signals.push_back(Signal(player.id, event));
-		}
 		break;
 	case FleetAction::Drop:
 		if(planet && canDrop(fleet, *planet))
@@ -509,7 +500,7 @@ void execFleets(
 	{
 		UpToUniqueLock writeLock(lock);
 
-		fleetRound(univ_, iter->second, univ_.time);
+		fleetRound(univ_, iter->second, univ_.time, signals);
 
 		bool keepFleet = execFleet(univ_,
 		                           luaEngine,
@@ -530,7 +521,10 @@ void execFleets(
 
 	std::map<Fleet::ID, Fleet> newFleetMap;
 	for(Fleet & fleet: fleetMap | boost::adaptors::map_values)
-		newFleetMap.insert(make_pair(fleet.id, fleet));
+	{
+		if(boost::accumulate(fleet.shipList, 0) > 0) //Si flotte vide, on garde pas
+			newFleetMap.insert(make_pair(fleet.id, fleet));
+	}
 	UpToUniqueLock writeLock(lock);
 	newFleetMap.swap(univ_.fleetMap);
 
@@ -817,27 +811,26 @@ void Simulation::loop()
 
 void Simulation::save(std::string const& saveName) const
 {
-	Universe clone;
+	auto savingFunc = [](Universe const & clone, std::string const & saveName)
 	{
-		SharedLock lock(univ_.mutex);
-		clone = univ_;
-	}
+		using namespace std;
+		std::string const newSaveName = saveName + ".new";
+		{
+			ofstream saveFile(newSaveName.c_str(), ios::out | ios::binary);
+			if(saveFile.is_open() == false)
+				BOOST_THROW_EXCEPTION(std::ios::failure("Can't save in " + newSaveName));
+			saveToStream(clone, saveFile);
+		}
+		std::string const ansSaveName = saveName + ".ans";
+		remove(ansSaveName.c_str());
+		struct stat buf;
+		if(stat(saveName.c_str(), &buf) == 0)
+			rename(saveName.c_str(), ansSaveName.c_str());
+		rename(newSaveName.c_str(), saveName.c_str());
+	};
 
-	using namespace std;
-	std::string const newSaveName = saveName + ".new";
-	{
-		ofstream saveFile(newSaveName.c_str(), ios::out | ios::binary);
-		if(saveFile.is_open() == false)
-			BOOST_THROW_EXCEPTION(std::ios::failure("Can't save in " + newSaveName));
-		saveToStream(clone, saveFile);
-	}
-	std::string const ansSaveName = saveName + ".ans";
-	remove(ansSaveName.c_str());
-	struct stat buf;
-	if(stat(saveName.c_str(), &buf) == 0)
-		rename(saveName.c_str(), ansSaveName.c_str());
-	rename(newSaveName.c_str(), saveName.c_str());
-	//std::cout << "OK" << std::endl;
+	SharedLock lock(univ_.mutex);
+	boost::thread savingThread(savingFunc, univ_, saveName);
 }
 
 void Simulation::removeOldSaves() const

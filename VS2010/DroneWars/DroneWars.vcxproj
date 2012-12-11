@@ -89,6 +89,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">-Zm129 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="..\..\src\NameGen.cpp" />
     <ClCompile Include="..\..\src\OutPage.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
@@ -137,6 +138,7 @@
     <ClInclude Include="..\..\src\LuaUniverse.h" />
     <ClInclude Include="..\..\src\MessageView.h" />
     <ClInclude Include="..\..\src\Model.h" />
+    <ClInclude Include="..\..\src\NameGen.h" />
     <ClInclude Include="..\..\src\OutPage.h" />
     <ClInclude Include="..\..\src\PlanetViewWT.h" />
     <ClInclude Include="..\..\src\Player.h" />

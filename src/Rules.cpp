@@ -27,7 +27,7 @@ void getBlocklyHTML(size_t tutoLevel, std::string const& codecontext, std::ostre
 	    filter("    <script type=\"text/javascript\" src=\"blockly/language/common/lists.js\">         </script>\n", 10) <<
 	    filter("    <script type=\"text/javascript\" src=\"blockly/language/common/logic.js\">         </script>\n", 0) <<
 	    filter("    <script type=\"text/javascript\" src=\"blockly/language/common/math.js\">          </script>\n", 0) <<
-	    filter("    <script type=\"text/javascript\" src=\"blockly/language/common/procedures.js\">    </script>\n", 0) <<
+	    filter("    <script type=\"text/javascript\" src=\"blockly/language/common/procedures.js\">    </script>\n", 10) <<
 	    filter("    <script type=\"text/javascript\" src=\"blockly/language/common/variables.js\">     </script>\n", 0) <<
 	    "    <script type=\"text/javascript\" src=\"blockly_adds/generators/lua.js\">           </script>\n"
 	    "    <script type=\"text/javascript\" src=\"blockly_adds/generators/lua/control.js\">   </script>\n"
@@ -145,7 +145,7 @@ void checkTutos(Universe& univ_, UpgradeLock& lock, std::vector<Signal>& signals
 					                 [&](Fleet const & fleet)
 					{
 						return fleet.playerId == player.id &&
-						       fleet.shipList[Ship::Mosquito] == 10;
+						       fleet.shipList[Ship::Mosquito] == 5;
 					});
 					if(count == 3)
 						wisePlayer.push_back(&player);

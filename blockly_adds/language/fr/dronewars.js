@@ -2,8 +2,8 @@
 Blockly.LANG_CATEGORY_DRONEWARS_PLANET = 'DroneWars: Planète';
 Blockly.LANG_CATEGORY_DRONEWARS_COORD = 'DroneWars: Coordonées';
 Blockly.LANG_CATEGORY_DRONEWARS_FLEET = 'DroneWars: Flotte';
-Blockly.LANG_CATEGORY_DRONEWARS_FLEETACTION = 'DroneWars: Action';
-Blockly.LANG_CATEGORY_DRONEWARS_PLANETACTION = 'DroneWars: Action';
+Blockly.LANG_CATEGORY_DRONEWARS_FLEETACTION = 'DroneWars: Ordre';
+Blockly.LANG_CATEGORY_DRONEWARS_PLANETACTION = 'DroneWars: Ordre';
 Blockly.LANG_CATEGORY_DRONEWARS_RESSOURCESET = 'DroneWars: Ressources';
 
 Blockly.LANG_DRONEWARS_COORD = 'coordonées';
