@@ -82,11 +82,15 @@ public:
 			}
 		}
 
-		WContainerWidget* tutosContainer = new WContainerWidget(container);
-		tutosContainer->addStyleClass("manual");
-		WText* totuText = new WText(tutosContainer);
-		totuText->setTextFormat(Wt::XHTMLUnsafeText);
-		totuText->setText(getTutoText(plLvl));
+		std::string const tutosText = getTutoText(plLvl);
+		if(tutosText.empty() == false)
+		{
+			WContainerWidget* tutosContainer = new WContainerWidget(container);
+			tutosContainer->addStyleClass("manual");
+			WText* totuText = new WText(tutosContainer);
+			totuText->setTextFormat(Wt::XHTMLUnsafeText);
+			totuText->setText(tutosText);
+		}
 
 		WText* frame = new WText(container);
 		frame->setTextFormat(Wt::XHTMLUnsafeText);
