@@ -542,7 +542,7 @@ bool canStop(Planet const& planet, Building::Enum type);
 
 void stopTask(Planet& planet, PlanetTask::Enum tasktype, Building::Enum building);
 
-void planetRound(Universe& univ, Planet& planet, time_t time, std::vector<::Signal>& signals);
+void planetRound(Universe& univ, Planet& planet, time_t time, std::vector<Signal>& signals);
 
 void fleetRound(Universe& univ, Fleet& fleet, time_t time, std::vector<Signal>& signals);
 

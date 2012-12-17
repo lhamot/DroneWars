@@ -233,7 +233,6 @@ public:
 
 	~TextEditor()
 	{
-		std::cout << __FUNCTION__ << std::endl;
 	}
 
 

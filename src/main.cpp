@@ -121,16 +121,16 @@ try
 }
 catch(boost::exception& e)
 {
-	std::cout << boost::diagnostic_information(e) << std::endl;
+	std::cerr << boost::diagnostic_information(e) << std::endl;
 	return 1;
 }
 catch(std::exception& e)
 {
-	std::cout << boost::diagnostic_information(e) << std::endl;
+	std::cerr << boost::diagnostic_information(e) << std::endl;
 	return 1;
 }
 catch(...)
 {
-	std::cout << "Error <unknown>" << std::endl;
+	std::cerr << boost::current_exception_diagnostic_information() << std::endl;
 	return 1;
 }

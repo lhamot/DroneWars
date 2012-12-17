@@ -66,9 +66,7 @@ add_executable(
     src/stdafx.cpp
     src/stl_container_adapter.cpp
     src/TranslationTools.cpp
-    src/Rules.h
-    src/serialize_unordered_map.h
-    src/Tools.h
+    src/Rules.cpp
 )
 
 target_link_libraries( DroneWars debug wtd )
