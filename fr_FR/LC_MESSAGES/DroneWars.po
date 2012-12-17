@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-13 19:22+0100\n"
-"PO-Revision-Date: 2012-12-13 19:22+0100\n"
+"POT-Creation-Date: 2012-12-17 22:29+0100\n"
+"PO-Revision-Date: 2012-12-17 22:30+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "Language: fr\n"
@@ -22,88 +22,72 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: bit_them_allWT.cpp:48
+#: bit_them_allWT.cpp:49
 msgid "Planet"
 msgstr "Planète"
 
-#: bit_them_allWT.cpp:52
+#: bit_them_allWT.cpp:53
 msgid "Fleet"
 msgstr "Flotte"
 
-#: bit_them_allWT.cpp:92
-msgid "List of your planets"
-msgstr "Liste de vos planètes:"
-
-#: bit_them_allWT.cpp:164
+#: bit_them_allWT.cpp:135
 msgid "Refresh"
 msgstr "Mettre a jour"
 
-#: bit_them_allWT.cpp:178 bit_them_allWT.cpp:257
+#: bit_them_allWT.cpp:149 bit_them_allWT.cpp:228
 msgid "Planets"
 msgstr "Planètes"
 
-#: bit_them_allWT.cpp:179 bit_them_allWT.cpp:258
+#: bit_them_allWT.cpp:150 bit_them_allWT.cpp:229
 msgid "Fleets"
 msgstr "Flottes"
 
-#: bit_them_allWT.cpp:180 bit_them_allWT.cpp:259
+#: bit_them_allWT.cpp:151 bit_them_allWT.cpp:230
 msgid "Code"
 msgstr "Code"
 
-#: bit_them_allWT.cpp:181 bit_them_allWT.cpp:260 FleetViewWT.cpp:45
+#: bit_them_allWT.cpp:152 bit_them_allWT.cpp:231 FleetViewWT.cpp:44
 msgid "Reports"
 msgstr "Raports"
 
-#: bit_them_allWT.cpp:198 bit_them_allWT.cpp:209 bit_them_allWT.cpp:220
-#: bit_them_allWT.cpp:231
+#: bit_them_allWT.cpp:169 bit_them_allWT.cpp:180 bit_them_allWT.cpp:191
+#: bit_them_allWT.cpp:202
 msgid "Tutorial"
 msgstr "Tutoriel"
 
-#: bit_them_allWT.cpp:198
+#: bit_them_allWT.cpp:169
 msgid "PLANET_TUTOS"
 msgstr ""
 "Ici, vous verez la liste de vos planètes. Cliquez sur l'une d'elle pour en "
 "savoir plus."
 
-#: bit_them_allWT.cpp:209
+#: bit_them_allWT.cpp:180
 msgid "FLEET_TUTOS"
 msgstr ""
 "Ici, vous verrez la liste de vos flottes. Si vous n'avez pas demandé à vos "
 "planètes d'en fabriquer."
 
-#: bit_them_allWT.cpp:220
+#: bit_them_allWT.cpp:191
 msgid "CODE_TUTOS"
 msgstr ""
 "Ici, vous pourrez définir la ligne de conduite de vos amiraux(flottes) et "
 "gouverneurs(planètes)."
 
-#: bit_them_allWT.cpp:231
+#: bit_them_allWT.cpp:202
 msgid "REPORT_TUTOS"
 msgstr ""
 "Ici vous verrez les 10 dernier évenement important qui ce sont produit dans "
 "votre empire."
 
-#: bit_them_allWT.cpp:275 PlanetViewWT.cpp:140 PlanetViewWT.cpp:159
-msgid "Name"
-msgstr "Nom"
-
-#: bit_them_allWT.cpp:281 bit_them_allWT.cpp:327
-msgid "Ressources"
-msgstr "Resources"
-
-#: bit_them_allWT.cpp:326
-msgid "Contents"
-msgstr "Contenu"
-
-#: bit_them_allWT.cpp:376
+#: bit_them_allWT.cpp:245
 msgid "Time"
 msgstr "Temps"
 
-#: bit_them_allWT.cpp:377 FleetViewWT.cpp:59 PlanetViewWT.cpp:97
+#: bit_them_allWT.cpp:246 FleetViewWT.cpp:61 PlanetViewWT.cpp:130
 msgid "Type"
 msgstr "Type"
 
-#: bit_them_allWT.cpp:378
+#: bit_them_allWT.cpp:247
 msgid "Message"
 msgstr "Message"
 
@@ -147,11 +131,19 @@ msgstr "Visuel"
 msgid "Text"
 msgstr "Texte"
 
-#: FleetViewWT.cpp:58
+#: FleetsView.cpp:61
+msgid "Contents"
+msgstr "Contenu"
+
+#: FleetsView.cpp:62 PlanetsView.cpp:84
+msgid "Ressources"
+msgstr "Resources"
+
+#: FleetViewWT.cpp:60
 msgid "Date"
 msgstr "Date"
 
-#: FleetViewWT.cpp:60
+#: FleetViewWT.cpp:62
 msgid "Comment"
 msgstr "Commentaire"
 
@@ -177,11 +169,11 @@ msgstr "Non"
 msgid "Is dead"
 msgstr "Est détruit"
 
-#: MessageView.cpp:139 MessageView.cpp:175 PlanetViewWT.cpp:98
+#: MessageView.cpp:139 MessageView.cpp:175 PlanetViewWT.cpp:131
 msgid "Start"
 msgstr "Debut"
 
-#: MessageView.cpp:142 MessageView.cpp:177 PlanetViewWT.cpp:99
+#: MessageView.cpp:142 MessageView.cpp:177 PlanetViewWT.cpp:132
 msgid "End"
 msgstr "Fin"
 
@@ -292,23 +284,39 @@ msgstr "L'enregistrement as reussit."
 msgid "Login still exist."
 msgstr "Cet identifiant existe déja."
 
-#: PlanetViewWT.cpp:82
+#: PlanetsView.cpp:26
+msgid "List of your planets"
+msgstr "Liste de vos planètes:"
+
+#: PlanetsView.cpp:81
+msgid "View"
+msgstr "Visuel"
+
+#: PlanetsView.cpp:82 PlanetViewWT.cpp:137 PlanetViewWT.cpp:142
+msgid "Name"
+msgstr "Nom"
+
+#: PlanetsView.cpp:83
+msgid "Coordinate"
+msgstr "Coordonées"
+
+#: PlanetViewWT.cpp:96
 msgid "Buildings"
 msgstr "Bâtiments"
 
-#: PlanetViewWT.cpp:83
+#: PlanetViewWT.cpp:97
 msgid "Cannons"
 msgstr "Canons"
 
-#: PlanetViewWT.cpp:84
+#: PlanetViewWT.cpp:98
 msgid "Tasks"
 msgstr "Taches"
 
-#: PlanetViewWT.cpp:100
+#: PlanetViewWT.cpp:133
 msgid "What"
 msgstr "Quoi"
 
-#: PlanetViewWT.cpp:141 PlanetViewWT.cpp:160
+#: PlanetViewWT.cpp:138 PlanetViewWT.cpp:143
 msgid "Level"
 msgstr "Niveau"
 

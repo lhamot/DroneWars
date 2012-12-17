@@ -9,16 +9,17 @@ class Engine;
 
 class PlanetViewWT : public Wt::WContainerWidget
 {
-	void refresh();
-
 public:
 	PlanetViewWT(
 	  WContainerWidget* parent,
-	  Engine& eng,
-	  Player::ID playerID,
-	  Coord planet);
+	  Engine& eng);
+
+	void setPlanet(Coord planet);
+
+	static std::string getPlanetImagePath(Coord const& coord, bool miniature);
 
 private:
+	void refresh();
 	Wt::WContainerWidget* createTasksTab(Wt::WContainerWidget*);
 	Wt::WContainerWidget* createBuildingsTab(Wt::WContainerWidget*);
 	Wt::WContainerWidget* createCannonsTab(Wt::WContainerWidget*);
@@ -30,7 +31,7 @@ private:
 	Wt::WTableView* tasksView_;
 	Wt::WTableView* buildingsView_;
 	Wt::WTableView* cannonsView_;
-
+	Wt::WImage* image_;
 };
 
 #endif //__PLANET_VIEW__

@@ -118,7 +118,6 @@ try
 	{
 		return createApplication(env, engine);
 	});
-	return 0;
 }
 catch(boost::exception& e)
 {

@@ -2,11 +2,12 @@
 #include "bit_them_allWT.h"
 
 #include "PlanetViewWT.h"
-#include "FleetViewWT.h"
+#include "PlanetsView.h"
 #include "MessageView.h"
 #include "TranslationTools.h"
 #include "Editor.h"
 #include "Engine.h"
+#include "FleetsView.h"
 #include <boost/format.hpp>
 
 using namespace Wt;
@@ -86,60 +87,13 @@ WWidget* bit_them_allWT::createReportTab(WContainerWidget* parent)
 
 WWidget* bit_them_allWT::createPlanetsTab(WContainerWidget* parent)
 {
-	WContainerWidget* superPlanetsTab = new WContainerWidget(parent);
-	WContainerWidget* titleCont = new WContainerWidget(superPlanetsTab);
-	titleCont->addStyleClass("manual");
-	new WText(gettext("List of your planets"), titleCont);
-
-	WContainerWidget* planetsTab = new WContainerWidget(superPlanetsTab);
-	planetsTab->setTabIndex(0);
-	Wt::WHBoxLayout* layout = new Wt::WHBoxLayout();
-	planetsTab->setLayout(layout);
-
-	planetsView_ = new WTableView(planetsTab);
-
-	planetsView_->setHeight(600);
-
-	planetsView_->setAlternatingRowColors(true);
-	planetsView_->clicked().connect(this, &bit_them_allWT::on_planetTable_itemDoubleClicked);
-	planetsView_->setColumnWidth(1, 40);
-	planetsView_->setColumnWidth(2, 40);
-	planetsView_->setColumnWidth(3, 40);
-	planetsView_->setColumnWidth(4, 20);
-	planetsView_->setColumnWidth(5, 20);
-	planetsView_->setColumnWidth(6, 200);
-	layout->addWidget(planetsView_);
-
-	planetLayout_ = layout;
-
-	return superPlanetsTab;
+	return new PlanetsView(parent, engine_, logged_);
 }
 
 
 WWidget* bit_them_allWT::createFleetsTab(WContainerWidget* parent)
 {
-	WContainerWidget* fleetsTab = new WContainerWidget(parent);
-	fleetsTab->setTabIndex(1);
-	Wt::WHBoxLayout* layout = new Wt::WHBoxLayout();
-	fleetsTab->setLayout(layout);
-
-	fleetsView_ = new WTableView(fleetsTab);
-
-	fleetsView_->setHeight(600);
-
-	fleetsView_->setAlternatingRowColors(true);
-	fleetsView_->clicked().connect(this, &bit_them_allWT::on_fleetTable_itemDoubleClicked);
-	fleetsView_->setColumnWidth(0, 40);
-	fleetsView_->setColumnWidth(1, 40);
-	fleetsView_->setColumnWidth(2, 40);
-	fleetsView_->setColumnWidth(3, 20);
-	fleetsView_->setColumnWidth(4, 100);
-	fleetsView_->setColumnWidth(5, 100);
-	layout->addWidget(fleetsView_);
-
-	fleetLayout_ = layout;
-
-	return fleetsTab;
+	return new FleetsView(parent, engine_, logged_);
 }
 
 
@@ -151,11 +105,7 @@ bit_them_allWT::bit_them_allWT(Wt::WContainerWidget* parent, Engine& engine, Pla
 	planetCode_(nullptr),
 	codeTab_(nullptr),
 	eventView_(nullptr),
-	planetsView_(nullptr),
-	fleetsView_(nullptr),
-	messageLayout_(nullptr),
-	fleetLayout_(nullptr),
-	planetLayout_(nullptr)
+	messageLayout_(nullptr)
 {
 
 
@@ -269,114 +219,12 @@ void bit_them_allWT::refresh()
 
 	tab->select(index1);
 
-	int row = 0;
-	std::vector<Planet> planetList = engine_.getPlayerPlanets(logged_);
-	Wt::WStandardItemModel* plModel = new Wt::WStandardItemModel((int)planetList.size(), 7, this);
-	plModel->setHeaderData(0, Horizontal, WString(gettext("Name")), DisplayRole);
-	plModel->setHeaderData(1, Horizontal, WString("X"), DisplayRole);
-	plModel->setHeaderData(2, Horizontal, WString("Y"), DisplayRole);
-	plModel->setHeaderData(3, Horizontal, WString("Z"), DisplayRole);
-	plModel->setHeaderData(4, Horizontal, WString(""), DisplayRole);
-	plModel->setHeaderData(5, Horizontal, WString(""), DisplayRole);
-	plModel->setHeaderData(6, Horizontal, WString(gettext("Ressources")), DisplayRole);
-	for(Planet const & planet: planetList)
-	{
-		Wt::WStandardItem* item = new Wt::WStandardItem();
-		item->setData(planet.name, DisplayRole);
-		plModel->setItem(row, 0, item);
-
-		item = new Wt::WStandardItem();
-		item->setData(planet.coord.X, DisplayRole);
-		plModel->setItem(row, 1, item);
-
-		item = new Wt::WStandardItem();
-		item->setData(planet.coord.Y, DisplayRole);
-		plModel->setItem(row, 2, item);
-
-		item = new Wt::WStandardItem();
-		item->setData(planet.coord.Z, DisplayRole);
-		plModel->setItem(row, 3, item);
-
-		std::string ressStr;
-		for(int i = 0; i < Ressource::Count; ++i)
-		{
-			ressStr += (
-			             boost::format("%1$c:%2%; ") %
-			             getRessourceName(static_cast<Ressource::Enum>(i)) %
-			             planet.ressourceSet.tab[i]).str();
-		}
-
-		item = new Wt::WStandardItem();
-		item->setData(ressStr, DisplayRole);
-		plModel->setItem(row, 6, item);
-
-		row += 1;
-	}
-	planetsView_->setModel(plModel);
-
-
-
-	row = 0;
-	std::vector<Fleet> fleetList = engine_.getPlayerFleets(logged_);
-	Wt::WStandardItemModel* flModel = new Wt::WStandardItemModel((int)fleetList.size(), 6, this);
-	flModel->setHeaderData(0, Horizontal, WString("X"), DisplayRole);
-	flModel->setHeaderData(1, Horizontal, WString("Y"), DisplayRole);
-	flModel->setHeaderData(2, Horizontal, WString("Z"), DisplayRole);
-	flModel->setHeaderData(3, Horizontal, WString(""), DisplayRole);
-	flModel->setHeaderData(4, Horizontal, WString(gettext("Contents")), DisplayRole); //Pas bon
-	flModel->setHeaderData(5, Horizontal, WString(gettext("Ressources")), DisplayRole); //Pas bon
-	for(Fleet const & fleet: fleetList)
-	{
-		Wt::WStandardItem* item = new Wt::WStandardItem();
-		item->setData(fleet.coord.X, DisplayRole);
-		item->setData(fleet.id, UserRole);
-		flModel->setItem(row, 0, item);
-
-		item = new Wt::WStandardItem();
-		item->setData(fleet.coord.Y, DisplayRole);
-		flModel->setItem(row, 1, item);
-
-		item = new Wt::WStandardItem();
-		item->setData(fleet.coord.Z, DisplayRole);
-		flModel->setItem(row, 2, item);
-
-		item = new Wt::WStandardItem();
-		item->setData(fleet.name, DisplayRole);
-		flModel->setItem(row, 3, item);
-
-		std::string content;
-		for(int i = 0; i < Ship::Count; ++i)
-		{
-			if(fleet.shipList[i])
-				content += (boost::format("%1$c:%2%; ") %
-				            getShipName(static_cast<Ship::Enum>(i)) %
-				            fleet.shipList[i]).str();
-		}
-		item = new Wt::WStandardItem();
-		item->setData(content, DisplayRole);
-		flModel->setItem(row, 4, item);
-
-		std::string ressStr;
-		for(int i = 0; i < Ressource::Count; ++i)
-		{
-			ressStr += (boost::format("%1$c:%2%; ") %
-			            getRessourceName(static_cast<Ressource::Enum>(i)) %
-			            fleet.ressourceSet.tab[i]).str();
-		}
-		item = new Wt::WStandardItem();
-		item->setData(ressStr, DisplayRole);
-		flModel->setItem(row, 5, item);
-
-		row += 1;
-	}
-	fleetsView_->setModel(flModel);
-
 	Player player = engine_.getPlayer(logged_);
 	Wt::WStandardItemModel* model = new Wt::WStandardItemModel((int)player.eventList.size(), 3, this);
 	model->setHeaderData(0, Horizontal, WString(gettext("Time")), DisplayRole);
 	model->setHeaderData(1, Horizontal, WString(gettext("Type")), DisplayRole);
 	model->setHeaderData(2, Horizontal, WString(gettext("Message")), DisplayRole);
-	row = 0;
+	int row = 0;
 	for(Event const & ev: player.eventList)
 	{
 		Wt::WStandardItem* item = new Wt::WStandardItem();
@@ -402,39 +250,6 @@ void bit_them_allWT::refresh()
 void bit_them_allWT::on_refreshButton_clicked()
 {
 	refresh();
-}
-
-void bit_them_allWT::on_planetTable_itemDoubleClicked(WModelIndex const& index, WMouseEvent const&)
-{
-	WStandardItemModel& model = dynamic_cast<WStandardItemModel&>(*planetsView_->model());
-	Coord::Value const x = any_cast<Coord::Value>(model.data(index.row(), 1, DisplayRole));
-	Coord::Value const y = any_cast<Coord::Value>(model.data(index.row(), 2, DisplayRole));
-	Coord::Value const z = any_cast<Coord::Value>(model.data(index.row(), 3, DisplayRole));
-
-	PlanetViewWT* planetView = new PlanetViewWT(
-	  &dynamic_cast<WContainerWidget&>(*planetLayout_->parent()), engine_, logged_, Coord(x, y, z));
-
-	if(planetLayout_->count() > 1)
-	{
-		WLayoutItem* item = planetLayout_->itemAt(1);
-		planetLayout_->removeItem(item);
-	}
-	planetLayout_->addWidget(planetView);
-}
-
-void bit_them_allWT::on_fleetTable_itemDoubleClicked(WModelIndex const& index, WMouseEvent const&)
-{
-	WStandardItemModel& model = dynamic_cast<WStandardItemModel&>(*fleetsView_->model());
-	Fleet::ID fleetID = any_cast<Fleet::ID>(model.data(index.row(), 0, UserRole));
-
-	if(fleetLayout_->count() > 1)
-	{
-		WLayoutItem* item = fleetLayout_->itemAt(1);
-		fleetLayout_->removeItem(item);
-	}
-	FleetViewWT* fleetView = new FleetViewWT(
-	  &dynamic_cast<WContainerWidget&>(*fleetLayout_->parent()), engine_, logged_, fleetID);
-	fleetLayout_->addWidget(fleetView);
 }
 
 

@@ -317,6 +317,7 @@ struct Fleet
 	}
 
 	typedef size_t ID;
+	static ID const NoID = ID(-1);
 	ID id;
 	Player::ID playerId;
 	Coord coord;

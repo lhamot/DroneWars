@@ -31,48 +31,55 @@ Wt::WContainerWidget* FleetViewWT::createReportsTab(Wt::WContainerWidget* parent
 FleetViewWT::FleetViewWT(
   WContainerWidget* parent,
   Engine& eng,
-  Player::ID, //playerID,
-  Fleet::ID fleetID):
+  Player::ID //playerID
+):
 	WContainerWidget(parent),
 	engine_(eng),
-	fleetID_(fleetID)
+	fleetID_(Fleet::NoID)
 {
 	Wt::WVBoxLayout* layout = new Wt::WVBoxLayout();
 	setLayout(layout);
-
 
 	WTabWidget* tab = new WTabWidget(this);
 	tab->addTab(createReportsTab(this), gettext("Reports"));
 	layout->addWidget(tab);
 
-
 	refresh();
 }
 
 
+void FleetViewWT::setFleet(Fleet::ID fleetID)
+{
+	fleetID_ = fleetID;
+	refresh();
+}
+
 void FleetViewWT::refresh()
 {
-	int row = 0;
-	Fleet fleet = engine_.getFleet(fleetID_);
-	Wt::WStandardItemModel* evModel = new Wt::WStandardItemModel((int)fleet.eventList.size(), 3, this);
-	evModel->setHeaderData(0, Horizontal, gettext("Date"), DisplayRole);
-	evModel->setHeaderData(1, Horizontal, gettext("Type"), DisplayRole);
-	evModel->setHeaderData(2, Horizontal, gettext("Comment"), DisplayRole);
-	for(Event const & ev: fleet.eventList)
+	Wt::WStandardItemModel* evModel = new Wt::WStandardItemModel(0, 3, this);
+	evModel->setHeaderData(0, Horizontal, WString(gettext("Date")), DisplayRole);
+	evModel->setHeaderData(1, Horizontal, WString(gettext("Type")), DisplayRole);
+	evModel->setHeaderData(2, Horizontal, WString(gettext("Comment")), DisplayRole);
+	if(fleetID_ != Fleet::NoID)
 	{
-		Wt::WStandardItem* item = new Wt::WStandardItem();
-		item->setData(timeToString(ev.time), DisplayRole);
-		evModel->setItem(row, 0, item);
+		Fleet fleet = engine_.getFleet(fleetID_);
+		int row = 0;
+		for(Event const & ev: fleet.eventList)
+		{
+			Wt::WStandardItem* item = new Wt::WStandardItem();
+			item->setData(timeToString(ev.time), DisplayRole);
+			evModel->setItem(row, 0, item);
 
-		item = new Wt::WStandardItem();
-		item->setData(getEventName(ev.type), DisplayRole);
-		evModel->setItem(row, 1, item);
+			item = new Wt::WStandardItem();
+			item->setData(getEventName(ev.type), DisplayRole);
+			evModel->setItem(row, 1, item);
 
-		item = new Wt::WStandardItem();
-		item->setData(ev.comment, DisplayRole);
-		evModel->setItem(row, 2, item);
+			item = new Wt::WStandardItem();
+			item->setData(ev.comment, DisplayRole);
+			evModel->setItem(row, 2, item);
 
-		row += 1;
+			row += 1;
+		}
 	}
 	reportsView_->setModel(evModel);
 

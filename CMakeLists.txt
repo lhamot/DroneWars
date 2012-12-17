@@ -51,13 +51,16 @@ add_executable(
     src/Editor.cpp
     src/Engine.cpp       
     src/fighting.cpp
+    src/FleetsView.cpp
     src/FleetViewWT.cpp
     src/LuaTools.cpp
     src/LuaUniverse.cpp
     src/main.cpp
     src/MessageView.cpp
     src/Model.cpp
+    src/NameGen.cpp
     src/OutPage.cpp
+    src/PlanetsView.cpp
     src/PlanetViewWT.cpp
     src/Simulation.cpp
     src/stdafx.cpp

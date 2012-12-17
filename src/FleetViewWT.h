@@ -18,8 +18,9 @@ public:
 	FleetViewWT(
 	  WContainerWidget* parent,
 	  Engine& eng,
-	  Player::ID playerID,
-	  Fleet::ID fleetID);
+	  Player::ID playerID);
+
+	void setFleet(Fleet::ID fleetID);
 
 private:
 	Wt::WContainerWidget* createReportsTab(Wt::WContainerWidget*);

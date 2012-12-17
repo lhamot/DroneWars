@@ -389,7 +389,7 @@ void execTask(Universe& univ,
 			else
 			{
 				planet.buildingList[task.value] += 1;
-				Event event(univ.nextEventID++, time, Event::Upgraded, "Building upgraded");
+				Event event(univ.nextEventID++, time, Event::Upgraded);
 				planet.eventList.push_back(event);
 				signals.push_back(Signal(planet.playerId, event));
 			}
@@ -399,7 +399,7 @@ void execTask(Universe& univ,
 			Fleet newFleet(univ.nextFleetID++, planet.playerId, planet.coord);
 			newFleet.shipList[task.value] += task.value2;
 			univ.fleetMap.insert(make_pair(newFleet.id, newFleet));
-			Event event(univ.nextEventID++, time, Event::ShipMade, "Ship made");
+			Event event(univ.nextEventID++, time, Event::ShipMade);
 			signals.push_back(Signal(planet.playerId, event));
 		}
 		break;
@@ -408,7 +408,7 @@ void execTask(Universe& univ,
 			{
 				//BOOST_THROW_EXCEPTION(std::logic_error("Unconsistent cannon type"));
 				planet.cannonTab[task.value] += 1;
-				Event event(univ.nextEventID++, time, Event::CannonMade, "New cannon");
+				Event event(univ.nextEventID++, time, Event::CannonMade);
 				planet.eventList.push_back(event);
 				signals.push_back(Signal(planet.playerId, event));
 			}

@@ -47,6 +47,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">-Zm129 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="..\..\src\FleetsView.cpp" />
     <ClCompile Include="..\..\src\FleetViewWT.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
@@ -97,6 +98,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">-Zm129 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="..\..\src\PlanetsView.cpp" />
     <ClCompile Include="..\..\src\PlanetViewWT.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
@@ -133,6 +135,7 @@
     <ClInclude Include="..\..\src\Editor.h" />
     <ClInclude Include="..\..\src\Engine.h" />
     <ClInclude Include="..\..\src\fighting.h" />
+    <ClInclude Include="..\..\src\FleetsView.h" />
     <ClInclude Include="..\..\src\FleetViewWT.h" />
     <ClInclude Include="..\..\src\LuaTools.h" />
     <ClInclude Include="..\..\src\LuaUniverse.h" />
@@ -140,6 +143,7 @@
     <ClInclude Include="..\..\src\Model.h" />
     <ClInclude Include="..\..\src\NameGen.h" />
     <ClInclude Include="..\..\src\OutPage.h" />
+    <ClInclude Include="..\..\src\PlanetsView.h" />
     <ClInclude Include="..\..\src\PlanetViewWT.h" />
     <ClInclude Include="..\..\src\Player.h" />
     <ClInclude Include="..\..\src\Rules.h" />
