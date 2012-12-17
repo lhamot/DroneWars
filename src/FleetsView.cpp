@@ -105,7 +105,7 @@ void FleetsView::refresh()
 
 
 void FleetsView::on_fleetTable_itemDoubleClicked(
-	WModelIndex const& index, WMouseEvent const&)
+  WModelIndex const& index, WMouseEvent const&)
 {
 	WAbstractItemModel* model = fleetsView_->model();
 	assert(model);

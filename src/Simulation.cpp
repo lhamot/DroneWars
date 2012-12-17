@@ -721,6 +721,7 @@ void openlibs(lua_State* L)
 }
 
 void Simulation::loop()
+try
 {
 	LuaTools::LuaEngine luaEngine;
 	//lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, 20000);
@@ -794,17 +795,23 @@ void Simulation::loop()
 			}
 			catch(std::exception const& ex)
 			{
-				std::cerr << typeid(ex).name() << " " << ex.what() << std::endl;
+				std::cerr << boost::diagnostic_information(ex) << std::endl;
 				throw;
 			}
 			catch(...)
 			{
-				std::cerr << "Not standard exception" << std::endl;
+				//std::cerr << "Not standard exception" << std::endl;
+				std::cerr << boost::current_exception_diagnostic_information() << std::endl;
 				throw;
 			}
 		else
 			boost::this_thread::sleep(boost::posix_time::milliseconds(100));
 	}
+}
+catch(std::exception const& ex)
+{
+	std::cerr << boost::diagnostic_information(ex) << std::endl;
+	throw;
 }
 
 
@@ -813,25 +820,34 @@ void Simulation::save(std::string const& saveName) const
 {
 	auto savingFunc = [](Universe const & clone, std::string const & saveName)
 	{
-		using namespace std;
-		std::string const newSaveName = saveName + ".new";
+		try
 		{
-			ofstream saveFile(newSaveName.c_str(), ios::out | ios::binary);
-			if(saveFile.is_open() == false)
-				BOOST_THROW_EXCEPTION(std::ios::failure("Can't save in " + newSaveName));
-			saveToStream(clone, saveFile);
+			using namespace std;
+			std::string const newSaveName = saveName + ".new";
+			{
+				ofstream saveFile(newSaveName.c_str(), ios::out | ios::binary);
+				if(saveFile.is_open() == false)
+					BOOST_THROW_EXCEPTION(std::ios::failure("Can't save in " + newSaveName));
+				saveToStream(clone, saveFile);
+			}
+			std::string const ansSaveName = saveName + ".ans";
+			remove(ansSaveName.c_str());
+			struct stat buf;
+			if(stat(saveName.c_str(), &buf) == 0)
+				rename(saveName.c_str(), ansSaveName.c_str());
+			rename(newSaveName.c_str(), saveName.c_str());
 		}
-		std::string const ansSaveName = saveName + ".ans";
-		remove(ansSaveName.c_str());
-		struct stat buf;
-		if(stat(saveName.c_str(), &buf) == 0)
-			rename(saveName.c_str(), ansSaveName.c_str());
-		rename(newSaveName.c_str(), saveName.c_str());
+		catch(std::exception const& ex)
+		{
+			std::cerr << boost::diagnostic_information(ex) << std::endl;
+			throw;
+		}
 	};
 
 	SharedLock lock(univ_.mutex);
 	boost::thread savingThread(savingFunc, univ_, saveName);
 }
+
 
 void Simulation::removeOldSaves() const
 {
