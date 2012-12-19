@@ -40,7 +40,8 @@ Engine::Engine():
 
 void Engine::load(std::string const& univName)
 {
-	UniqueLock lock(univ_.mutex);
+	UniqueLock lockPlayers(univ_.playersMutex);
+	UniqueLock lock(univ_.planetsFleetsReportsmutex);
 	using namespace std;
 	ifstream loadFile(univName, ios::in | ios::binary);
 	if(loadFile.is_open() == false)
@@ -78,7 +79,7 @@ void Engine::stop()
 
 bool Engine::addPlayer(std::string const& login, std::string const& password)
 {
-	UniqueLock lock(univ_.mutex);
+	UniqueLock lockPlayers(univ_.playersMutex);
 
 	if(login.size() > MaxStringSize)
 		BOOST_THROW_EXCEPTION(InvalidData("login"));
@@ -93,7 +94,8 @@ bool Engine::addPlayer(std::string const& login, std::string const& password)
 	if(iter != univ_.playerMap.end())
 		return false;
 
-	Player::ID const pid = createPlayer(univ_, login, password);
+	UniqueLock lock(univ_.planetsFleetsReportsmutex);
+	Player::ID const pid = createPlayer(univ_, login, password); //Modifie le joueur ET une planete
 	simulation_->reloadPlayer(pid);
 	return true;
 }
@@ -101,7 +103,7 @@ bool Engine::addPlayer(std::string const& login, std::string const& password)
 
 std::vector<Fleet> Engine::getPlayerFleets(Player::ID pid) const
 {
-	SharedLock lock(univ_.mutex);
+	SharedLock lock(univ_.planetsFleetsReportsmutex);
 	std::vector<Fleet> fleetList;
 	for(Fleet const & fleet: univ_.fleetMap | boost::adaptors::map_values)
 	{
@@ -114,7 +116,7 @@ std::vector<Fleet> Engine::getPlayerFleets(Player::ID pid) const
 
 std::vector<Planet> Engine::getPlayerPlanets(Player::ID pid) const
 {
-	SharedLock lock(univ_.mutex);
+	SharedLock lock(univ_.planetsFleetsReportsmutex);
 	std::vector<Planet> planetList;
 	for(Universe::PlanetMap::value_type const & planetNVP: univ_.planetMap)
 	{
@@ -127,7 +129,7 @@ std::vector<Planet> Engine::getPlayerPlanets(Player::ID pid) const
 
 void Engine::setPlayerFleetCode(Player::ID pid, std::string const& code)
 {
-	UniqueLock lock(univ_.mutex);
+	UniqueLock lock(univ_.playersMutex);
 	if(code.size() > Player::MaxCodeSize)
 		BOOST_THROW_EXCEPTION(InvalidData("code"));
 	mapFind(univ_.playerMap, pid)->second.fleetsCode.setCode(code);
@@ -137,7 +139,7 @@ void Engine::setPlayerFleetCode(Player::ID pid, std::string const& code)
 
 void Engine::setPlayerPlanetCode(Player::ID pid, std::string const& code)
 {
-	UniqueLock lock(univ_.mutex);
+	UniqueLock lock(univ_.playersMutex);
 	if(code.size() > Player::MaxCodeSize)
 		BOOST_THROW_EXCEPTION(InvalidData("code"));
 	mapFind(univ_.playerMap, pid)->second.planetsCode.setCode(code);
@@ -147,7 +149,7 @@ void Engine::setPlayerPlanetCode(Player::ID pid, std::string const& code)
 
 void Engine::setPlayerFleetBlocklyCode(Player::ID pid, std::string const& code)
 {
-	UniqueLock lock(univ_.mutex);
+	UniqueLock lock(univ_.playersMutex);
 	if(code.size() > Player::MaxCodeSize)
 		BOOST_THROW_EXCEPTION(InvalidData("code"));
 	mapFind(univ_.playerMap, pid)->second.fleetsCode.setBlocklyCode(code);
@@ -157,7 +159,7 @@ void Engine::setPlayerFleetBlocklyCode(Player::ID pid, std::string const& code)
 
 void Engine::setPlayerPlanetBlocklyCode(Player::ID pid, std::string const& code)
 {
-	UniqueLock lock(univ_.mutex);
+	UniqueLock lock(univ_.playersMutex);
 	if(code.size() > Player::MaxCodeSize)
 		BOOST_THROW_EXCEPTION(InvalidData("code"));
 	mapFind(univ_.playerMap, pid)->second.planetsCode.setBlocklyCode(code);
@@ -167,21 +169,21 @@ void Engine::setPlayerPlanetBlocklyCode(Player::ID pid, std::string const& code)
 
 CodeData Engine::getPlayerFleetCode(Player::ID pid) const
 {
-	SharedLock lock(univ_.mutex);
+	SharedLock lock(univ_.playersMutex);
 	return 	mapFind(univ_.playerMap, pid)->second.fleetsCode;
 }
 
 
 CodeData Engine::getPlayerPlanetCode(Player::ID pid) const
 {
-	SharedLock lock(univ_.mutex);
+	SharedLock lock(univ_.playersMutex);
 	return 	mapFind(univ_.playerMap, pid)->second.planetsCode;
 }
 
 
 std::vector<Player> Engine::getPlayers() const
 {
-	SharedLock lock(univ_.mutex);
+	SharedLock lock(univ_.playersMutex);
 	std::vector<Player> playerList;
 	boost::copy(univ_.playerMap | boost::adaptors::map_values, back_inserter(playerList));
 	return playerList;
@@ -189,19 +191,19 @@ std::vector<Player> Engine::getPlayers() const
 
 Player Engine::getPlayer(Player::ID pid) const
 {
-	SharedLock lock(univ_.mutex);
+	SharedLock lock(univ_.playersMutex);
 	return mapFind(univ_.playerMap, pid)->second;
 }
 
 Planet Engine::getPlanet(Coord coord) const
 {
-	SharedLock lock(univ_.mutex);
+	SharedLock lock(univ_.planetsFleetsReportsmutex);
 	return mapFind(univ_.planetMap, coord)->second;
 }
 
 Fleet Engine::getFleet(Fleet::ID fid)
 {
-	SharedLock lock(univ_.mutex);
+	SharedLock lock(univ_.planetsFleetsReportsmutex);
 	return mapFind(univ_.fleetMap, fid)->second;
 }
 
@@ -209,7 +211,7 @@ Fleet Engine::getFleet(Fleet::ID fid)
 boost::optional<Player> Engine::getPlayer(
   std::string const& login, std::string const& password) const
 {
-	SharedLock lock(univ_.mutex);
+	SharedLock lock(univ_.playersMutex);
 	auto iter = boost::find_if(univ_.playerMap, [&]
 	                           (Universe::PlayerMap::value_type const & player)
 	{
@@ -224,13 +226,13 @@ boost::optional<Player> Engine::getPlayer(
 
 FightReport Engine::getFightReport(size_t id)
 {
-	SharedLock lock(univ_.mutex);
+	SharedLock lock(univ_.planetsFleetsReportsmutex);
 	return mapFind(univ_.reportMap, id)->second;
 }
 
 void Engine::incrementTutoDisplayed(Player::ID pid, std::string const& tutoName)
 {
-	UniqueLock lock(univ_.mutex);
+	UniqueLock lock(univ_.playersMutex);
 	mapFind(univ_.playerMap, pid)->second.tutoDisplayed[tutoName] += 1;
 }
 

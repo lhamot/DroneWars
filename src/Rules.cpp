@@ -82,8 +82,11 @@ typedef boost::shared_lock<Universe::Mutex> SharedLock;
 typedef boost::upgrade_lock<Universe::Mutex> UpgradeLock;
 typedef boost::upgrade_to_unique_lock<Universe::Mutex> UpToUniqueLock;
 
-void checkTutos(Universe& univ_, UpgradeLock& lock, std::vector<Signal>& signals)
+void checkTutos(Universe& univ_, std::vector<Signal>& signals)
 {
+	UpgradeLock lockPlayer(univ_.playersMutex);
+	SharedLock lockAllOthers(univ_.planetsFleetsReportsmutex);
+
 	std::vector<Player*> wisePlayer;
 	wisePlayer.reserve(univ_.playerMap.size());
 	for(Player & player: univ_.playerMap | boost::adaptors::map_values)
@@ -215,7 +218,7 @@ void checkTutos(Universe& univ_, UpgradeLock& lock, std::vector<Signal>& signals
 		}
 	}
 
-	UpToUniqueLock writeLock(lock);
+	UpToUniqueLock writeLock(lockPlayer);
 	for(Player * player: wisePlayer)
 		player->tutoDisplayed[CoddingLevelTag] += 1;
 }

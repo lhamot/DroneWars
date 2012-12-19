@@ -167,6 +167,7 @@ try
 }
 catch(luabind::error& ex)
 {
+	UniqueLock lockPlayer(univ_.playersMutex);
 	std::string const message = GetLuabindErrorString(ex);
 	Player& player = mapFind(univ_.playerMap, planet.playerId)->second;
 	player.planetsCode.newError(message);//ex.what() + string(" ") + ss.str());
@@ -176,6 +177,7 @@ catch(luabind::error& ex)
 }
 catch(std::exception const& ex)
 {
+	UniqueLock lockPlayer(univ_.playersMutex);
 	Event event(univ_.nextEventID++, time, Event::FleetCodeError, ex.what());
 	mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(event);
 	signals.push_back(Signal(planet.playerId, event));
@@ -272,6 +274,7 @@ try
 }
 catch(luabind::error& ex)
 {
+	UniqueLock lockPlayer(univ_.playersMutex);
 	std::string const message = GetLuabindErrorString(ex);
 	Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
 	player.fleetsCode.newError(message);
@@ -282,6 +285,7 @@ catch(luabind::error& ex)
 }
 catch(std::exception const& ex)
 {
+	UniqueLock lockPlayer(univ_.playersMutex);
 	std::string const message = typeid(ex).name() + string(" ") + ex.what();
 	Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
 	player.fleetsCode.newError(message);
@@ -296,6 +300,8 @@ catch(std::exception const& ex)
 //! Ne modifie que codesMap
 void disableFailingCode(Universe const& univ_, PlayerCodeMap& codesMap)
 {
+	SharedLock lockPlayer(univ_.playersMutex);
+
 	for(Player const & player: univ_.playerMap | boost::adaptors::map_values)
 	{
 		if(player.planetsCode.getFailCount() >= MaxCodeExecTry)
@@ -315,6 +321,7 @@ void Simulation::updatePlayersCode(LuaTools::LuaEngine& luaEngine,
 	UniqueLock lockReload(reloadPlayerMutex_);
 	for(Player::ID pid: playerToReload_)
 	{
+		UniqueLock lockPlayers(univ_.playersMutex);
 		Player& player = mapFind(univ_.playerMap, pid)->second;
 		PlayerCodes newCodes =
 		{
@@ -328,11 +335,11 @@ void Simulation::updatePlayersCode(LuaTools::LuaEngine& luaEngine,
 
 
 void execPlanets(Universe& univ_,
-                 UpgradeLock& lock,
                  LuaTools::LuaEngine& luaEngine,
                  PlayerCodeMap& codesMap,
                  std::vector<Signal>& signals)
 {
+	UpgradeLock lockPlanet(univ_.planetsFleetsReportsmutex);
 	FleetCoordMap fleetMap;
 	for(Fleet const& fleet: univ_.fleetMap | boost::adaptors::map_values)
 		fleetMap.insert(make_pair(fleet.coord, fleet));
@@ -341,7 +348,7 @@ void execPlanets(Universe& univ_,
 	std::vector<Fleet const*> fleetList;
 	for(Universe::PlanetMap::value_type & planetNVP: univ_.planetMap)
 	{
-		UpToUniqueLock writeLock(lock);
+		UpToUniqueLock writeLock(lockPlanet);
 
 		Planet& planet = planetNVP.second;
 		if(planet.eventList.size() > 10)
@@ -358,8 +365,9 @@ void execPlanets(Universe& univ_,
 }
 
 //! Les combats
-void execFights(Universe& univ_, UpgradeLock& lock, std::vector<Signal>& signals)
+void execFights(Universe& univ_, std::vector<Signal>& signals)
 {
+	UpgradeLock lockFleets(univ_.planetsFleetsReportsmutex);
 	if(univ_.fleetMap.empty()) //si il y as des flottes
 		return;
 
@@ -403,7 +411,7 @@ void execFights(Universe& univ_, UpgradeLock& lock, std::vector<Signal>& signals
 				fleetVect.push_back(fighterPtr.getFleet());
 		}
 
-		UpToUniqueLock writeLock(lock);
+		UpToUniqueLock writeLock(lockFleets);
 		//! - On excecute le combats
 		FightReport fightReport;
 		fight(fleetVect, planetPtr, fightReport);
@@ -438,6 +446,7 @@ void execFights(Universe& univ_, UpgradeLock& lock, std::vector<Signal>& signals
 			Fleet& fleet = *fleetPtr;
 			if(report.isDead)
 			{
+				UniqueLock lockPlayer(univ_.playersMutex);
 				deadFleets.push_back(fleet.id);
 				Event event(univ_.nextEventID++, univ_.time, Event::FleetLose, reportID);
 				mapFind(univ_.playerMap, fleet.playerId)->second.eventList.push_back(event);
@@ -459,6 +468,7 @@ void execFights(Universe& univ_, UpgradeLock& lock, std::vector<Signal>& signals
 				lostPlanets.push_back(planet.coord);
 				if(planet.playerId != Player::NoId)
 				{
+					UniqueLock lockPlayer(univ_.playersMutex);
 					Event event(univ_.nextEventID++, univ_.time, Event::PlanetLose, reportID);
 					mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(event);
 					signals.push_back(Signal(planet.playerId, event));
@@ -475,7 +485,7 @@ void execFights(Universe& univ_, UpgradeLock& lock, std::vector<Signal>& signals
 		}
 	}
 
-	UpToUniqueLock writeLock(lock);
+	UpToUniqueLock writeLock(lockFleets);
 	//! On gère chaque planete perdues(onPlanetLose)
 	for(Coord planetCoord: lostPlanets)
 		onPlanetLose(planetCoord, univ_);
@@ -488,11 +498,12 @@ void execFights(Universe& univ_, UpgradeLock& lock, std::vector<Signal>& signals
 //! Excecutes les code des flottes
 void execFleets(
   Universe& univ_,
-  UpgradeLock& lock,
   LuaTools::LuaEngine& luaEngine,
   PlayerCodeMap& codesMap,
   std::vector<Signal>& signals)
 {
+	UpgradeLock lockFleets(univ_.planetsFleetsReportsmutex);
+
 	FleetCoordMap fleetMap;
 	for(Fleet & fleet: univ_.fleetMap | boost::adaptors::map_values)
 		fleetMap.insert(make_pair(fleet.coord, fleet));
@@ -500,7 +511,7 @@ void execFleets(
 	auto iter = fleetMap.begin();
 	while(iter != fleetMap.end())
 	{
-		UpToUniqueLock writeLock(lock);
+		UpToUniqueLock writeLock(lockFleets);
 
 		fleetRound(univ_, iter->second, univ_.time, signals);
 
@@ -527,7 +538,7 @@ void execFleets(
 		if(boost::accumulate(fleet.shipList, 0) > 0) //Si flotte vide, on garde pas
 			newFleetMap.insert(make_pair(fleet.id, fleet));
 	}
-	UpToUniqueLock writeLock(lock);
+	UpToUniqueLock writeLock(lockFleets);
 	newFleetMap.swap(univ_.fleetMap);
 
 	for(Fleet & fleet: univ_.fleetMap | boost::adaptors::map_values)
@@ -571,34 +582,31 @@ try
 
 	univ_.time += RoundSecond;
 
-	UpgradeLock lock(univ_.mutex);
-
 	//! Désactivation de tout les codes qui echoue
 	disableFailingCode(univ_, codesMap);
 
 	//! Rechargement des codes flote/planet des joueurs dont le code a été changé
-	{
-		UpToUniqueLock writeLock(lock);
-		updatePlayersCode(luaEngine, codesMap, signals);
-	}
+	updatePlayersCode(luaEngine, codesMap, signals);
 
 	//! Excecution du code des planetes(modifie l'univers)
-	execPlanets(univ_, lock, luaEngine, codesMap, signals);
+	//SharedLock writeLock(univ_.playersMutex);
+	execPlanets(univ_, luaEngine, codesMap, signals);
 
 	//! Les combats
-	execFights(univ_, lock, signals);
+	execFights(univ_, signals);
 
 	//! Les flottes
-	execFleets(univ_, lock, luaEngine, codesMap, signals);
+	execFleets(univ_, luaEngine, codesMap, signals);
 
 	//! Supprime evenement trop vieux dans les Player et les Rapport plus utile
 	{
-		UpToUniqueLock writeLock(lock);
+		UniqueLock lockPlayers(univ_.playersMutex);
+		UniqueLock lockAllOthers(univ_.planetsFleetsReportsmutex);
 		removeOldEvents(univ_);
 	}
 
 	//! CheckTutos
-	checkTutos(univ_, lock, signals);
+	checkTutos(univ_, signals);
 
 
 	//std::cout << lexical_cast<std::string>(time(0)) + "_save.bta ";
@@ -747,7 +755,7 @@ try
 	std::vector<Signal> signals;
 
 	{
-		UniqueLock lock(univ_.mutex);
+		UniqueLock lock(univ_.playersMutex);
 
 		//Chargement de tout les code flote/planet de tout les joueur(chargement dans python)
 		for(Universe::PlayerMap::value_type & playerNVP: univ_.playerMap)
@@ -848,7 +856,8 @@ void Simulation::save(std::string const& saveName) const
 		}
 	};
 
-	SharedLock lock(univ_.mutex);
+	SharedLock lockPlayers(univ_.playersMutex);
+	SharedLock lockAllOthers(univ_.planetsFleetsReportsmutex);
 	boost::thread savingThread(savingFunc, univ_, saveName);
 }
 

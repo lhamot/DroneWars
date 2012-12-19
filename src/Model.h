@@ -461,7 +461,8 @@ struct Universe
 	time_t time;
 
 	typedef boost::shared_mutex Mutex;
-	mutable Mutex mutex;
+	mutable Mutex planetsFleetsReportsmutex;
+	mutable Mutex playersMutex;
 
 	Universe(): 
 		nextPlayerID(0), 
