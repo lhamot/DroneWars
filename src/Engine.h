@@ -23,19 +23,12 @@ public:
 
 	void stop();
 
-	bool addPlayer(std::string const& login, std::string const& password);
+	void load(std::string const& univName);
 
+	//Requetes qui ne modifient pas la base
 	std::vector<Fleet> getPlayerFleets(Player::ID pid) const;
 
 	std::vector<Planet> getPlayerPlanets(Player::ID pid) const;
-
-	void setPlayerFleetCode(Player::ID pid, std::string const& code);
-
-	void setPlayerPlanetCode(Player::ID pid, std::string const& code);
-
-	void setPlayerFleetBlocklyCode(Player::ID pid, std::string const& code);
-
-	void setPlayerPlanetBlocklyCode(Player::ID pid, std::string const& code);
 
 	CodeData getPlayerFleetCode(Player::ID pid) const;
 
@@ -53,7 +46,16 @@ public:
 
 	FightReport getFightReport(size_t id);
 
-	void load(std::string const& univName);
+	//Requetes qui modifient la base
+	bool addPlayer(std::string const& login, std::string const& password);
+
+	void setPlayerFleetCode(Player::ID pid, std::string const& code);
+
+	void setPlayerPlanetCode(Player::ID pid, std::string const& code);
+
+	void setPlayerFleetBlocklyCode(Player::ID pid, std::string const& code);
+
+	void setPlayerPlanetBlocklyCode(Player::ID pid, std::string const& code);
 
 	void incrementTutoDisplayed(Player::ID pid, std::string const& tutoName);
 

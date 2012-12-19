@@ -100,6 +100,8 @@ void applyRound(std::vector<ShipInstance>& shipTab1, std::vector<ShipInstance>& 
 	}
 }
 
+
+//! Cette fonction modifie la flotte
 void fillFinalFleet(std::vector<ShipInstance> const& shipTab, Fleet& fleet) throw()
 {
 	Fleet::ShipTab& outTab = fleet.shipList;
@@ -108,6 +110,8 @@ void fillFinalFleet(std::vector<ShipInstance> const& shipTab, Fleet& fleet) thro
 		++outTab[ship.type];
 }
 
+
+//! Cette fonction modifie la planet
 void fillFinalFleet(std::vector<ShipInstance> const& shipTab, Planet& planet) throw()
 {
 	Planet::CannonTab& outTab = planet.cannonTab;
@@ -238,7 +242,7 @@ void fight(std::vector<Fleet*> const& fleetList,
 
 	reportList.fleetList.clear();
 	boost::transform(fleetList, back_inserter(reportList.fleetList),
-	[](Fleet * fleetPtr) {return Report<Fleet>(*fleetPtr);});
+	[](Fleet const* fleetPtr) {return Report<Fleet>(*fleetPtr);});
 	if(planet)
 	{
 		reportList.hasPlanet = true;

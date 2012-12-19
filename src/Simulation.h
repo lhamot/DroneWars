@@ -43,7 +43,7 @@ private:
 	void save(std::string const& univName) const;
 	void removeOldSaves() const;
 
-	boost::shared_mutex mutex_;
+	mutable boost::shared_mutex reloadPlayerMutex_;
 	std::set<Player::ID> playerToReload_;
 	Universe& univ_;
 };

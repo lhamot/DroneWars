@@ -463,7 +463,12 @@ struct Universe
 	typedef boost::shared_mutex Mutex;
 	mutable Mutex mutex;
 
-	Universe(): nextPlayerID(0), nextFleetID(0), nextEventID(0), nextFightID(0), time(0)
+	Universe(): 
+		nextPlayerID(0), 
+		nextFleetID(0), 
+		nextEventID(0), 
+		nextFightID(0), 
+		time(0)
 	{
 	}
 
@@ -542,8 +547,12 @@ bool canStop(Planet const& planet, Building::Enum type);
 
 void stopTask(Planet& planet, PlanetTask::Enum tasktype, Building::Enum building);
 
+//! Gere l'écoulement du temps sur la planète.
+//! Peut modifier la liste dse flotte et des planètes
 void planetRound(Universe& univ, Planet& planet, time_t time, std::vector<Signal>& signals);
 
+//! Gere l'écoulement du temps sur la flotte.
+//! Peut modifier la liste des flottes et des planètes
 void fleetRound(Universe& univ, Fleet& fleet, time_t time, std::vector<Signal>& signals);
 
 void gather(Fleet& fleet, Fleet const& otherFleet);
