@@ -242,7 +242,7 @@ void fight(std::vector<Fleet*> const& fleetList,
 
 	reportList.fleetList.clear();
 	boost::transform(fleetList, back_inserter(reportList.fleetList),
-	[](Fleet const* fleetPtr) {return Report<Fleet>(*fleetPtr);});
+	[](Fleet const * fleetPtr) {return Report<Fleet>(*fleetPtr);});
 	if(planet)
 	{
 		reportList.hasPlanet = true;

@@ -123,6 +123,9 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 		if(planet.playerId == Player::NoId)
 		{
 			planet.playerId = newPlayerID;
+			if(planet.playerId > 100000)
+				BOOST_THROW_EXCEPTION(std::logic_error("planet.playerId > 100000"));
+
 			playerIter->second.mainPlanet = planet.coord;
 
 			planet.buildingList[Building::CommandCenter] = 1;
@@ -460,6 +463,8 @@ void execTask(Universe& univ,
 				planet.buildingList[Building::CommandCenter] = 1;
 				boost::geometry::add_point(planet.ressourceSet.tab, RessourceSet(2000, 500, 0).tab);
 				planet.playerId = fleet.playerId;
+				if(planet.playerId > 100000)
+					BOOST_THROW_EXCEPTION(std::logic_error("planet.playerId > 100000"));
 			}
 		}
 		break;

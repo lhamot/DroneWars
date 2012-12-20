@@ -189,6 +189,7 @@ bool execFleet(Universe& univ_,
                Fleet& fleet,
                FleetCoordMap& fleetMap,
                time_t time,
+               std::set<Coord, CompCoord> const& mainPlanets,
                std::vector<Signal>& signals)
 try
 {
@@ -230,6 +231,8 @@ try
 	using namespace luabind;
 	FleetAction action(FleetAction::Nothing);
 	lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
+	if(planet && mainPlanets.count(planet->coord))
+		planet = nullptr;
 	if(planet)
 		action = luabind::call_member<FleetAction>(code, "action", boost::cref(fleet), boost::cref(*planet));
 	else
@@ -341,7 +344,7 @@ void execPlanets(Universe& univ_,
 {
 	UpgradeLock lockPlanet(univ_.planetsFleetsReportsmutex);
 	FleetCoordMap fleetMap;
-	for(Fleet const& fleet: univ_.fleetMap | boost::adaptors::map_values)
+	for(Fleet const & fleet: univ_.fleetMap | boost::adaptors::map_values)
 		fleetMap.insert(make_pair(fleet.coord, fleet));
 
 	//Les planètes
@@ -508,6 +511,22 @@ void execFleets(
 	for(Fleet & fleet: univ_.fleetMap | boost::adaptors::map_values)
 		fleetMap.insert(make_pair(fleet.coord, fleet));
 
+
+	//! Recuperation liste des planètes principale
+	std::set<Coord, CompCoord> mainPlanets;
+	{
+		std::vector<Coord> mainPlanetVect;
+		{
+			SharedLock lockPlayers(univ_.playersMutex);
+			mainPlanetVect.reserve(univ_.playerMap.size());
+			boost::transform(univ_.playerMap | boost::adaptors::map_values,
+			                 back_inserter(mainPlanetVect),
+			[](Player const & player) {return player.mainPlanet;});
+		}
+		for(Coord const & coord: mainPlanetVect)
+			mainPlanets.insert(coord);
+	}
+
 	auto iter = fleetMap.begin();
 	while(iter != fleetMap.end())
 	{
@@ -521,6 +540,7 @@ void execFleets(
 		                           iter->second,
 		                           fleetMap,
 		                           univ_.time,
+		                           mainPlanets,
 		                           signals);
 		if(keepFleet == false)
 		{

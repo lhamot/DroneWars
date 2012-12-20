@@ -464,11 +464,11 @@ struct Universe
 	mutable Mutex planetsFleetsReportsmutex;
 	mutable Mutex playersMutex;
 
-	Universe(): 
-		nextPlayerID(0), 
-		nextFleetID(0), 
-		nextEventID(0), 
-		nextFightID(0), 
+	Universe():
+		nextPlayerID(0),
+		nextFleetID(0),
+		nextEventID(0),
+		nextFightID(0),
 		time(0)
 	{
 	}
