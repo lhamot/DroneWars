@@ -40,8 +40,8 @@ Engine::Engine():
 
 void Engine::load(std::string const& univName)
 {
-	UniqueLock lockPlayers(univ_.playersMutex);
 	UniqueLock lock(univ_.planetsFleetsReportsmutex);
+	UniqueLock lockPlayers(univ_.playersMutex);
 	using namespace std;
 	ifstream loadFile(univName, ios::in | ios::binary);
 	if(loadFile.is_open() == false)
@@ -79,6 +79,7 @@ void Engine::stop()
 
 bool Engine::addPlayer(std::string const& login, std::string const& password)
 {
+	UniqueLock lock(univ_.planetsFleetsReportsmutex);
 	UniqueLock lockPlayers(univ_.playersMutex);
 
 	if(login.size() > MaxStringSize)
@@ -94,7 +95,6 @@ bool Engine::addPlayer(std::string const& login, std::string const& password)
 	if(iter != univ_.playerMap.end())
 		return false;
 
-	UniqueLock lock(univ_.planetsFleetsReportsmutex);
 	Player::ID const pid = createPlayer(univ_, login, password); //Modifie le joueur ET une planete
 	simulation_->reloadPlayer(pid);
 	return true;
