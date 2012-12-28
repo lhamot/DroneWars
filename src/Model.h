@@ -219,7 +219,10 @@ struct Planet
 		staticIf<Archive::is_saving::value>([&]()
 		{
 			if(playerId >= 100000 && playerId != Player::NoId)
+			{
+				std::cout << playerId << std::endl;
 				BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
+			}
 			if(playerId == Player::NoId && taskQueue.empty() == false)
 				BOOST_THROW_EXCEPTION(std::logic_error("taskQueue shourld be empty"));
 			if(buildingList.size() != Building::Count)
@@ -246,7 +249,7 @@ struct Planet
 	std::vector<Event> eventList;
 	CannonTab cannonTab;
 
-	Planet(): buildingList(Building::Count) {}
+	Planet(): playerId(1111111111), buildingList(Building::Count) {}
 	Planet(Coord c): coord(c), playerId(Player::NoId), buildingList(Building::Count)
 	{
 		cannonTab.fill(0);
@@ -397,13 +400,15 @@ struct Report
 	};
 	FightInfo fightInfo;
 
-	Report() {}
-	Report(T const& fighter): isDead(false), hasFight(false)
+	static FightInfo makeFightInfo(T fighter)
 	{
-		FightInfo info(fighter, fighter);
-		info.before.eventList.clear();
-		info.after.eventList.clear();
-		fightInfo = info;
+		fighter.eventList.clear();
+		return FightInfo(fighter, fighter);
+	}
+
+	Report() {}
+	Report(T const& fighter): isDead(false), hasFight(false), fightInfo(makeFightInfo(fighter))
+	{
 	}
 };
 
@@ -418,7 +423,7 @@ struct FightReport
 
 	std::vector<Report<Fleet> > fleetList;
 	bool hasPlanet;
-	Report<Planet> planet;
+	boost::optional<Report<Planet> > planet;
 
 	FightReport(): hasPlanet(false) {}
 };

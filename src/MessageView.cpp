@@ -153,21 +153,21 @@ void MessageView::renderFightReport(size_t id)
 		table->elementAt(0, 0)->addWidget(
 		  new Wt::WText(gettext("Planet coordinate") + string(" : ")));
 
-		Planet const& before = fightReport.planet.fightInfo.before;
-		Planet const& after = fightReport.planet.fightInfo.after;
+		Planet const& before = fightReport.planet.get().fightInfo.before;
+		Planet const& after = fightReport.planet.get().fightInfo.after;
 		//table->elementAt(0, 1)->addWidget(new Wt::WText(boost::lexical_cast<std::string>(before.id)));
 		table->elementAt(0, 1)->addWidget(
 		  new Wt::WText(str(format("(%1%;%2%;%3%)") %
 		                    before.coord.X % before.coord.Y % before.coord.Z)));
 
 		table->elementAt(1, 0)->addWidget(new Wt::WText(gettext("Has fight") + string(" : ")));
-		if(fightReport.planet.hasFight)
+		if(fightReport.planet.get().hasFight)
 			table->elementAt(1, 1)->addWidget(new Wt::WText(gettext("Yes")));
 		else
 			table->elementAt(1, 1)->addWidget(new Wt::WText(gettext("No")));
 
 		table->elementAt(2, 0)->addWidget(new Wt::WText(gettext("Is dead") + string(" : ")));
-		if(fightReport.planet.isDead)
+		if(fightReport.planet.get().isDead)
 			table->elementAt(2, 1)->addWidget(new Wt::WText(gettext("Yes")));
 		else
 			table->elementAt(2, 1)->addWidget(new Wt::WText(gettext("No")));

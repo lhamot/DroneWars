@@ -69,7 +69,7 @@ public:
 
 		size_t const plLvl = player.getTutoLevel(CoddingLevelTag);
 		boost::filesystem::path const filename =
-		  boost::str(boost::format("%1%Frame%2%.html") % name_ % 0);
+		  boost::str(boost::format("%1%Frame%2%.html") % name_ % plLvl);
 		{
 			boost::unique_lock<boost::mutex> lock(BlocklyFrameMutex_);
 			if(boost::filesystem::exists(filename) == false)

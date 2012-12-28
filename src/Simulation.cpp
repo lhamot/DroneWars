@@ -413,6 +413,8 @@ void execFights(Universe& univ_, std::vector<Signal>& signals)
 			else
 				fleetVect.push_back(fighterPtr.getFleet());
 		}
+		if(planetPtr && planetPtr->playerId != Player::NoId)
+			planetPtr = nullptr;
 
 		UpToUniqueLock writeLock(lockFleets);
 		//! - On excecute le combats
@@ -429,7 +431,7 @@ void execFights(Universe& univ_, std::vector<Signal>& signals)
 				break;
 			}
 		}
-		hasFight = hasFight | fightReport.planet.hasFight;
+		hasFight = hasFight | fightReport.planet.get().hasFight;
 
 		//! - Si personne ne c'est batue, on passe
 		if(hasFight == false)
@@ -466,7 +468,7 @@ void execFights(Universe& univ_, std::vector<Signal>& signals)
 		{
 			//! --Et pour la planete
 			Planet& planet = *planetPtr;
-			if(fightReport.planet.isDead)
+			if(fightReport.planet.get().isDead)
 			{
 				lostPlanets.push_back(planet.coord);
 				if(planet.playerId != Player::NoId)
@@ -477,7 +479,7 @@ void execFights(Universe& univ_, std::vector<Signal>& signals)
 					signals.push_back(Signal(planet.playerId, event));
 				}
 			}
-			else if(fightReport.planet.hasFight)
+			else if(fightReport.planet.get().hasFight)
 			{
 				if(planet.playerId == Player::NoId)
 					BOOST_THROW_EXCEPTION(std::logic_error("planet.playerId == Player::NoId"));
@@ -620,8 +622,8 @@ try
 
 	//! Supprime evenement trop vieux dans les Player et les Rapport plus utile
 	{
-		UniqueLock lockPlayers(univ_.playersMutex);
 		UniqueLock lockAllOthers(univ_.planetsFleetsReportsmutex);
+		UniqueLock lockPlayers(univ_.playersMutex);
 		removeOldEvents(univ_);
 	}
 

@@ -6,15 +6,21 @@
 
 void getBlocklyHTML(size_t tutoLevel, std::string const& codecontext, std::ostream& out)
 {
-	auto filter = [&](char const * str, size_t needed)
+	enum Categ
 	{
-		return needed <= tutoLevel ? str : "";
+	  All,
+	  Fleet,
+	  Planet
 	};
 
-	auto forName = [&](char const * str, char const * name)
+	auto filter = [&](char const * str, size_t planetLevel, size_t fleetLevel)
 	{
-		return name == codecontext ? str : "";
+		return codecontext == "Fleet" ?
+       fleetLevel <= tutoLevel ? str : "" :
+		       planetLevel <= tutoLevel ? str : "";
 	};
+
+	size_t const Never = size_t(-1);
 
 	out <<
 	    "<html>\n"
@@ -22,13 +28,13 @@ void getBlocklyHTML(size_t tutoLevel, std::string const& codecontext, std::ostre
 	    "    <meta charset=\"utf-8\">\n"
 	    "    <script type=\"text/javascript\" src=\"blockly/demos/blockly_compressed.js\"></script>\n"
 	    "    <script type=\"text/javascript\" src=\"blockly_adds/language/fr/_messages.js\">    </script>\n" <<
-	    filter("    <script type=\"text/javascript\" src=\"blockly/language/common/control.js\">       </script>\n", 0) <<
-	    filter("    <script type=\"text/javascript\" src=\"blockly/language/common/text.js\">          </script>\n", 10) <<
-	    filter("    <script type=\"text/javascript\" src=\"blockly/language/common/lists.js\">         </script>\n", 10) <<
-	    filter("    <script type=\"text/javascript\" src=\"blockly/language/common/logic.js\">         </script>\n", 0) <<
-	    filter("    <script type=\"text/javascript\" src=\"blockly/language/common/math.js\">          </script>\n", 0) <<
-	    filter("    <script type=\"text/javascript\" src=\"blockly/language/common/procedures.js\">    </script>\n", 10) <<
-	    filter("    <script type=\"text/javascript\" src=\"blockly/language/common/variables.js\">     </script>\n", 0) <<
+	    filter("    <script type=\"text/javascript\" src=\"blockly/language/common/control.js\">       </script>\n", 1, 1) <<
+	    filter("    <script type=\"text/javascript\" src=\"blockly/language/common/text.js\">          </script>\n", 10, 10) <<
+	    filter("    <script type=\"text/javascript\" src=\"blockly/language/common/lists.js\">         </script>\n", 10, 10) <<
+	    filter("    <script type=\"text/javascript\" src=\"blockly/language/common/logic.js\">         </script>\n", 1, 0) <<
+	    filter("    <script type=\"text/javascript\" src=\"blockly/language/common/math.js\">          </script>\n", 1, 1) <<
+	    filter("    <script type=\"text/javascript\" src=\"blockly/language/common/procedures.js\">    </script>\n", 0, 0) <<
+	    filter("    <script type=\"text/javascript\" src=\"blockly/language/common/variables.js\">     </script>\n", 0, 0) <<
 	    "    <script type=\"text/javascript\" src=\"blockly_adds/generators/lua.js\">           </script>\n"
 	    "    <script type=\"text/javascript\" src=\"blockly_adds/generators/lua/control.js\">   </script>\n"
 	    "    <script type=\"text/javascript\" src=\"blockly_adds/generators/lua/text.js\">      </script>\n"
@@ -38,13 +44,13 @@ void getBlocklyHTML(size_t tutoLevel, std::string const& codecontext, std::ostre
 	    "    <script type=\"text/javascript\" src=\"blockly_adds/generators/lua/procedures.js\"></script>\n"
 	    "    <script type=\"text/javascript\" src=\"blockly_adds/generators/lua/variables.js\"> </script>\n"
 	    "    <script type=\"text/javascript\" src=\"blockly_adds/language/fr/dronewars.js\">    </script>\n"
-	    "    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars.js\"></script>\n"
-	    "    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_Fleet.js\">       </script>\n"
-	    "    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_Planet.js\">      </script>\n"
-	    "    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_RessourceSet.js\"></script>\n" <<
-	    forName("    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_Coord.js\">       </script>\n", "Fleet") <<
-	    forName("    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_FleetAction.js\"> </script>\n", "Fleet") <<
-	    forName("    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_PlanetAction.js\"></script>\n", "Planet") <<
+	    "    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars.js\"></script>\n" <<
+	    filter("    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_Fleet.js\">       </script>\n", 3, 3) <<
+	    filter("    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_Planet.js\">      </script>\n", 1, 1) <<
+	    filter("    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_RessourceSet.js\"></script>\n", 3, 3) <<
+	    filter("    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_Coord.js\">       </script>\n", Never, 0) <<
+	    filter("    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_FleetAction.js\"> </script>\n", Never, 0) <<
+	    filter("    <script type=\"text/javascript\" src=\"blockly_adds/language/common/dronewars_PlanetAction.js\"></script>\n", 0, Never) <<
 	    "    <style>\n"
 	    "      html, body {\n"
 	    "        background-color: #fff;\n"

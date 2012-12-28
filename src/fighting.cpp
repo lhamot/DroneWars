@@ -284,14 +284,14 @@ void fight(std::vector<Fleet*> const& fleetList,
 		//! -Combat
 		if(fleetPair.index1 == PlanetIndex)
 		{
-			Report<Planet>& report1 = reportList.planet;
+			Report<Planet>& report1 = reportList.planet.get();
 			Report<Fleet>& report2 = reportList.fleetList[fleetPair.index2];
 			handleFighterPair<Planet, Fleet>(fleetList, reportList, fleetPair, report1, *planet, report2, *fleetList[fleetPair.index2]);
 		}
 		else if(fleetPair.index2 == PlanetIndex)
 		{
 			Report<Fleet>& report1 = reportList.fleetList[fleetPair.index1];
-			Report<Planet>& report2 = reportList.planet;
+			Report<Planet>& report2 = reportList.planet.get();
 			handleFighterPair<Fleet, Planet>(fleetList, reportList, fleetPair, report1, *fleetList[fleetPair.index1], report2, *planet);
 		}
 		else
