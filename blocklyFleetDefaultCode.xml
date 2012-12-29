@@ -1,8 +1,8 @@
 <xml xmlns="http://www.w3.org/1999/xhtml">
   <block type="procedures_defreturn" inline="false" x="52" y="-232">
     <mutation>
-      <arg name="myFleet"></arg>
-      <arg name="otherFleet"></arg>
+      <arg name="%1%"></arg>
+      <arg name="%2%"></arg>
     </mutation>
     <title name="NAME">AI:do_gather</title>
     <value name="RETURN">
@@ -13,8 +13,8 @@
   </block>
   <block type="procedures_defreturn" inline="false" x="59" y="-129">
     <mutation>
-      <arg name="myFleet"></arg>
-      <arg name="otherFleet"></arg>
+      <arg name="%1%"></arg>
+      <arg name="%2%"></arg>
     </mutation>
     <title name="NAME">AI:do_fight</title>
     <value name="RETURN">
@@ -25,13 +25,13 @@
   </block>
   <block type="procedures_defreturn" inline="false" x="59" y="-16">
     <mutation>
-      <arg name="myFleet"></arg>
-      <arg name="planet"></arg>
+      <arg name="%1%"></arg>
+      <arg name="%3%"></arg>
     </mutation>
     <title name="NAME">AI:action</title>
     <statement name="STACK">
       <block type="variables_set" inline="false">
-        <title name="VAR">order</title>
+        <title name="VAR">%4%</title>
         <value name="VALUE">
           <block type="dronewars_fleetaction" inline="true">
             <title name="ACTION">Nothing</title>
@@ -41,7 +41,7 @@
     </statement>
     <value name="RETURN">
       <block type="variables_get">
-        <title name="VAR">order</title>
+        <title name="VAR">%4%</title>
       </block>
     </value>
   </block>

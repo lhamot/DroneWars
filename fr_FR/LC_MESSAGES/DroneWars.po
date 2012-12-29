@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-17 22:29+0100\n"
-"PO-Revision-Date: 2012-12-17 23:17+0100\n"
+"POT-Creation-Date: 2012-12-29 16:10+0100\n"
+"PO-Revision-Date: 2012-12-29 16:11+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "Language: fr\n"
@@ -30,68 +30,68 @@ msgstr "Planète"
 msgid "Fleet"
 msgstr "Flotte"
 
-#: bit_them_allWT.cpp:135
+#: bit_them_allWT.cpp:114
 msgid "Refresh"
 msgstr "Mettre a jour"
 
-#: bit_them_allWT.cpp:149 bit_them_allWT.cpp:228
+#: bit_them_allWT.cpp:128 bit_them_allWT.cpp:207
 msgid "Planets"
 msgstr "Planètes"
 
-#: bit_them_allWT.cpp:150 bit_them_allWT.cpp:229
+#: bit_them_allWT.cpp:129 bit_them_allWT.cpp:208
 msgid "Fleets"
 msgstr "Flottes"
 
-#: bit_them_allWT.cpp:151 bit_them_allWT.cpp:230
+#: bit_them_allWT.cpp:130 bit_them_allWT.cpp:209
 msgid "Code"
 msgstr "Code"
 
-#: bit_them_allWT.cpp:152 bit_them_allWT.cpp:231 FleetViewWT.cpp:44
+#: bit_them_allWT.cpp:131 bit_them_allWT.cpp:210 FleetViewWT.cpp:44
 msgid "Reports"
 msgstr "Raports"
 
-#: bit_them_allWT.cpp:169 bit_them_allWT.cpp:180 bit_them_allWT.cpp:191
-#: bit_them_allWT.cpp:202
+#: bit_them_allWT.cpp:148 bit_them_allWT.cpp:159 bit_them_allWT.cpp:170
+#: bit_them_allWT.cpp:181
 msgid "Tutorial"
 msgstr "Tutoriel"
 
-#: bit_them_allWT.cpp:169
+#: bit_them_allWT.cpp:148
 msgid "PLANET_TUTOS"
 msgstr ""
 "Ici, vous verez la liste de vos planètes. Cliquez sur l'une d'elle pour en "
 "savoir plus."
 
-#: bit_them_allWT.cpp:180
+#: bit_them_allWT.cpp:159
 msgid "FLEET_TUTOS"
 msgstr ""
 "Ici, vous verrez la liste de vos flottes. Si il n'y en as pas, demandez à "
 "vos planètes d'en fabriquer."
 
-#: bit_them_allWT.cpp:191
+#: bit_them_allWT.cpp:170
 msgid "CODE_TUTOS"
 msgstr ""
 "Ici, vous pourrez définir la ligne de conduite de vos amiraux(flottes) et "
 "gouverneurs(planètes)."
 
-#: bit_them_allWT.cpp:202
+#: bit_them_allWT.cpp:181
 msgid "REPORT_TUTOS"
 msgstr ""
 "Ici vous verrez les 10 dernier évenement important qui ce sont produit dans "
 "votre empire."
 
-#: bit_them_allWT.cpp:245
+#: bit_them_allWT.cpp:224
 msgid "Time"
 msgstr "Temps"
 
-#: bit_them_allWT.cpp:246 FleetViewWT.cpp:61 PlanetViewWT.cpp:130
+#: bit_them_allWT.cpp:225 FleetViewWT.cpp:61 PlanetViewWT.cpp:126
 msgid "Type"
 msgstr "Type"
 
-#: bit_them_allWT.cpp:247
+#: bit_them_allWT.cpp:226
 msgid "Message"
 msgstr "Message"
 
-#: Editor.cpp:106 Editor.cpp:258
+#: Editor.cpp:106 Editor.cpp:257
 msgid "Reload"
 msgstr "Recharger"
 
@@ -107,35 +107,35 @@ msgstr "Export"
 msgid "Valid"
 msgstr "Valider"
 
-#: Editor.cpp:210 Editor.cpp:312 OutPage.cpp:137
+#: Editor.cpp:210 Editor.cpp:311 OutPage.cpp:137
 msgid "Info"
 msgstr "Info"
 
-#: Editor.cpp:210 Editor.cpp:312
+#: Editor.cpp:210 Editor.cpp:311
 msgid "Code successfully saved"
 msgstr "Code sauvegardé avec succes."
 
-#: Editor.cpp:261
+#: Editor.cpp:260
 msgid "Save"
 msgstr "Enregistrer"
 
-#: Editor.cpp:265
+#: Editor.cpp:264
 msgid "Help"
 msgstr "Aide"
 
-#: Editor.cpp:334
+#: Editor.cpp:333
 msgid "Visual"
 msgstr "Visuel"
 
-#: Editor.cpp:335
+#: Editor.cpp:334
 msgid "Text"
 msgstr "Texte"
 
-#: FleetsView.cpp:61
+#: FleetsView.cpp:65
 msgid "Contents"
 msgstr "Contenu"
 
-#: FleetsView.cpp:62 PlanetsView.cpp:84
+#: FleetsView.cpp:66 PlanetsView.cpp:81
 msgid "Ressources"
 msgstr "Resources"
 
@@ -169,11 +169,11 @@ msgstr "Non"
 msgid "Is dead"
 msgstr "Est détruit"
 
-#: MessageView.cpp:139 MessageView.cpp:175 PlanetViewWT.cpp:131
+#: MessageView.cpp:139 MessageView.cpp:175 PlanetViewWT.cpp:127
 msgid "Start"
 msgstr "Debut"
 
-#: MessageView.cpp:142 MessageView.cpp:177 PlanetViewWT.cpp:132
+#: MessageView.cpp:142 MessageView.cpp:177 PlanetViewWT.cpp:128
 msgid "End"
 msgstr "Fin"
 
@@ -185,6 +185,26 @@ msgstr "ID Raport = %i"
 #: MessageView.cpp:154
 msgid "Planet coordinate"
 msgstr "Coordonées de planete"
+
+#: Model.cpp:84
+msgid "myFleet"
+msgstr "ma_flotte"
+
+#: Model.cpp:85
+msgid "otherFleet"
+msgstr "autre_flotte"
+
+#: Model.cpp:86 Model.cpp:112
+msgid "planet"
+msgstr "planète"
+
+#: Model.cpp:87 Model.cpp:114
+msgid "order"
+msgstr "ordre"
+
+#: Model.cpp:113
+msgid "fleets"
+msgstr "flottes"
 
 #: OutPage.cpp:20 OutPage.cpp:53
 msgid "Login"
@@ -288,15 +308,15 @@ msgstr "Cet identifiant existe déja."
 msgid "List of your planets"
 msgstr "Liste de vos planètes:"
 
-#: PlanetsView.cpp:81
+#: PlanetsView.cpp:78
 msgid "View"
 msgstr "Visuel"
 
-#: PlanetsView.cpp:82 PlanetViewWT.cpp:137 PlanetViewWT.cpp:142
+#: PlanetsView.cpp:79 PlanetViewWT.cpp:133 PlanetViewWT.cpp:138
 msgid "Name"
 msgstr "Nom"
 
-#: PlanetsView.cpp:83
+#: PlanetsView.cpp:80
 msgid "Coordinate"
 msgstr "Coordonées"
 
@@ -312,11 +332,11 @@ msgstr "Canons"
 msgid "Tasks"
 msgstr "Taches"
 
-#: PlanetViewWT.cpp:133
+#: PlanetViewWT.cpp:129
 msgid "What"
 msgstr "Quoi"
 
-#: PlanetViewWT.cpp:138 PlanetViewWT.cpp:143
+#: PlanetViewWT.cpp:134 PlanetViewWT.cpp:139
 msgid "Level"
 msgstr "Niveau"
 

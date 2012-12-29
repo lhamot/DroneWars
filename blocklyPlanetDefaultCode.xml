@@ -1,13 +1,13 @@
 <xml xmlns="http://www.w3.org/1999/xhtml">
   <block type="procedures_defreturn" inline="false" x="48" y="83">
     <mutation>
-      <arg name="planet"></arg>
-      <arg name="fleets"></arg>
+      <arg name="%1%"></arg>
+      <arg name="%2%"></arg>
     </mutation>
     <title name="NAME">AI</title>
     <statement name="STACK">
       <block type="variables_set" inline="false">
-        <title name="VAR">order</title>
+        <title name="VAR">%3%</title>
         <value name="VALUE">
           <block type="dronewars_doNothing"></block>
         </value>
@@ -15,7 +15,7 @@
     </statement>
     <value name="RETURN">
       <block type="variables_get">
-        <title name="VAR">order</title>
+        <title name="VAR">%3%</title>
       </block>
     </value>
   </block>
