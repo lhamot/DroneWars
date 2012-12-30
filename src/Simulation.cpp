@@ -428,7 +428,8 @@ void execFights(Universe& univ_, std::vector<Signal>& signals)
 				break;
 			}
 		}
-		hasFight = hasFight | fightReport.planet.get().hasFight;
+		if(fightReport.hasPlanet)
+			hasFight = hasFight || fightReport.planet.get().hasFight;
 
 		//! - Si personne ne c'est batue, on passe
 		if(hasFight == false)
