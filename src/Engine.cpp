@@ -201,7 +201,7 @@ Planet Engine::getPlanet(Coord coord) const
 	return mapFind(univ_.planetMap, coord)->second;
 }
 
-Fleet Engine::getFleet(Fleet::ID fid)
+Fleet Engine::getFleet(Fleet::ID fid) const
 {
 	SharedLock lock(univ_.planetsFleetsReportsmutex);
 	return mapFind(univ_.fleetMap, fid)->second;
@@ -224,7 +224,7 @@ boost::optional<Player> Engine::getPlayer(
 		return iter->second;
 }
 
-FightReport Engine::getFightReport(size_t id)
+FightReport Engine::getFightReport(size_t id) const
 {
 	SharedLock lock(univ_.planetsFleetsReportsmutex);
 	return mapFind(univ_.reportMap, id)->second;

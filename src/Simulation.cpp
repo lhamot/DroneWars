@@ -348,8 +348,12 @@ void execPlanets(Universe& univ_,
 	std::vector<Fleet const*> fleetList;
 	for(Universe::PlanetMap::value_type & planetNVP: univ_.planetMap)
 	{
+		lockPlanet.unlock();//On peut deverouiller temporairement car on sait que
+		lockPlanet.lock();  //   l'autre thread ne fera que lire les planètes(pas d'ajout)
+
 		UpToUniqueLock writeLock(lockPlanet);
 
+		//! TODO: Metre ca dans removeOldEvent
 		Planet& planet = planetNVP.second;
 		if(planet.eventList.size() > 10)
 			planet.eventList.erase(planet.eventList.begin(), planet.eventList.end() - 10);
@@ -390,6 +394,8 @@ void execFights(Universe& univ_, std::vector<Signal>& signals)
 	    iter1 != fleetMultimap.end();
 	    iter1 = iter2, iter2 = nextNot(fleetMultimap, iter1))
 	{
+		lockFleets.unlock(); //On peut deverouiller temporairement car on sait que
+		lockFleets.lock();   //   l'autre thread ne fera que lire les flottes(pas d'ajout)
 		auto fleetRange = make_pair(iter1, iter2);
 
 		//! - Si 0 vaisseau, on passe
@@ -514,6 +520,9 @@ void execFleets(
 	auto iter = fleetMap.begin();
 	while(iter != fleetMap.end())
 	{
+		lockFleets.unlock(); //On peut deverouiller temporairement car on sait que
+		lockFleets.lock();   //   l'autre thread ne fera que lire les flottes(pas d'ajout)
+
 		UpToUniqueLock writeLock(lockFleets);
 
 		fleetRound(univ_, iter->second, univ_.time, signals);

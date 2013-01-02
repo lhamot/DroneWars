@@ -40,11 +40,11 @@ public:
 
 	Planet getPlanet(Coord coord) const;
 
-	Fleet getFleet(Fleet::ID fid);
+	Fleet getFleet(Fleet::ID fid) const;
 
 	boost::optional<Player> getPlayer(std::string const& login, std::string const& password) const;
 
-	FightReport getFightReport(size_t id);
+	FightReport getFightReport(size_t id) const;
 
 	//Requetes qui modifient la base
 	bool addPlayer(std::string const& login, std::string const& password);
