@@ -228,3 +228,9 @@ void checkTutos(Universe& univ_, std::vector<Signal>& signals)
 	for(Player * player: wisePlayer)
 		player->tutoDisplayed[CoddingLevelTag] += 1;
 }
+
+
+bool fleetCanSeePlanet(Fleet const& fleet, Planet const& planet)
+{
+	return (fleet.playerId == planet.playerId) || (planet.coord.X > 0);
+}

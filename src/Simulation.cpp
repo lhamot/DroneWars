@@ -230,6 +230,8 @@ try
 	using namespace luabind;
 	FleetAction action(FleetAction::Nothing);
 	lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
+	if(planet && fleetCanSeePlanet(fleet, *planet) == false)
+		planet = nullptr;
 	if(planet)
 		action = luabind::call_member<FleetAction>(code, "action", boost::cref(fleet), boost::cref(*planet));
 	else
