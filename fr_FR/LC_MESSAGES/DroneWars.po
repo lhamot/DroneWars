@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-29 16:10+0100\n"
-"PO-Revision-Date: 2012-12-29 16:11+0100\n"
+"POT-Creation-Date: 2013-01-02 23:03+0100\n"
+"PO-Revision-Date: 2013-01-03 20:00+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "Language: fr\n"
@@ -194,17 +194,57 @@ msgstr "ma_flotte"
 msgid "otherFleet"
 msgstr "autre_flotte"
 
-#: Model.cpp:86 Model.cpp:112
+#: Model.cpp:86 Model.cpp:115
 msgid "planet"
 msgstr "planète"
 
-#: Model.cpp:87 Model.cpp:114
+#: Model.cpp:87 Model.cpp:117
 msgid "order"
 msgstr "ordre"
 
-#: Model.cpp:113
+#: Model.cpp:88
+msgid "DO_GATHER_CODE_COMMENT"
+msgstr ""
+"Cette procedure permet à un capitaine de décider si sa flotte doit fusioner "
+"avec une autre flotte allié présente dans la mème zone. \n"
+"En entrée elle recois votre flote \"ma_flotte\" et la flotte allié "
+"\"autre_flotte\", ce qui doit lui permetre de décider si il vaut mieu "
+"fusioner ou non."
+
+#: Model.cpp:89
+msgid "DO_FIGHT_CODE_COMMENT"
+msgstr ""
+"Cette procedure permet a un capitaine de décider si sa flotte doit combatre "
+"ou fuire. \n"
+"En entrée elle recois votre flote \"ma_flotte\" et la flotte enemie "
+"\"autre_flotte\", ce qui doit lui permetre de décider si il vaut mieu "
+"combatre ou fuire."
+
+#: Model.cpp:90
+msgid "FLEET_ACTION_CODE_COMMENT"
+msgstr ""
+"Cette procédure décrit le comportment d'une flotte à chaque tour. \n"
+"Elle recois deux variables : \n"
+"Une \"ma_flotte\" qui représente la flotte dont c'est le tour de jouer, et "
+"une variable \"planètes\" qui peut contenir une planète si il y en as une "
+"dans la mème zone. \n"
+"Cette procedure retourne la variable \"ordre\" qui contient l'ordre à donner "
+"aux vaisseaux de la flotte."
+
+#: Model.cpp:116
 msgid "fleets"
 msgstr "flottes"
+
+#: Model.cpp:118
+msgid "PLANET_ACTION_CODE_COMMENT"
+msgstr ""
+"Cette procédure décrit le comportment d'une planète à chaque tour. \n"
+"Elle recois deux variables : \n"
+"Une \"planète\" qui représente la planète dont c'est le tour de jouer, et "
+"une variable \"flottes\" qui contient la liste des flottes présentes aux "
+"allentour de la planète. \n"
+"Cette procedure retourne la variable \"ordre\" qui contient l'ordre a donner "
+"aux battisseurs présent sur la planète."
 
 #: OutPage.cpp:20 OutPage.cpp:53
 msgid "Login"

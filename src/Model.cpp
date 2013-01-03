@@ -84,7 +84,10 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 		   gettext("myFleet") %
 		   gettext("otherFleet") %
 		   gettext("planet") %
-		   gettext("order")).str());
+		   gettext("order") %
+		   gettext("DO_GATHER_CODE_COMMENT") %
+		   gettext("DO_FIGHT_CODE_COMMENT") %
+		   gettext("FLEET_ACTION_CODE_COMMENT")).str());
 		player.fleetsCode.setCode(
 		  "function AI:do_gather(myFleet, otherFleet)\n"
 		  "  return true\n"
@@ -111,7 +114,8 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 		  (boost::format(blocklyPlanetDefaultCode.str()) %
 		   gettext("planet") %
 		   gettext("fleets") %
-		   gettext("order")).str());
+		   gettext("order") %
+		   gettext("PLANET_ACTION_CODE_COMMENT")).str());
 		player.planetsCode.setCode(
 		  "function AI(planet, fleets)\n"
 		  "  return noPlanetAction()\n"

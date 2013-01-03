@@ -5,6 +5,7 @@
       <arg name="%2%"></arg>
     </mutation>
     <title name="NAME">AI:do_gather</title>
+    <comment pinned="false" h="200" w="400">%5%</comment>
     <value name="RETURN">
       <block type="logic_boolean">
         <title name="BOOL">TRUE</title>
@@ -17,6 +18,7 @@
       <arg name="%2%"></arg>
     </mutation>
     <title name="NAME">AI:do_fight</title>
+    <comment pinned="false" h="200" w="400">%6%</comment>
     <value name="RETURN">
       <block type="logic_boolean">
         <title name="BOOL">TRUE</title>
@@ -29,6 +31,7 @@
       <arg name="%3%"></arg>
     </mutation>
     <title name="NAME">AI:action</title>
+    <comment pinned="false" h="200" w="400">%7%</comment>
     <statement name="STACK">
       <block type="variables_set" inline="false">
         <title name="VAR">%4%</title>

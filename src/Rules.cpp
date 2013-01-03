@@ -26,7 +26,7 @@ void getBlocklyHTML(size_t tutoLevel, std::string const& codecontext, std::ostre
 	    "<html>\n"
 	    "  <head>\n"
 	    "    <meta charset=\"utf-8\">\n"
-	    "    <script type=\"text/javascript\" src=\"blockly/demos/blockly_compressed.js\"></script>\n"
+	    "    <script type=\"text/javascript\" src=\"blockly/blockly_compressed.js\"></script>\n"
 	    "    <script type=\"text/javascript\" src=\"blockly_adds/language/fr/_messages.js\">    </script>\n" <<
 	    filter("    <script type=\"text/javascript\" src=\"blockly/language/common/control.js\">       </script>\n", 1, 1) <<
 	    filter("    <script type=\"text/javascript\" src=\"blockly/language/common/text.js\">          </script>\n", 10, 10) <<

@@ -5,6 +5,7 @@
       <arg name="%2%"></arg>
     </mutation>
     <title name="NAME">AI</title>
+    <comment pinned="false" h="200" w="400">%4%</comment>
     <statement name="STACK">
       <block type="variables_set" inline="false">
         <title name="VAR">%3%</title>
