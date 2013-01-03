@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-02 23:03+0100\n"
-"PO-Revision-Date: 2013-01-03 20:00+0100\n"
+"POT-Creation-Date: 2013-01-03 23:06+0100\n"
+"PO-Revision-Date: 2013-01-03 23:06+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "Language: fr\n"
@@ -246,19 +246,19 @@ msgstr ""
 "Cette procedure retourne la variable \"ordre\" qui contient l'ordre a donner "
 "aux battisseurs présent sur la planète."
 
-#: OutPage.cpp:20 OutPage.cpp:53
+#: OutPage.cpp:20 OutPage.cpp:52
 msgid "Login"
 msgstr "Identifiant"
 
-#: OutPage.cpp:23 OutPage.cpp:57
+#: OutPage.cpp:23 OutPage.cpp:56
 msgid "Password"
 msgstr "Mot de passe"
 
-#: OutPage.cpp:30
+#: OutPage.cpp:29
 msgid "Log in"
 msgstr "Connexion"
 
-#: OutPage.cpp:41
+#: OutPage.cpp:40
 msgid "INTRO_TEXT"
 msgstr ""
 "<h1>Neutrynos - DroneWars</h1>\n"
@@ -266,15 +266,15 @@ msgstr ""
 "Mettez a profit votre ingeniosité pour exterminer vos advaisaires.<br/>\n"
 "Commandez vos généraux et mennez les a la victoire.<br/>"
 
-#: OutPage.cpp:62
+#: OutPage.cpp:61
 msgid "Password2"
 msgstr "Mot de passe (verif)"
 
-#: OutPage.cpp:67
+#: OutPage.cpp:66
 msgid "Register"
 msgstr "Enregistrer"
 
-#: OutPage.cpp:84
+#: OutPage.cpp:83
 msgid "ABOUT_TEXT"
 msgstr ""
 "<h1>Introduction</h1><br/>\n"
@@ -316,7 +316,7 @@ msgid "About DroneWars"
 msgstr "A propos"
 
 #: OutPage.cpp:121 OutPage.cpp:130 OutPage.cpp:132 OutPage.cpp:134
-#: OutPage.cpp:142
+#: OutPage.cpp:145
 msgid "Error"
 msgstr "Erreur"
 
@@ -340,7 +340,7 @@ msgstr "Les mots de passes ne corespondent pas!"
 msgid "Registration successful"
 msgstr "L'enregistrement as reussit."
 
-#: OutPage.cpp:142
+#: OutPage.cpp:145
 msgid "Login still exist."
 msgstr "Cet identifiant existe déja."
 
@@ -580,8 +580,9 @@ msgstr "Canon6"
 msgid "BLOCKLY_TUTO_0"
 msgstr ""
 "Ceci est la première étape du tutoriel:<br/>\n"
-"Essayez de créer une mine de métal.<br/>\n"
-"Tips : Allez voir dans l'onglet planète si la mine est en cour de "
+"Essayez de créer un batiment \"Mine de métal\" (en envoyant le bon ordre)."
+"<br/>\n"
+"Tips : Allez voir dans l'onglet \"Planètes\" si la mine est en cour de "
 "fabrication."
 
 #: TranslationTools.cpp:150

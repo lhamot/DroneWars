@@ -32,6 +32,7 @@ private:
 	Wt::WLineEdit* loginEdit2_;
 	Wt::WLineEdit* passwordEdit2_;
 	Wt::WLineEdit* passwordEdit3_;
+	Wt::WPushButton* logButton_;
 };
 
 #endif //__BTA_OUT_PAGE__

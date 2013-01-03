@@ -25,14 +25,13 @@ Wt::WContainerWidget* OutPage::createHomePage(Wt::WContainerWidget* parent)
 	passwordEdit_->setEchoMode(WLineEdit::Password);
 	passwordEdit_->setValidator(new WLengthValidator(0, MaxStringSize, passwordEdit_));
 
-	WPushButton* okButton = nullptr;
 	table->elementAt(2, 0)->addWidget(
-	  okButton = new WPushButton(gettext("Log in")));
+	  logButton_ = new WPushButton(gettext("Log in")));
 	table->elementAt(2, 0)->setColumnSpan(2);
 	table->setInline(true);
 	outTable->elementAt(0, 0)->addWidget(table);
 
-	okButton->clicked().connect(this, &OutPage::onLogButtonClicked);
+	logButton_->clicked().connect(this, &OutPage::onLogButtonClicked);
 
 	WText* intro = new WText();
 	intro->setStyleClass("manual");
@@ -94,7 +93,8 @@ OutPage::OutPage(Wt::WContainerWidget* parent, Engine& engine):
 	passwordEdit_(nullptr),
 	loginEdit2_(nullptr),
 	passwordEdit2_(nullptr),
-	passwordEdit3_(nullptr)
+	passwordEdit3_(nullptr),
+	logButton_(nullptr)
 {
 	setStyleClass("homepage");
 	setHeight(1024);
@@ -136,6 +136,9 @@ void OutPage::registerButtonClicked()
 	{
 		WMessageBox::show(gettext("Info"), gettext("Registration successful"), Ok);
 		dynamic_cast<WMenu&>(*widget(0)).select(0);
+		loginEdit_->setText(loginEdit2_->text().toUTF8());
+		passwordEdit_->setText(passwordEdit2_->text().toUTF8());
+		logButton_->setFocus(true);
 		refresh();
 	}
 	else
