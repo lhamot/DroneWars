@@ -1,0 +1,41 @@
+{% extends "ingame_base.html" %}
+
+{% load i18n %}
+
+{% load tmp_filters %}
+
+{% block fleets_class %}tabselected{% endblock %}
+
+{% block content %}
+<table style="float: left">
+<tr>
+	<th>{% trans "Coordinate" %}</th><th>{% trans "Contents" %}</th><th>{% trans "Ressources" %}</th>
+</tr>
+{% for fleet in fleetList %}
+<tr>
+	<td><a href="?fleet={{fleet.id}}">X:{{fleet.coord.X}}; Y:{{fleet.coord.Y}}; Z:{{fleet.coord.Z}}</a></td>
+	<td>
+{% for level in fleet.shipList %}
+{% if level > 0 %}
+{{forloop.counter0|shipname|stringformat:".1s"}}:{{level}};
+{% endif %}
+{% endfor %}
+	</td>
+	<td>M:{{fleet.ressourceSet.tab.0}}; C:{{fleet.ressourceSet.tab.1}}; L:{{fleet.ressourceSet.tab.2}}</td>
+</tr>
+{% endfor %}
+</table>
+
+{% if fleet != None %}
+<div>
+<h4>{% trans "Reports" %}</h4>
+<table>
+	<tr><th>{% trans "Date" %}</th><th>{% trans "Type" %}</th><th>{% trans "Comment" %}</th></tr>
+	{% for event in fleet.eventList %}
+	<tr><td>{{event.time}}</td><td>{{event.type|eventname}}</td><td>{{event.comment}}</td></tr>
+	{% endfor %}
+</table>
+</div>
+{% endif %}
+
+{% endblock %}

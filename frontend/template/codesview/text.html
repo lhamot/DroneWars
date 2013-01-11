@@ -1,0 +1,28 @@
+{% extends "codesview.html" %}
+
+{% block header_adds %}
+<script type="text/javascript" src="/static/CodeMirror/lib/codemirror.js"></script>
+<script type="text/javascript" src="/static/CodeMirror/mode/lua/lua.js"></script>
+<link rel="stylesheet" href="/static/CodeMirror/lib/codemirror.css">
+<link rel="stylesheet" href="/static/CodeMirror/theme/cobalt.css">
+{% endblock %}
+
+{% block code_content %}
+<form method="post" action="">
+<textarea id="TextArea" name="TextArea">{{codeData.code}}</textarea>
+{% csrf_token %}
+<input type="submit" value="Reload" name="reload_button"/>
+<input type="submit" value="Save" name="save_button"/>
+<p>{{message}}</p>
+<script>
+	var editor = CodeMirror.fromTextArea(document.getElementById("TextArea"), {
+	  tabMode: "indent",
+	  matchBrackets: true,
+	  lineNumbers: true,
+	  theme: "cobalt",
+	  onHighlightComplete: function(editor) {editor.save();}
+	});
+	window.editor = editor;
+</script>
+</form>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "ingame_base.html" %}
+
+{% load i18n %}
+
+{% block codes_class %}tabselected{% endblock %}
+
+{% block content %}
+<nav>
+	<a href="/ingame/codes/planets/blocks.html"
+	{% if name == "Planet" and blockly_code != None %}
+		class="tabselected"
+	{% else %}
+		class="tab"
+	{% endif %}
+		>{% trans "Planets" %} : {% trans "Blocks" %}</a>
+	<a href="/ingame/codes/planets/text.html" 
+	{% if name == "Planet" and script != None %}
+		class="tabselected"
+	{% else %}
+		class="tab"
+	{% endif %}
+		>{% trans "Planets" %} : {% trans "Script" %}</a>
+	<a href="/ingame/codes/fleets/blocks.html" 
+	{% if name == "Fleet" and blockly_code != None %}
+		class="tabselected"
+	{% else %}
+		class="tab"
+	{% endif %}
+		>{% trans "Fleets" %} : {% trans "Blocks" %}</a>
+	<a href="/ingame/codes/fleets/text.html" 
+	{% if name == "Fleet" and script != None %}
+		class="tabselected"
+	{% else %}
+		class="tab"
+	{% endif %}
+		>{% trans "Fleets" %} : {% trans "Script" %}</a>
+</nav>
+{% block code_content %}
+{% endblock %}
+{% endblock %}

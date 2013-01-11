@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block body %}
+		<div>
+			<header>
+			</header>
+			<nav>
+				<a href="/ingame/planets.html" class="{% block planets_class %}tab{% endblock %}">{% trans "Planets" %}</a>
+				<a href="/ingame/fleets.html" class="{% block fleets_class %}tab{% endblock %}">{% trans "Fleets" %}</a>
+				<a href="/ingame/codes.html" class="{% block codes_class %}tab{% endblock %}">{% trans "Codes" %}</a>
+				<a href="/ingame/reports.html" class="{% block reports_class %}tab{% endblock %}">{% trans "Reports" %}</a>
+				<a href="/" class="tab">{% trans "Log out" %}</a>
+			</nav>
+
+			{% block content %}{% endblock %}
+
+			<!--
+				<footer>
+				<p>
+					&copy; Copyright  by Loïc HAMOT
+				</p>
+			</footer>
+			-->
+		</div>
+{% endblock %}

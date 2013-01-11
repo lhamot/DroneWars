@@ -26,6 +26,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">-Zm129 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="..\..\src\BTAApplication.cpp" />
     <ClCompile Include="..\..\src\Editor.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
@@ -40,6 +41,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">-Zm129 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="..\..\src\EngineServerHandler.cpp" />
     <ClCompile Include="..\..\src\fighting.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
@@ -54,6 +56,18 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">-Zm129 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="..\..\src\gen-cpp\EngineServer.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="..\..\src\gen-cpp\thrift_constants.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="..\..\src\gen-cpp\thrift_types.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
     </ClCompile>
     <ClCompile Include="..\..\src\LuaTools.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
@@ -132,11 +146,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\bit_them_allWT.h" />
+    <ClInclude Include="..\..\src\BTAApplication.h" />
     <ClInclude Include="..\..\src\Editor.h" />
     <ClInclude Include="..\..\src\Engine.h" />
+    <ClInclude Include="..\..\src\EngineServerHandler.h" />
     <ClInclude Include="..\..\src\fighting.h" />
     <ClInclude Include="..\..\src\FleetsView.h" />
     <ClInclude Include="..\..\src\FleetViewWT.h" />
+    <ClInclude Include="..\..\src\gen-cpp\EngineServer.h" />
+    <ClInclude Include="..\..\src\gen-cpp\thrift_constants.h" />
+    <ClInclude Include="..\..\src\gen-cpp\thrift_types.h" />
     <ClInclude Include="..\..\src\LuaTools.h" />
     <ClInclude Include="..\..\src\LuaUniverse.h" />
     <ClInclude Include="..\..\src\MessageView.h" />
@@ -229,13 +248,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;LIBINTL_STATIC;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C_libs\wt-3.2.1\src;I:\C_libs\wt-3.2.1_$(Platform);I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C_libs\wt-3.2.1\src;I:\C_libs\wt-3.2.1_$(Platform);I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;I:\C_libs\thrift\lib\cpp\src;I:\C_libs\thrift\lib\cpp\src\thrift;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4505;4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>I:\C_libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;I:\C_libs\wt-3.2.1_$(Platform)\src\$(Configuration);I:\C_libs\wt-3.2.1_$(Platform)\src\Wt\Ext\$(Configuration);I:\C_libs\wt-3.2.1_$(Platform)\src\http\$(Configuration);%(AdditionalLibraryDirectories);I:\C\libintl</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>I:\C_libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;I:\C_libs\wt-3.2.1_VS11_$(Platform)\src\$(Configuration);I:\C_libs\wt-3.2.1_VS11_$(Platform)\src\Wt\Ext\$(Configuration);I:\C_libs\wt-3.2.1_VS11_$(Platform)\src\http\$(Configuration);%(AdditionalLibraryDirectories);I:\C_libs\thrift\lib\cpp\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>wtd.lib;wthttpd.lib;wtextd.lib;lua.lib;luabind.lib;%(AdditionalDependencies);libintl.dll.a;libintl.dll.a;libintl.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -246,14 +265,14 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;LIBINTL_STATIC;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C_libs\wt-3.2.1\src;I:\C_libs\wt-3.2.1_$(Platform);I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C_libs\wt-3.2.1\src;I:\C_libs\wt-3.2.1_$(Platform);I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;I:\C_libs\thrift\lib\cpp\src;I:\C_libs\thrift\lib\cpp\src\thrift;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4505;4251</DisableSpecificWarnings>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>I:\C_libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;I:\C_libs\wt-3.2.1_VS11_$(Platform)\src\$(Configuration);I:\C_libs\wt-3.2.1_VS11_$(Platform)\src\Wt\Ext\$(Configuration);I:\C_libs\wt-3.2.1_VS11_$(Platform)\src\http\$(Configuration);%(AdditionalLibraryDirectories);I:\C_libs\mingw-w64-x86_32-gettext-0.18.1.1-efl-dev\lib;I:\C\libintl</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>I:\C_libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;I:\C_libs\wt-3.2.1_VS11_$(Platform)\src\$(Configuration);I:\C_libs\wt-3.2.1_VS11_$(Platform)\src\Wt\Ext\$(Configuration);I:\C_libs\wt-3.2.1_VS11_$(Platform)\src\http\$(Configuration);%(AdditionalLibraryDirectories);I:\C_libs\thrift\lib\cpp\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>wtd.lib;wthttpd.lib;wtextd.lib;lua.lib;luabind.lib;%(AdditionalDependencies);libintl.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -266,7 +285,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;LIBINTL_STATIC;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C_libs\wt-3.2.1\src;I:\C_libs\wt-3.2.1_$(Platform);I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C_libs\wt-3.2.1\src;I:\C_libs\wt-3.2.1_$(Platform);I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;I:\C_libs\thrift\lib\cpp\src;I:\C_libs\thrift\lib\cpp\src\thrift;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4505;4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -274,7 +293,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>I:\C_libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;I:\C_libs\wt-3.2.1_$(Platform)\src\$(Configuration);I:\C_libs\wt-3.2.1_$(Platform)\src\Wt\Ext\$(Configuration);I:\C_libs\wt-3.2.1_$(Platform)\src\http\$(Configuration);%(AdditionalLibraryDirectories);I:\C\libintl</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>I:\C_libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;I:\C_libs\wt-3.2.1_VS11_$(Platform)\src\$(Configuration);I:\C_libs\wt-3.2.1_VS11_$(Platform)\src\Wt\Ext\$(Configuration);I:\C_libs\wt-3.2.1_VS11_$(Platform)\src\http\$(Configuration);%(AdditionalLibraryDirectories);I:\C_libs\thrift\lib\cpp\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>wt.lib;wthttp.lib;wtext.lib;lua.lib;luabind.lib;%(AdditionalDependencies);libintl.dll.a;libintl.dll.a;libintl.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -286,7 +305,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;LIBINTL_STATIC;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C_libs\wt-3.2.1\src;I:\C_libs\wt-3.2.1_$(Platform);I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C_libs\wt-3.2.1\src;I:\C_libs\wt-3.2.1_$(Platform);I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;I:\C_libs\thrift\lib\cpp\src;I:\C_libs\thrift\lib\cpp\src\thrift;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4505;4251</DisableSpecificWarnings>
       <AdditionalOptions>-Zm124 %(AdditionalOptions)</AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -296,8 +315,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>I:\C_libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;I:\C_libs\wt-3.2.1_VS11_$(Platform)\src\$(Configuration);I:\C_libs\wt-3.2.1_VS11_$(Platform)\src\Wt\Ext\$(Configuration);I:\C_libs\wt-3.2.1_VS11_$(Platform)\src\http\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>wt.lib;wthttp.lib;wtext.lib;lua.lib;luabind.lib;%(AdditionalDependencies);libintl.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>I:\C_libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;I:\C_libs\wt-3.2.1_VS11_$(Platform)\src\$(Configuration);I:\C_libs\wt-3.2.1_VS11_$(Platform)\src\Wt\Ext\$(Configuration);I:\C_libs\wt-3.2.1_VS11_$(Platform)\src\http\$(Configuration);%(AdditionalLibraryDirectories);I:\C_libs\thrift\lib\cpp\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>wt.lib;wthttp.lib;wtext.lib;lua.lib;luabind.lib;%(AdditionalDependencies);libintl.lib;libthrift.lib</AdditionalDependencies>
+      <AdditionalOptions>/LTCG %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

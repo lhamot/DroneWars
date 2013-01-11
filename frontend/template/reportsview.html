@@ -1,0 +1,18 @@
+{% extends "ingame_base.html" %}
+
+{% load tmp_filters %}
+
+{% block reports_class %}tabselected{% endblock %}
+
+{% block content %}
+<table>
+<tr>
+	<th>Time</th><th>Type</th><th>Message</th>
+</tr>
+{% for event in player.eventList %}
+<tr>
+	<td>{{event.time}}</td><td>{{event.type|eventname}}</td><td>{{event.comment}}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

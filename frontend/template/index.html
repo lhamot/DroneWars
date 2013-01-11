@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block body %}
+<h1>Neutryos</h1>
+<h2>DroneWars<h2>
+
+<div>
+	<div>
+		<form method="post">
+		{% csrf_token %}
+		<table>
+		{{ logForm.as_table }}
+		</table>
+		<input type="submit" value="{% trans "Log in" %}" name="login_action">
+		</form>
+		{{logMessage}}
+	</div>
+
+	<div>
+		<form method="post">
+		{% csrf_token %}
+		<table>
+		{{ subForm.as_table }}
+		</table>
+		<input type="submit" value="{% trans "Register" %}" name="subscribe_action">
+		</form>
+		{{regMessage}}
+	</div>
+	
+	<div>
+		<div class="manual">{% trans "ABOUT_TEXT" %}</div>
+	</div>
+</div>
+{% endblock %}

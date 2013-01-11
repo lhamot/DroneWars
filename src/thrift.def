@@ -1,0 +1,256 @@
+namespace cpp ndw
+
+
+typedef i32 Coord_Value
+
+struct Coord
+{
+	1: Coord_Value X,
+	2: Coord_Value Y,
+	3: Coord_Value Z
+}
+
+
+enum Event_Type 
+{
+	FleetCodeError = 0,
+	FleetCodeExecError,
+	PlanetCodeError,
+	PlanetCodeExecError,
+	Upgraded,
+	ShipMade,
+	PlanetHarvested,
+	FleetWin,
+	FleetDraw,
+	FleetsGather,
+	PlanetColonized,
+	FleetLose,
+	FleetDrop,
+	PlanetLose,
+	PlanetWin,
+	CannonMade,
+	Count
+}
+
+typedef i32 Event_ID
+
+struct Event 
+{
+	1: Event_ID id,
+	2: i32 time,
+	3: Event_Type type,
+	4: string comment,
+	5: i32 value,
+	6: bool viewed
+}
+
+
+struct CodeData
+{
+	1: string blocklyCode,
+	2: string code,
+	3: i32 failCount,
+	4: string lastError
+}
+
+
+typedef i32 Player_ID
+
+const Player_ID Player_NoId = -1
+
+struct Player
+{
+	1: Player_ID id,
+	2: string login,
+	3: string password,
+	4: CodeData fleetsCode,
+	5: CodeData planetsCode,
+	6: list<Event> eventList,
+	7: map<string, i32> tutoDisplayed;
+	8: Coord mainPlanet
+}
+
+
+enum Ressource
+{
+	Metal = 0,
+	Carbon,
+	Loicium,
+	Count
+}
+
+struct RessourceSet
+{
+	1: list<i32> tab
+}
+
+enum PlanetTask_Enum
+{
+	UpgradeBuilding = 0,
+	MakeShip,
+	MakeCannon,
+	Count
+}
+
+struct PlanetTask
+{
+	1: PlanetTask_Enum type = 0,
+	2: i32 value,
+	3: i32 value2,
+	4: i32 lauchTime,
+	5: i32 duration,
+	6: RessourceSet startCos,
+	7: bool expired
+}
+
+enum Building_Enum
+{
+	CommandCenter = 0,
+	MetalMine,
+	CarbonMine,
+	LoiciumFilter,
+	Factory,
+	Laboratory,
+	CarbonicCentral,
+	SolarCentral,
+	GeothermicCentral,
+	Count
+}
+
+
+enum Ship_Enum
+{
+	Mosquito = 0,
+	Hornet,
+	Vulture,
+	Dragon,
+	Behemoth,
+	Azathoth,
+	Queen,
+	Cargo,
+	LargeCargo,
+	Count
+}
+
+enum Cannon_Enum
+{
+	Cannon1 = 0,
+	Cannon2,
+	Cannon3,
+	Cannon4,
+	Cannon5,
+	Cannon6,
+	Count
+}
+
+
+
+enum FleetTask_Enum
+{
+	Move = 0,
+	Harvest,
+	Colonize,
+	Count
+}
+
+struct FleetTask
+{
+	1: FleetTask_Enum type,
+	2: i32 lauchTime,
+	3: i32 duration,
+	4: Coord position,
+	5: bool expired
+}
+
+typedef list<i32> BuildingTab
+
+struct Planet
+{
+	1: string name,
+	2: Coord coord,
+	3: Player_ID playerId,
+	4: BuildingTab buildingList,
+	5: list<PlanetTask> taskQueue,
+	6: RessourceSet ressourceSet,
+	7: list<Event> eventList,
+	8: list<i32> cannonTab
+}
+
+
+typedef i32 Fleet_ID
+
+typedef list<i32> Fleet_ShipTab
+
+struct Fleet
+{
+	1: Fleet_ID id,
+	2: Player_ID playerId,
+	3: Coord coord,
+	4: Coord origin,
+	5: string name,
+	6: Fleet_ShipTab shipList,
+	7: RessourceSet ressourceSet,
+	8: list<FleetTask> taskQueue,
+	9: list<Event> eventList
+}
+
+
+enum FleetAction_Type
+{
+	Nothing = 0,
+	Move,
+	Harvest,
+	Colonize
+}
+
+
+struct FleetAction
+{
+	1: FleetAction_Type action,
+	2: Coord target
+}
+
+typedef list<FleetAction> FleetActionList
+
+const i32 Universe_MapSizeX = 100
+const i32 Universe_MapSizeY = 100
+const i32 Universe_MapSizeZ = 100
+
+typedef map<Player_ID, Player> Universe_PlayerMap
+typedef map<Coord, Planet> Universe_PlanetMap
+
+struct Universe
+{
+	1: Universe_PlayerMap playerMap,
+	2: Universe_PlanetMap planetMap,
+	3: map<Fleet_ID, Fleet> fleetMap,
+	4: Player_ID nextPlayerID,
+	5: Fleet_ID nextFleetID,
+	6: i32 time
+}
+
+struct OptionalPlayer
+{
+	1: optional Player player
+}
+
+
+service EngineServer
+{
+	void start(),
+	void stop(),
+	bool addPlayer(10: string login, 20: string password),
+	list<Fleet> getPlayerFleets(10: Player_ID pid),
+	list<Planet> getPlayerPlanets(10: Player_ID pid),
+	void setPlayerFleetCode(10: Player_ID pid, 20: string code),
+	void setPlayerPlanetCode(10: Player_ID pid, 20: string code),
+	void setPlayerFleetBlocklyCode(10: Player_ID pid, 20: string code),
+	void setPlayerPlanetBlocklyCode(10: Player_ID pid, 20: string code),
+	CodeData getPlayerFleetCode(10: Player_ID pid),
+	CodeData getPlayerPlanetCode(10: Player_ID pid),
+	list<Player> getPlayers(),
+	Player getPlayer(10: Player_ID pid),
+	Planet getPlanet(10: Coord coord),
+	Fleet getFleet(10: Fleet_ID fid),
+	OptionalPlayer logPlayer(10: string login, 20: string password)
+}

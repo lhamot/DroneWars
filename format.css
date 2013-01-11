@@ -90,20 +90,20 @@ a.item {
   text-decoration: underline;
 }
 
-a.itemselected {
+a.tabselected {
   color: blue;
   text-decoration: underline;
   font-weight: bold; 
 }
 
-a.item {
+a.tab {
 	/* Anciens navigateurs */
 	background: #00408f url("a-itemselected-a-item-bg.png") repeat-x top;
 	-o-background-size: 100% 100%;
 	-moz-background-size: 100% 100%;
 	-webkit-background-size: 100% 100%;
 	background-size: 100% 100%;
-	/* Navigateurs récents */
+	/* Navigateurs rÃ©cents */
 	background: -webkit-gradient(
 		linear,
 		left top, left bottom,
@@ -137,14 +137,14 @@ a.item {
 	);
 }
 
-a.itemselected {
+a.tabselected {
 	/* Anciens navigateurs */
 	background: #00408f url("a-itemselected-bg.png") repeat-x top;
 	-o-background-size: 100% 100%;
 	-moz-background-size: 100% 100%;
 	-webkit-background-size: 100% 100%;
 	background-size: 100% 100%;
-	/* Navigateurs récents */
+	/* Navigateurs rÃ©cents */
 	background: -webkit-gradient(
 		linear,
 		left top, left bottom,
