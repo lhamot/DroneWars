@@ -18,10 +18,15 @@ find_path(LUA_INCLUDE_DIR lua
    PATH_SUFFIXES lua
    DOC "Include directory for lua"
    )
+find_path(THRIFT_INCLUDE_DIR thrift
+   PATH_SUFFIXES thrift
+   DOC "Include directory for thrift"
+   )
 include_directories(${BOOST_INCLUDE_DIR})
 include_directories(${WT_INCLUDE_DIR})
 include_directories(${LUABIND_INCLUDE_DIR})
 include_directories(${LUA_INCLUDE_DIR})
+include_directories(${THRIFT_INCLUDE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/luabind)
 
 find_path(BOOST_LIBRARY NAMES boost
@@ -36,6 +41,9 @@ find_path(LUABIND_LIBRARY NAMES luabind
 find_path(LUA_LIBRARY NAMES luabind
           DOC "The lua libraries path"
 )
+find_path(THRIFT_LIBRARY NAMES THRIFT
+          DOC "The lua libraries thrift"
+)
 
 link_directories(${BOOST_LIBRARY})
 link_directories(${WT_LIBRARY}/src)
@@ -43,25 +51,26 @@ link_directories(${WT_LIBRARY}/src/Wt/Ext)
 link_directories(${WT_LIBRARY}/src/http)
 link_directories(${LUABIND_LIBRARY})
 link_directories(${LUA_LIBRARY})
+link_directories(${THRIFT_LIBRARY})
 
 # Déclaration de l'exécutable
 add_executable(
     DroneWars
-    src/bit_them_allWT.cpp
+    #src/bit_them_allWT.cpp
     src/Editor.cpp
     src/Engine.cpp       
     src/fighting.cpp
-    src/FleetsView.cpp
-    src/FleetViewWT.cpp
+    #src/FleetsView.cpp
+    #src/FleetViewWT.cpp
     src/LuaTools.cpp
     src/LuaUniverse.cpp
     src/main.cpp
-    src/MessageView.cpp
+    #src/MessageView.cpp
     src/Model.cpp
     src/NameGen.cpp
-    src/OutPage.cpp
-    src/PlanetsView.cpp
-    src/PlanetViewWT.cpp
+    #src/OutPage.cpp
+    #src/PlanetsView.cpp
+    #src/PlanetViewWT.cpp
     src/Simulation.cpp
     src/stdafx.cpp
     src/stl_container_adapter.cpp
