@@ -1,6 +1,6 @@
 {% load i18n %}
 
-
+<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
@@ -15,22 +15,20 @@
 
 		<meta name="viewport" content="width=device-width; initial-scale=1.0" />
 		
-		<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
+		<!--<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
 		<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
-		<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
-
+		<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>-->
+		
 		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
 		<link rel="shortcut icon" href="/static/favicon.ico" />
-		<link rel="stylesheet" type="text/css" href="/static/format.css">
 		{% block header_adds %}{% endblock %}
-		<script>
-			$(function() {
-				$( "#tabs" ).tabs();
-			});
-		</script>
+		<link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet" media="screen">
+		<link rel="stylesheet" type="text/css" href="/static/format.css">
 	</head>
 
 	<body>
 		{% block body %}{% endblock %}
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap.min.js"></script>
 	</body>
 </html>

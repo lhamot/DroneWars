@@ -1,179 +1,25 @@
-@import url("CodeMirror/theme/cobalt.css");
-@import url("CodeMirror/lib/codemirror.css");
-
-/*.homepage*/
 body
 {
   background-image: url(img/N9-1280.jpg);
   background-repeat:no-repeat;
   background-position:top;
-}
-
-.blocklyEditor
-{
-  width:95%;
-  height:600px;
-}
-
-.manual
-{
-  background-color:#314162;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: left;
-}
-
-.manual *
-{
-  text-align: left;
-}
-
-
-pre
-{
-  text-align: left;
-}
-
-body, .Wt-tv-c
-{
-  background-color: #000000;
-}
-
-
-
-*
-{
   color: #E6EBFB;
-  margin-left:auto;
-  margin-right:auto;
-  text-align: center;
-  font-family: Tahoma,sans-serif;
-  font-size: 14px;
 }
 
-textarea, select, input
+
+th
 {
+    //font-weight: bold;
     color: #E6EBFB;
-    background-color: #314162;
-    background-image: url(img/bg/bg4.gif);
-}
-
-button
-{
-    background-image: url(img/bg/bg6.gif);
-}
-
-th, .Wt-tableview .Wt-label, .Wt-dialog .titlebar
-{
-    font-weight: bold;
-    color: #E6EBFB;
-    padding-left: 3px;
+    //padding-left: 3px;
     background-image: url(img/bg/bg1.gif);
-    text-align:left;
+    //text-align:left;
 }
 
-span, a
-{
-  background-color:transparent;
-}
 
-td, .Wt-dialog .body
+td
 {
-    text-align: center;
+    //text-align: center;
     color: #E6EBFB;
     background-image: url(img/bg/bg3.gif);
-}
-
-a.item {
-  cursor: pointer; 
-  color: blue;
-  text-decoration: underline;
-}
-
-a.tabselected {
-  color: blue;
-  text-decoration: underline;
-  font-weight: bold; 
-}
-
-a.tab {
-	/* Anciens navigateurs */
-	background: #00408f url("a-itemselected-a-item-bg.png") repeat-x top;
-	-o-background-size: 100% 100%;
-	-moz-background-size: 100% 100%;
-	-webkit-background-size: 100% 100%;
-	background-size: 100% 100%;
-	/* Navigateurs récents */
-	background: -webkit-gradient(
-		linear,
-		left top, left bottom,
-		from(rgba(0,64,143,1)),
-		to(rgba(0,64,143,1)),
-		color-stop(0.5, rgba(41,137,188,1))
-	);
-	background: -webkit-linear-gradient(
-		top,
-		rgba(0,64,143,1),
-		rgba(41,137,188,1) 50%,
-		rgba(0,64,143,1)
-	);
-	background: -moz-linear-gradient(
-		top,
-		rgba(0,64,143,1),
-		rgba(41,137,188,1) 50%,
-		rgba(0,64,143,1)
-	);
-	background: -o-linear-gradient(
-		top,
-		rgba(0,64,143,1),
-		rgba(41,137,188,1) 50%,
-		rgba(0,64,143,1)
-	);
-	background: linear-gradient(
-		top,
-		rgba(0,64,143,1),
-		rgba(41,137,188,1) 50%,
-		rgba(0,64,143,1)
-	);
-}
-
-a.tabselected {
-	/* Anciens navigateurs */
-	background: #00408f url("a-itemselected-bg.png") repeat-x top;
-	-o-background-size: 100% 100%;
-	-moz-background-size: 100% 100%;
-	-webkit-background-size: 100% 100%;
-	background-size: 100% 100%;
-	/* Navigateurs récents */
-	background: -webkit-gradient(
-		linear,
-		left top, left bottom,
-		from(rgba(0,64,143,1)),
-		to(rgba(0,64,143,1)),
-		color-stop(0.5, rgba(173,215,237,1))
-	);
-	background: -webkit-linear-gradient(
-		top,
-		rgba(0,64,143,1),
-		rgba(173,215,237,1) 50%,
-		rgba(0,64,143,1)
-	);
-	background: -moz-linear-gradient(
-		top,
-		rgba(0,64,143,1),
-		rgba(173,215,237,1) 50%,
-		rgba(0,64,143,1)
-	);
-	background: -o-linear-gradient(
-		top,
-		rgba(0,64,143,1),
-		rgba(173,215,237,1) 50%,
-		rgba(0,64,143,1)
-	);
-	background: linear-gradient(
-		top,
-		rgba(0,64,143,1),
-		rgba(173,215,237,1) 50%,
-		rgba(0,64,143,1)
-	);
 }

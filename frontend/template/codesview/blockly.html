@@ -1,5 +1,7 @@
 {% extends "codesview.html" %}
 
+{% load i18n %}
+
 {% block header_adds %}
     <meta charset="utf-8">
     <script type="text/javascript" src="/static/blockly/blockly_compressed.js"></script>
@@ -26,8 +28,7 @@
 	    {% if level >= 3  %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_Fleet.js">       </script>{% endif %}
 	    {% if level >= 1  %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_Planet.js">      </script>{% endif %}
 	    {% if level >= 3  %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_RessourceSet.js"></script>{% endif %}
-	    {% if level >= 99 %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_Coord.js">       </script>{% endif %}
-	    {% if level >= 99 %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_FleetAction.js"> </script>{% endif %}
+	    {% if level >= 10 %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_Coord.js">       </script>{% endif %}
 	    {% if level >= 0  %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_PlanetAction.js"></script>{% endif %}
     {% else %}
 		{% if level >= 1  %}<script type="text/javascript" src="/static/blockly/language/common/control.js"></script>{% endif %}
@@ -42,7 +43,6 @@
 	    {% if level >= 3 %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_RessourceSet.js"></script>{% endif %}
 	    {% if level >= 0 %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_Coord.js">       </script>{% endif %}
 	    {% if level >= 0 %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_FleetAction.js"> </script>{% endif %}
-	    {% if level >= 99 %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_PlanetAction.js"></script>{% endif %}
     {% endif %}
 
     <style>
@@ -62,18 +62,18 @@
 	var xml = Blockly.Xml.textToDom(xml_text);                       
 	Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
 </script>
-<input type="submit" value="Import" name="import_button" 
+<input type="submit" value="{% trans "Import" %}" name="import_button" 
 	onclick="
 		var xml_text = prompt('Load', '');
 		var xml = Blockly.Xml.textToDom(xml_text);
 		Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);"/>
-<input type="submit" value="Export" name="export_button"
+<input type="submit" value="{% trans "Export" %}" name="export_button"
 	onclick="
 		var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
 		var xml_text = Blockly.Xml.domToText(xml);
 		alert(xml_text);"/>
-<input type="submit" value="Reload" name="reload_button" onclick="document.location.href=''"/>
-<input type="submit" value="Save" name="save_button" onclick="
+<input type="submit" value="{% trans "Reload" %}" name="reload_button" onclick="document.location.href=''"/>
+<input type="submit" value="{% trans "Save" %}" name="save_button" onclick="
 		var code = window.Blockly.Generator.workspaceToCode('lua');
 		document.getElementById('scriptXML').value = code;
 		var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);

@@ -7,7 +7,10 @@
 {% block fleets_class %}tabselected{% endblock %}
 
 {% block content %}
-<table style="float: left">
+<div class="container">
+<div class="row">
+<div class="span6">
+<table class="table">
 <tr>
 	<th>{% trans "Coordinate" %}</th><th>{% trans "Contents" %}</th><th>{% trans "Ressources" %}</th>
 </tr>
@@ -25,9 +28,10 @@
 </tr>
 {% endfor %}
 </table>
+</div>
 
 {% if fleet != None %}
-<div>
+<div class="span6">
 <h4>{% trans "Reports" %}</h4>
 <table>
 	<tr><th>{% trans "Date" %}</th><th>{% trans "Type" %}</th><th>{% trans "Comment" %}</th></tr>
@@ -37,5 +41,6 @@
 </table>
 </div>
 {% endif %}
-
+</div>
+</div>
 {% endblock %}

@@ -5,36 +5,32 @@
 {% block codes_class %}tabselected{% endblock %}
 
 {% block content %}
-<nav>
-	<a href="/ingame/codes/planets/blocks.html"
-	{% if name == "Planet" and blockly_code != None %}
-		class="tabselected"
-	{% else %}
-		class="tab"
-	{% endif %}
-		>{% trans "Planets" %} : {% trans "Blocks" %}</a>
-	<a href="/ingame/codes/planets/text.html" 
-	{% if name == "Planet" and script != None %}
-		class="tabselected"
-	{% else %}
-		class="tab"
-	{% endif %}
-		>{% trans "Planets" %} : {% trans "Script" %}</a>
-	<a href="/ingame/codes/fleets/blocks.html" 
-	{% if name == "Fleet" and blockly_code != None %}
-		class="tabselected"
-	{% else %}
-		class="tab"
-	{% endif %}
-		>{% trans "Fleets" %} : {% trans "Blocks" %}</a>
-	<a href="/ingame/codes/fleets/text.html" 
-	{% if name == "Fleet" and script != None %}
-		class="tabselected"
-	{% else %}
-		class="tab"
-	{% endif %}
-		>{% trans "Fleets" %} : {% trans "Script" %}</a>
-</nav>
+<div class="navbar navbar-inverse">
+	<div class="navbar-inner">
+		<ul class="nav">
+			<li
+			{% if name == "Planet" and blockly_code != None %}
+				class="active"
+			{% endif %}
+				><a href="/ingame/codes/planets/blocks.html">{% trans "Planets" %} : {% trans "Blocks" %}</a></li>
+			<li 
+			{% if name == "Planet" and script != None %}
+				class="active"
+			{% endif %}
+				><a href="/ingame/codes/planets/text.html">{% trans "Planets" %} : {% trans "Script" %}</a></li>
+			<li 
+			{% if name == "Fleet" and blockly_code != None %}
+				class="active"
+			{% endif %}
+				><a href="/ingame/codes/fleets/blocks.html">{% trans "Fleets" %} : {% trans "Blocks" %}</a></li>
+			<li 
+			{% if name == "Fleet" and script != None %}
+				class="active"
+			{% endif %}
+				><a href="/ingame/codes/fleets/text.html">{% trans "Fleets" %} : {% trans "Script" %}</a></li>
+		</ul>
+	</div>
+</div>
 {% block code_content %}
 {% endblock %}
 {% endblock %}

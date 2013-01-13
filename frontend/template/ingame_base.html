@@ -3,17 +3,20 @@
 {% load i18n %}
 
 {% block body %}
-		<div>
 			<header>
 			</header>
-			<nav>
-				<a href="/ingame/planets.html" class="{% block planets_class %}tab{% endblock %}">{% trans "Planets" %}</a>
-				<a href="/ingame/fleets.html" class="{% block fleets_class %}tab{% endblock %}">{% trans "Fleets" %}</a>
-				<a href="/ingame/codes.html" class="{% block codes_class %}tab{% endblock %}">{% trans "Codes" %}</a>
-				<a href="/ingame/reports.html" class="{% block reports_class %}tab{% endblock %}">{% trans "Reports" %}</a>
-				<a href="/" class="tab">{% trans "Log out" %}</a>
-			</nav>
-
+			<div class="navbar navbar-inverse">
+				<div class="navbar-inner">
+					<ul class="nav">
+					<li><a href="/ingame/planets.html" class="{% block planets_class %}tab{% endblock %}">{% trans "Planets" %}</a></li>
+					<li><a href="/ingame/fleets.html" class="{% block fleets_class %}tab{% endblock %}">{% trans "Fleets" %}</a></li>
+					<li><a href="/ingame/codes.html" class="{% block codes_class %}tab{% endblock %}">{% trans "Codes" %}</a></li>
+					<li><a href="/ingame/reports.html" class="{% block reports_class %}tab{% endblock %}">{% trans "Reports" %}</a></li>
+					<li class="divider-vertical"></li>
+					<li><a href="/" class="tab">{% trans "Log out" %}</a></li>
+					</ul>
+				</div>
+			</div>
 			{% block content %}{% endblock %}
 
 			<!--
@@ -23,5 +26,4 @@
 				</p>
 			</footer>
 			-->
-		</div>
 {% endblock %}
