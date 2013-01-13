@@ -42,7 +42,7 @@ find_path(LUA_LIBRARY NAMES luabind
           DOC "The lua libraries path"
 )
 find_path(THRIFT_LIBRARY NAMES THRIFT
-          DOC "The lua libraries thrift"
+          DOC "The thrift libraries path"
 )
 
 link_directories(${BOOST_LIBRARY})
@@ -59,6 +59,7 @@ add_executable(
     #src/bit_them_allWT.cpp
     src/Editor.cpp
     src/Engine.cpp       
+    src/EngineServerHandler.cpp       
     src/fighting.cpp
     #src/FleetsView.cpp
     #src/FleetViewWT.cpp
@@ -76,6 +77,9 @@ add_executable(
     src/stl_container_adapter.cpp
     src/TranslationTools.cpp
     src/Rules.cpp
+    src/gen-cpp/EngineServer.cpp
+    src/gen-cpp/thrift_constants.cpp
+    src/gen-cpp/thrift_types.cpp
 )
 
 target_link_libraries( DroneWars debug wtd )
@@ -90,6 +94,9 @@ target_link_libraries( DroneWars optimized luabind )
 
 target_link_libraries( DroneWars debug luad )
 target_link_libraries( DroneWars optimized lua )
+
+target_link_libraries( DroneWars debug thriftd )
+target_link_libraries( DroneWars optimized thrift )
 
 if(CMAKE_COMPILER_IS_GNUCXX)
     target_link_libraries( DroneWars debug boost_threadd )

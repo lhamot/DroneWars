@@ -1,11 +1,20 @@
 #include "stdafx.h"
 #include "EngineServerHandler.h"
+
+#ifndef WIN32
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#endif
+
 #pragma warning(push)
 #pragma warning(disable: 4512 4100 4099 4244 4127 4267 4706)
-#include <protocol/TBinaryProtocol.h>
-#include <server/TSimpleServer.h>
-#include <transport/TServerSocket.h>
-#include <transport/TBufferTransports.h>
+#include <thrift/protocol/TBinaryProtocol.h>
+#include <thrift/server/TSimpleServer.h>
+#include <thrift/transport/TServerSocket.h>
+#include <thrift/transport/TBufferTransports.h>
 #pragma warning(pop)
 #include "Engine.h"
 
@@ -26,12 +35,14 @@ int main()//(int argc, char** argv)
 	bindtextdomain("DroneWars", "./");
 	textdomain("DroneWars");
 
+#if defined(WIN32)
 	WSADATA wsa_data;
 	int result = WSAStartup(MAKEWORD(2, 2), &wsa_data);
 	if(0 != result)
 	{
 		return 1;
 	}
+#endif
 
 	using namespace ::apache::thrift;
 	using namespace ::apache::thrift::protocol;
