@@ -172,7 +172,8 @@ def BlocklyFleetsCodesView(request):
             "name": "Fleet",
             "level": plLvl,
             "blockly_code" : code,
-            "message": message
+            "message": message,
+            "tutosText": "BLOCKLY_TUTO_" + str(plLvl)
     })
     
 
@@ -217,7 +218,8 @@ def BlocklyPlanetsCodesView(request):
             "name": "Planet",
             "level": plLvl,
             "blockly_code" : code,
-            "message": message
+            "message": message,
+            "tutosText": _("BLOCKLY_TUTO_" + str(plLvl))
     })
 
 

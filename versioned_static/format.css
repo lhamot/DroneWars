@@ -23,3 +23,12 @@ td
     color: #E6EBFB;
     background-image: url(img/bg/bg3.gif);
 }
+
+.tutorial
+{
+	background-image: url(img/bg/bg3.gif);
+	border-color: #000000;
+	border-width: 3px;
+	border-style: solid;
+	border-radius: 5px;
+}
