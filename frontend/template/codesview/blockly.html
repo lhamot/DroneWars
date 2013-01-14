@@ -62,6 +62,8 @@
 	var xml = Blockly.Xml.textToDom(xml_text);                       
 	Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
 </script>
+<div class="container">
+<div class="row">
 <input type="submit" value="{% trans "Import" %}" name="import_button" 
 	onclick="
 		var xml_text = prompt('Load', '');
@@ -81,6 +83,8 @@
 		document.getElementById('blocklyXML').value = xml_text;
 		document.getElementById('saveBlocklyForm').submit();
 		"/>
+</div>
+</div>
 <p>{{message}}</p>
 <form method="post" action="" id="saveBlocklyForm">
 {% csrf_token %}

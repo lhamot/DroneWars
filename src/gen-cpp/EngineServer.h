@@ -33,6 +33,7 @@ public:
 	virtual void getPlanet(Planet& _return, const Coord& coord) = 0;
 	virtual void getFleet(Fleet& _return, const Fleet_ID fid) = 0;
 	virtual void logPlayer(OptionalPlayer& _return, const std::string& login, const std::string& password) = 0;
+	virtual void incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName) = 0;
 };
 
 class EngineServerIfFactory
@@ -128,6 +129,10 @@ public:
 		return;
 	}
 	void logPlayer(OptionalPlayer& /* _return */, const std::string& /* login */, const std::string& /* password */)
+	{
+		return;
+	}
+	void incrementTutoDisplayed(const Player_ID /* pid */, const std::string& /* tutoName */)
 	{
 		return;
 	}
@@ -1943,6 +1948,114 @@ public:
 
 };
 
+typedef struct _EngineServer_incrementTutoDisplayed_args__isset
+{
+	_EngineServer_incrementTutoDisplayed_args__isset() : pid(false), tutoName(false) {}
+	bool pid;
+	bool tutoName;
+} _EngineServer_incrementTutoDisplayed_args__isset;
+
+class EngineServer_incrementTutoDisplayed_args
+{
+public:
+
+	EngineServer_incrementTutoDisplayed_args() : pid(0), tutoName()
+	{
+	}
+
+	virtual ~EngineServer_incrementTutoDisplayed_args() throw() {}
+
+	Player_ID pid;
+	std::string tutoName;
+
+	_EngineServer_incrementTutoDisplayed_args__isset __isset;
+
+	void __set_pid(const Player_ID val)
+	{
+		pid = val;
+	}
+
+	void __set_tutoName(const std::string& val)
+	{
+		tutoName = val;
+	}
+
+	bool operator == (const EngineServer_incrementTutoDisplayed_args& rhs) const
+	{
+		if(!(pid == rhs.pid))
+			return false;
+		if(!(tutoName == rhs.tutoName))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_incrementTutoDisplayed_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_incrementTutoDisplayed_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_incrementTutoDisplayed_pargs
+{
+public:
+
+
+	virtual ~EngineServer_incrementTutoDisplayed_pargs() throw() {}
+
+	const Player_ID* pid;
+	const std::string* tutoName;
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_incrementTutoDisplayed_result
+{
+public:
+
+	EngineServer_incrementTutoDisplayed_result()
+	{
+	}
+
+	virtual ~EngineServer_incrementTutoDisplayed_result() throw() {}
+
+
+	bool operator == (const EngineServer_incrementTutoDisplayed_result& /* rhs */) const
+	{
+		return true;
+	}
+	bool operator != (const EngineServer_incrementTutoDisplayed_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_incrementTutoDisplayed_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_incrementTutoDisplayed_presult
+{
+public:
+
+
+	virtual ~EngineServer_incrementTutoDisplayed_presult() throw() {}
+
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
 class EngineServerClient : virtual public EngineServerIf
 {
 public:
@@ -2016,6 +2129,9 @@ public:
 	void logPlayer(OptionalPlayer& _return, const std::string& login, const std::string& password);
 	void send_logPlayer(const std::string& login, const std::string& password);
 	void recv_logPlayer(OptionalPlayer& _return);
+	void incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName);
+	void send_incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName);
+	void recv_incrementTutoDisplayed();
 protected:
 	boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
 	boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -2048,6 +2164,7 @@ private:
 	void process_getPlanet(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_getFleet(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_logPlayer(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_incrementTutoDisplayed(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 public:
 	EngineServerProcessor(boost::shared_ptr<EngineServerIf> iface) :
 		iface_(iface)
@@ -2068,6 +2185,7 @@ public:
 		processMap_["getPlanet"] = &EngineServerProcessor::process_getPlanet;
 		processMap_["getFleet"] = &EngineServerProcessor::process_getFleet;
 		processMap_["logPlayer"] = &EngineServerProcessor::process_logPlayer;
+		processMap_["incrementTutoDisplayed"] = &EngineServerProcessor::process_incrementTutoDisplayed;
 	}
 
 	virtual ~EngineServerProcessor() {}
@@ -2283,6 +2401,17 @@ public:
 		}
 		ifaces_[i]->logPlayer(_return, login, password);
 		return;
+	}
+
+	void incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->incrementTutoDisplayed(pid, tutoName);
+		}
+		ifaces_[i]->incrementTutoDisplayed(pid, tutoName);
 	}
 
 };

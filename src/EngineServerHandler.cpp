@@ -252,3 +252,8 @@ void EngineServerHandler::logPlayer(ndw::OptionalPlayer& _return, const std::str
 	if(optPlayer)
 		_return.__set_player(playerToThrift(optPlayer.get()));
 }
+
+void EngineServerHandler::incrementTutoDisplayed(ndw::Player_ID pid, std::string const& tutoName)
+{
+	engine_.incrementTutoDisplayed(pid, tutoName);
+}

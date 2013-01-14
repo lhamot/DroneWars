@@ -2815,6 +2815,168 @@ uint32_t EngineServer_logPlayer_presult::read(::apache::thrift::protocol::TProto
 	return xfer;
 }
 
+uint32_t EngineServer_incrementTutoDisplayed_args::read(::apache::thrift::protocol::TProtocol* iprot)
+{
+
+	uint32_t xfer = 0;
+	std::string fname;
+	::apache::thrift::protocol::TType ftype;
+	int16_t fid;
+
+	xfer += iprot->readStructBegin(fname);
+
+	using ::apache::thrift::protocol::TProtocolException;
+
+
+	while(true)
+	{
+		xfer += iprot->readFieldBegin(fname, ftype, fid);
+		if(ftype == ::apache::thrift::protocol::T_STOP)
+		{
+			break;
+		}
+		switch(fid)
+		{
+		case 10:
+			if(ftype == ::apache::thrift::protocol::T_I32)
+			{
+				xfer += iprot->readI32(this->pid);
+				this->__isset.pid = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		case 20:
+			if(ftype == ::apache::thrift::protocol::T_STRING)
+			{
+				xfer += iprot->readString(this->tutoName);
+				this->__isset.tutoName = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		default:
+			xfer += iprot->skip(ftype);
+			break;
+		}
+		xfer += iprot->readFieldEnd();
+	}
+
+	xfer += iprot->readStructEnd();
+
+	return xfer;
+}
+
+uint32_t EngineServer_incrementTutoDisplayed_args::write(::apache::thrift::protocol::TProtocol* oprot) const
+{
+	uint32_t xfer = 0;
+	xfer += oprot->writeStructBegin("EngineServer_incrementTutoDisplayed_args");
+
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
+	xfer += oprot->writeI32(this->pid);
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldBegin("tutoName", ::apache::thrift::protocol::T_STRING, 20);
+	xfer += oprot->writeString(this->tutoName);
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldStop();
+	xfer += oprot->writeStructEnd();
+	return xfer;
+}
+
+uint32_t EngineServer_incrementTutoDisplayed_pargs::write(::apache::thrift::protocol::TProtocol* oprot) const
+{
+	uint32_t xfer = 0;
+	xfer += oprot->writeStructBegin("EngineServer_incrementTutoDisplayed_pargs");
+
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
+	xfer += oprot->writeI32((*(this->pid)));
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldBegin("tutoName", ::apache::thrift::protocol::T_STRING, 20);
+	xfer += oprot->writeString((*(this->tutoName)));
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldStop();
+	xfer += oprot->writeStructEnd();
+	return xfer;
+}
+
+uint32_t EngineServer_incrementTutoDisplayed_result::read(::apache::thrift::protocol::TProtocol* iprot)
+{
+
+	uint32_t xfer = 0;
+	std::string fname;
+	::apache::thrift::protocol::TType ftype;
+	int16_t fid;
+
+	xfer += iprot->readStructBegin(fname);
+
+	using ::apache::thrift::protocol::TProtocolException;
+
+
+	while(true)
+	{
+		xfer += iprot->readFieldBegin(fname, ftype, fid);
+		if(ftype == ::apache::thrift::protocol::T_STOP)
+		{
+			break;
+		}
+		xfer += iprot->skip(ftype);
+		xfer += iprot->readFieldEnd();
+	}
+
+	xfer += iprot->readStructEnd();
+
+	return xfer;
+}
+
+uint32_t EngineServer_incrementTutoDisplayed_result::write(::apache::thrift::protocol::TProtocol* oprot) const
+{
+
+	uint32_t xfer = 0;
+
+	xfer += oprot->writeStructBegin("EngineServer_incrementTutoDisplayed_result");
+
+	xfer += oprot->writeFieldStop();
+	xfer += oprot->writeStructEnd();
+	return xfer;
+}
+
+uint32_t EngineServer_incrementTutoDisplayed_presult::read(::apache::thrift::protocol::TProtocol* iprot)
+{
+
+	uint32_t xfer = 0;
+	std::string fname;
+	::apache::thrift::protocol::TType ftype;
+	int16_t fid;
+
+	xfer += iprot->readStructBegin(fname);
+
+	using ::apache::thrift::protocol::TProtocolException;
+
+
+	while(true)
+	{
+		xfer += iprot->readFieldBegin(fname, ftype, fid);
+		if(ftype == ::apache::thrift::protocol::T_STOP)
+		{
+			break;
+		}
+		xfer += iprot->skip(ftype);
+		xfer += iprot->readFieldEnd();
+	}
+
+	xfer += iprot->readStructEnd();
+
+	return xfer;
+}
+
 void EngineServerClient::start()
 {
 	send_start();
@@ -3772,6 +3934,63 @@ void EngineServerClient::recv_logPlayer(OptionalPlayer& _return)
 		return;
 	}
 	throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "logPlayer failed: unknown result");
+}
+
+void EngineServerClient::incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName)
+{
+	send_incrementTutoDisplayed(pid, tutoName);
+	recv_incrementTutoDisplayed();
+}
+
+void EngineServerClient::send_incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName)
+{
+	int32_t cseqid = 0;
+	oprot_->writeMessageBegin("incrementTutoDisplayed", ::apache::thrift::protocol::T_CALL, cseqid);
+
+	EngineServer_incrementTutoDisplayed_pargs args;
+	args.pid = &pid;
+	args.tutoName = &tutoName;
+	args.write(oprot_);
+
+	oprot_->writeMessageEnd();
+	oprot_->getTransport()->writeEnd();
+	oprot_->getTransport()->flush();
+}
+
+void EngineServerClient::recv_incrementTutoDisplayed()
+{
+
+	int32_t rseqid = 0;
+	std::string fname;
+	::apache::thrift::protocol::TMessageType mtype;
+
+	iprot_->readMessageBegin(fname, mtype, rseqid);
+	if(mtype == ::apache::thrift::protocol::T_EXCEPTION)
+	{
+		::apache::thrift::TApplicationException x;
+		x.read(iprot_);
+		iprot_->readMessageEnd();
+		iprot_->getTransport()->readEnd();
+		throw x;
+	}
+	if(mtype != ::apache::thrift::protocol::T_REPLY)
+	{
+		iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+		iprot_->readMessageEnd();
+		iprot_->getTransport()->readEnd();
+	}
+	if(fname.compare("incrementTutoDisplayed") != 0)
+	{
+		iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+		iprot_->readMessageEnd();
+		iprot_->getTransport()->readEnd();
+	}
+	EngineServer_incrementTutoDisplayed_presult result;
+	result.read(iprot_);
+	iprot_->readMessageEnd();
+	iprot_->getTransport()->readEnd();
+
+	return;
 }
 
 bool EngineServerProcessor::dispatchCall(::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, const std::string& fname, int32_t seqid, void* callContext)
@@ -4794,6 +5013,68 @@ void EngineServerProcessor::process_logPlayer(int32_t seqid, ::apache::thrift::p
 	if(this->eventHandler_.get() != NULL)
 	{
 		this->eventHandler_->postWrite(ctx, "EngineServer.logPlayer", bytes);
+	}
+}
+
+void EngineServerProcessor::process_incrementTutoDisplayed(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+	void* ctx = NULL;
+	if(this->eventHandler_.get() != NULL)
+	{
+		ctx = this->eventHandler_->getContext("EngineServer.incrementTutoDisplayed", callContext);
+	}
+	::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "EngineServer.incrementTutoDisplayed");
+
+	if(this->eventHandler_.get() != NULL)
+	{
+		this->eventHandler_->preRead(ctx, "EngineServer.incrementTutoDisplayed");
+	}
+
+	EngineServer_incrementTutoDisplayed_args args;
+	args.read(iprot);
+	iprot->readMessageEnd();
+	uint32_t bytes = iprot->getTransport()->readEnd();
+
+	if(this->eventHandler_.get() != NULL)
+	{
+		this->eventHandler_->postRead(ctx, "EngineServer.incrementTutoDisplayed", bytes);
+	}
+
+	EngineServer_incrementTutoDisplayed_result result;
+	try
+	{
+		iface_->incrementTutoDisplayed(args.pid, args.tutoName);
+	}
+	catch(const std::exception& e)
+	{
+		if(this->eventHandler_.get() != NULL)
+		{
+			this->eventHandler_->handlerError(ctx, "EngineServer.incrementTutoDisplayed");
+		}
+
+		::apache::thrift::TApplicationException x(e.what());
+		oprot->writeMessageBegin("incrementTutoDisplayed", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+		x.write(oprot);
+		oprot->writeMessageEnd();
+		oprot->getTransport()->writeEnd();
+		oprot->getTransport()->flush();
+		return;
+	}
+
+	if(this->eventHandler_.get() != NULL)
+	{
+		this->eventHandler_->preWrite(ctx, "EngineServer.incrementTutoDisplayed");
+	}
+
+	oprot->writeMessageBegin("incrementTutoDisplayed", ::apache::thrift::protocol::T_REPLY, seqid);
+	result.write(oprot);
+	oprot->writeMessageEnd();
+	bytes = oprot->getTransport()->writeEnd();
+	oprot->getTransport()->flush();
+
+	if(this->eventHandler_.get() != NULL)
+	{
+		this->eventHandler_->postWrite(ctx, "EngineServer.incrementTutoDisplayed", bytes);
 	}
 }
 

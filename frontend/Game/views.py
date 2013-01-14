@@ -112,10 +112,19 @@ def PlanetsView(request):
                         task.what = Cannon_Enum._VALUES_TO_NAMES[task.value]
                     else:
                         raise AssertionError("Unconsistent PlanetTask")
+
+        player = service.getPlayer(pid)
+        PlanetViewTutoTag = "PlanetView"
+        if not PlanetViewTutoTag in player.tutoDisplayed:
+            helpMessage = _("PLANET_TUTOS")
+            service.incrementTutoDisplayed(pid, PlanetViewTutoTag);
+        else:
+            helpMessage = ""
         
         return render(request, 'planetsview.html', {
             'planetList': planetList,
             'planet' : target,
+            'helpMessage': helpMessage
     })
 
 
@@ -130,15 +139,35 @@ def FleetsView(request):
             fleet = next((f for f in fleetList if f.id == fleetID), None)
         else:
             fleet = None
+
+        player = service.getPlayer(pid)
+        FleetViewTutoTag = "FleetView"
+        if not FleetViewTutoTag in player.tutoDisplayed:
+            helpMessage = _("FLEET_TUTOS")
+            service.incrementTutoDisplayed(pid, FleetViewTutoTag);
+        else:
+            helpMessage = ""
         
         return render(request, 'fleetsview.html', {
             'fleetList': fleetList,
-            'fleet': fleet
+            'fleet': fleet,
+            'helpMessage': helpMessage
     })
 
 
 def CodesView(request):
+        pid = request.session["PlayerID"]
+        service = createEngineClient()
+        player = service.getPlayer(pid)
+        CodeViewTutoTag = "CodeView"
+        if not CodeViewTutoTag in player.tutoDisplayed:
+            helpMessage = _("CODE_TUTOS")
+            service.incrementTutoDisplayed(pid, CodeViewTutoTag);
+        else:
+            helpMessage = ""
+    
         return render(request, 'codesview.html', {
+            'helpMessage': helpMessage
     })
 
 
@@ -146,9 +175,17 @@ def ReportsView(request):
         pid = request.session["PlayerID"]
         service = createEngineClient()
         player = service.getPlayer(pid)
-        
+
+        ReportViewTutoTag = "ReportView"
+        if not ReportViewTutoTag in player.tutoDisplayed:
+            helpMessage = _("REPORT_TUTOS")
+            service.incrementTutoDisplayed(pid, ReportViewTutoTag);
+        else:
+            helpMessage = ""
+
         return render(request, 'reportsview.html', {
-            'player': player
+            'player': player,
+            'helpMessage': helpMessage
     })
 
 CoddingLevelTag = "BlocklyCodding"

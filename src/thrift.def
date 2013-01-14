@@ -252,5 +252,6 @@ service EngineServer
 	Player getPlayer(10: Player_ID pid),
 	Planet getPlanet(10: Coord coord),
 	Fleet getFleet(10: Fleet_ID fid),
-	OptionalPlayer logPlayer(10: string login, 20: string password)
+	OptionalPlayer logPlayer(10: string login, 20: string password),
+	void incrementTutoDisplayed(10: Player_ID pid, 20: string tutoName)
 }

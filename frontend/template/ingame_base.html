@@ -17,6 +17,13 @@
 					</ul>
 				</div>
 			</div>
+			<div class="container">
+				<div class="row">
+					{% if helpMessage %}
+					<div class="span4 offset1 tutorial">{{helpMessage|safe}}</div>
+					{% endif %}
+				</div>
+			</div>
 			{% block content %}{% endblock %}
 
 			<!--

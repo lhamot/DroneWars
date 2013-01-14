@@ -124,6 +124,14 @@ class Iface:
     """
     pass
 
+  def incrementTutoDisplayed(self, pid, tutoName):
+    """
+    Parameters:
+     - pid
+     - tutoName
+    """
+    pass
+
 
 class Client(Iface):
   def __init__(self, iprot, oprot=None):
@@ -597,6 +605,36 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "logPlayer failed: unknown result");
 
+  def incrementTutoDisplayed(self, pid, tutoName):
+    """
+    Parameters:
+     - pid
+     - tutoName
+    """
+    self.send_incrementTutoDisplayed(pid, tutoName)
+    self.recv_incrementTutoDisplayed()
+
+  def send_incrementTutoDisplayed(self, pid, tutoName):
+    self._oprot.writeMessageBegin('incrementTutoDisplayed', TMessageType.CALL, self._seqid)
+    args = incrementTutoDisplayed_args()
+    args.pid = pid
+    args.tutoName = tutoName
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_incrementTutoDisplayed(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = incrementTutoDisplayed_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
 
 class Processor(Iface, TProcessor):
   def __init__(self, handler):
@@ -618,6 +656,7 @@ class Processor(Iface, TProcessor):
     self._processMap["getPlanet"] = Processor.process_getPlanet
     self._processMap["getFleet"] = Processor.process_getFleet
     self._processMap["logPlayer"] = Processor.process_logPlayer
+    self._processMap["incrementTutoDisplayed"] = Processor.process_incrementTutoDisplayed
 
   def process(self, iprot, oprot):
     (name, type, seqid) = iprot.readMessageBegin()
@@ -806,6 +845,17 @@ class Processor(Iface, TProcessor):
     result = logPlayer_result()
     result.success = self._handler.logPlayer(args.login, args.password)
     oprot.writeMessageBegin("logPlayer", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_incrementTutoDisplayed(self, seqid, iprot, oprot):
+    args = incrementTutoDisplayed_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = incrementTutoDisplayed_result()
+    self._handler.incrementTutoDisplayed(args.pid, args.tutoName)
+    oprot.writeMessageBegin("incrementTutoDisplayed", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -2820,6 +2870,138 @@ class logPlayer_result:
       oprot.writeFieldBegin('success', TType.STRUCT, 0)
       self.success.write(oprot)
       oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class incrementTutoDisplayed_args:
+  """
+  Attributes:
+   - pid
+   - tutoName
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'pid', None, None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.STRING, 'tutoName', None, None, ), # 20
+  )
+
+  def __init__(self, pid=None, tutoName=None,):
+    self.pid = pid
+    self.tutoName = tutoName
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.I32:
+          self.pid = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 20:
+        if ftype == TType.STRING:
+          self.tutoName = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('incrementTutoDisplayed_args')
+    if self.pid is not None:
+      oprot.writeFieldBegin('pid', TType.I32, 10)
+      oprot.writeI32(self.pid)
+      oprot.writeFieldEnd()
+    if self.tutoName is not None:
+      oprot.writeFieldBegin('tutoName', TType.STRING, 20)
+      oprot.writeString(self.tutoName)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class incrementTutoDisplayed_result:
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('incrementTutoDisplayed_result')
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
