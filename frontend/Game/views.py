@@ -173,7 +173,7 @@ def BlocklyFleetsCodesView(request):
             "level": plLvl,
             "blockly_code" : code,
             "message": message,
-            "tutosText": "BLOCKLY_TUTO_" + str(plLvl)
+            "tutosText": _("BLOCKLY_TUTO_" + str(plLvl))
     })
     
 
