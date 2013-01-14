@@ -32,6 +32,26 @@ Blockly.MSG_PROCEDURE_CATEGORY = 'Procedures';
 
 // Control Blocks
 Blockly.LANG_CATEGORY_CONTROLS = 'Controle';
+Blockly.LANG_COLOUR_PICKER_HELPURL = 'http://en.wikipedia.org/wiki/Color';
+Blockly.LANG_COLOUR_PICKER_TOOLTIP = 'Choisir une couleur dans la palète.';
+
+Blockly.LANG_COLOUR_RGB_HELPURL = 'http://en.wikipedia.org/wiki/RGB_color_model';
+Blockly.LANG_COLOUR_RGB_TITLE = 'couleur avec';
+Blockly.LANG_COLOUR_RGB_RED = 'rouge';
+Blockly.LANG_COLOUR_RGB_GREEN = 'vert';
+Blockly.LANG_COLOUR_RGB_BLUE = 'bleu';
+Blockly.LANG_COLOUR_RGB_TOOLTIP =  'Creer une couleur avec une quantité ' +
+               'spécifiée\nde rouge, vert et bleu. Toutes les valeurs doivent ètre entre 0.0 et 1.0';
+
+Blockly.LANG_COLOUR_BLEND_HELPURL = 'http://meyerweb.com/eric/tools/color-blend/';
+Blockly.LANG_COLOUR_BLEND_TITLE = 'blend';
+Blockly.LANG_COLOUR_BLEND_COLOUR1 = 'colour 1';
+Blockly.LANG_COLOUR_BLEND_COLOUR2 = 'colour 2';
+Blockly.LANG_COLOUR_BLEND_RATIO = 'ratio';
+Blockly.LANG_COLOUR_BLEND_TOOLTIP = 'Blends two colours together with a given ratio (0.0 - 1.0).';
+
+// Control Blocks.
+Blockly.LANG_CATEGORY_CONTROLS = 'Control';
 Blockly.LANG_CONTROLS_IF_HELPURL = 'http://code.google.com/p/blockly/wiki/If_Then';
 Blockly.LANG_CONTROLS_IF_TOOLTIP_1 = "Si c'est vraie, alors excecute certaines instructions";//'If a value is true, then do some statements.';
 Blockly.LANG_CONTROLS_IF_TOOLTIP_2 = "Si c'est vraie, alors excecute le premier bloque d'instruction.\n" +//'If a value is true, then do the first block of statements.\n' +
@@ -55,6 +75,12 @@ Blockly.LANG_CONTROLS_IF_ELSEIF_TOOLTIP = "Ajoute une condition dans le bloque '
 
 Blockly.LANG_CONTROLS_IF_ELSE_TITLE_ELSE = 'sinon';
 Blockly.LANG_CONTROLS_IF_ELSE_TOOLTIP = "Ajoute une condition final, par defaut, au bloque 'si'";//'Add a final, catch-all condition to the if block.';
+
+Blockly.LANG_CONTROLS_REPEAT_HELPURL = 'http://en.wikipedia.org/wiki/For_loop';
+Blockly.LANG_CONTROLS_REPEAT_TITLE_REPEAT = 'répete';
+Blockly.LANG_CONTROLS_REPEAT_TITLE_TIMES = 'fois';
+Blockly.LANG_CONTROLS_REPEAT_INPUT_DO = 'fait';
+Blockly.LANG_CONTROLS_REPEAT_TOOLTIP = 'Do some statements several times.';
 
 Blockly.LANG_CONTROLS_WHILEUNTIL_HELPURL = 'http://code.google.com/p/blockly/wiki/Repeat';
 Blockly.LANG_CONTROLS_WHILEUNTIL_TITLE_REPEAT = 'répète';
@@ -133,6 +159,13 @@ Blockly.LANG_LOGIC_NULL_HELPURL = 'http://en.wikipedia.org/wiki/Nullable_type';
 Blockly.LANG_LOGIC_NULL = 'null';
 Blockly.LANG_LOGIC_NULL_TOOLTIP = 'Retourne null.';
 
+Blockly.LANG_LOGIC_TERNARY_HELPURL = 'http://en.wikipedia.org/wiki/%3F:';
+Blockly.LANG_LOGIC_TERNARY_CONDITION = 'teste';
+Blockly.LANG_LOGIC_TERNARY_IF_TRUE = 'si vrai';
+Blockly.LANG_LOGIC_TERNARY_IF_FALSE = 'si faux';
+Blockly.LANG_LOGIC_TERNARY_TOOLTIP = 'Check the condition in "test". If the condition is true\n' +
+    'returns the "if true" value, otherwise returns the "if false" value.';
+
 // Math Blocks.
 Blockly.LANG_CATEGORY_MATH = 'Math';
 Blockly.LANG_MATH_NUMBER_HELPURL = 'http://en.wikipedia.org/wiki/Number';
@@ -145,6 +178,39 @@ Blockly.LANG_MATH_ARITHMETIC_TOOLTIP_MULTIPLY = "Retourne le produit des deux no
 Blockly.LANG_MATH_ARITHMETIC_TOOLTIP_DIVIDE = "Retourne le quotient des deux nombres.";//'Return the quotient of the two numbers.';
 Blockly.LANG_MATH_ARITHMETIC_TOOLTIP_POWER = "Retourne le premier nombre\n" +//'Return the first number raised to\n' +
   "élevé à la puissance du second nombre.";//'the power of the second number.';
+
+Blockly.LANG_MATH_SINGLE_HELPURL = 'http://en.wikipedia.org/wiki/Square_root';
+Blockly.LANG_MATH_SINGLE_OP_ROOT = 'racine carrée';
+Blockly.LANG_MATH_SINGLE_OP_ABSOLUTE = 'absolue';
+Blockly.LANG_MATH_SINGLE_TOOLTIP_ROOT = "Retourne la racine carré d'un nombre.";
+Blockly.LANG_MATH_SINGLE_TOOLTIP_ABS = "Retourne la valeur absolue d'un nombre.";
+Blockly.LANG_MATH_SINGLE_TOOLTIP_NEG = "Retourne l'opposé d'un nombre.";
+Blockly.LANG_MATH_SINGLE_TOOLTIP_LN = "Retourne le logarithme naturel d'un nombre.";
+Blockly.LANG_MATH_SINGLE_TOOLTIP_LOG10 = "Retourne le logarithme de base 10 d'un nombre.";
+Blockly.LANG_MATH_SINGLE_TOOLTIP_EXP = 'Retourne e élevé a la puissance du nombre.';
+Blockly.LANG_MATH_SINGLE_TOOLTIP_POW10 = 'Retourne 10 élevé a la puissance du nombre.';
+
+Blockly.LANG_MATH_TRIG_HELPURL = 'http://en.wikipedia.org/wiki/Trigonometric_functions';
+Blockly.LANG_MATH_TRIG_TOOLTIP_SIN = 'Return the sine of a degree (not radian).';
+Blockly.LANG_MATH_TRIG_TOOLTIP_COS = 'Return the cosine of a degree (not radian).';
+Blockly.LANG_MATH_TRIG_TOOLTIP_TAN = 'Return the tangent of a degree (not radian).';
+Blockly.LANG_MATH_TRIG_TOOLTIP_ASIN = 'Return the arcsine of a number.';
+Blockly.LANG_MATH_TRIG_TOOLTIP_ACOS = 'Return the arccosine of a number.';
+Blockly.LANG_MATH_TRIG_TOOLTIP_ATAN = 'Return the arctangent of a number.';
+
+Blockly.LANG_MATH_CONSTANT_HELPURL = 'http://en.wikipedia.org/wiki/Mathematical_constant';
+Blockly.LANG_MATH_CONSTANT_TOOLTIP = 'Return one of the common constants: \u03c0 (3.141\u2026), e (2.718\u2026), \u03c6 (1.618\u2026),\n' +
+    'sqrt(2) (1.414\u2026), sqrt(\u00bd) (0.707\u2026), or \u221e (infinity).';
+
+Blockly.LANG_MATH_IS_EVEN = 'is even';
+Blockly.LANG_MATH_IS_ODD = 'is odd';
+Blockly.LANG_MATH_IS_PRIME = 'is prime';
+Blockly.LANG_MATH_IS_WHOLE = 'is whole';
+Blockly.LANG_MATH_IS_POSITIVE = 'is positive';
+Blockly.LANG_MATH_IS_NEGATIVE = 'is negative';
+Blockly.LANG_MATH_IS_DIVISIBLE_BY = 'is divisible by';
+Blockly.LANG_MATH_IS_TOOLTIP = 'Check if a number is an even, odd, prime, whole, positive, negative,\n' +
+    'or if it is divisible by certain number.  Returns true or false.';
 
 Blockly.LANG_MATH_CHANGE_HELPURL = 'http://en.wikipedia.org/wiki/Negation';
 Blockly.LANG_MATH_CHANGE_TITLE_CHANGE = 'dans';
@@ -195,6 +261,10 @@ Blockly.LANG_MATH_ONLIST_TOOLTIP_MEDIAN = "Retourne la valeur médiane de la lis
 Blockly.LANG_MATH_ONLIST_TOOLTIP_MODE = "Retourne une liste des valeurs les plus représentées dans la liste.";//'Return a list of the most common item(s) in the list.';
 Blockly.LANG_MATH_ONLIST_TOOLTIP_STD_DEV = "Retourne l'écart-type de la liste.";//'Return the standard deviation of the list.';
 Blockly.LANG_MATH_ONLIST_TOOLTIP_RANDOM = "Retourne un élément tiré au hazard dans la liste.";//'Return a random element from the list.';
+
+Blockly.LANG_MATH_MODULO_HELPURL = 'http://en.wikipedia.org/wiki/Modulo_operation';
+Blockly.LANG_MATH_MODULO_INPUT_DIVIDEND = 'modulo de';
+Blockly.LANG_MATH_MODULO_TOOLTIP = 'Retourne le modulo de la division de deux nombres.';
 
 Blockly.LANG_MATH_CONSTRAIN_HELPURL = 'http://en.wikipedia.org/wiki/Clamping_%28graphics%29';
 Blockly.LANG_MATH_CONSTRAIN_INPUT_CONSTRAIN = 'limite';
@@ -269,7 +339,12 @@ Blockly.LANG_TEXT_INDEXOF_OPERATOR_LAST = 'dernière';
 Blockly.LANG_TEXT_CHARAT_HELPURL = 'http://publib.boulder.ibm.com/infocenter/lnxpcomp/v8v101/index.jsp?topic=%2Fcom.ibm.xlcpp8l.doc%2Flanguage%2Fref%2Farsubex.htm'
 Blockly.LANG_TEXT_CHARAT_INPUT_AT = 'lettre n°';
 Blockly.LANG_TEXT_CHARAT_INPUT_INTEXT = 'dans le texte';
-Blockly.LANG_TEXT_CHARAT_TOOLTIP = "Retourne la lettre à la position donné.";//'Returns the letter at the specified position.';
+Blockly.LANG_TEXT_CHARAT_FROM_END = 'letter # from end';
+Blockly.LANG_TEXT_CHARAT_FIRST = 'first letter';
+Blockly.LANG_TEXT_CHARAT_LAST = 'last letter';
+Blockly.LANG_TEXT_CHARAT_RANDOM = 'random letter';
+Blockly.LANG_TEXT_CHARAT_INPUT_INTEXT = 'in text';
+Blockly.LANG_TEXT_CHARAT_TOOLTIP = 'Returns the letter at the specified position.';
 
 Blockly.LANG_TEXT_CHANGECASE_HELPURL = 'http://www.liv.ac.uk/HPC/HTMLF90Course/HTMLF90CourseNotesnode91.html';
 Blockly.LANG_TEXT_CHANGECASE_TITLE_TO = 'en';
@@ -342,8 +417,35 @@ Blockly.LANG_LISTS_INDEX_OF_LAST = 'last';
 
 Blockly.LANG_LISTS_GET_INDEX_HELPURL = 'http://publib.boulder.ibm.com/infocenter/lnxpcomp/v8v101/index.jsp?topic=%2Fcom.ibm.xlcpp8l.doc%2Flanguage%2Fref%2Farsubex.htm';
 Blockly.LANG_LISTS_GET_INDEX_INPUT_AT = 'get item at';
+Blockly.LANG_LISTS_GET_INDEX_GET_REMOVE = 'get and remove';
+Blockly.LANG_LISTS_GET_INDEX_REMOVE = 'remove';
+Blockly.LANG_LISTS_GET_INDEX_FROM_START = '#';
+Blockly.LANG_LISTS_GET_INDEX_FROM_END = '# from end';
+Blockly.LANG_LISTS_GET_INDEX_FIRST = 'first';
+Blockly.LANG_LISTS_GET_INDEX_LAST = 'last';
+Blockly.LANG_LISTS_GET_INDEX_RANDOM = 'random';
 Blockly.LANG_LISTS_GET_INDEX_INPUT_IN_LIST = 'in list';
 Blockly.LANG_LISTS_GET_INDEX_TOOLTIP = 'Returns the value at the specified position in a list.';
+    '#1 is the first item.';
+Blockly.LANG_LISTS_GET_INDEX_TOOLTIP_GET_FROM_END = 'Returns the item at the specified position in a list.\n' +
+    '#1 is the last item.';
+Blockly.LANG_LISTS_GET_INDEX_TOOLTIP_GET_FIRST = 'Returns the first item in a list.';
+Blockly.LANG_LISTS_GET_INDEX_TOOLTIP_GET_LAST = 'Returns the last item in a list.';
+Blockly.LANG_LISTS_GET_INDEX_TOOLTIP_GET_RANDOM = 'Returns a random item in a list.';
+Blockly.LANG_LISTS_GET_INDEX_TOOLTIP_GET_REMOVE_FROM_START = 'Removes and returns the item at the specified position\n' +
+    ' in a list.  #1 is the first item.';
+Blockly.LANG_LISTS_GET_INDEX_TOOLTIP_GET_REMOVE_FROM_END = 'Removes and returns the item at the specified position\n' +
+    ' in a list.  #1 is the last item.';
+Blockly.LANG_LISTS_GET_INDEX_TOOLTIP_GET_REMOVE_FIRST = 'Removes and returns the first item in a list.';
+Blockly.LANG_LISTS_GET_INDEX_TOOLTIP_GET_REMOVE_LAST = 'Removes and returns the last item in a list.';
+Blockly.LANG_LISTS_GET_INDEX_TOOLTIP_GET_REMOVE_RANDOM = 'Removes and returns a random item in a list.';
+Blockly.LANG_LISTS_GET_INDEX_TOOLTIP_REMOVE_FROM_START = 'Removes the item at the specified position\n' +
+    ' in a list.  #1 is the first item.';
+Blockly.LANG_LISTS_GET_INDEX_TOOLTIP_REMOVE_FROM_END = 'Removes the item at the specified position\n' +
+    ' in a list.  #1 is the last item.';
+Blockly.LANG_LISTS_GET_INDEX_TOOLTIP_REMOVE_FIRST = 'Removes the first item in a list.';
+Blockly.LANG_LISTS_GET_INDEX_TOOLTIP_REMOVE_LAST = 'Removes the last item in a list.';
+Blockly.LANG_LISTS_GET_INDEX_TOOLTIP_REMOVE_RANDOM = 'Removes a random item in a list.';
 
 Blockly.LANG_LISTS_SET_INDEX_HELPURL = 'http://publib.boulder.ibm.com/infocenter/lnxpcomp/v8v101/index.jsp?topic=%2Fcom.ibm.xlcpp8l.doc%2Flanguage%2Fref%2Farsubex.htm';
 Blockly.LANG_LISTS_SET_INDEX_INPUT_AT = 'set item at';

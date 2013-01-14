@@ -19,7 +19,7 @@
 
 /**
  * @fileoverview Helper functions for generating lua for blocks.
- * @author Loïc HAMOT
+ * @author LoÃ¯c HAMOT
  * Due to the frequency of long strings, the 80-column wrap rule need not apply
  * to language files.
  */
@@ -39,26 +39,35 @@ if (!Blockly.lua.RESERVED_WORDS_) {
  * accidentally clobbering a built-in object or function.
  * @private
  */
-Blockly.lua.RESERVED_WORDS_ =
+Blockly.lua.addReservedWords(
   // http://docs.python.org/reference/lexical_analysis.html#keywords
   'and,break,do,else,elseif,' +
   'end,false,for,function,if,' +
   'in,local,nil,not,or,' +
-  'repeat,return,then,true,until,while';
+  'repeat,return,then,true,until,while');
 
 /**
  * Order of operation ENUMs.
  * http://docs.python.org/reference/expressions.html#summary
  */
-Blockly.lua.ORDER_LOGICAL_OR = 0;       // or
-Blockly.lua.ORDER_LOGICAL_AND = 1;      // and
-Blockly.lua.ORDER_RELATIONAL = 2;       // <     >     <=    >=    ~=    ==
-Blockly.lua.ORDER_CONCATENATION = 3;    // ..
-Blockly.lua.ORDER_UNARY_SIGN = 4;       // + -
-Blockly.lua.ORDER_MULTIPLICATIVE = 5;   // * / %
-Blockly.lua.ORDER_LOGICAL_NOT = 6;      // not # -
-Blockly.lua.ORDER_EXPONENTIATION = 7;   // ^
+Blockly.lua.ORDER_ATOMIC = 0;         // 0 "" ...
+Blockly.lua.ORDER_MEMBER = 1;         // . []
+Blockly.lua.ORDER_FUNCTION_CALL = 2; 
+Blockly.lua.ORDER_LOGICAL_OR = 3;       // or
+Blockly.lua.ORDER_LOGICAL_AND = 4;      // and
+Blockly.lua.ORDER_RELATIONAL = 5;       // <     >     <=    >=    ~=    ==
+Blockly.lua.ORDER_CONCATENATION = 6;    // ..
+Blockly.lua.ORDER_UNARY_SIGN = 7;       // + -
+Blockly.lua.ORDER_ADDITIVE = 8;       // + -
+Blockly.lua.ORDER_MULTIPLICATIVE = 9;   // * / %
+Blockly.lua.ORDER_LOGICAL_NOT = 10;      // not # -
+Blockly.lua.ORDER_EXPONENTIATION = 11;   // ^
 Blockly.lua.ORDER_NONE = 99;            // (...)
+
+
+
+
+Blockly.lua.INFINITE_LOOP_TRAP = null;
 
 /**
  * Initialise the database of variable names.
