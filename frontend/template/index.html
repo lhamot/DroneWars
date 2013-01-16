@@ -10,29 +10,33 @@
 <div class="row">
 	<div class="span6">
 		<form method="post">
-			<table>
-				<tr><th colspan="2">{% trans "Log in" %}</th></tr>
-				{% csrf_token %}
-				{{ logForm.as_table }}
-				<tr><td colspan="2"><input class="btn btn-success" type="submit" value="{% trans "Log in" %}" name="login_action"></td></tr>
+			{% csrf_token %}
+			<fieldset>
+				<legend>{% trans "Log in" %}</legend>
+				{{ logForm.as_p }}
+				<input class="btn btn-success" type="submit" value="{% trans "Log in" %}" name="login_action">
 				{% if logMessage %}
-				<tr><td colspan="2">{{logMessage}}</td></tr>
+				<p class="text-error">{{logMessage}}<p></p>
 				{% endif %}
-			</table>
+			</fieldset>
 		</form>
 	</div>
 
 	<div class="span6">
 		<form method="post">
-		<table>
-		<tr><th colspan="2">{% trans "Create account" %}</th></tr>
-		{% csrf_token %}
-		{{ subForm.as_table }}
-		<tr><td colspan="2"><input class="btn btn-success" type="submit" value="{% trans "Register" %}" name="subscribe_action"></td></tr>
-		{% if regMessage %}
-		<tr><td colspan="2">{{regMessage}}</td></tr>
-		{% endif %}
-		</table>
+			{% csrf_token %}
+			<fieldset>
+				<legend>{% trans "Create account" %}</legend>
+				{{ subForm.as_p }}
+				<input class="btn btn-success" type="submit" value="{% trans "Register" %}" name="subscribe_action">
+				{% if regMessage %}
+					{% if regMessageState %}
+						<p class="text-success">{{regMessage}}<p></p>
+					{% else %}
+						<p class="text-error">{{regMessage}}<p></p>
+					{% endif %}
+				{% endif %}
+			</fieldset>
 		</form>
 	</div>
 	

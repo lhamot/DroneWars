@@ -103,3 +103,19 @@ Blockly.lua.procedures_callnoreturn = function()
 	var code = funcName + '(' + args.join(', ') + ')\n';
 	return code;
 };
+
+
+Blockly.lua.procedures_ifreturn = function () {
+    // Conditionally return value from a procedure.
+    var condition = Blockly.lua.valueToCode(this, 'CONDITION',
+        Blockly.lua.ORDER_NONE) || 'False';
+    var code = 'if(' + condition + ') then\n';
+    if (this.hasReturnValue_) {
+        var value = Blockly.lua.valueToCode(this, 'VALUE',
+            Blockly.lua.ORDER_NONE) || 'None';
+        code += '  return ' + value + '\nend';
+    } else {
+        code += '  return\nend';
+    }
+    return code;
+};

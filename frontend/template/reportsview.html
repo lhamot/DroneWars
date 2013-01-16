@@ -14,7 +14,7 @@
 </tr>
 {% for event in player.eventList %}
 <tr>
-	<td>{{event.time}}</td><td>{{event.type|eventname}}</td><td>{{event.comment}}</td>
+	<td>{{event.time|int2datetime|date:"DATETIME_FORMAT"}}</td><td>{{event.type|eventname}}</td><td>{{event.comment}}</td>
 </tr>
 {% endfor %}
 </table>

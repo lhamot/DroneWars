@@ -1,5 +1,4 @@
 from django.utils.translation import ugettext_lazy as _
-import django.utils.translation
 
 #from django.http import HttpResponse
 #from django.shortcuts import render_to_response
@@ -9,7 +8,6 @@ from django import forms
 import thrift.transport.TSocket
 import thrift.protocol.TBinaryProtocol
 import gen_py.thrift.EngineServer
-from gen_py.thrift.ttypes import *
 
 
 Building_Enum = gen_py.thrift.ttypes.Building_Enum
@@ -47,6 +45,7 @@ def OutPage(request):
     subForm = SubscribeForm()
     logForm = LoginForm()
     regMessage = ""
+    regMessageState = False
     logMessage = ""
     if request.method == 'POST':
         if "subscribe_action" in request.POST:
@@ -60,6 +59,7 @@ def OutPage(request):
                     added = service.addPlayer(userInfo["login"], userInfo["password"])
                     if added:
                         regMessage = _("Registration successful")
+                        regMessageState = True
                     else:
                         regMessage = _("Login still exist.")
         elif "login_action" in request.POST:
@@ -81,7 +81,8 @@ def OutPage(request):
         'subForm': subForm,
         'logForm': logForm,
         'regMessage': regMessage,
-        'logMessage': logMessage
+        'logMessage': logMessage,
+        'regMessageState': regMessageState
     })
 
 
@@ -90,30 +91,23 @@ def PlanetsView(request):
         pid = request.session["PlayerID"]
         service = createEngineClient()
         planetList = service.getPlayerPlanets(pid)
+        player = service.getPlayer(pid)
         target = None
         targetCoord = None
         if "planet_coord" in request.GET:
             tab = request.GET["planet_coord"].split("_")
             tab = [int(val) for val in tab]
             targetCoord = gen_py.thrift.ttypes.Coord(tab[0], tab[1], tab[2])
-        print len(planetList)
+        else:
+            targetCoord = player.mainPlanet
+        print targetCoord
         for planet in planetList:
+            print planet.coord
             planetHash = planet.coord.X + (planet.coord.Y * 1000) + (planet.coord.Z * 1000000) 
             planet.imgNumber = planetHash % PlanetImageCount;
             if targetCoord and targetCoord == planet.coord:
                 target = planet
-                for task in planet.taskQueue:
-                    task.name = PlanetTask_Enum._VALUES_TO_NAMES[task.type]
-                    if task.type == PlanetTask_Enum.UpgradeBuilding:
-                        task.what = Building_Enum._VALUES_TO_NAMES[task.value]
-                    elif task.type == PlanetTask_Enum.MakeShip:
-                        task.what = Ship_Enum._VALUES_TO_NAMES[task.value]
-                    elif task.type == PlanetTask_Enum.MakeCannon:
-                        task.what = Cannon_Enum._VALUES_TO_NAMES[task.value]
-                    else:
-                        raise AssertionError("Unconsistent PlanetTask")
 
-        player = service.getPlayer(pid)
         PlanetViewTutoTag = "PlanetView"
         if not PlanetViewTutoTag in player.tutoDisplayed:
             helpMessage = _("PLANET_TUTOS")
@@ -165,10 +159,15 @@ def CodesView(request):
             service.incrementTutoDisplayed(pid, CodeViewTutoTag);
         else:
             helpMessage = ""
-    
-        return render(request, 'codesview.html', {
-            'helpMessage': helpMessage
-    })
+            
+        plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0);
+        #Ce test permet d'afficher immediatement la page BlocklyPlanets pour les debutant
+        if plLvl >= 3:
+            return render(request, 'codesview.html', {
+                'helpMessage': helpMessage
+                })
+        else:
+            return redirect("/ingame/codes/planets/blocks.html");
 
 
 def ReportsView(request):

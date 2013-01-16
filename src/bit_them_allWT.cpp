@@ -127,7 +127,7 @@ bit_them_allWT::bit_them_allWT(Wt::WContainerWidget* parent, Engine& engine, Pla
 	//Si l'ordre est changer: Penser a la répercuter dans onTabChanged
 	tab->addItem(gettext("Planets"), createPlanetsTab(this));
 	tab->addItem(gettext("Fleets"), createFleetsTab(this));
-	tab->addItem(gettext("Code"), createCodeTab(this));
+	tab->addItem(gettext("Command"), createCodeTab(this));
 	tab->addItem(gettext("Reports"), createReportTab(this));
 
 	tab->itemSelected().connect(this, &bit_them_allWT::onTabChanged);

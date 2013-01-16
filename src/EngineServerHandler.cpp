@@ -146,6 +146,7 @@ ndw::Player playerToThrift(Player const& player)
 	codeDataCppToThrift(player.fleetsCode, outPlayer.fleetsCode);
 	codeDataCppToThrift(player.planetsCode, outPlayer.planetsCode);
 	outPlayer.eventList.reserve(player.eventList.size());
+	outPlayer.mainPlanet = coordToThrift(player.mainPlanet);
 	for(Event const & ev: player.eventList)
 		outPlayer.eventList.push_back(eventToThrift(ev));
 	for(auto tutoNVP: player.tutoDisplayed)

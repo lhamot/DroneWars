@@ -11,8 +11,12 @@
 <form method="post" action="">
 <textarea id="TextArea" name="TextArea">{{codeData.code}}</textarea>
 {% csrf_token %}
-<input type="submit" value="Reload" name="reload_button"/>
-<input type="submit" value="Save" name="save_button"/>
+<div class="container">
+<div class="row">
+<input class="btn btn-primary" type="submit" value="Reload" name="reload_button"/>
+<input class="btn btn-primary" type="submit" value="Save" name="save_button"/>
+</div>
+</div>
 <p>{{message}}</p>
 <script>
 	var editor = CodeMirror.fromTextArea(document.getElementById("TextArea"), {

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-03 23:06+0100\n"
-"PO-Revision-Date: 2013-01-14 23:40+0100\n"
+"POT-Creation-Date: 2013-01-15 23:04+0100\n"
+"PO-Revision-Date: 2013-01-15 23:04+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "Language: fr\n"
@@ -41,9 +41,9 @@ msgstr "Planètes"
 msgid "Fleets"
 msgstr "Flottes"
 
-#: bit_them_allWT.cpp:130 bit_them_allWT.cpp:209
-msgid "Code"
-msgstr "Code"
+#: bit_them_allWT.cpp:130
+msgid "Command"
+msgstr "Commandement"
 
 #: bit_them_allWT.cpp:131 bit_them_allWT.cpp:210 FleetViewWT.cpp:44
 msgid "Reports"
@@ -78,6 +78,10 @@ msgid "REPORT_TUTOS"
 msgstr ""
 "Ici vous verrez les 10 dernier évenement important qui ce sont produit dans "
 "votre empire."
+
+#: bit_them_allWT.cpp:209
+msgid "Code"
+msgstr "Code"
 
 #: bit_them_allWT.cpp:224
 msgid "Time"
