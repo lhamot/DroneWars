@@ -130,7 +130,7 @@ INSTALLED_APPS = (
 
 # Pour les trad
 LOCALE_PATHS = (
-    DroneWarsPath,
+    DroneWarsPath + "frontend/locale/",
 )
 
 # A sample logging configuration. The only tangible logging

@@ -30,7 +30,7 @@ form legend, table caption
 }
 
 
-td, form
+td, form, p
 {
     //text-align: center;
     color: #E6EBFB;

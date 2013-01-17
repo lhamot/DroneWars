@@ -113,9 +113,9 @@ Blockly.lua.procedures_ifreturn = function () {
     if (this.hasReturnValue_) {
         var value = Blockly.lua.valueToCode(this, 'VALUE',
             Blockly.lua.ORDER_NONE) || 'None';
-        code += '  return ' + value + '\nend';
+        code += '  return ' + value + '\nend\n';
     } else {
-        code += '  return\nend';
+        code += '  return\nend\n';
     }
     return code;
 };

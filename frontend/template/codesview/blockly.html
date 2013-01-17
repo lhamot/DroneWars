@@ -83,9 +83,9 @@
 		document.getElementById('blocklyXML').value = xml_text;
 		document.getElementById('saveBlocklyForm').submit();
 		"/>
+<p class="text-success "><strong>{{message}}</strong></p>
 </div>
 </div>
-<p>{{message}}</p>
 <form method="post" action="" id="saveBlocklyForm">
 {% csrf_token %}
 <input type="hidden" id="blocklyXML" name="blocklyXML" value=""/>

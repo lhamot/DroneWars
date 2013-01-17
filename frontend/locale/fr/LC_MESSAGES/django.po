@@ -1,0 +1,624 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: DroneWars\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-01-17 22:32+0100\n"
+"PO-Revision-Date: 2013-01-17 22:28+0100\n"
+"Last-Translator: \n"
+"Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"X-Poedit-KeywordsList: gettext;gettextWT\n"
+"X-Poedit-Basepath: I:\\C\\Bit_them_all\\src\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: .\Game\TranslationTools.py:3
+msgid "CommandCenter"
+msgstr "Centre de commande"
+
+#: .\Game\TranslationTools.py:4
+msgid "MetalMine"
+msgstr "Mine de métal"
+
+#: .\Game\TranslationTools.py:5
+msgid "CarbonMine"
+msgstr "Mine de carbone"
+
+#: .\Game\TranslationTools.py:6
+msgid "LoiciumFilter"
+msgstr "Filtre a Loïcium"
+
+#: .\Game\TranslationTools.py:7
+msgid "Factory"
+msgstr "Fabrique"
+
+#: .\Game\TranslationTools.py:8
+msgid "Laboratory"
+msgstr "Laboratoire"
+
+#: .\Game\TranslationTools.py:9
+msgid "CarbonicCentral"
+msgstr "Centrale carbonique"
+
+#: .\Game\TranslationTools.py:10
+msgid "SolarCentral"
+msgstr "Central solaire"
+
+#: .\Game\TranslationTools.py:11
+msgid "GeothermicCentral"
+msgstr "Centrale géothermique"
+
+#: .\Game\TranslationTools.py:13
+msgid "UpgradeBuilding"
+msgstr "Amelioration du batiments"
+
+#: .\Game\TranslationTools.py:14
+msgid "MakeShip"
+msgstr "Fabrique un vaisseau"
+
+#: .\Game\TranslationTools.py:15
+msgid "MakeCannon"
+msgstr "Fabriquaction d'un canon"
+
+#: .\Game\TranslationTools.py:18
+msgid "Move"
+msgstr "Déplacement"
+
+#: .\Game\TranslationTools.py:19
+msgid "Harvest"
+msgstr "Récolte"
+
+#: .\Game\TranslationTools.py:20
+msgid "Colonize"
+msgstr "Colonise"
+
+#: .\Game\TranslationTools.py:23
+msgid "Mosquito"
+msgstr "Mosquito"
+
+#: .\Game\TranslationTools.py:24
+msgid "Hornet"
+msgstr "Hornet"
+
+#: .\Game\TranslationTools.py:25
+msgid "Vulture"
+msgstr "Vulture"
+
+#: .\Game\TranslationTools.py:26
+msgid "Dragon"
+msgstr "Dragon"
+
+#: .\Game\TranslationTools.py:27
+msgid "Behemoth"
+msgstr "Béhémoth"
+
+#: .\Game\TranslationTools.py:28
+msgid "Azathoth"
+msgstr "Azathoth"
+
+#: .\Game\TranslationTools.py:29
+msgid "Queen"
+msgstr "Queen"
+
+#: .\Game\TranslationTools.py:30
+msgid "Cargo"
+msgstr "Cargo"
+
+#: .\Game\TranslationTools.py:31
+msgid "LargeCargo"
+msgstr "Grand cargo"
+
+#: .\Game\TranslationTools.py:33
+msgid "Metal"
+msgstr "Métal"
+
+#: .\Game\TranslationTools.py:34
+msgid "Carbon"
+msgstr "Carbone"
+
+#: .\Game\TranslationTools.py:35
+msgid "Loicium"
+msgstr "Loïcium"
+
+#: .\Game\TranslationTools.py:37
+msgid "FleetCodeError"
+msgstr "Erreur du code de flotte"
+
+#: .\Game\TranslationTools.py:38
+msgid "FleetCodeExecError"
+msgstr "Erreur d'exécution des flottes"
+
+#: .\Game\TranslationTools.py:39
+msgid "PlanetCodeError"
+msgstr "Erreure de code de planète"
+
+#: .\Game\TranslationTools.py:40
+msgid "PlanetCodeExecError"
+msgstr "Erreur d'excecution des planètes"
+
+#: .\Game\TranslationTools.py:41
+msgid "Upgraded"
+msgstr "Amélioré"
+
+#: .\Game\TranslationTools.py:42
+msgid "ShipMade"
+msgstr "Vaisseau fabriqué"
+
+#: .\Game\TranslationTools.py:43
+msgid "PlanetHarvested"
+msgstr "Planète récoltée"
+
+#: .\Game\TranslationTools.py:44
+msgid "FleetWin"
+msgstr "Victoire d'une flotte"
+
+#: .\Game\TranslationTools.py:45
+msgid "FleetDraw"
+msgstr "Egalité des flottes"
+
+#: .\Game\TranslationTools.py:46
+msgid "FleetsGather"
+msgstr "Flottes rassemblées"
+
+#: .\Game\TranslationTools.py:47
+msgid "PlanetColonized"
+msgstr "Planète colonisée"
+
+#: .\Game\TranslationTools.py:48
+msgid "FleetLose"
+msgstr "Perte d'une flotte"
+
+#: .\Game\TranslationTools.py:49
+msgid "FleetDrop"
+msgstr "Déchargement effectué"
+
+#: .\Game\TranslationTools.py:50
+msgid "PlanetLose"
+msgstr "Planète perdue"
+
+#: .\Game\TranslationTools.py:51
+msgid "PlanetWin"
+msgstr "Victoire d'une planète"
+
+#: .\Game\TranslationTools.py:52
+msgid "CannonMade"
+msgstr "Canon fabriqué"
+
+#: .\Game\TranslationTools.py:54
+msgid "Cannon1"
+msgstr "Canon1"
+
+#: .\Game\TranslationTools.py:55
+msgid "Cannon2"
+msgstr "Canon2"
+
+#: .\Game\TranslationTools.py:56
+msgid "Cannon3"
+msgstr "Canon3"
+
+#: .\Game\TranslationTools.py:57
+msgid "Cannon4"
+msgstr "Canon4"
+
+#: .\Game\TranslationTools.py:58
+msgid "Cannon5"
+msgstr "Canon5"
+
+#: .\Game\TranslationTools.py:59
+msgid "Cannon6"
+msgstr "Canon6"
+
+#: .\Game\TranslationTools.py:61
+msgid "BLOCKLY_TUTO_0"
+msgstr ""
+"Ceci est la première étape du tutoriel:<br/>\n"
+"Essayez de créer un batiment \"Mine de métal\" (en envoyant le bon ordre)."
+"<br/>\n"
+"Tips : Glissez l'\"ordre de créer un batiment\" à la place de l'\"ordre ne "
+"de rien faire\"."
+
+#: .\Game\TranslationTools.py:62
+msgid "BLOCKLY_TUTO_1"
+msgstr ""
+"Ceci est la deuxième étape du tutoriel :<br/>\n"
+"Essayez de créer une fabrique une fois que votre mine de métal a atteint le "
+"niveau 4.<br>\n"
+"Tips : N'oubliez pas que vous aurez d'autres planètes qui auront besoin "
+"d'une mine de métal."
+
+#: .\Game\TranslationTools.py:63
+msgid "BLOCKLY_TUTO_2"
+msgstr ""
+"Ceci est la troisième étape du tutoriel : <br/>\n"
+"Pour continuer, vous aurrez besoin d'une flotte. Fabriquez des Mosquito.<br/>"
+
+#: .\Game\TranslationTools.py:64
+msgid "BLOCKLY_TUTO_3"
+msgstr "Etape 4 : Créer 3 flottes."
+
+#: .\Game\TranslationTools.py:65
+msgid "BLOCKLY_TUTO_4"
+msgstr "Etape 5 : Créer 3 flottes composées de 5 mosquito exactement."
+
+#: .\Game\TranslationTools.py:66
+msgid "BLOCKLY_TUTO_5"
+msgstr "Etape 6 : Envoyez 6 flottes dans 6 endroits différents"
+
+#: .\Game\TranslationTools.py:67
+msgid "BLOCKLY_TUTO_6"
+msgstr ""
+"Pour réussir la septième étape du tutoriel,<br/>\n"
+"récoltez un maximum de ressources sur les planètes inhabitées."
+
+#: .\Game\TranslationTools.py:68
+msgid "BLOCKLY_TUTO_7"
+msgstr ""
+"Votre prochain objectif est de rapporter des ressources récoltées sur votre "
+"planète mère."
+
+#: .\Game\TranslationTools.py:69
+msgid "BLOCKLY_TUTO_8"
+msgstr ""
+"Votre prochain objectif est de coloniser d'autres planètes.<br/>Aide : C'est "
+"la Reine qui permet de colonier."
+
+#: .\Game\views.py:24 .\Game\views.py:31
+msgid "Login"
+msgstr "Identifiant"
+
+#: .\Game\views.py:25 .\Game\views.py:32
+msgid "Password"
+msgstr "Mot de passe"
+
+#: .\Game\views.py:26
+msgid "Password2"
+msgstr "Mot de passe (verif)"
+
+#: .\Game\views.py:57
+msgid "Passwords don't match!"
+msgstr "Les mots de passes ne corespondent pas!"
+
+#: .\Game\views.py:62
+msgid "Registration successful"
+msgstr "L'enregistrement as reussit."
+
+#: .\Game\views.py:65
+msgid "Login still exist."
+msgstr "Cet identifiant existe déja."
+
+#: .\Game\views.py:76
+msgid "Wrong login or password."
+msgstr "Mauvais idanifiant ou mot de passe"
+
+#: .\Game\views.py:114
+msgid "PLANET_TUTOS"
+msgstr ""
+"Ici, vous verez la liste de vos planètes. Cliquez sur l'une d'elle pour en "
+"savoir plus."
+
+#: .\Game\views.py:141
+msgid "FLEET_TUTOS"
+msgstr ""
+"Ici, vous verrez la liste de vos flottes. Si il n'y en as pas, demandez à "
+"vos planètes d'en fabriquer."
+
+#: .\Game\views.py:159
+msgid "CODE_TUTOS"
+msgstr ""
+"Ici, vous pourrez définir la ligne de conduite de vos amiraux(flottes) et "
+"gouverneurs(planètes). Allez dans l'onglet \"Planètes : Blocks\" pour "
+"commencer le tutoriel."
+
+#: .\Game\views.py:182
+msgid "REPORT_TUTOS"
+msgstr ""
+"Ici vous verrez les 10 dernier évenement important qui ce sont produit dans "
+"votre empire."
+
+#: .\Game\views.py:202 .\Game\views.py:226 .\Game\views.py:249
+#: .\Game\views.py:277
+msgid "Code successfully saved"
+msgstr "Code sauvegardé avec succes."
+
+#: .\Game\views.py:253
+msgid "See in planets tab if the building is in progress"
+msgstr ""
+"Code sauvegardé avec succes.<br/>\n"
+"Allez voir dans l'onglet \"Planètes\" si votre nouveau batiment est en cours "
+"de création. (Cela peut prendre quelque minutes)"
+
+#: .\template\codesview.html.py:16 .\template\codesview.html.py:22
+#: .\template\ingame_base.html.py:11
+msgid "Planets"
+msgstr "Planètes"
+
+#: .\template\codesview.html.py:16 .\template\codesview.html.py:29
+msgid "Blocks"
+msgstr "Visuel"
+
+#: .\template\codesview.html.py:22 .\template\codesview.html.py:35
+msgid "Script"
+msgstr "Textuel"
+
+#: .\template\codesview.html.py:29 .\template\codesview.html.py:35
+#: .\template\ingame_base.html.py:12
+msgid "Fleets"
+msgstr "Flottes"
+
+#: .\template\fleetsview.html.py:15 .\template\planetsview.html.py:15
+msgid "Coordinate"
+msgstr "Coordonées"
+
+#: .\template\fleetsview.html.py:15
+msgid "Contents"
+msgstr "Contenu"
+
+#: .\template\fleetsview.html.py:15 .\template\planetsview.html.py:15
+msgid "Ressources"
+msgstr "Resources"
+
+#: .\template\fleetsview.html.py:35 .\template\ingame_base.html.py:14
+msgid "Reports"
+msgstr "Raports"
+
+#: .\template\fleetsview.html.py:37
+msgid "Date"
+msgstr "Date"
+
+#: .\template\fleetsview.html.py:37 .\template\planetsview.html.py:34
+msgid "Type"
+msgstr "Type"
+
+#: .\template\fleetsview.html.py:37
+msgid "Comment"
+msgstr "Commentaire"
+
+#: .\template\index.html.py:15 .\template\index.html.py:17
+msgid "Log in"
+msgstr "Connexion"
+
+#: .\template\index.html.py:29
+msgid "Create account"
+msgstr "Créer un compte"
+
+#: .\template\index.html.py:31
+msgid "Register"
+msgstr "Enregistrer"
+
+#: .\template\index.html.py:45
+msgid "ABOUT_TEXT"
+msgstr ""
+"<h1>Introduction</h1><br/>\n"
+"Neutrynos - DroneWars<br/>\n"
+"L'univers est infini, tout comme votre soif de conquête.<br/>\n"
+"Pour conquérir la galaxie, définissez la ligne de conduite de vos généraux. "
+"Assurez vous qu'ils ...<br/>\n"
+"<h2>Déroulement du jeu</h2><br/>\n"
+"<h3>Création du compte</h3><br/>\n"
+"A la création du compte, le joueur reçois une planète avec le minimum "
+"nécessaire pour commencer le jeu.<br/>\n"
+"Le joueur est l'empereur tout puissant d'un empire qui peut contenir des "
+"millier de planètes et de flottes.<br/>\n"
+"Puisqu'il serait impossible de gérer autant de ressources, l'empereurs doit "
+"définir la ligne de conduite de ses généraux (un par planète et un par "
+"flotte).<br/>\n"
+"<h3>Tour à tour<h3><br/>\n"
+"A chaque tours:<br/>\n"
+"<ol>\n"
+"<li>Les mines extrairont des ressources</li><br/>\n"
+"<li>Le commandant de chaque planète fait son choix d'action(comme lancer une "
+"construction ou une amélioration)</li><br/>\n"
+"<li>Les combats sont résolue, entrainant la destruction de certaines flotte "
+"et le pillage de certaine planètes.</li><br/>\n"
+"<li>Les commandants des flottes restantes font leur choix d'action(comme se "
+"déplacer ou conquérir une planète libre).<br/></li>\n"
+"</ol>"
+
+#: .\template\ingame_base.html.py:13
+msgid "Command"
+msgstr "Commandement"
+
+#: .\template\ingame_base.html.py:16
+msgid "Log out"
+msgstr "Déconnexion"
+
+#: .\template\planetsview.html.py:15
+msgid "View"
+msgstr "Visuel"
+
+#: .\template\planetsview.html.py:15 .\template\planetsview.html.py:41
+#: .\template\planetsview.html.py:48
+msgid "Name"
+msgstr "Nom"
+
+#: .\template\planetsview.html.py:33
+msgid "Tasks"
+msgstr "Taches"
+
+#: .\template\planetsview.html.py:34
+msgid "Start"
+msgstr "Debut"
+
+#: .\template\planetsview.html.py:34
+msgid "End"
+msgstr "Fin"
+
+#: .\template\planetsview.html.py:34
+msgid "What"
+msgstr "Quoi"
+
+#: .\template\planetsview.html.py:40
+msgid "Buildings"
+msgstr "Bâtiments"
+
+#: .\template\planetsview.html.py:41 .\template\planetsview.html.py:48
+msgid "Level"
+msgstr "Niveau"
+
+#: .\template\planetsview.html.py:47
+msgid "Cannons"
+msgstr "Canons"
+
+#: .\template\codesview\blockly.html.py:67
+msgid "Import"
+msgstr "Import"
+
+#: .\template\codesview\blockly.html.py:72
+msgid "Export"
+msgstr "Export"
+
+#: .\template\codesview\blockly.html.py:77
+msgid "Reload"
+msgstr "Recharger"
+
+#: .\template\codesview\blockly.html.py:78
+msgid "Save"
+msgstr "Enregistrer"
+
+#~ msgid "Planet"
+#~ msgstr "Planète"
+
+#~ msgid "Fleet"
+#~ msgstr "Flotte"
+
+#~ msgid "Refresh"
+#~ msgstr "Mettre a jour"
+
+#~ msgid "Tutorial"
+#~ msgstr "Tutoriel"
+
+#~ msgid "Code"
+#~ msgstr "Code"
+
+#~ msgid "Time"
+#~ msgstr "Temps"
+
+#~ msgid "Message"
+#~ msgstr "Message"
+
+#~ msgid "Valid"
+#~ msgstr "Valider"
+
+#~ msgid "Info"
+#~ msgstr "Info"
+
+#~ msgid "Help"
+#~ msgstr "Aide"
+
+#~ msgid "Visual"
+#~ msgstr "Visuel"
+
+#~ msgid "Text"
+#~ msgstr "Texte"
+
+#~ msgid "Fleet ID"
+#~ msgstr "ID de flotte"
+
+#~ msgid "Has fight"
+#~ msgstr "A combattu"
+
+#~ msgid "Yes"
+#~ msgstr "Oui"
+
+#~ msgid "No"
+#~ msgstr "Non"
+
+#~ msgid "Is dead"
+#~ msgstr "Est détruit"
+
+#~ msgid "Report ID = %i"
+#~ msgstr "ID Raport = %i"
+
+#~ msgid "Planet coordinate"
+#~ msgstr "Coordonées de planete"
+
+#~ msgid "myFleet"
+#~ msgstr "ma_flotte"
+
+#~ msgid "otherFleet"
+#~ msgstr "autre_flotte"
+
+#~ msgid "planet"
+#~ msgstr "planète"
+
+#~ msgid "order"
+#~ msgstr "ordre"
+
+#~ msgid "DO_GATHER_CODE_COMMENT"
+#~ msgstr ""
+#~ "Cette procedure permet à un capitaine de décider si sa flotte doit "
+#~ "fusioner avec une autre flotte allié présente dans la mème zone. \n"
+#~ "En entrée elle recois votre flote \"ma_flotte\" et la flotte allié "
+#~ "\"autre_flotte\", ce qui doit lui permetre de décider si il vaut mieu "
+#~ "fusioner ou non."
+
+#~ msgid "DO_FIGHT_CODE_COMMENT"
+#~ msgstr ""
+#~ "Cette procedure permet a un capitaine de décider si sa flotte doit "
+#~ "combatre ou fuire. \n"
+#~ "En entrée elle recois votre flote \"ma_flotte\" et la flotte enemie "
+#~ "\"autre_flotte\", ce qui doit lui permetre de décider si il vaut mieu "
+#~ "combatre ou fuire."
+
+#~ msgid "FLEET_ACTION_CODE_COMMENT"
+#~ msgstr ""
+#~ "Cette procédure décrit le comportment d'une flotte à chaque tour. \n"
+#~ "Elle recois deux variables : \n"
+#~ "Une \"ma_flotte\" qui représente la flotte dont c'est le tour de jouer, "
+#~ "et une variable \"planètes\" qui peut contenir une planète si il y en as "
+#~ "une dans la mème zone. \n"
+#~ "Cette procedure retourne la variable \"ordre\" qui contient l'ordre à "
+#~ "donner aux vaisseaux de la flotte."
+
+#~ msgid "fleets"
+#~ msgstr "flottes"
+
+#~ msgid "PLANET_ACTION_CODE_COMMENT"
+#~ msgstr ""
+#~ "Cette procédure décrit le comportment d'une planète à chaque tour. \n"
+#~ "Elle recois deux variables : \n"
+#~ "Une \"planète\" qui représente la planète dont c'est le tour de jouer, et "
+#~ "une variable \"flottes\" qui contient la liste des flottes présentes aux "
+#~ "allentour de la planète. \n"
+#~ "Cette procedure retourne la variable \"ordre\" qui contient l'ordre a "
+#~ "donner aux battisseurs présent sur la planète."
+
+#~ msgid "INTRO_TEXT"
+#~ msgstr ""
+#~ "<h1>Neutrynos - DroneWars</h1>\n"
+#~ "L'univers est infinie, tous comme votre soiffe de conquête.<br/>\n"
+#~ "Mettez a profit votre ingeniosité pour exterminer vos advaisaires.<br/>\n"
+#~ "Commandez vos généraux et mennez les a la victoire.<br/>"
+
+#~ msgid "Home"
+#~ msgstr "Acceuil"
+
+#~ msgid "About DroneWars"
+#~ msgstr "A propos"
+
+#~ msgid "Error"
+#~ msgstr "Erreur"
+
+#~ msgid "Empty login"
+#~ msgstr "Identifiant vide."
+
+#~ msgid "Empty password"
+#~ msgstr "Mot de passe vide."
+
+#~ msgid "List of your planets"
+#~ msgstr "Liste de vos planètes:"
+
+#~ msgid "Fleet name"
+#~ msgstr "Nom de la flote"
+
+#~ msgid "Report ID = "
+#~ msgstr "ID Raport ="

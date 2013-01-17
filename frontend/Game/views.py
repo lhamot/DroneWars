@@ -1,4 +1,5 @@
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as N_
 
 #from django.http import HttpResponse
 #from django.shortcuts import render_to_response
@@ -164,7 +165,8 @@ def CodesView(request):
         #Ce test permet d'afficher immediatement la page BlocklyPlanets pour les debutant
         if plLvl >= 3:
             return render(request, 'codesview.html', {
-                'helpMessage': helpMessage
+                'helpMessage': helpMessage,
+                'level': plLvl 
                 })
         else:
             return redirect("/ingame/codes/planets/blocks.html");
@@ -209,7 +211,7 @@ def BlocklyFleetsCodesView(request):
             "level": plLvl,
             "blockly_code" : code,
             "message": message,
-            "tutosText": _("BLOCKLY_TUTO_" + str(plLvl))
+            "tutosText": N_("BLOCKLY_TUTO_" + str(plLvl))
     })
     
 
@@ -234,8 +236,10 @@ def TextFleetsCodesView(request):
 
 
 def BlocklyPlanetsCodesView(request):
+        FirstSaveTag = "firstSave"
         pid = request.session["PlayerID"]
         service = createEngineClient()
+        player = service.getPlayer(pid)
     
         message = ""
         if request.method == "POST":
@@ -243,11 +247,14 @@ def BlocklyPlanetsCodesView(request):
                 service.setPlayerPlanetBlocklyCode(pid, request.POST["blocklyXML"].encode("utf8"))
                 service.setPlayerPlanetCode(pid, request.POST["scriptXML"].encode("utf8"))
                 message = _("Code successfully saved")
+                firstSave = player.tutoDisplayed.get(FirstSaveTag, 0);
+                if firstSave == 0:
+                    service.incrementTutoDisplayed(pid, FirstSaveTag)
+                    message = _("See in planets tab if the building is in progress")
        
-        codeData = service.getPlayerPlanetCode(pid)
+        codeData = player.planetsCode
         code = codeData.blocklyCode.replace('\n', '').replace('\r', '')
         
-        player = service.getPlayer(pid)
         plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0);
                 
         return render(request, 'codesview/blockly.html', {
@@ -255,7 +262,7 @@ def BlocklyPlanetsCodesView(request):
             "level": plLvl,
             "blockly_code" : code,
             "message": message,
-            "tutosText": _("BLOCKLY_TUTO_" + str(plLvl))
+            "tutosText": N_("BLOCKLY_TUTO_" + str(plLvl))
     })
 
 
