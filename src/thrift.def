@@ -212,21 +212,63 @@ struct FleetAction
 
 typedef list<FleetAction> FleetActionList
 
+
+struct FleetFightInfo
+{
+	10: Fleet before,
+	20: Fleet after
+}
+
+
+struct FleetReport
+{
+	10: bool isDead,
+	20: bool hasFight,
+	30: set<i32> enemySet,
+	40: FleetFightInfo fightInfo
+}
+
+
+struct PlanetFightInfo
+{
+	10: Planet before,
+	20: Planet after,
+}
+
+
+struct PlanetReport
+{
+	10: bool isDead,
+	20: bool hasFight,
+	30: set<i32> enemySet,
+	40: PlanetFightInfo fightInfo
+}
+
+struct FightReport
+{
+	10: list<FleetReport> fleetList,
+	20: bool hasPlanet,
+	30: optional PlanetReport planet
+}
+
+
 const i32 Universe_MapSizeX = 100
 const i32 Universe_MapSizeY = 100
 const i32 Universe_MapSizeZ = 100
 
 typedef map<Player_ID, Player> Universe_PlayerMap
 typedef map<Coord, Planet> Universe_PlanetMap
+typedef map<i32, FightReport> ReportMap
 
 struct Universe
 {
 	1: Universe_PlayerMap playerMap,
 	2: Universe_PlanetMap planetMap,
 	3: map<Fleet_ID, Fleet> fleetMap,
-	4: Player_ID nextPlayerID,
-	5: Fleet_ID nextFleetID,
-	6: i32 time
+	4: ReportMap reportMap,
+	5: Player_ID nextPlayerID,
+	6: Fleet_ID nextFleetID,
+	7: i32 time
 }
 
 struct OptionalPlayer
@@ -253,5 +295,6 @@ service EngineServer
 	Planet getPlanet(10: Coord coord),
 	Fleet getFleet(10: Fleet_ID fid),
 	OptionalPlayer logPlayer(10: string login, 20: string password),
-	void incrementTutoDisplayed(10: Player_ID pid, 20: string tutoName)
+	void incrementTutoDisplayed(10: Player_ID pid, 20: string tutoName),
+	FightReport getFightReport(10: i32 id)
 }

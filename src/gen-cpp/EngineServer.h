@@ -34,6 +34,7 @@ public:
 	virtual void getFleet(Fleet& _return, const Fleet_ID fid) = 0;
 	virtual void logPlayer(OptionalPlayer& _return, const std::string& login, const std::string& password) = 0;
 	virtual void incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName) = 0;
+	virtual void getFightReport(FightReport& _return, const int32_t id) = 0;
 };
 
 class EngineServerIfFactory
@@ -133,6 +134,10 @@ public:
 		return;
 	}
 	void incrementTutoDisplayed(const Player_ID /* pid */, const std::string& /* tutoName */)
+	{
+		return;
+	}
+	void getFightReport(FightReport& /* _return */, const int32_t /* id */)
 	{
 		return;
 	}
@@ -2056,6 +2061,127 @@ public:
 
 };
 
+typedef struct _EngineServer_getFightReport_args__isset
+{
+	_EngineServer_getFightReport_args__isset() : id(false) {}
+	bool id;
+} _EngineServer_getFightReport_args__isset;
+
+class EngineServer_getFightReport_args
+{
+public:
+
+	EngineServer_getFightReport_args() : id(0)
+	{
+	}
+
+	virtual ~EngineServer_getFightReport_args() throw() {}
+
+	int32_t id;
+
+	_EngineServer_getFightReport_args__isset __isset;
+
+	void __set_id(const int32_t val)
+	{
+		id = val;
+	}
+
+	bool operator == (const EngineServer_getFightReport_args& rhs) const
+	{
+		if(!(id == rhs.id))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_getFightReport_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_getFightReport_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_getFightReport_pargs
+{
+public:
+
+
+	virtual ~EngineServer_getFightReport_pargs() throw() {}
+
+	const int32_t* id;
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_getFightReport_result__isset
+{
+	_EngineServer_getFightReport_result__isset() : success(false) {}
+	bool success;
+} _EngineServer_getFightReport_result__isset;
+
+class EngineServer_getFightReport_result
+{
+public:
+
+	EngineServer_getFightReport_result()
+	{
+	}
+
+	virtual ~EngineServer_getFightReport_result() throw() {}
+
+	FightReport success;
+
+	_EngineServer_getFightReport_result__isset __isset;
+
+	void __set_success(const FightReport& val)
+	{
+		success = val;
+	}
+
+	bool operator == (const EngineServer_getFightReport_result& rhs) const
+	{
+		if(!(success == rhs.success))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_getFightReport_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_getFightReport_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_getFightReport_presult__isset
+{
+	_EngineServer_getFightReport_presult__isset() : success(false) {}
+	bool success;
+} _EngineServer_getFightReport_presult__isset;
+
+class EngineServer_getFightReport_presult
+{
+public:
+
+
+	virtual ~EngineServer_getFightReport_presult() throw() {}
+
+	FightReport* success;
+
+	_EngineServer_getFightReport_presult__isset __isset;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
 class EngineServerClient : virtual public EngineServerIf
 {
 public:
@@ -2132,6 +2258,9 @@ public:
 	void incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName);
 	void send_incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName);
 	void recv_incrementTutoDisplayed();
+	void getFightReport(FightReport& _return, const int32_t id);
+	void send_getFightReport(const int32_t id);
+	void recv_getFightReport(FightReport& _return);
 protected:
 	boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
 	boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -2165,6 +2294,7 @@ private:
 	void process_getFleet(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_logPlayer(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_incrementTutoDisplayed(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_getFightReport(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 public:
 	EngineServerProcessor(boost::shared_ptr<EngineServerIf> iface) :
 		iface_(iface)
@@ -2186,6 +2316,7 @@ public:
 		processMap_["getFleet"] = &EngineServerProcessor::process_getFleet;
 		processMap_["logPlayer"] = &EngineServerProcessor::process_logPlayer;
 		processMap_["incrementTutoDisplayed"] = &EngineServerProcessor::process_incrementTutoDisplayed;
+		processMap_["getFightReport"] = &EngineServerProcessor::process_getFightReport;
 	}
 
 	virtual ~EngineServerProcessor() {}
@@ -2412,6 +2543,18 @@ public:
 			ifaces_[i]->incrementTutoDisplayed(pid, tutoName);
 		}
 		ifaces_[i]->incrementTutoDisplayed(pid, tutoName);
+	}
+
+	void getFightReport(FightReport& _return, const int32_t id)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->getFightReport(_return, id);
+		}
+		ifaces_[i]->getFightReport(_return, id);
+		return;
 	}
 
 };

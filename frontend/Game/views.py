@@ -15,6 +15,7 @@ Building_Enum = gen_py.thrift.ttypes.Building_Enum
 Cannon_Enum = gen_py.thrift.ttypes.Cannon_Enum
 PlanetTask_Enum = gen_py.thrift.ttypes.PlanetTask_Enum
 Ship_Enum = gen_py.thrift.ttypes.Ship_Enum
+Event_Type = gen_py.thrift.ttypes.Event_Type
 
 #trans = gettext.translation('DroneWars','I:/C/Bit_them_all/',["fr_FR.utf8"])
 #trans.install()
@@ -176,6 +177,15 @@ def ReportsView(request):
         pid = request.session["PlayerID"]
         service = createEngineClient()
         player = service.getPlayer(pid)
+        
+        target = None
+        fight_report = None
+        if "event_id" in request.GET:
+            event_id = int(request.GET["event_id"])
+            for event in player.eventList:
+                if event_id == event.id:
+                    target = event
+            fight_report = service.getFightReport(event.value); 
 
         ReportViewTutoTag = "ReportView"
         if not ReportViewTutoTag in player.tutoDisplayed:
@@ -186,7 +196,10 @@ def ReportsView(request):
 
         return render(request, 'reportsview.html', {
             'player': player,
-            'helpMessage': helpMessage
+            'helpMessage': helpMessage,
+            'target': target,
+            'Event_Type': Event_Type,
+            'fight_report': fight_report
     })
 
 CoddingLevelTag = "BlocklyCodding"

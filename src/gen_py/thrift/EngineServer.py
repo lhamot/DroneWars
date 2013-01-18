@@ -132,6 +132,13 @@ class Iface:
     """
     pass
 
+  def getFightReport(self, id):
+    """
+    Parameters:
+     - id
+    """
+    pass
+
 
 class Client(Iface):
   def __init__(self, iprot, oprot=None):
@@ -635,6 +642,36 @@ class Client(Iface):
     self._iprot.readMessageEnd()
     return
 
+  def getFightReport(self, id):
+    """
+    Parameters:
+     - id
+    """
+    self.send_getFightReport(id)
+    return self.recv_getFightReport()
+
+  def send_getFightReport(self, id):
+    self._oprot.writeMessageBegin('getFightReport', TMessageType.CALL, self._seqid)
+    args = getFightReport_args()
+    args.id = id
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getFightReport(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getFightReport_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getFightReport failed: unknown result");
+
 
 class Processor(Iface, TProcessor):
   def __init__(self, handler):
@@ -657,6 +694,7 @@ class Processor(Iface, TProcessor):
     self._processMap["getFleet"] = Processor.process_getFleet
     self._processMap["logPlayer"] = Processor.process_logPlayer
     self._processMap["incrementTutoDisplayed"] = Processor.process_incrementTutoDisplayed
+    self._processMap["getFightReport"] = Processor.process_getFightReport
 
   def process(self, iprot, oprot):
     (name, type, seqid) = iprot.readMessageBegin()
@@ -856,6 +894,17 @@ class Processor(Iface, TProcessor):
     result = incrementTutoDisplayed_result()
     self._handler.incrementTutoDisplayed(args.pid, args.tutoName)
     oprot.writeMessageBegin("incrementTutoDisplayed", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getFightReport(self, seqid, iprot, oprot):
+    args = getFightReport_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getFightReport_result()
+    result.success = self._handler.getFightReport(args.id)
+    oprot.writeMessageBegin("getFightReport", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -1274,11 +1323,11 @@ class getPlayerFleets_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype102, _size99) = iprot.readListBegin()
-          for _i103 in xrange(_size99):
-            _elem104 = Fleet()
-            _elem104.read(iprot)
-            self.success.append(_elem104)
+          (_etype132, _size129) = iprot.readListBegin()
+          for _i133 in xrange(_size129):
+            _elem134 = Fleet()
+            _elem134.read(iprot)
+            self.success.append(_elem134)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -1295,8 +1344,8 @@ class getPlayerFleets_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter105 in self.success:
-        iter105.write(oprot)
+      for iter135 in self.success:
+        iter135.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -1411,11 +1460,11 @@ class getPlayerPlanets_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype109, _size106) = iprot.readListBegin()
-          for _i110 in xrange(_size106):
-            _elem111 = Planet()
-            _elem111.read(iprot)
-            self.success.append(_elem111)
+          (_etype139, _size136) = iprot.readListBegin()
+          for _i140 in xrange(_size136):
+            _elem141 = Planet()
+            _elem141.read(iprot)
+            self.success.append(_elem141)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -1432,8 +1481,8 @@ class getPlayerPlanets_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter112 in self.success:
-        iter112.write(oprot)
+      for iter142 in self.success:
+        iter142.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -2307,11 +2356,11 @@ class getPlayers_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype116, _size113) = iprot.readListBegin()
-          for _i117 in xrange(_size113):
-            _elem118 = Player()
-            _elem118.read(iprot)
-            self.success.append(_elem118)
+          (_etype146, _size143) = iprot.readListBegin()
+          for _i147 in xrange(_size143):
+            _elem148 = Player()
+            _elem148.read(iprot)
+            self.success.append(_elem148)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -2328,8 +2377,8 @@ class getPlayers_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter119 in self.success:
-        iter119.write(oprot)
+      for iter149 in self.success:
+        iter149.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -3002,6 +3051,135 @@ class incrementTutoDisplayed_result:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('incrementTutoDisplayed_result')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getFightReport_args:
+  """
+  Attributes:
+   - id
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'id', None, None, ), # 10
+  )
+
+  def __init__(self, id=None,):
+    self.id = id
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.I32:
+          self.id = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getFightReport_args')
+    if self.id is not None:
+      oprot.writeFieldBegin('id', TType.I32, 10)
+      oprot.writeI32(self.id)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getFightReport_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (FightReport, FightReport.thrift_spec), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.STRUCT:
+          self.success = FightReport()
+          self.success.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getFightReport_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
+      oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 

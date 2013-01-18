@@ -48,4 +48,6 @@ public:
 	void logPlayer(ndw::OptionalPlayer& _return, const std::string& login, const std::string& password);
 
 	void incrementTutoDisplayed(const ndw::Player_ID pid, const std::string& tutoName);
+
+	void getFightReport(ndw::FightReport& _return, const int32_t id);
 };

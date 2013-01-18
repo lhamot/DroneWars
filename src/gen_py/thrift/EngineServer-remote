@@ -40,6 +40,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  Fleet getFleet(Fleet_ID fid)'
   print '  OptionalPlayer logPlayer(string login, string password)'
   print '  void incrementTutoDisplayed(Player_ID pid, string tutoName)'
+  print '  FightReport getFightReport(i32 id)'
   print ''
   sys.exit(0)
 
@@ -192,6 +193,12 @@ elif cmd == 'incrementTutoDisplayed':
     print 'incrementTutoDisplayed requires 2 args'
     sys.exit(1)
   pp.pprint(client.incrementTutoDisplayed(eval(args[0]),args[1],))
+
+elif cmd == 'getFightReport':
+  if len(args) != 1:
+    print 'getFightReport requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.getFightReport(eval(args[0]),))
 
 else:
   print 'Unrecognized method %s' % cmd

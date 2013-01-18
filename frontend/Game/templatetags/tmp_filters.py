@@ -57,3 +57,26 @@ def forlevel(mode, level, planetmin, fleetmin):
 @register.filter
 def int2datetime(ts):
     return datetime.datetime.fromtimestamp(ts)
+
+@register.filter
+def coord(coord):
+    return "(%(X);%(Y);%(Z))" % coord; 
+
+
+@register.filter
+def content(planetOrFleet):
+    if isinstance(planetOrFleet, Fleet):
+        fleet = planetOrFleet
+        if len(fleet.shipList) != Ship_Enum.Count:
+            raise AssertionError("fleet.shipList.size() != Ship::Count");
+        result = ""
+        for shipType in range(Ship_Enum.Count):
+            if fleet.shipList[shipType]:
+                result += shipname(shipType)[0] + ":" + str(fleet.shipList[shipType]) + ";";
+        if len(result) > 0:
+            result = result[:-1] 
+        return result
+    elif isinstance(planetOrFleet, Planet):
+        pass
+    else:
+        raise AssertionError("Unexpected type")

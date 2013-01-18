@@ -1475,12 +1475,600 @@ class FleetAction:
   def __ne__(self, other):
     return not (self == other)
 
+class FleetFightInfo:
+  """
+  Attributes:
+   - before
+   - after
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.STRUCT, 'before', (Fleet, Fleet.thrift_spec), None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.STRUCT, 'after', (Fleet, Fleet.thrift_spec), None, ), # 20
+  )
+
+  def __init__(self, before=None, after=None,):
+    self.before = before
+    self.after = after
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.STRUCT:
+          self.before = Fleet()
+          self.before.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 20:
+        if ftype == TType.STRUCT:
+          self.after = Fleet()
+          self.after.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('FleetFightInfo')
+    if self.before is not None:
+      oprot.writeFieldBegin('before', TType.STRUCT, 10)
+      self.before.write(oprot)
+      oprot.writeFieldEnd()
+    if self.after is not None:
+      oprot.writeFieldBegin('after', TType.STRUCT, 20)
+      self.after.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class FleetReport:
+  """
+  Attributes:
+   - isDead
+   - hasFight
+   - enemySet
+   - fightInfo
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.BOOL, 'isDead', None, None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.BOOL, 'hasFight', None, None, ), # 20
+    None, # 21
+    None, # 22
+    None, # 23
+    None, # 24
+    None, # 25
+    None, # 26
+    None, # 27
+    None, # 28
+    None, # 29
+    (30, TType.SET, 'enemySet', (TType.I32,None), None, ), # 30
+    None, # 31
+    None, # 32
+    None, # 33
+    None, # 34
+    None, # 35
+    None, # 36
+    None, # 37
+    None, # 38
+    None, # 39
+    (40, TType.STRUCT, 'fightInfo', (FleetFightInfo, FleetFightInfo.thrift_spec), None, ), # 40
+  )
+
+  def __init__(self, isDead=None, hasFight=None, enemySet=None, fightInfo=None,):
+    self.isDead = isDead
+    self.hasFight = hasFight
+    self.enemySet = enemySet
+    self.fightInfo = fightInfo
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.BOOL:
+          self.isDead = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 20:
+        if ftype == TType.BOOL:
+          self.hasFight = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 30:
+        if ftype == TType.SET:
+          self.enemySet = set()
+          (_etype75, _size72) = iprot.readSetBegin()
+          for _i76 in xrange(_size72):
+            _elem77 = iprot.readI32();
+            self.enemySet.add(_elem77)
+          iprot.readSetEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 40:
+        if ftype == TType.STRUCT:
+          self.fightInfo = FleetFightInfo()
+          self.fightInfo.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('FleetReport')
+    if self.isDead is not None:
+      oprot.writeFieldBegin('isDead', TType.BOOL, 10)
+      oprot.writeBool(self.isDead)
+      oprot.writeFieldEnd()
+    if self.hasFight is not None:
+      oprot.writeFieldBegin('hasFight', TType.BOOL, 20)
+      oprot.writeBool(self.hasFight)
+      oprot.writeFieldEnd()
+    if self.enemySet is not None:
+      oprot.writeFieldBegin('enemySet', TType.SET, 30)
+      oprot.writeSetBegin(TType.I32, len(self.enemySet))
+      for iter78 in self.enemySet:
+        oprot.writeI32(iter78)
+      oprot.writeSetEnd()
+      oprot.writeFieldEnd()
+    if self.fightInfo is not None:
+      oprot.writeFieldBegin('fightInfo', TType.STRUCT, 40)
+      self.fightInfo.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class PlanetFightInfo:
+  """
+  Attributes:
+   - before
+   - after
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.STRUCT, 'before', (Planet, Planet.thrift_spec), None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.STRUCT, 'after', (Planet, Planet.thrift_spec), None, ), # 20
+  )
+
+  def __init__(self, before=None, after=None,):
+    self.before = before
+    self.after = after
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.STRUCT:
+          self.before = Planet()
+          self.before.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 20:
+        if ftype == TType.STRUCT:
+          self.after = Planet()
+          self.after.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('PlanetFightInfo')
+    if self.before is not None:
+      oprot.writeFieldBegin('before', TType.STRUCT, 10)
+      self.before.write(oprot)
+      oprot.writeFieldEnd()
+    if self.after is not None:
+      oprot.writeFieldBegin('after', TType.STRUCT, 20)
+      self.after.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class PlanetReport:
+  """
+  Attributes:
+   - isDead
+   - hasFight
+   - enemySet
+   - fightInfo
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.BOOL, 'isDead', None, None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.BOOL, 'hasFight', None, None, ), # 20
+    None, # 21
+    None, # 22
+    None, # 23
+    None, # 24
+    None, # 25
+    None, # 26
+    None, # 27
+    None, # 28
+    None, # 29
+    (30, TType.SET, 'enemySet', (TType.I32,None), None, ), # 30
+    None, # 31
+    None, # 32
+    None, # 33
+    None, # 34
+    None, # 35
+    None, # 36
+    None, # 37
+    None, # 38
+    None, # 39
+    (40, TType.STRUCT, 'fightInfo', (PlanetFightInfo, PlanetFightInfo.thrift_spec), None, ), # 40
+  )
+
+  def __init__(self, isDead=None, hasFight=None, enemySet=None, fightInfo=None,):
+    self.isDead = isDead
+    self.hasFight = hasFight
+    self.enemySet = enemySet
+    self.fightInfo = fightInfo
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.BOOL:
+          self.isDead = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 20:
+        if ftype == TType.BOOL:
+          self.hasFight = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 30:
+        if ftype == TType.SET:
+          self.enemySet = set()
+          (_etype82, _size79) = iprot.readSetBegin()
+          for _i83 in xrange(_size79):
+            _elem84 = iprot.readI32();
+            self.enemySet.add(_elem84)
+          iprot.readSetEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 40:
+        if ftype == TType.STRUCT:
+          self.fightInfo = PlanetFightInfo()
+          self.fightInfo.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('PlanetReport')
+    if self.isDead is not None:
+      oprot.writeFieldBegin('isDead', TType.BOOL, 10)
+      oprot.writeBool(self.isDead)
+      oprot.writeFieldEnd()
+    if self.hasFight is not None:
+      oprot.writeFieldBegin('hasFight', TType.BOOL, 20)
+      oprot.writeBool(self.hasFight)
+      oprot.writeFieldEnd()
+    if self.enemySet is not None:
+      oprot.writeFieldBegin('enemySet', TType.SET, 30)
+      oprot.writeSetBegin(TType.I32, len(self.enemySet))
+      for iter85 in self.enemySet:
+        oprot.writeI32(iter85)
+      oprot.writeSetEnd()
+      oprot.writeFieldEnd()
+    if self.fightInfo is not None:
+      oprot.writeFieldBegin('fightInfo', TType.STRUCT, 40)
+      self.fightInfo.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class FightReport:
+  """
+  Attributes:
+   - fleetList
+   - hasPlanet
+   - planet
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.LIST, 'fleetList', (TType.STRUCT,(FleetReport, FleetReport.thrift_spec)), None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.BOOL, 'hasPlanet', None, None, ), # 20
+    None, # 21
+    None, # 22
+    None, # 23
+    None, # 24
+    None, # 25
+    None, # 26
+    None, # 27
+    None, # 28
+    None, # 29
+    (30, TType.STRUCT, 'planet', (PlanetReport, PlanetReport.thrift_spec), None, ), # 30
+  )
+
+  def __init__(self, fleetList=None, hasPlanet=None, planet=None,):
+    self.fleetList = fleetList
+    self.hasPlanet = hasPlanet
+    self.planet = planet
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.LIST:
+          self.fleetList = []
+          (_etype89, _size86) = iprot.readListBegin()
+          for _i90 in xrange(_size86):
+            _elem91 = FleetReport()
+            _elem91.read(iprot)
+            self.fleetList.append(_elem91)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 20:
+        if ftype == TType.BOOL:
+          self.hasPlanet = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 30:
+        if ftype == TType.STRUCT:
+          self.planet = PlanetReport()
+          self.planet.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('FightReport')
+    if self.fleetList is not None:
+      oprot.writeFieldBegin('fleetList', TType.LIST, 10)
+      oprot.writeListBegin(TType.STRUCT, len(self.fleetList))
+      for iter92 in self.fleetList:
+        iter92.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.hasPlanet is not None:
+      oprot.writeFieldBegin('hasPlanet', TType.BOOL, 20)
+      oprot.writeBool(self.hasPlanet)
+      oprot.writeFieldEnd()
+    if self.planet is not None:
+      oprot.writeFieldBegin('planet', TType.STRUCT, 30)
+      self.planet.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
 class Universe:
   """
   Attributes:
    - playerMap
    - planetMap
    - fleetMap
+   - reportMap
    - nextPlayerID
    - nextFleetID
    - time
@@ -1491,15 +2079,17 @@ class Universe:
     (1, TType.MAP, 'playerMap', (TType.I32,None,TType.STRUCT,(Player, Player.thrift_spec)), None, ), # 1
     (2, TType.MAP, 'planetMap', (TType.STRUCT,(Coord, Coord.thrift_spec),TType.STRUCT,(Planet, Planet.thrift_spec)), None, ), # 2
     (3, TType.MAP, 'fleetMap', (TType.I32,None,TType.STRUCT,(Fleet, Fleet.thrift_spec)), None, ), # 3
-    (4, TType.I32, 'nextPlayerID', None, None, ), # 4
-    (5, TType.I32, 'nextFleetID', None, None, ), # 5
-    (6, TType.I32, 'time', None, None, ), # 6
+    (4, TType.MAP, 'reportMap', (TType.I32,None,TType.STRUCT,(FightReport, FightReport.thrift_spec)), None, ), # 4
+    (5, TType.I32, 'nextPlayerID', None, None, ), # 5
+    (6, TType.I32, 'nextFleetID', None, None, ), # 6
+    (7, TType.I32, 'time', None, None, ), # 7
   )
 
-  def __init__(self, playerMap=None, planetMap=None, fleetMap=None, nextPlayerID=None, nextFleetID=None, time=None,):
+  def __init__(self, playerMap=None, planetMap=None, fleetMap=None, reportMap=None, nextPlayerID=None, nextFleetID=None, time=None,):
     self.playerMap = playerMap
     self.planetMap = planetMap
     self.fleetMap = fleetMap
+    self.reportMap = reportMap
     self.nextPlayerID = nextPlayerID
     self.nextFleetID = nextFleetID
     self.time = time
@@ -1516,51 +2106,63 @@ class Universe:
       if fid == 1:
         if ftype == TType.MAP:
           self.playerMap = {}
-          (_ktype73, _vtype74, _size72 ) = iprot.readMapBegin() 
-          for _i76 in xrange(_size72):
-            _key77 = iprot.readI32();
-            _val78 = Player()
-            _val78.read(iprot)
-            self.playerMap[_key77] = _val78
+          (_ktype94, _vtype95, _size93 ) = iprot.readMapBegin() 
+          for _i97 in xrange(_size93):
+            _key98 = iprot.readI32();
+            _val99 = Player()
+            _val99.read(iprot)
+            self.playerMap[_key98] = _val99
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.MAP:
           self.planetMap = {}
-          (_ktype80, _vtype81, _size79 ) = iprot.readMapBegin() 
-          for _i83 in xrange(_size79):
-            _key84 = Coord()
-            _key84.read(iprot)
-            _val85 = Planet()
-            _val85.read(iprot)
-            self.planetMap[_key84] = _val85
+          (_ktype101, _vtype102, _size100 ) = iprot.readMapBegin() 
+          for _i104 in xrange(_size100):
+            _key105 = Coord()
+            _key105.read(iprot)
+            _val106 = Planet()
+            _val106.read(iprot)
+            self.planetMap[_key105] = _val106
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
       elif fid == 3:
         if ftype == TType.MAP:
           self.fleetMap = {}
-          (_ktype87, _vtype88, _size86 ) = iprot.readMapBegin() 
-          for _i90 in xrange(_size86):
-            _key91 = iprot.readI32();
-            _val92 = Fleet()
-            _val92.read(iprot)
-            self.fleetMap[_key91] = _val92
+          (_ktype108, _vtype109, _size107 ) = iprot.readMapBegin() 
+          for _i111 in xrange(_size107):
+            _key112 = iprot.readI32();
+            _val113 = Fleet()
+            _val113.read(iprot)
+            self.fleetMap[_key112] = _val113
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
       elif fid == 4:
-        if ftype == TType.I32:
-          self.nextPlayerID = iprot.readI32();
+        if ftype == TType.MAP:
+          self.reportMap = {}
+          (_ktype115, _vtype116, _size114 ) = iprot.readMapBegin() 
+          for _i118 in xrange(_size114):
+            _key119 = iprot.readI32();
+            _val120 = FightReport()
+            _val120.read(iprot)
+            self.reportMap[_key119] = _val120
+          iprot.readMapEnd()
         else:
           iprot.skip(ftype)
       elif fid == 5:
         if ftype == TType.I32:
-          self.nextFleetID = iprot.readI32();
+          self.nextPlayerID = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 6:
+        if ftype == TType.I32:
+          self.nextFleetID = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 7:
         if ftype == TType.I32:
           self.time = iprot.readI32();
         else:
@@ -1578,37 +2180,45 @@ class Universe:
     if self.playerMap is not None:
       oprot.writeFieldBegin('playerMap', TType.MAP, 1)
       oprot.writeMapBegin(TType.I32, TType.STRUCT, len(self.playerMap))
-      for kiter93,viter94 in self.playerMap.items():
-        oprot.writeI32(kiter93)
-        viter94.write(oprot)
+      for kiter121,viter122 in self.playerMap.items():
+        oprot.writeI32(kiter121)
+        viter122.write(oprot)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     if self.planetMap is not None:
       oprot.writeFieldBegin('planetMap', TType.MAP, 2)
       oprot.writeMapBegin(TType.STRUCT, TType.STRUCT, len(self.planetMap))
-      for kiter95,viter96 in self.planetMap.items():
-        kiter95.write(oprot)
-        viter96.write(oprot)
+      for kiter123,viter124 in self.planetMap.items():
+        kiter123.write(oprot)
+        viter124.write(oprot)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     if self.fleetMap is not None:
       oprot.writeFieldBegin('fleetMap', TType.MAP, 3)
       oprot.writeMapBegin(TType.I32, TType.STRUCT, len(self.fleetMap))
-      for kiter97,viter98 in self.fleetMap.items():
-        oprot.writeI32(kiter97)
-        viter98.write(oprot)
+      for kiter125,viter126 in self.fleetMap.items():
+        oprot.writeI32(kiter125)
+        viter126.write(oprot)
+      oprot.writeMapEnd()
+      oprot.writeFieldEnd()
+    if self.reportMap is not None:
+      oprot.writeFieldBegin('reportMap', TType.MAP, 4)
+      oprot.writeMapBegin(TType.I32, TType.STRUCT, len(self.reportMap))
+      for kiter127,viter128 in self.reportMap.items():
+        oprot.writeI32(kiter127)
+        viter128.write(oprot)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     if self.nextPlayerID is not None:
-      oprot.writeFieldBegin('nextPlayerID', TType.I32, 4)
+      oprot.writeFieldBegin('nextPlayerID', TType.I32, 5)
       oprot.writeI32(self.nextPlayerID)
       oprot.writeFieldEnd()
     if self.nextFleetID is not None:
-      oprot.writeFieldBegin('nextFleetID', TType.I32, 5)
+      oprot.writeFieldBegin('nextFleetID', TType.I32, 6)
       oprot.writeI32(self.nextFleetID)
       oprot.writeFieldEnd()
     if self.time is not None:
-      oprot.writeFieldBegin('time', TType.I32, 6)
+      oprot.writeFieldBegin('time', TType.I32, 7)
       oprot.writeI32(self.time)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()

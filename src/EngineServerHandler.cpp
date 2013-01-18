@@ -154,6 +154,48 @@ ndw::Player playerToThrift(Player const& player)
 	return outPlayer;
 }
 
+
+ndw::FleetReport fleetReportToThrift(Report<Fleet> const& fleetReport)
+{
+	ndw::FleetReport result;
+	result.isDead = fleetReport.isDead;
+	result.hasFight = fleetReport.hasFight;
+	for(size_t id: fleetReport.enemySet)
+		result.enemySet.insert(boost::numeric_cast<ndw::Player_ID>(id));
+	result.fightInfo.before = fleetToThrift(fleetReport.fightInfo.before);
+	result.fightInfo.after = fleetToThrift(fleetReport.fightInfo.after);
+	return result;
+}
+
+
+ndw::PlanetReport planetReportToThrift(Report<Planet> const& planetReport)
+{
+	ndw::PlanetReport result;
+	result.isDead = planetReport.isDead;
+	result.hasFight = planetReport.hasFight;
+	for(size_t id: planetReport.enemySet)
+		result.enemySet.insert(boost::numeric_cast<ndw::Player_ID>(id));
+	result.fightInfo.before = planetToThrift(planetReport.fightInfo.before);
+	result.fightInfo.after = planetToThrift(planetReport.fightInfo.after);
+	return result;
+}
+
+
+ndw::FightReport fightReportToThrift(FightReport const& report)
+{
+	ndw::FightReport result;
+	result.fleetList.reserve(report.fleetList.size());
+	for(Report<Fleet> fleetRep: report.fleetList)
+		result.fleetList.push_back(fleetReportToThrift(fleetRep));
+	result.hasPlanet = report.hasPlanet;
+	if(report.planet.get_ptr())
+	{
+		std::cout << "Il y as une planete" << std::endl;
+		result.__set_planet(planetReportToThrift(report.planet.get()));
+	}
+	return result;
+}
+
 }
 
 EngineServerHandler::EngineServerHandler()
@@ -257,4 +299,11 @@ void EngineServerHandler::logPlayer(ndw::OptionalPlayer& _return, const std::str
 void EngineServerHandler::incrementTutoDisplayed(ndw::Player_ID pid, std::string const& tutoName)
 {
 	engine_.incrementTutoDisplayed(pid, tutoName);
+}
+
+
+void EngineServerHandler::getFightReport(ndw::FightReport& _return, const int32_t id)
+{
+	FightReport fr = engine_.getFightReport(id);
+	_return = fightReportToThrift(fr);
 }

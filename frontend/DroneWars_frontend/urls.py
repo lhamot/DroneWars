@@ -6,28 +6,6 @@ import os
 # from django.contrib import admin
 # admin.autodiscover()
 
-gettext.install('DroneWars', 'I:/C/Bit_them_all', unicode=1)
-"""
-lang1 = gettext.translation('DroneWars', languages=['fr'])
-lang1.install()
-"""
-
-#gettext.install('DroneWars', 'I:/C/Bit_them_all', unicode=1)
-#lang1 = gettext.translation('DroneWars', languages=['fr'])
-#lang1.install()
-
-"""
-lang = 'fr_FR'
-translation = gettext.GNUTranslations(file('I:/C/Bit_them_all' + '/' + lang + '/LC_MESSAGES/DroneWars.mo'))
-translation.install()
-_ = gettext.gettext
-"""
-
-"""
-os.putenv("LANG", "fr_FR");
-gettext.bindtextdomain("DroneWars", "I:/C/Bit_them_all");
-gettext.textdomain("DroneWars");
-"""
 
 urlpatterns = patterns('',
     # Examples:

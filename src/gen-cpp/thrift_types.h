@@ -167,6 +167,8 @@ typedef std::map<Player_ID, class Player>  Universe_PlayerMap;
 
 typedef std::map<class Coord, class Planet>  Universe_PlanetMap;
 
+typedef std::map<int32_t, class FightReport>  ReportMap;
+
 typedef struct _Coord__isset
 {
 	_Coord__isset() : X(false), Y(false), Z(false) {}
@@ -1036,12 +1038,346 @@ public:
 
 void swap(FleetAction& a, FleetAction& b);
 
+typedef struct _FleetFightInfo__isset
+{
+	_FleetFightInfo__isset() : before(false), after(false) {}
+	bool before;
+	bool after;
+} _FleetFightInfo__isset;
+
+class FleetFightInfo
+{
+public:
+
+	static const char* ascii_fingerprint; // = "B929437BE27F477FE12F0B07E1CC2F2A";
+	static const uint8_t binary_fingerprint[16]; // = {0xB9,0x29,0x43,0x7B,0xE2,0x7F,0x47,0x7F,0xE1,0x2F,0x0B,0x07,0xE1,0xCC,0x2F,0x2A};
+
+	FleetFightInfo()
+	{
+	}
+
+	virtual ~FleetFightInfo() throw() {}
+
+	Fleet before;
+	Fleet after;
+
+	_FleetFightInfo__isset __isset;
+
+	void __set_before(const Fleet& val)
+	{
+		before = val;
+	}
+
+	void __set_after(const Fleet& val)
+	{
+		after = val;
+	}
+
+	bool operator == (const FleetFightInfo& rhs) const
+	{
+		if(!(before == rhs.before))
+			return false;
+		if(!(after == rhs.after))
+			return false;
+		return true;
+	}
+	bool operator != (const FleetFightInfo& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const FleetFightInfo&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+void swap(FleetFightInfo& a, FleetFightInfo& b);
+
+typedef struct _FleetReport__isset
+{
+	_FleetReport__isset() : isDead(false), hasFight(false), enemySet(false), fightInfo(false) {}
+	bool isDead;
+	bool hasFight;
+	bool enemySet;
+	bool fightInfo;
+} _FleetReport__isset;
+
+class FleetReport
+{
+public:
+
+	static const char* ascii_fingerprint; // = "F42A75E8E1ADE7187A33686404DD9276";
+	static const uint8_t binary_fingerprint[16]; // = {0xF4,0x2A,0x75,0xE8,0xE1,0xAD,0xE7,0x18,0x7A,0x33,0x68,0x64,0x04,0xDD,0x92,0x76};
+
+	FleetReport() : isDead(0), hasFight(0)
+	{
+	}
+
+	virtual ~FleetReport() throw() {}
+
+	bool isDead;
+	bool hasFight;
+	std::set<int32_t>  enemySet;
+	FleetFightInfo fightInfo;
+
+	_FleetReport__isset __isset;
+
+	void __set_isDead(const bool val)
+	{
+		isDead = val;
+	}
+
+	void __set_hasFight(const bool val)
+	{
+		hasFight = val;
+	}
+
+	void __set_enemySet(const std::set<int32_t>& val)
+	{
+		enemySet = val;
+	}
+
+	void __set_fightInfo(const FleetFightInfo& val)
+	{
+		fightInfo = val;
+	}
+
+	bool operator == (const FleetReport& rhs) const
+	{
+		if(!(isDead == rhs.isDead))
+			return false;
+		if(!(hasFight == rhs.hasFight))
+			return false;
+		if(!(enemySet == rhs.enemySet))
+			return false;
+		if(!(fightInfo == rhs.fightInfo))
+			return false;
+		return true;
+	}
+	bool operator != (const FleetReport& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const FleetReport&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+void swap(FleetReport& a, FleetReport& b);
+
+typedef struct _PlanetFightInfo__isset
+{
+	_PlanetFightInfo__isset() : before(false), after(false) {}
+	bool before;
+	bool after;
+} _PlanetFightInfo__isset;
+
+class PlanetFightInfo
+{
+public:
+
+	static const char* ascii_fingerprint; // = "58D0452C00146C814E77E7A0E59D7B69";
+	static const uint8_t binary_fingerprint[16]; // = {0x58,0xD0,0x45,0x2C,0x00,0x14,0x6C,0x81,0x4E,0x77,0xE7,0xA0,0xE5,0x9D,0x7B,0x69};
+
+	PlanetFightInfo()
+	{
+	}
+
+	virtual ~PlanetFightInfo() throw() {}
+
+	Planet before;
+	Planet after;
+
+	_PlanetFightInfo__isset __isset;
+
+	void __set_before(const Planet& val)
+	{
+		before = val;
+	}
+
+	void __set_after(const Planet& val)
+	{
+		after = val;
+	}
+
+	bool operator == (const PlanetFightInfo& rhs) const
+	{
+		if(!(before == rhs.before))
+			return false;
+		if(!(after == rhs.after))
+			return false;
+		return true;
+	}
+	bool operator != (const PlanetFightInfo& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const PlanetFightInfo&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+void swap(PlanetFightInfo& a, PlanetFightInfo& b);
+
+typedef struct _PlanetReport__isset
+{
+	_PlanetReport__isset() : isDead(false), hasFight(false), enemySet(false), fightInfo(false) {}
+	bool isDead;
+	bool hasFight;
+	bool enemySet;
+	bool fightInfo;
+} _PlanetReport__isset;
+
+class PlanetReport
+{
+public:
+
+	static const char* ascii_fingerprint; // = "5A447E0DC2E3D0415B74B5511AE0EB98";
+	static const uint8_t binary_fingerprint[16]; // = {0x5A,0x44,0x7E,0x0D,0xC2,0xE3,0xD0,0x41,0x5B,0x74,0xB5,0x51,0x1A,0xE0,0xEB,0x98};
+
+	PlanetReport() : isDead(0), hasFight(0)
+	{
+	}
+
+	virtual ~PlanetReport() throw() {}
+
+	bool isDead;
+	bool hasFight;
+	std::set<int32_t>  enemySet;
+	PlanetFightInfo fightInfo;
+
+	_PlanetReport__isset __isset;
+
+	void __set_isDead(const bool val)
+	{
+		isDead = val;
+	}
+
+	void __set_hasFight(const bool val)
+	{
+		hasFight = val;
+	}
+
+	void __set_enemySet(const std::set<int32_t>& val)
+	{
+		enemySet = val;
+	}
+
+	void __set_fightInfo(const PlanetFightInfo& val)
+	{
+		fightInfo = val;
+	}
+
+	bool operator == (const PlanetReport& rhs) const
+	{
+		if(!(isDead == rhs.isDead))
+			return false;
+		if(!(hasFight == rhs.hasFight))
+			return false;
+		if(!(enemySet == rhs.enemySet))
+			return false;
+		if(!(fightInfo == rhs.fightInfo))
+			return false;
+		return true;
+	}
+	bool operator != (const PlanetReport& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const PlanetReport&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+void swap(PlanetReport& a, PlanetReport& b);
+
+typedef struct _FightReport__isset
+{
+	_FightReport__isset() : fleetList(false), hasPlanet(false), planet(false) {}
+	bool fleetList;
+	bool hasPlanet;
+	bool planet;
+} _FightReport__isset;
+
+class FightReport
+{
+public:
+
+	static const char* ascii_fingerprint; // = "6A2D8E38A94D8D1F71FBAC22FAA6BBEF";
+	static const uint8_t binary_fingerprint[16]; // = {0x6A,0x2D,0x8E,0x38,0xA9,0x4D,0x8D,0x1F,0x71,0xFB,0xAC,0x22,0xFA,0xA6,0xBB,0xEF};
+
+	FightReport() : hasPlanet(0)
+	{
+	}
+
+	virtual ~FightReport() throw() {}
+
+	std::vector<FleetReport>  fleetList;
+	bool hasPlanet;
+	PlanetReport planet;
+
+	_FightReport__isset __isset;
+
+	void __set_fleetList(const std::vector<FleetReport>& val)
+	{
+		fleetList = val;
+	}
+
+	void __set_hasPlanet(const bool val)
+	{
+		hasPlanet = val;
+	}
+
+	void __set_planet(const PlanetReport& val)
+	{
+		planet = val;
+		__isset.planet = true;
+	}
+
+	bool operator == (const FightReport& rhs) const
+	{
+		if(!(fleetList == rhs.fleetList))
+			return false;
+		if(!(hasPlanet == rhs.hasPlanet))
+			return false;
+		if(__isset.planet != rhs.__isset.planet)
+			return false;
+		else if(__isset.planet && !(planet == rhs.planet))
+			return false;
+		return true;
+	}
+	bool operator != (const FightReport& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const FightReport&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+void swap(FightReport& a, FightReport& b);
+
 typedef struct _Universe__isset
 {
-	_Universe__isset() : playerMap(false), planetMap(false), fleetMap(false), nextPlayerID(false), nextFleetID(false), time(false) {}
+	_Universe__isset() : playerMap(false), planetMap(false), fleetMap(false), reportMap(false), nextPlayerID(false), nextFleetID(false), time(false) {}
 	bool playerMap;
 	bool planetMap;
 	bool fleetMap;
+	bool reportMap;
 	bool nextPlayerID;
 	bool nextFleetID;
 	bool time;
@@ -1051,8 +1387,8 @@ class Universe
 {
 public:
 
-	static const char* ascii_fingerprint; // = "8FFDDDAB3A0F70896DAA7DBEAB7C2A16";
-	static const uint8_t binary_fingerprint[16]; // = {0x8F,0xFD,0xDD,0xAB,0x3A,0x0F,0x70,0x89,0x6D,0xAA,0x7D,0xBE,0xAB,0x7C,0x2A,0x16};
+	static const char* ascii_fingerprint; // = "4880E2569B2D42D334C53D517B8BDB18";
+	static const uint8_t binary_fingerprint[16]; // = {0x48,0x80,0xE2,0x56,0x9B,0x2D,0x42,0xD3,0x34,0xC5,0x3D,0x51,0x7B,0x8B,0xDB,0x18};
 
 	Universe() : nextPlayerID(0), nextFleetID(0), time(0)
 	{
@@ -1063,6 +1399,7 @@ public:
 	Universe_PlayerMap playerMap;
 	Universe_PlanetMap planetMap;
 	std::map<Fleet_ID, Fleet>  fleetMap;
+	ReportMap reportMap;
 	Player_ID nextPlayerID;
 	Fleet_ID nextFleetID;
 	int32_t time;
@@ -1082,6 +1419,11 @@ public:
 	void __set_fleetMap(const std::map<Fleet_ID, Fleet>& val)
 	{
 		fleetMap = val;
+	}
+
+	void __set_reportMap(const ReportMap& val)
+	{
+		reportMap = val;
 	}
 
 	void __set_nextPlayerID(const Player_ID val)
@@ -1106,6 +1448,8 @@ public:
 		if(!(planetMap == rhs.planetMap))
 			return false;
 		if(!(fleetMap == rhs.fleetMap))
+			return false;
+		if(!(reportMap == rhs.reportMap))
 			return false;
 		if(!(nextPlayerID == rhs.nextPlayerID))
 			return false;
