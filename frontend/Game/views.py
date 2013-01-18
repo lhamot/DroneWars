@@ -265,7 +265,7 @@ def BlocklyPlanetsCodesView(request):
                     service.incrementTutoDisplayed(pid, FirstSaveTag)
                     message = _("See in planets tab if the building is in progress")
        
-        codeData = player.planetsCode
+        codeData = service.getPlayerPlanetCode(pid)
         code = codeData.blocklyCode.replace('\n', '').replace('\r', '')
         
         plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0);
