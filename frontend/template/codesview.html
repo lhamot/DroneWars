@@ -6,35 +6,37 @@
 
 {% block content %}
 {% if level >= 3 %}
-<div class="navbar navbar-inverse">
+<div class="navbar navbar-inverse navbar-static-top">
 	<div class="navbar-inner">
-		<ul class="nav">
-			<li
-			{% if name == "Planet" and blockly_code != None %}
-				class="active"
-			{% endif %}
-				><a href="/ingame/codes/planets/blocks.html">{% trans "Planets" %} : {% trans "Blocks" %}</a></li>
-			{% if level >= 10 %}
-			<li 
-			{% if name == "Planet" and script != None %}
-				class="active"
-			{% endif %}
-				><a href="/ingame/codes/planets/text.html">{% trans "Planets" %} : {% trans "Script" %}</a></li>
-			{% endif %}
-			<li class="divider-vertical"></li>
-			<li 
-			{% if name == "Fleet" and blockly_code != None %}
-				class="active"
-			{% endif %}
-				><a href="/ingame/codes/fleets/blocks.html">{% trans "Fleets" %} : {% trans "Blocks" %}</a></li>
-			{% if level >= 10 %}
-			<li 
-			{% if name == "Fleet" and script != None %}
-				class="active"
-			{% endif %}
-				><a href="/ingame/codes/fleets/text.html">{% trans "Fleets" %} : {% trans "Script" %}</a></li>
-			{% endif %}
-		</ul>
+		<div class="container">
+			<ul class="nav">
+				<li
+				{% if name == "Planet" and blockly_code != None %}
+					class="active"
+				{% endif %}
+					><a href="/ingame/codes/planets/blocks.html">{% trans "Planets" %} : {% trans "Blocks" %}</a></li>
+				{% if level >= 10 %}
+				<li 
+				{% if name == "Planet" and script != None %}
+					class="active"
+				{% endif %}
+					><a href="/ingame/codes/planets/text.html">{% trans "Planets" %} : {% trans "Script" %}</a></li>
+				{% endif %}
+				<li class="divider-vertical"></li>
+				<li 
+				{% if name == "Fleet" and blockly_code != None %}
+					class="active"
+				{% endif %}
+					><a href="/ingame/codes/fleets/blocks.html">{% trans "Fleets" %} : {% trans "Blocks" %}</a></li>
+				{% if level >= 10 %}
+				<li 
+				{% if name == "Fleet" and script != None %}
+					class="active"
+				{% endif %}
+					><a href="/ingame/codes/fleets/text.html">{% trans "Fleets" %} : {% trans "Script" %}</a></li>
+				{% endif %}
+			</ul>
+		</div>
 	</div>
 </div>
 {% endif %}

@@ -27,8 +27,60 @@
 	</head>
 
 	<body>
-		{% block body %}{% endblock %}
+	    {% block body %}{% endblock %}
 		<script src="http://code.jquery.com/jquery-latest.js"></script>
 		<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap.min.js"></script>
+		<script type="text/javascript">
+	        /*
+	         * set a random wallpaper (from the guildwars website)
+	         *  there's a semi-transparent div over it with default 0.8 opacity,
+	         *  the 2nd value for each entry can be an altered opacity
+	         */
+	        $(window).load(function() {
+	            // IE8 and older won't support RGBA so the background makes a mess ...
+	            //if ($.browser.msie && $.browser.version <= 8) {
+	            //    return;
+	            //}
+	
+	            var images = [
+	                // some color wallpapers
+	                ["/static/img/N1-1600.jpg", null],
+	                ["/static/img/N2-1600.jpg", null],
+	                ["/static/img/N3-1600.jpg", null],
+	                ["/static/img/N4-1600.jpg", null],
+	                ["/static/img/N5-1600.jpg", null],
+	                ["/static/img/N6-1600.jpg", null],
+	                ["/static/img/N7-1600.jpg", null],
+	                ["/static/img/N8-1600.jpg", null],
+	                ["/static/img/N9-1600.jpg", null]
+	            ];
+	
+	
+	            var random = Math.floor(Math.random() * images.length);
+	
+	            image   = images[random][0];
+	            opacity = images[random][1] || 0.2;
+	
+	            $(document.body).css('background-image', "url(" + image + ")");
+	            $('.container-fluid').each(function(k, o) { o.style.backgroundColor = "rgba(255, 255, 255, " + opacity + ")"; });
+	        });
+	        
+        $(document).ready(function() {
+            $('.ingame-share').each(function(k, ingameshare) {
+                var $span  = $(ingameshare).find('span');
+                var $input = $(ingameshare).find('input');
+
+                $span.on('click', function() {
+                    $span.css('visibility', 'hidden');
+                    $input.css('display', 'inline-block').focus().select();
+                });
+
+                $input.on('blur', function() {
+                    $span.css('visibility', 'visible');
+                    $input.css('display', 'none');
+                });
+            });
+        });	        
+	    </script>
 	</body>
 </html>

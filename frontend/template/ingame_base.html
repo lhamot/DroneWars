@@ -5,16 +5,18 @@
 {% block body %}
 			<header>
 			</header>
-			<div class="navbar navbar-inverse">
+			<div class="navbar navbar-inverse navbar-static-top">
 				<div class="navbar-inner">
-					<ul class="nav">
-					<li class="{% block planets_class %}tab{% endblock %}"><a href="/ingame/planets.html">{% trans "Planets" %}</a></li>
-					<li class="{% block fleets_class %}tab{% endblock %}"><a href="/ingame/fleets.html">{% trans "Fleets" %}</a></li>
-					<li class="{% block codes_class %}tab{% endblock %}"><a href="/ingame/codes.html">{% trans "Command" %}</a></li>
-					<li class="{% block reports_class %}tab{% endblock %}"><a href="/ingame/reports.html">{% trans "Reports" %}</a></li>
-					<li class="divider-vertical"></li>
-					<li><a href="/" class="tab">{% trans "Log out" %}</a></li>
-					</ul>
+					<div class="container">
+							<ul class="nav">
+								<li class="{% block planets_class %}tab{% endblock %}"><a href="/ingame/planets.html">{% trans "Planets" %}</a></li>
+								<li class="{% block fleets_class %}tab{% endblock %}"><a href="/ingame/fleets.html">{% trans "Fleets" %}</a></li>
+								<li class="{% block codes_class %}tab{% endblock %}"><a href="/ingame/codes.html">{% trans "Command" %}</a></li>
+								<li class="{% block reports_class %}tab{% endblock %}"><a href="/ingame/reports.html">{% trans "Reports" %}</a></li>
+								<li class="divider-vertical"></li>
+								<li><a href="/" class="tab">{% trans "Log out" %}</a></li>
+							</ul>
+					</div>
 				</div>
 			</div>
 			<div class="container">

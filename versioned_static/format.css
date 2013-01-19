@@ -1,8 +1,10 @@
 body
 {
-  background-image: url(img/N9-1280.jpg);
+  background-image: url(img/N9-1600.jpg);
   background-repeat:no-repeat;
   background-position:top;
+  background-color:#000000;
+  background-size: cover;
   color: #E6EBFB;
 }
 
