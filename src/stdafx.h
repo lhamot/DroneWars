@@ -14,33 +14,6 @@
 #include <utility>
 #include <unordered_map>
 
-#pragma warning(push)
-#pragma warning(disable:4127 4251 4275 4231 4800 4505 4512 4275)
-#include <Wt/WApplication>
-#include <Wt/WBreak>
-#include <Wt/WBoxLayout>
-#include <Wt/WContainerWidget>
-#include <Wt/WDefaultLayout>
-#include <Wt/WHBoxLayout>
-#include <Wt/WLengthValidator>
-#include <Wt/WLineEdit>
-#include <Wt/WMessageBox>
-#include <Wt/WMenu>
-#include <Wt/WPushButton>
-#include <Wt/WStandardItem>
-#include <Wt/WStackedWidget>
-#include <Wt/WStandardItemModel>
-#include <Wt/WStandardItem>
-#include <Wt/WTreeView>
-#include <Wt/WTabWidget>
-#include <Wt/WText>
-#include <Wt/WTableView>
-#include <Wt/WTable>
-#include <Wt/WTreeView>
-#include <Wt/WVBoxLayout>
-#pragma warning(pop)
-
-
 
 #pragma warning(push)
 #pragma warning(disable:4244 4310 4100 4512 4127 4706 4702)

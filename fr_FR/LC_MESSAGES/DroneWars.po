@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-15 23:04+0100\n"
-"PO-Revision-Date: 2013-01-15 23:04+0100\n"
+"POT-Creation-Date: 2013-01-19 19:35+0100\n"
+"PO-Revision-Date: 2013-01-19 19:36+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "Language: fr\n"
@@ -20,175 +20,6 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Generator: Poedit 1.5.4\n"
 "X-Poedit-SearchPath-0: .\n"
-
-#: bit_them_allWT.cpp:49
-msgid "Planet"
-msgstr "Planète"
-
-#: bit_them_allWT.cpp:53
-msgid "Fleet"
-msgstr "Flotte"
-
-#: bit_them_allWT.cpp:114
-msgid "Refresh"
-msgstr "Mettre a jour"
-
-#: bit_them_allWT.cpp:128 bit_them_allWT.cpp:207
-msgid "Planets"
-msgstr "Planètes"
-
-#: bit_them_allWT.cpp:129 bit_them_allWT.cpp:208
-msgid "Fleets"
-msgstr "Flottes"
-
-#: bit_them_allWT.cpp:130
-msgid "Command"
-msgstr "Commandement"
-
-#: bit_them_allWT.cpp:131 bit_them_allWT.cpp:210 FleetViewWT.cpp:44
-msgid "Reports"
-msgstr "Raports"
-
-#: bit_them_allWT.cpp:148 bit_them_allWT.cpp:159 bit_them_allWT.cpp:170
-#: bit_them_allWT.cpp:181
-msgid "Tutorial"
-msgstr "Tutoriel"
-
-#: bit_them_allWT.cpp:148
-msgid "PLANET_TUTOS"
-msgstr ""
-"Ici, vous verez la liste de vos planètes. Cliquez sur l'une d'elle pour en "
-"savoir plus."
-
-#: bit_them_allWT.cpp:159
-msgid "FLEET_TUTOS"
-msgstr ""
-"Ici, vous verrez la liste de vos flottes. Si il n'y en as pas, demandez à "
-"vos planètes d'en fabriquer."
-
-#: bit_them_allWT.cpp:170
-msgid "CODE_TUTOS"
-msgstr ""
-"Ici, vous pourrez définir la ligne de conduite de vos amiraux(flottes) et "
-"gouverneurs(planètes). Allez dans l'onglet \"Planètes : Blocks\" pour "
-"commencer le tutoriel."
-
-#: bit_them_allWT.cpp:181
-msgid "REPORT_TUTOS"
-msgstr ""
-"Ici vous verrez les 10 dernier évenement important qui ce sont produit dans "
-"votre empire."
-
-#: bit_them_allWT.cpp:209
-msgid "Code"
-msgstr "Code"
-
-#: bit_them_allWT.cpp:224
-msgid "Time"
-msgstr "Temps"
-
-#: bit_them_allWT.cpp:225 FleetViewWT.cpp:61 PlanetViewWT.cpp:126
-msgid "Type"
-msgstr "Type"
-
-#: bit_them_allWT.cpp:226
-msgid "Message"
-msgstr "Message"
-
-#: Editor.cpp:106 Editor.cpp:257
-msgid "Reload"
-msgstr "Recharger"
-
-#: Editor.cpp:113
-msgid "Import"
-msgstr "Import"
-
-#: Editor.cpp:124
-msgid "Export"
-msgstr "Export"
-
-#: Editor.cpp:136
-msgid "Valid"
-msgstr "Valider"
-
-#: Editor.cpp:210 Editor.cpp:311 OutPage.cpp:137
-msgid "Info"
-msgstr "Info"
-
-#: Editor.cpp:210 Editor.cpp:311
-msgid "Code successfully saved"
-msgstr "Code sauvegardé avec succes."
-
-#: Editor.cpp:260
-msgid "Save"
-msgstr "Enregistrer"
-
-#: Editor.cpp:264
-msgid "Help"
-msgstr "Aide"
-
-#: Editor.cpp:333
-msgid "Visual"
-msgstr "Visuel"
-
-#: Editor.cpp:334
-msgid "Text"
-msgstr "Texte"
-
-#: FleetsView.cpp:65
-msgid "Contents"
-msgstr "Contenu"
-
-#: FleetsView.cpp:66 PlanetsView.cpp:81
-msgid "Ressources"
-msgstr "Resources"
-
-#: FleetViewWT.cpp:60
-msgid "Date"
-msgstr "Date"
-
-#: FleetViewWT.cpp:62
-msgid "Comment"
-msgstr "Commentaire"
-
-#: MessageView.cpp:121
-msgid "Fleet ID"
-msgstr "ID de flotte"
-
-#: MessageView.cpp:127 MessageView.cpp:163
-msgid "Has fight"
-msgstr "A combattu"
-
-#: MessageView.cpp:129 MessageView.cpp:135 MessageView.cpp:165
-#: MessageView.cpp:171
-msgid "Yes"
-msgstr "Oui"
-
-#: MessageView.cpp:131 MessageView.cpp:137 MessageView.cpp:167
-#: MessageView.cpp:173
-msgid "No"
-msgstr "Non"
-
-#: MessageView.cpp:133 MessageView.cpp:169
-msgid "Is dead"
-msgstr "Est détruit"
-
-#: MessageView.cpp:139 MessageView.cpp:175 PlanetViewWT.cpp:127
-msgid "Start"
-msgstr "Debut"
-
-#: MessageView.cpp:142 MessageView.cpp:177 PlanetViewWT.cpp:128
-msgid "End"
-msgstr "Fin"
-
-#: MessageView.cpp:147 MessageView.cpp:181
-#, c-format
-msgid "Report ID = %i"
-msgstr "ID Raport = %i"
-
-#: MessageView.cpp:154
-msgid "Planet coordinate"
-msgstr "Coordonées de planete"
 
 #: Model.cpp:84
 msgid "myFleet"
@@ -250,389 +81,431 @@ msgstr ""
 "Cette procedure retourne la variable \"ordre\" qui contient l'ordre a donner "
 "aux battisseurs présent sur la planète."
 
-#: OutPage.cpp:20 OutPage.cpp:52
-msgid "Login"
-msgstr "Identifiant"
-
-#: OutPage.cpp:23 OutPage.cpp:56
-msgid "Password"
-msgstr "Mot de passe"
-
-#: OutPage.cpp:29
-msgid "Log in"
-msgstr "Connexion"
-
-#: OutPage.cpp:40
-msgid "INTRO_TEXT"
-msgstr ""
-"<h1>Neutrynos - DroneWars</h1>\n"
-"L'univers est infinie, tous comme votre soiffe de conquête.<br/>\n"
-"Mettez a profit votre ingeniosité pour exterminer vos advaisaires.<br/>\n"
-"Commandez vos généraux et mennez les a la victoire.<br/>"
-
-#: OutPage.cpp:61
-msgid "Password2"
-msgstr "Mot de passe (verif)"
-
-#: OutPage.cpp:66
-msgid "Register"
-msgstr "Enregistrer"
-
-#: OutPage.cpp:83
-msgid "ABOUT_TEXT"
-msgstr ""
-"<h1>Introduction</h1><br/>\n"
-"Neutrynos - DroneWars<br/>\n"
-"L'univers est infini, tout comme votre soif de conquête.<br/>\n"
-"Pour conquérir la galaxie, définissez la ligne de conduite de vos généraux. "
-"Assurez vous qu'ils ...<br/>\n"
-"<h2>Déroulement du jeu</h2><br/>\n"
-"<h3>Création du compte</h3><br/>\n"
-"A la création du compte, le joueur reçois une planète avec le minimum "
-"nécessaire pour commencer le jeu.<br/>\n"
-"Le joueur est l'empereur tout puissant d'un empire qui peut contenir des "
-"millier de planètes et de flottes.<br/>\n"
-"Puisqu'il serait impossible de gérer autant de ressources, l'empereurs doit "
-"définir la ligne de conduite de ses généraux (un par planète et un par "
-"flotte).<br/>\n"
-"<h3>Tour à tour<h3><br/>\n"
-"A chaque tours:<br/>\n"
-"<ol>\n"
-"<li>Les mines extrairont des ressources</li><br/>\n"
-"<li>Le commandant de chaque planète fait son choix d'action(comme lancer une "
-"construction ou une amélioration)</li><br/>\n"
-"<li>Les combats sont résolue, entrainant la destruction de certaines flotte "
-"et le pillage de certaine planètes.</li><br/>\n"
-"<li>Les commandants des flottes restantes font leur choix d'action(comme se "
-"déplacer ou conquérir une planète libre).<br/></li>\n"
-"</ol>"
-
-#: OutPage.cpp:107
-msgid "Home"
-msgstr "Acceuil"
-
-#: OutPage.cpp:108
-msgid "Create account"
-msgstr "Créer un compte"
-
-#: OutPage.cpp:109
-msgid "About DroneWars"
-msgstr "A propos"
-
-#: OutPage.cpp:121 OutPage.cpp:130 OutPage.cpp:132 OutPage.cpp:134
-#: OutPage.cpp:145
-msgid "Error"
-msgstr "Erreur"
-
-#: OutPage.cpp:121
-msgid "Wrong login or password."
-msgstr "Mauvais idanifiant ou mot de passe"
-
-#: OutPage.cpp:130
-msgid "Empty login"
-msgstr "Identifiant vide."
-
-#: OutPage.cpp:132
-msgid "Empty password"
-msgstr "Mot de passe vide."
-
-#: OutPage.cpp:134
-msgid "Passwords don't match!"
-msgstr "Les mots de passes ne corespondent pas!"
-
-#: OutPage.cpp:137
-msgid "Registration successful"
-msgstr "L'enregistrement as reussit."
-
-#: OutPage.cpp:145
-msgid "Login still exist."
-msgstr "Cet identifiant existe déja."
-
-#: PlanetsView.cpp:26
-msgid "List of your planets"
-msgstr "Liste de vos planètes:"
-
-#: PlanetsView.cpp:78
-msgid "View"
-msgstr "Visuel"
-
-#: PlanetsView.cpp:79 PlanetViewWT.cpp:133 PlanetViewWT.cpp:138
-msgid "Name"
-msgstr "Nom"
-
-#: PlanetsView.cpp:80
-msgid "Coordinate"
-msgstr "Coordonées"
-
-#: PlanetViewWT.cpp:96
-msgid "Buildings"
-msgstr "Bâtiments"
-
-#: PlanetViewWT.cpp:97
-msgid "Cannons"
-msgstr "Canons"
-
-#: PlanetViewWT.cpp:98
-msgid "Tasks"
-msgstr "Taches"
-
-#: PlanetViewWT.cpp:129
-msgid "What"
-msgstr "Quoi"
-
-#: PlanetViewWT.cpp:134 PlanetViewWT.cpp:139
-msgid "Level"
-msgstr "Niveau"
-
-#: TranslationTools.cpp:10
-msgid "CommandCenter"
-msgstr "Centre de commande"
-
-#: TranslationTools.cpp:11
-msgid "MetalMine"
-msgstr "Mine de métal"
-
-#: TranslationTools.cpp:12
-msgid "CarbonMine"
-msgstr "Mine de carbone"
-
-#: TranslationTools.cpp:13
-msgid "LoiciumFilter"
-msgstr "Filtre a Loïcium"
-
-#: TranslationTools.cpp:14
-msgid "Factory"
-msgstr "Fabrique"
-
-#: TranslationTools.cpp:15
-msgid "Laboratory"
-msgstr "Laboratoire"
-
-#: TranslationTools.cpp:16
-msgid "CarbonicCentral"
-msgstr "Centrale carbonique"
-
-#: TranslationTools.cpp:17
-msgid "SolarCentral"
-msgstr "Central solaire"
-
-#: TranslationTools.cpp:18
-msgid "GeothermicCentral"
-msgstr "Centrale géothermique"
-
-#: TranslationTools.cpp:30
-msgid "UpgradeBuilding"
-msgstr "Amelioration du batiments"
-
-#: TranslationTools.cpp:31
-msgid "MakeShip"
-msgstr "Fabrique un vaisseau"
-
-#: TranslationTools.cpp:32
-msgid "MakeCannon"
-msgstr "Fabriquaction d'un canon"
-
-#: TranslationTools.cpp:44
-msgid "Move"
-msgstr "Déplacement"
-
-#: TranslationTools.cpp:45
-msgid "Harvest"
-msgstr "Récolte"
-
-#: TranslationTools.cpp:46
-msgid "Colonize"
-msgstr "Colonise"
-
-#: TranslationTools.cpp:58
-msgid "Mosquito"
-msgstr "Mosquito"
-
-#: TranslationTools.cpp:59
-msgid "Hornet"
-msgstr "Hornet"
-
-#: TranslationTools.cpp:60
-msgid "Vulture"
-msgstr "Vulture"
-
-#: TranslationTools.cpp:61
-msgid "Dragon"
-msgstr "Dragon"
-
-#: TranslationTools.cpp:62
-msgid "Behemoth"
-msgstr "Béhémoth"
-
-#: TranslationTools.cpp:63
-msgid "Azathoth"
-msgstr "Azathoth"
-
-#: TranslationTools.cpp:64
-msgid "Queen"
-msgstr "Queen"
-
-#: TranslationTools.cpp:65
-msgid "Cargo"
-msgstr "Cargo"
-
-#: TranslationTools.cpp:66
-msgid "LargeCargo"
-msgstr "Grand cargo"
-
-#: TranslationTools.cpp:78
-msgid "Metal"
-msgstr "Métal"
-
-#: TranslationTools.cpp:79
-msgid "Carbon"
-msgstr "Carbone"
-
-#: TranslationTools.cpp:80
-msgid "Loicium"
-msgstr "Loïcium"
-
-#: TranslationTools.cpp:92
-msgid "FleetCodeError"
-msgstr "Erreur du code de flotte"
-
-#: TranslationTools.cpp:93
-msgid "FleetCodeExecError"
-msgstr "Erreur d'exécution des flottes"
-
-#: TranslationTools.cpp:94
-msgid "PlanetCodeError"
-msgstr "Erreure de code de planète"
-
-#: TranslationTools.cpp:95
-msgid "PlanetCodeExecError"
-msgstr "Erreur d'excecution des planètes"
-
-#: TranslationTools.cpp:96
-msgid "Upgraded"
-msgstr "Amélioré"
-
-#: TranslationTools.cpp:97
-msgid "ShipMade"
-msgstr "Vaisseau fabriqué"
-
-#: TranslationTools.cpp:98
-msgid "PlanetHarvested"
-msgstr "Planète récoltée"
-
-#: TranslationTools.cpp:99
-msgid "FleetWin"
-msgstr "Victoire d'une flotte"
-
-#: TranslationTools.cpp:100
-msgid "FleetDraw"
-msgstr "Egalité des flottes"
-
-#: TranslationTools.cpp:101
-msgid "FleetsGather"
-msgstr "Flottes rassemblées"
-
-#: TranslationTools.cpp:102
-msgid "PlanetColonized"
-msgstr "Planète colonisée"
-
-#: TranslationTools.cpp:103
-msgid "FleetLose"
-msgstr "Perte d'une flotte"
-
-#: TranslationTools.cpp:104
-msgid "FleetDrop"
-msgstr "Déchargement effectué"
-
-#: TranslationTools.cpp:105
-msgid "PlanetLose"
-msgstr "Planète perdue"
-
-#: TranslationTools.cpp:106
-msgid "PlanetWin"
-msgstr "Victoire d'une planète"
-
-#: TranslationTools.cpp:107
-msgid "CannonMade"
-msgstr "Canon fabriqué"
-
-#: TranslationTools.cpp:132
-msgid "Cannon1"
-msgstr "Canon1"
-
-#: TranslationTools.cpp:133
-msgid "Cannon2"
-msgstr "Canon2"
-
-#: TranslationTools.cpp:134
-msgid "Cannon3"
-msgstr "Canon3"
-
-#: TranslationTools.cpp:135
-msgid "Cannon4"
-msgstr "Canon4"
-
-#: TranslationTools.cpp:136
-msgid "Cannon5"
-msgstr "Canon5"
-
-#: TranslationTools.cpp:137
-msgid "Cannon6"
-msgstr "Canon6"
-
-#: TranslationTools.cpp:149
-msgid "BLOCKLY_TUTO_0"
-msgstr ""
-"Ceci est la première étape du tutoriel:<br/>\n"
-"Essayez de créer un batiment \"Mine de métal\" (en envoyant le bon ordre)."
-"<br/>\n"
-"Tips : Allez voir dans l'onglet \"Planètes\" si la mine est en cour de "
-"fabrication."
-
-#: TranslationTools.cpp:150
-msgid "BLOCKLY_TUTO_1"
-msgstr ""
-"Ceci est la deuxième étape du tutoriel :<br/>\n"
-"Essayez de créer une fabrique une fois que votre mine de métal a atteint le "
-"niveau 4.<br>\n"
-"Tips : N'oubliez pas que vous aurez d'autres planètes qui auront besoin "
-"d'une mine de métal."
-
-#: TranslationTools.cpp:151
-msgid "BLOCKLY_TUTO_2"
-msgstr ""
-"Ceci est la troisième étape du tutoriel : <br/>\n"
-"Pour continuer, vous aurrez besoin d'une flotte. Fabriquez des Mosquito.<br/>"
-
-#: TranslationTools.cpp:152
-msgid "BLOCKLY_TUTO_3"
-msgstr "Etape 4 : Créer 3 flottes."
-
-#: TranslationTools.cpp:153
-msgid "BLOCKLY_TUTO_4"
-msgstr "Etape 5 : Créer 3 flottes composées de 5 mosquito exactement."
-
-#: TranslationTools.cpp:154
-msgid "BLOCKLY_TUTO_5"
-msgstr "Etape 6 : Envoyez 6 flottes dans 6 endroits différents"
-
-#: TranslationTools.cpp:155
-msgid "BLOCKLY_TUTO_6"
-msgstr ""
-"Pour réussir la septième étape du tutoriel,<br/>\n"
-"récoltez un maximum de ressources sur les planètes inhabitées."
-
-#: TranslationTools.cpp:156
-msgid "BLOCKLY_TUTO_7"
-msgstr ""
-"Votre prochain objectif est de rapporter des ressources récoltées sur votre "
-"planète mère."
-
-#: TranslationTools.cpp:157
-msgid "BLOCKLY_TUTO_8"
-msgstr ""
-"Votre prochain objectif est de coloniser d'autres planètes.<br/>Aide : C'est "
-"la Reine qui permet de colonier."
+#~ msgid "Login"
+#~ msgstr "Identifiant"
+
+#~ msgid "Password"
+#~ msgstr "Mot de passe"
+
+#~ msgid "Log in"
+#~ msgstr "Connexion"
+
+#~ msgid "INTRO_TEXT"
+#~ msgstr ""
+#~ "<h1>Neutrynos - DroneWars</h1>\n"
+#~ "L'univers est infinie, tous comme votre soiffe de conquête.<br/>\n"
+#~ "Mettez a profit votre ingeniosité pour exterminer vos advaisaires.<br/>\n"
+#~ "Commandez vos généraux et mennez les a la victoire.<br/>"
+
+#~ msgid "Password2"
+#~ msgstr "Mot de passe (verif)"
+
+#~ msgid "Register"
+#~ msgstr "Enregistrer"
+
+#~ msgid "ABOUT_TEXT"
+#~ msgstr ""
+#~ "<h1>Introduction</h1><br/>\n"
+#~ "Neutrynos - DroneWars<br/>\n"
+#~ "L'univers est infini, tout comme votre soif de conquête.<br/>\n"
+#~ "Pour conquérir la galaxie, définissez la ligne de conduite de vos "
+#~ "généraux. Assurez vous qu'ils ...<br/>\n"
+#~ "<h2>Déroulement du jeu</h2><br/>\n"
+#~ "<h3>Création du compte</h3><br/>\n"
+#~ "A la création du compte, le joueur reçois une planète avec le minimum "
+#~ "nécessaire pour commencer le jeu.<br/>\n"
+#~ "Le joueur est l'empereur tout puissant d'un empire qui peut contenir des "
+#~ "millier de planètes et de flottes.<br/>\n"
+#~ "Puisqu'il serait impossible de gérer autant de ressources, l'empereurs "
+#~ "doit définir la ligne de conduite de ses généraux (un par planète et un "
+#~ "par flotte).<br/>\n"
+#~ "<h3>Tour à tour<h3><br/>\n"
+#~ "A chaque tours:<br/>\n"
+#~ "<ol>\n"
+#~ "<li>Les mines extrairont des ressources</li><br/>\n"
+#~ "<li>Le commandant de chaque planète fait son choix d'action(comme lancer "
+#~ "une construction ou une amélioration)</li><br/>\n"
+#~ "<li>Les combats sont résolue, entrainant la destruction de certaines "
+#~ "flotte et le pillage de certaine planètes.</li><br/>\n"
+#~ "<li>Les commandants des flottes restantes font leur choix d'action(comme "
+#~ "se déplacer ou conquérir une planète libre).<br/></li>\n"
+#~ "</ol>"
+
+#~ msgid "Home"
+#~ msgstr "Acceuil"
+
+#~ msgid "Create account"
+#~ msgstr "Créer un compte"
+
+#~ msgid "About DroneWars"
+#~ msgstr "A propos"
+
+#~ msgid "Error"
+#~ msgstr "Erreur"
+
+#~ msgid "Wrong login or password."
+#~ msgstr "Mauvais idanifiant ou mot de passe"
+
+#~ msgid "Empty login"
+#~ msgstr "Identifiant vide."
+
+#~ msgid "Empty password"
+#~ msgstr "Mot de passe vide."
+
+#~ msgid "Passwords don't match!"
+#~ msgstr "Les mots de passes ne corespondent pas!"
+
+#~ msgid "Info"
+#~ msgstr "Info"
+
+#~ msgid "Registration successful"
+#~ msgstr "L'enregistrement as reussit."
+
+#~ msgid "Login still exist."
+#~ msgstr "Cet identifiant existe déja."
+
+#~ msgid "Planet"
+#~ msgstr "Planète"
+
+#~ msgid "Fleet"
+#~ msgstr "Flotte"
+
+#~ msgid "Refresh"
+#~ msgstr "Mettre a jour"
+
+#~ msgid "Planets"
+#~ msgstr "Planètes"
+
+#~ msgid "Fleets"
+#~ msgstr "Flottes"
+
+#~ msgid "Command"
+#~ msgstr "Commandement"
+
+#~ msgid "Reports"
+#~ msgstr "Raports"
+
+#~ msgid "Tutorial"
+#~ msgstr "Tutoriel"
+
+#~ msgid "PLANET_TUTOS"
+#~ msgstr ""
+#~ "Ici, vous verez la liste de vos planètes. Cliquez sur l'une d'elle pour "
+#~ "en savoir plus."
+
+#~ msgid "FLEET_TUTOS"
+#~ msgstr ""
+#~ "Ici, vous verrez la liste de vos flottes. Si il n'y en as pas, demandez à "
+#~ "vos planètes d'en fabriquer."
+
+#~ msgid "CODE_TUTOS"
+#~ msgstr ""
+#~ "Ici, vous pourrez définir la ligne de conduite de vos amiraux(flottes) et "
+#~ "gouverneurs(planètes). Allez dans l'onglet \"Planètes : Blocks\" pour "
+#~ "commencer le tutoriel."
+
+#~ msgid "REPORT_TUTOS"
+#~ msgstr ""
+#~ "Ici vous verrez les 10 dernier évenement important qui ce sont produit "
+#~ "dans votre empire."
+
+#~ msgid "Code"
+#~ msgstr "Code"
+
+#~ msgid "Time"
+#~ msgstr "Temps"
+
+#~ msgid "Type"
+#~ msgstr "Type"
+
+#~ msgid "Message"
+#~ msgstr "Message"
+
+#~ msgid "Reload"
+#~ msgstr "Recharger"
+
+#~ msgid "Import"
+#~ msgstr "Import"
+
+#~ msgid "Export"
+#~ msgstr "Export"
+
+#~ msgid "Valid"
+#~ msgstr "Valider"
+
+#~ msgid "Code successfully saved"
+#~ msgstr "Code sauvegardé avec succes."
+
+#~ msgid "Save"
+#~ msgstr "Enregistrer"
+
+#~ msgid "Help"
+#~ msgstr "Aide"
+
+#~ msgid "Visual"
+#~ msgstr "Visuel"
+
+#~ msgid "Text"
+#~ msgstr "Texte"
+
+#~ msgid "Contents"
+#~ msgstr "Contenu"
+
+#~ msgid "Ressources"
+#~ msgstr "Resources"
+
+#~ msgid "Date"
+#~ msgstr "Date"
+
+#~ msgid "Comment"
+#~ msgstr "Commentaire"
+
+#~ msgid "Fleet ID"
+#~ msgstr "ID de flotte"
+
+#~ msgid "Has fight"
+#~ msgstr "A combattu"
+
+#~ msgid "Yes"
+#~ msgstr "Oui"
+
+#~ msgid "No"
+#~ msgstr "Non"
+
+#~ msgid "Is dead"
+#~ msgstr "Est détruit"
+
+#~ msgid "Start"
+#~ msgstr "Debut"
+
+#~ msgid "End"
+#~ msgstr "Fin"
+
+#~ msgid "Report ID = %i"
+#~ msgstr "ID Raport = %i"
+
+#~ msgid "Planet coordinate"
+#~ msgstr "Coordonées de planete"
+
+#~ msgid "List of your planets"
+#~ msgstr "Liste de vos planètes:"
+
+#~ msgid "View"
+#~ msgstr "Visuel"
+
+#~ msgid "Name"
+#~ msgstr "Nom"
+
+#~ msgid "Coordinate"
+#~ msgstr "Coordonées"
+
+#~ msgid "Buildings"
+#~ msgstr "Bâtiments"
+
+#~ msgid "Cannons"
+#~ msgstr "Canons"
+
+#~ msgid "Tasks"
+#~ msgstr "Taches"
+
+#~ msgid "What"
+#~ msgstr "Quoi"
+
+#~ msgid "Level"
+#~ msgstr "Niveau"
+
+#~ msgid "CommandCenter"
+#~ msgstr "Centre de commande"
+
+#~ msgid "MetalMine"
+#~ msgstr "Mine de métal"
+
+#~ msgid "CarbonMine"
+#~ msgstr "Mine de carbone"
+
+#~ msgid "LoiciumFilter"
+#~ msgstr "Filtre a Loïcium"
+
+#~ msgid "Factory"
+#~ msgstr "Fabrique"
+
+#~ msgid "Laboratory"
+#~ msgstr "Laboratoire"
+
+#~ msgid "CarbonicCentral"
+#~ msgstr "Centrale carbonique"
+
+#~ msgid "SolarCentral"
+#~ msgstr "Central solaire"
+
+#~ msgid "GeothermicCentral"
+#~ msgstr "Centrale géothermique"
+
+#~ msgid "UpgradeBuilding"
+#~ msgstr "Amelioration du batiments"
+
+#~ msgid "MakeShip"
+#~ msgstr "Fabrique un vaisseau"
+
+#~ msgid "MakeCannon"
+#~ msgstr "Fabriquaction d'un canon"
+
+#~ msgid "Move"
+#~ msgstr "Déplacement"
+
+#~ msgid "Harvest"
+#~ msgstr "Récolte"
+
+#~ msgid "Colonize"
+#~ msgstr "Colonise"
+
+#~ msgid "Mosquito"
+#~ msgstr "Mosquito"
+
+#~ msgid "Hornet"
+#~ msgstr "Hornet"
+
+#~ msgid "Vulture"
+#~ msgstr "Vulture"
+
+#~ msgid "Dragon"
+#~ msgstr "Dragon"
+
+#~ msgid "Behemoth"
+#~ msgstr "Béhémoth"
+
+#~ msgid "Azathoth"
+#~ msgstr "Azathoth"
+
+#~ msgid "Queen"
+#~ msgstr "Queen"
+
+#~ msgid "Cargo"
+#~ msgstr "Cargo"
+
+#~ msgid "LargeCargo"
+#~ msgstr "Grand cargo"
+
+#~ msgid "Metal"
+#~ msgstr "Métal"
+
+#~ msgid "Carbon"
+#~ msgstr "Carbone"
+
+#~ msgid "Loicium"
+#~ msgstr "Loïcium"
+
+#~ msgid "FleetCodeError"
+#~ msgstr "Erreur du code de flotte"
+
+#~ msgid "FleetCodeExecError"
+#~ msgstr "Erreur d'exécution des flottes"
+
+#~ msgid "PlanetCodeError"
+#~ msgstr "Erreure de code de planète"
+
+#~ msgid "PlanetCodeExecError"
+#~ msgstr "Erreur d'excecution des planètes"
+
+#~ msgid "Upgraded"
+#~ msgstr "Amélioré"
+
+#~ msgid "ShipMade"
+#~ msgstr "Vaisseau fabriqué"
+
+#~ msgid "PlanetHarvested"
+#~ msgstr "Planète récoltée"
+
+#~ msgid "FleetWin"
+#~ msgstr "Victoire d'une flotte"
+
+#~ msgid "FleetDraw"
+#~ msgstr "Egalité des flottes"
+
+#~ msgid "FleetsGather"
+#~ msgstr "Flottes rassemblées"
+
+#~ msgid "PlanetColonized"
+#~ msgstr "Planète colonisée"
+
+#~ msgid "FleetLose"
+#~ msgstr "Perte d'une flotte"
+
+#~ msgid "FleetDrop"
+#~ msgstr "Déchargement effectué"
+
+#~ msgid "PlanetLose"
+#~ msgstr "Planète perdue"
+
+#~ msgid "PlanetWin"
+#~ msgstr "Victoire d'une planète"
+
+#~ msgid "CannonMade"
+#~ msgstr "Canon fabriqué"
+
+#~ msgid "Cannon1"
+#~ msgstr "Canon1"
+
+#~ msgid "Cannon2"
+#~ msgstr "Canon2"
+
+#~ msgid "Cannon3"
+#~ msgstr "Canon3"
+
+#~ msgid "Cannon4"
+#~ msgstr "Canon4"
+
+#~ msgid "Cannon5"
+#~ msgstr "Canon5"
+
+#~ msgid "Cannon6"
+#~ msgstr "Canon6"
+
+#~ msgid "BLOCKLY_TUTO_0"
+#~ msgstr ""
+#~ "Ceci est la première étape du tutoriel:<br/>\n"
+#~ "Essayez de créer un batiment \"Mine de métal\" (en envoyant le bon ordre)."
+#~ "<br/>\n"
+#~ "Tips : Allez voir dans l'onglet \"Planètes\" si la mine est en cour de "
+#~ "fabrication."
+
+#~ msgid "BLOCKLY_TUTO_1"
+#~ msgstr ""
+#~ "Ceci est la deuxième étape du tutoriel :<br/>\n"
+#~ "Essayez de créer une fabrique une fois que votre mine de métal a atteint "
+#~ "le niveau 4.<br>\n"
+#~ "Tips : N'oubliez pas que vous aurez d'autres planètes qui auront besoin "
+#~ "d'une mine de métal."
+
+#~ msgid "BLOCKLY_TUTO_2"
+#~ msgstr ""
+#~ "Ceci est la troisième étape du tutoriel : <br/>\n"
+#~ "Pour continuer, vous aurrez besoin d'une flotte. Fabriquez des Mosquito."
+#~ "<br/>"
+
+#~ msgid "BLOCKLY_TUTO_3"
+#~ msgstr "Etape 4 : Créer 3 flottes."
+
+#~ msgid "BLOCKLY_TUTO_4"
+#~ msgstr "Etape 5 : Créer 3 flottes composées de 5 mosquito exactement."
+
+#~ msgid "BLOCKLY_TUTO_5"
+#~ msgstr "Etape 6 : Envoyez 6 flottes dans 6 endroits différents"
+
+#~ msgid "BLOCKLY_TUTO_6"
+#~ msgstr ""
+#~ "Pour réussir la septième étape du tutoriel,<br/>\n"
+#~ "récoltez un maximum de ressources sur les planètes inhabitées."
+
+#~ msgid "BLOCKLY_TUTO_7"
+#~ msgstr ""
+#~ "Votre prochain objectif est de rapporter des ressources récoltées sur "
+#~ "votre planète mère."
+
+#~ msgid "BLOCKLY_TUTO_8"
+#~ msgstr ""
+#~ "Votre prochain objectif est de coloniser d'autres planètes.<br/>Aide : "
+#~ "C'est la Reine qui permet de colonier."
 
 #~ msgid "Fleet name"
 #~ msgstr "Nom de la flote"
