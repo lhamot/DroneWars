@@ -1524,6 +1524,63 @@ public:
 
 void swap(OptionalPlayer& a, OptionalPlayer& b);
 
+typedef struct _TimeInfo__isset
+{
+	_TimeInfo__isset() : roundDuration(false), univTime(false) {}
+	bool roundDuration;
+	bool univTime;
+} _TimeInfo__isset;
+
+class TimeInfo
+{
+public:
+
+	static const char* ascii_fingerprint; // = "9EA78140CD5F29ED0DA93A6F86CC34E1";
+	static const uint8_t binary_fingerprint[16]; // = {0x9E,0xA7,0x81,0x40,0xCD,0x5F,0x29,0xED,0x0D,0xA9,0x3A,0x6F,0x86,0xCC,0x34,0xE1};
+
+	TimeInfo() : roundDuration(0), univTime(0)
+	{
+	}
+
+	virtual ~TimeInfo() throw() {}
+
+	double roundDuration;
+	double univTime;
+
+	_TimeInfo__isset __isset;
+
+	void __set_roundDuration(const double val)
+	{
+		roundDuration = val;
+	}
+
+	void __set_univTime(const double val)
+	{
+		univTime = val;
+	}
+
+	bool operator == (const TimeInfo& rhs) const
+	{
+		if(!(roundDuration == rhs.roundDuration))
+			return false;
+		if(!(univTime == rhs.univTime))
+			return false;
+		return true;
+	}
+	bool operator != (const TimeInfo& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const TimeInfo&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+void swap(TimeInfo& a, TimeInfo& b);
+
 } // namespace
 
 #endif

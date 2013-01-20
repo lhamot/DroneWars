@@ -4,6 +4,7 @@
 #include <boost/thread/locks.hpp>
 #include <luabind/luabind.hpp>
 #include "Model.h"
+#include <boost/chrono.hpp>
 
 namespace LuaTools
 {
@@ -30,6 +31,8 @@ public:
 
 	void loop();
 
+	double getUnivTime();
+
 private:
 	void round(LuaTools::LuaEngine&,
 	           PlayerCodeMap& codesMap,
@@ -45,6 +48,7 @@ private:
 
 	mutable boost::shared_mutex reloadPlayerMutex_;
 	std::set<Player::ID> playerToReload_;
+	boost::chrono::system_clock::time_point roundStart;
 	Universe& univ_;
 };
 

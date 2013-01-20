@@ -307,3 +307,10 @@ void EngineServerHandler::getFightReport(ndw::FightReport& _return, const int32_
 	FightReport fr = engine_.getFightReport(id);
 	_return = fightReportToThrift(fr);
 }
+
+void EngineServerHandler::getTimeInfo(ndw::TimeInfo& _return)
+{
+	TimeInfo info = engine_.getTimeInfo();
+	_return.roundDuration = info.roundDuration;
+	_return.univTime = info.univTime;
+}

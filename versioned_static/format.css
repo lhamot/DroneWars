@@ -47,3 +47,9 @@ td, form, p
 	border-style: solid;
 	border-radius: 5px;
 }
+
+
+.dash, .digit
+{
+	float:left
+}

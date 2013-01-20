@@ -110,6 +110,9 @@
     <ClInclude Include="..\..\src\stdafx.h" />
     <ClInclude Include="..\..\src\Tools.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\src\thrift.def" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{66784FFB-A927-45B0-907F-709FC3AEFD39}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

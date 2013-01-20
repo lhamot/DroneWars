@@ -157,7 +157,7 @@ void construct(Universe& univ)
 {
 	//univ.zoneMap.resize(
 	//	boost::extents[Universe::MapSizeX][Universe::MapSizeY][Universe::MapSizeZ]);
-	univ.time = time(0) + 5;
+	univ.time = 0;
 
 	std::set<Coord, CompCoord> coordSet;
 	for(int i = 0; i < 100000; ++i)
@@ -342,7 +342,8 @@ bool canBuild(Planet const& planet, Building::Enum type)
 void addTask(Planet& planet, time_t time, Building::Enum building)
 {
 	size_t const buLevel =  planet.buildingList[building];
-	size_t const duration = static_cast<size_t>(pow(buLevel + 1., 1.5) * 10);
+	size_t const mult = 1;
+	size_t const duration = static_cast<size_t>((pow(buLevel + 1., 1.5) * mult) + 0.5);
 	PlanetTask task(PlanetTask::UpgradeBuilding, time, duration);
 	task.value = building;
 	RessourceSet const price = getBuilingPrice(building, buLevel + 1);
@@ -355,9 +356,13 @@ void addTask(Planet& planet, time_t time, Building::Enum building)
 	pay(planet, price);
 }
 
+
 void addTask(Planet& planet, time_t time, Ship::Enum ship, size_t number)
 {
-	size_t const duration = Ship::List[ship].price.tab[0] / 30;
+	size_t const div = 100;
+	size_t duration = Ship::List[ship].price.tab[0] / div;
+	if(duration == 0)
+		duration = 1;
 	PlanetTask task(PlanetTask::MakeShip, time, duration);
 	task.value = ship;
 	task.value2 = number;
@@ -366,6 +371,25 @@ void addTask(Planet& planet, time_t time, Ship::Enum ship, size_t number)
 	planet.taskQueue.push_back(task);
 	pay(planet, price);
 }
+
+
+void addTask(Planet& planet, time_t time, Cannon::Enum cannon, size_t number)
+{
+	size_t const div = 100;
+	size_t duration = Cannon::List[cannon].price.tab[0] / div;
+	if(duration == 0)
+		duration = 1;
+	PlanetTask task(PlanetTask::MakeCannon, time, duration);
+	if(cannon >= Cannon::Count)
+		BOOST_THROW_EXCEPTION(std::logic_error("Unconsistent cannon type"));
+	task.value = cannon;
+	task.value2 = number;
+	RessourceSet const& price = Cannon::List[cannon].price;
+	task.startCost = price;
+	planet.taskQueue.push_back(task);
+	pay(planet, price);
+}
+
 
 bool canStop(
   Planet const&,// planet,
@@ -625,16 +649,3 @@ bool canBuild(Planet const& planet, Cannon::Enum type, size_t number)
 	return true;
 }
 
-void addTask(Planet& planet, time_t time, Cannon::Enum cannon, size_t number)
-{
-	size_t const duration = Cannon::List[cannon].price.tab[0] / 30;
-	PlanetTask task(PlanetTask::MakeCannon, time, duration);
-	if(cannon >= Cannon::Count)
-		BOOST_THROW_EXCEPTION(std::logic_error("Unconsistent cannon type"));
-	task.value = cannon;
-	task.value2 = number;
-	RessourceSet const& price = Cannon::List[cannon].price;
-	task.startCost = price;
-	planet.taskQueue.push_back(task);
-	pay(planet, price);
-}

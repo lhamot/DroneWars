@@ -35,6 +35,7 @@ public:
 	virtual void logPlayer(OptionalPlayer& _return, const std::string& login, const std::string& password) = 0;
 	virtual void incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName) = 0;
 	virtual void getFightReport(FightReport& _return, const int32_t id) = 0;
+	virtual void getTimeInfo(TimeInfo& _return) = 0;
 };
 
 class EngineServerIfFactory
@@ -138,6 +139,10 @@ public:
 		return;
 	}
 	void getFightReport(FightReport& /* _return */, const int32_t /* id */)
+	{
+		return;
+	}
+	void getTimeInfo(TimeInfo& /* _return */)
 	{
 		return;
 	}
@@ -2182,6 +2187,111 @@ public:
 
 };
 
+
+class EngineServer_getTimeInfo_args
+{
+public:
+
+	EngineServer_getTimeInfo_args()
+	{
+	}
+
+	virtual ~EngineServer_getTimeInfo_args() throw() {}
+
+
+	bool operator == (const EngineServer_getTimeInfo_args& /* rhs */) const
+	{
+		return true;
+	}
+	bool operator != (const EngineServer_getTimeInfo_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_getTimeInfo_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_getTimeInfo_pargs
+{
+public:
+
+
+	virtual ~EngineServer_getTimeInfo_pargs() throw() {}
+
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_getTimeInfo_result__isset
+{
+	_EngineServer_getTimeInfo_result__isset() : success(false) {}
+	bool success;
+} _EngineServer_getTimeInfo_result__isset;
+
+class EngineServer_getTimeInfo_result
+{
+public:
+
+	EngineServer_getTimeInfo_result()
+	{
+	}
+
+	virtual ~EngineServer_getTimeInfo_result() throw() {}
+
+	TimeInfo success;
+
+	_EngineServer_getTimeInfo_result__isset __isset;
+
+	void __set_success(const TimeInfo& val)
+	{
+		success = val;
+	}
+
+	bool operator == (const EngineServer_getTimeInfo_result& rhs) const
+	{
+		if(!(success == rhs.success))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_getTimeInfo_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_getTimeInfo_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_getTimeInfo_presult__isset
+{
+	_EngineServer_getTimeInfo_presult__isset() : success(false) {}
+	bool success;
+} _EngineServer_getTimeInfo_presult__isset;
+
+class EngineServer_getTimeInfo_presult
+{
+public:
+
+
+	virtual ~EngineServer_getTimeInfo_presult() throw() {}
+
+	TimeInfo* success;
+
+	_EngineServer_getTimeInfo_presult__isset __isset;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
 class EngineServerClient : virtual public EngineServerIf
 {
 public:
@@ -2261,6 +2371,9 @@ public:
 	void getFightReport(FightReport& _return, const int32_t id);
 	void send_getFightReport(const int32_t id);
 	void recv_getFightReport(FightReport& _return);
+	void getTimeInfo(TimeInfo& _return);
+	void send_getTimeInfo();
+	void recv_getTimeInfo(TimeInfo& _return);
 protected:
 	boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
 	boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -2295,6 +2408,7 @@ private:
 	void process_logPlayer(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_incrementTutoDisplayed(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_getFightReport(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_getTimeInfo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 public:
 	EngineServerProcessor(boost::shared_ptr<EngineServerIf> iface) :
 		iface_(iface)
@@ -2317,6 +2431,7 @@ public:
 		processMap_["logPlayer"] = &EngineServerProcessor::process_logPlayer;
 		processMap_["incrementTutoDisplayed"] = &EngineServerProcessor::process_incrementTutoDisplayed;
 		processMap_["getFightReport"] = &EngineServerProcessor::process_getFightReport;
+		processMap_["getTimeInfo"] = &EngineServerProcessor::process_getTimeInfo;
 	}
 
 	virtual ~EngineServerProcessor() {}
@@ -2554,6 +2669,18 @@ public:
 			ifaces_[i]->getFightReport(_return, id);
 		}
 		ifaces_[i]->getFightReport(_return, id);
+		return;
+	}
+
+	void getTimeInfo(TimeInfo& _return)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->getTimeInfo(_return);
+		}
+		ifaces_[i]->getTimeInfo(_return);
 		return;
 	}
 

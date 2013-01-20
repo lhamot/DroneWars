@@ -50,4 +50,6 @@ public:
 	void incrementTutoDisplayed(const ndw::Player_ID pid, const std::string& tutoName);
 
 	void getFightReport(ndw::FightReport& _return, const int32_t id);
+
+	void getTimeInfo(ndw::TimeInfo& _return);
 };

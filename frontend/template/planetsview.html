@@ -31,9 +31,53 @@
 <div class="span4">
 <table class="table table-condensed">
 	<caption>{% trans "Tasks" %}</caption>
-	<tr><th>{% trans "Type" %}</th><th>{% trans "Start" %}</th><th>{% trans "End" %}</th><th>{% trans "What" %}</th></tr>
+	<tr><th>{% trans "Type" %}</th><th>{% trans "Time left" %}</th><th>{% trans "What" %}</th></tr>
 	{% for task in planet.taskQueue %}
-	<tr><td>{{task.type|planettaskname}}</td><td>{{task.lauchTime|int2datetime|date:"DATETIME_FORMAT"}}</td><td>{{task.duration}}</td><td>{{task|planettasktarget}}</td></tr>
+	<tr><td>{{task.type|planettaskname}}</td>
+		<td id="countdown_dashboard_{{task.id}}" style="width: 70px">
+			<!--<div class="dash weeks_dash">
+				<span class="dash_title">weeks</span>
+				<div class="digit">0</div>
+				<div class="digit">0</div>
+			</div>-->
+			{% if task|timeleft:timeInfo > 86400 %}
+			<div class="dash days_dash">
+				<span class="dash_title">&nbsp;{% trans "days" %}&nbsp;</span>
+				<div class="digit">0</div>
+				<div class="digit">0</div>
+			</div>
+			{% endif %}
+			<div class="dash hours_dash">
+				<span class="dash_title">:</span>
+				<div class="digit">0</div>
+				<div class="digit">0</div>
+			</div>
+			<div class="dash minutes_dash">
+				<span class="dash_title">:</span>
+				<div class="digit">0</div>
+				<div class="digit">0</div>
+			</div>
+			<div class="dash seconds_dash">
+				<span class="dash_title"></span>
+				<div class="digit">0</div>
+				<div class="digit">0</div>
+			</div>
+			<script>
+			jQuery(document).ready(function() {
+				$('#countdown_dashboard_{{task.id}}').countDown({
+					targetOffset: {
+						'day': 		0,
+						'month': 	0,
+						'year': 	0,
+						'hour': 	0,
+						'min': 		0,
+						'sec': 		{{task|timeleft:timeInfo|floatformat:0}}
+					}
+				});
+			});
+			</script>
+		</td>
+		<td>{{task|planettasktarget}}</td></tr>
 	{% endfor %}
 </table>
 <table class="table table-condensed">

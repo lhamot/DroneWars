@@ -2686,4 +2686,89 @@ void swap(OptionalPlayer& a, OptionalPlayer& b)
 	swap(a.__isset, b.__isset);
 }
 
+const char* TimeInfo::ascii_fingerprint = "9EA78140CD5F29ED0DA93A6F86CC34E1";
+const uint8_t TimeInfo::binary_fingerprint[16] = {0x9E, 0xA7, 0x81, 0x40, 0xCD, 0x5F, 0x29, 0xED, 0x0D, 0xA9, 0x3A, 0x6F, 0x86, 0xCC, 0x34, 0xE1};
+
+uint32_t TimeInfo::read(::apache::thrift::protocol::TProtocol* iprot)
+{
+
+	uint32_t xfer = 0;
+	std::string fname;
+	::apache::thrift::protocol::TType ftype;
+	int16_t fid;
+
+	xfer += iprot->readStructBegin(fname);
+
+	using ::apache::thrift::protocol::TProtocolException;
+
+
+	while(true)
+	{
+		xfer += iprot->readFieldBegin(fname, ftype, fid);
+		if(ftype == ::apache::thrift::protocol::T_STOP)
+		{
+			break;
+		}
+		switch(fid)
+		{
+		case 10:
+			if(ftype == ::apache::thrift::protocol::T_DOUBLE)
+			{
+				xfer += iprot->readDouble(this->roundDuration);
+				this->__isset.roundDuration = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		case 20:
+			if(ftype == ::apache::thrift::protocol::T_DOUBLE)
+			{
+				xfer += iprot->readDouble(this->univTime);
+				this->__isset.univTime = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		default:
+			xfer += iprot->skip(ftype);
+			break;
+		}
+		xfer += iprot->readFieldEnd();
+	}
+
+	xfer += iprot->readStructEnd();
+
+	return xfer;
+}
+
+uint32_t TimeInfo::write(::apache::thrift::protocol::TProtocol* oprot) const
+{
+	uint32_t xfer = 0;
+	xfer += oprot->writeStructBegin("TimeInfo");
+
+	xfer += oprot->writeFieldBegin("roundDuration", ::apache::thrift::protocol::T_DOUBLE, 10);
+	xfer += oprot->writeDouble(this->roundDuration);
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldBegin("univTime", ::apache::thrift::protocol::T_DOUBLE, 20);
+	xfer += oprot->writeDouble(this->univTime);
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldStop();
+	xfer += oprot->writeStructEnd();
+	return xfer;
+}
+
+void swap(TimeInfo& a, TimeInfo& b)
+{
+	using ::std::swap;
+	swap(a.roundDuration, b.roundDuration);
+	swap(a.univTime, b.univTime);
+	swap(a.__isset, b.__isset);
+}
+
 } // namespace

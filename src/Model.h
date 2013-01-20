@@ -443,6 +443,7 @@ struct Universe
 		ar& nextEventID;
 		ar& nextFightID;
 		ar& time;
+		ar& roundDuration;
 	}
 
 	//typedef boost::multi_array<Zone, 3> ZoneMap;
@@ -464,6 +465,7 @@ struct Universe
 	Event::ID nextEventID;
 	size_t nextFightID;
 	time_t time;
+	double roundDuration;
 
 	typedef boost::shared_mutex Mutex;
 	mutable Mutex planetsFleetsReportsmutex;
@@ -474,7 +476,8 @@ struct Universe
 		nextFleetID(0),
 		nextEventID(0),
 		nextFightID(0),
-		time(0)
+		time(0),
+		roundDuration(0.)
 	{
 	}
 
@@ -487,7 +490,8 @@ struct Universe
 		nextFleetID(other.nextFleetID),
 		nextEventID(other.nextEventID),
 		nextFightID(other.nextFightID),
-		time(other.time)
+		time(other.time),
+		roundDuration(other.roundDuration)
 	{
 	}
 
@@ -508,6 +512,7 @@ struct Universe
 		std::swap(nextEventID, other.nextEventID);
 		std::swap(nextFightID, other.nextFightID);
 		std::swap(time, other.time);
+		std::swap(roundDuration, other.roundDuration);
 	}
 };
 

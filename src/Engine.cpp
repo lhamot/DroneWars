@@ -236,3 +236,10 @@ void Engine::incrementTutoDisplayed(Player::ID pid, std::string const& tutoName)
 	mapFind(univ_.playerMap, pid)->second.tutoDisplayed[tutoName] += 1;
 }
 
+
+TimeInfo Engine::getTimeInfo() const
+{
+	SharedLock lock(univ_.planetsFleetsReportsmutex);
+	TimeInfo info = {univ_.roundDuration, simulation_->getUnivTime()};
+	return info;
+}

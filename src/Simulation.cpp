@@ -12,6 +12,7 @@
 #pragma warning(pop)
 #include <boost/range/numeric.hpp>
 #include <boost/format.hpp>
+#include <boost/chrono.hpp>
 
 
 extern "C"
@@ -42,7 +43,7 @@ void luaCountHook(lua_State* L,
 	luaL_error(L, "timeout was reached");
 }
 
-static size_t const RoundSecond = 1;
+static size_t const RoundSecond = 10;
 static size_t const SaveSecond = 60;
 
 
@@ -594,7 +595,7 @@ try
 {
 	std::cout << time(0) << " ";
 
-	univ_.time += RoundSecond;
+	univ_.time += 1; //1 round
 
 	//! Désactivation de tout les codes qui echoue
 	disableFailingCode(univ_, codesMap);
@@ -746,9 +747,14 @@ void openlibs(lua_State* L)
 	lua_pop(L, 1);  //remove _PRELOAD table
 }
 
+
+boost::shared_mutex roundTimeMutex;
+
 void Simulation::loop()
 try
 {
+	using namespace boost::chrono;
+
 	LuaTools::LuaEngine luaEngine;
 	//lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, 20000);
 	PlayerCodeMap codesMap;
@@ -792,6 +798,8 @@ try
 
 	size_t gcCounter = 0;
 
+	roundStart = system_clock::now();
+
 	while(false == boost::this_thread::interruption_requested())
 	{
 		time_t const now = time(0);
@@ -808,6 +816,14 @@ try
 		if(noWait || newUpdate <= now)
 			try
 			{
+				boost::chrono::system_clock::time_point roundEnd = system_clock::now();
+				duration<double> sec = roundEnd - roundStart;
+				{
+					UniqueLock lockTime(roundTimeMutex);
+					univ_.roundDuration = sec.count();
+					roundStart = roundEnd;
+				}
+
 				//std::cout << newUpdate << " " << now << std::endl;
 				round(luaEngine, codesMap, signals);
 				signals.clear();
@@ -841,6 +857,17 @@ catch(std::exception const& ex)
 	throw;
 }
 
+
+double Simulation::getUnivTime()
+{
+	using namespace boost::chrono;
+	UniqueLock lockTime(roundTimeMutex);
+	system_clock::time_point const now = system_clock::now();
+	duration<double> const fromStart = now - roundStart;
+	double const roundProgress = fromStart.count() / univ_.roundDuration;
+	std::cout << "UnivTime : " << univ_.time + roundProgress << std::endl;
+	return univ_.time + roundProgress;
+}
 
 
 void Simulation::save(std::string const& saveName) const

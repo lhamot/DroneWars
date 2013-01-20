@@ -102,7 +102,6 @@ def PlanetsView(request):
             targetCoord = gen_py.thrift.ttypes.Coord(tab[0], tab[1], tab[2])
         else:
             targetCoord = player.mainPlanet
-        print targetCoord
         for planet in planetList:
             print planet.coord
             planetHash = planet.coord.X + (planet.coord.Y * 1000) + (planet.coord.Z * 1000000) 
@@ -116,11 +115,14 @@ def PlanetsView(request):
             service.incrementTutoDisplayed(pid, PlanetViewTutoTag);
         else:
             helpMessage = ""
+            
+        timeInfo = service.getTimeInfo();
         
         return render(request, 'planetsview.html', {
             'planetList': planetList,
             'planet' : target,
-            'helpMessage': helpMessage
+            'helpMessage': helpMessage,
+            'timeInfo': timeInfo
     })
 
 

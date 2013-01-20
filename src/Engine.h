@@ -6,6 +6,12 @@
 
 class Simulation;
 
+struct TimeInfo
+{
+	double roundDuration;
+	double univTime;
+};
+
 
 class Engine
 {
@@ -58,6 +64,8 @@ public:
 	void setPlayerPlanetBlocklyCode(Player::ID pid, std::string const& code);
 
 	void incrementTutoDisplayed(Player::ID pid, std::string const& tutoName);
+
+	TimeInfo getTimeInfo() const;
 
 private:
 	Universe univ_;

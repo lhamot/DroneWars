@@ -276,6 +276,12 @@ struct OptionalPlayer
 	1: optional Player player
 }
 
+struct TimeInfo
+{
+	10: double roundDuration,
+	20: double univTime
+}
+
 
 service EngineServer
 {
@@ -296,5 +302,6 @@ service EngineServer
 	Fleet getFleet(10: Fleet_ID fid),
 	OptionalPlayer logPlayer(10: string login, 20: string password),
 	void incrementTutoDisplayed(10: Player_ID pid, 20: string tutoName),
-	FightReport getFightReport(10: i32 id)
+	FightReport getFightReport(10: i32 id),
+	TimeInfo getTimeInfo()
 }

@@ -80,3 +80,14 @@ def content(planetOrFleet):
         pass
     else:
         raise AssertionError("Unexpected type")
+
+
+@register.filter
+def timeleft(task, timeinfo):
+    end = task.lauchTime + task.duration
+    roundLeft = end - timeinfo.univTime
+    return roundLeft * timeinfo.roundDuration
+    
+
+
+
