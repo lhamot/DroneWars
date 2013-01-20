@@ -132,7 +132,7 @@ struct FleetTask
 	bool expired;
 
 	FleetTask() {}
-	FleetTask(Enum t, time_t lauch, size_t dur):
+	FleetTask(Enum t, size_t lauch, size_t dur):
 		type(t), lauchTime(lauch), duration(dur), expired(false)
 	{
 	}
@@ -546,13 +546,13 @@ bool canBuild(Planet const& planet, Ship::Enum type, size_t number);
 
 bool canBuild(Planet const& planet, Building::Enum type);
 
-void addTask(Planet& planet, time_t time, Building::Enum building);
+void addTask(Planet& planet, size_t roundCount, Building::Enum building);
 
-void addTask(Planet& planet, time_t time, Ship::Enum ship, size_t number);
+void addTask(Planet& planet, size_t roundCount, Ship::Enum ship, size_t number);
 
 bool canBuild(Planet const& planet, Cannon::Enum type, size_t number);
 
-void addTask(Planet& planet, time_t time, Cannon::Enum cannon, size_t number);
+void addTask(Planet& planet, size_t roundCount, Cannon::Enum cannon, size_t number);
 
 bool canStop(Planet const& planet, Building::Enum type);
 
@@ -570,15 +570,15 @@ void gather(Fleet& fleet, Fleet const& otherFleet);
 
 bool canMove(Fleet const& fleet, Coord const& coord);
 
-void addTask(Fleet& fleet, time_t time, Coord const& coord);
+void addTask(Fleet& fleet, size_t roundCount, Coord const& coord);
 
 bool canHarvest(Fleet const& fleet, Planet const& planet);
 
-void addTaskHarvest(Fleet& fleet, time_t time, Planet const& planet);
+void addTaskHarvest(Fleet& fleet, size_t roundCount, Planet const& planet);
 
 bool canColonize(Fleet const& fleet, Planet const& planet);
 
-void addTaskColonize(Fleet& fleet, time_t time, Planet const& planet);
+void addTaskColonize(Fleet& fleet, size_t roundCount, Planet const& planet);
 
 bool canDrop(Fleet const& fleet, Planet const& planet);
 

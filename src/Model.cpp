@@ -142,7 +142,7 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 			playerIter->second.mainPlanet = planet.coord;
 
 			planet.buildingList[Building::CommandCenter] = 1;
-			planet.ressourceSet = RessourceSet(2000, 200, 0);
+			planet.ressourceSet = RessourceSet(4000, 400, 0);
 			done = true;
 			//planet.buildingSet.push_back(Building(Building::MetalMine));
 			//planet.buildingSet.push_back(Building(Building::CarbonicCentral));
@@ -339,12 +339,12 @@ bool canBuild(Planet const& planet, Building::Enum type)
 		return false;
 }
 
-void addTask(Planet& planet, time_t time, Building::Enum building)
+void addTask(Planet& planet, size_t roundCount, Building::Enum building)
 {
 	size_t const buLevel =  planet.buildingList[building];
 	size_t const mult = 1;
 	size_t const duration = static_cast<size_t>((pow(buLevel + 1., 1.5) * mult) + 0.5);
-	PlanetTask task(PlanetTask::UpgradeBuilding, time, duration);
+	PlanetTask task(PlanetTask::UpgradeBuilding, roundCount, duration);
 	task.value = building;
 	RessourceSet const price = getBuilingPrice(building, buLevel + 1);
 	task.startCost = price;
@@ -357,13 +357,13 @@ void addTask(Planet& planet, time_t time, Building::Enum building)
 }
 
 
-void addTask(Planet& planet, time_t time, Ship::Enum ship, size_t number)
+void addTask(Planet& planet, size_t roundCount, Ship::Enum ship, size_t number)
 {
 	size_t const div = 100;
 	size_t duration = Ship::List[ship].price.tab[0] / div;
 	if(duration == 0)
 		duration = 1;
-	PlanetTask task(PlanetTask::MakeShip, time, duration);
+	PlanetTask task(PlanetTask::MakeShip, roundCount, duration);
 	task.value = ship;
 	task.value2 = number;
 	RessourceSet const& price = Ship::List[ship].price;
@@ -373,13 +373,13 @@ void addTask(Planet& planet, time_t time, Ship::Enum ship, size_t number)
 }
 
 
-void addTask(Planet& planet, time_t time, Cannon::Enum cannon, size_t number)
+void addTask(Planet& planet, size_t roundCount, Cannon::Enum cannon, size_t number)
 {
 	size_t const div = 100;
 	size_t duration = Cannon::List[cannon].price.tab[0] / div;
 	if(duration == 0)
 		duration = 1;
-	PlanetTask task(PlanetTask::MakeCannon, time, duration);
+	PlanetTask task(PlanetTask::MakeCannon, roundCount, duration);
 	if(cannon >= Cannon::Count)
 		BOOST_THROW_EXCEPTION(std::logic_error("Unconsistent cannon type"));
 	task.value = cannon;
@@ -481,7 +481,7 @@ void execTask(Universe& univ,
 				boost::geometry::assign_value(planet.ressourceSet.tab, 0);
 				Event event(univ.nextEventID++, time(0), Event::PlanetHarvested);
 				fleet.eventList.push_back(event);
-				signals.push_back(Signal(planet.playerId, event));
+				signals.push_back(Signal(fleet.playerId, event));
 			}
 		}
 		break;
@@ -513,6 +513,7 @@ void execTask(Universe& univ,
 
 void execBuilding(Planet& planet, Building::Enum type, size_t level)
 {
+	size_t const speedMult = 4;
 	if(level == 0)
 		return;
 	switch(type)
@@ -521,7 +522,7 @@ void execBuilding(Planet& planet, Building::Enum type, size_t level)
 		planet.ressourceSet.tab[Ressource::Metal] += 1;
 		break;
 	case Building::MetalMine:
-		planet.ressourceSet.tab[Ressource::Metal] += level * size_t(std::pow(1.1, double(level)));
+		planet.ressourceSet.tab[Ressource::Metal] += level * size_t(std::pow(1.1, double(level))) * speedMult;
 		break;
 	case Building::CarbonMine:
 		break;
@@ -586,9 +587,9 @@ bool canMove(Fleet const& fleet,
 	return true;
 }
 
-void addTask(Fleet& fleet, time_t time, Coord const& coord)
+void addTask(Fleet& fleet, size_t roundCount, Coord const& coord)
 {
-	FleetTask task(FleetTask::Move, time, 10);
+	FleetTask task(FleetTask::Move, roundCount, 1);
 	task.position = coord;
 	fleet.taskQueue.push_back(task);
 }
@@ -600,9 +601,9 @@ bool canHarvest(Fleet const& fleet, Planet const& planet)
 	return planet.playerId == Player::NoId;
 }
 
-void addTaskHarvest(Fleet& fleet, time_t time, Planet const& planet)
+void addTaskHarvest(Fleet& fleet, size_t roundCount, Planet const& planet)
 {
-	FleetTask task(FleetTask::Harvest, time, 10);
+	FleetTask task(FleetTask::Harvest, roundCount, 1);
 	task.position = planet.coord;
 	fleet.taskQueue.push_back(task);
 }
@@ -614,9 +615,9 @@ bool canColonize(Fleet const& fleet, Planet const& planet)
 	return planet.playerId == Player::NoId && fleet.shipList[Ship::Queen];
 }
 
-void addTaskColonize(Fleet& fleet, time_t time, Planet const& planet)
+void addTaskColonize(Fleet& fleet, size_t roundCount, Planet const& planet)
 {
-	FleetTask task(FleetTask::Colonize, time, 10);
+	FleetTask task(FleetTask::Colonize, roundCount, 1);
 	task.position = planet.coord;
 	fleet.taskQueue.push_back(task);
 }

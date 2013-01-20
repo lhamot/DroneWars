@@ -103,7 +103,6 @@ def PlanetsView(request):
         else:
             targetCoord = player.mainPlanet
         for planet in planetList:
-            print planet.coord
             planetHash = planet.coord.X + (planet.coord.Y * 1000) + (planet.coord.Z * 1000000) 
             planet.imgNumber = planetHash % PlanetImageCount;
             if targetCoord and targetCoord == planet.coord:

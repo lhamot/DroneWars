@@ -143,7 +143,7 @@ void checkTutos(Universe& univ_, std::vector<Signal>& signals)
 			}
 			break;
 		}
-		case 4: //! Cas 4: Créer 3 flottes composé de 10 mosquito exactement
+		case 4: //! Cas 4: Créer 3 flottes composé de 5 mosquito exactement
 		{
 			for(Signal const & sig: signals)
 			{
