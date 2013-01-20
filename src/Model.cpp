@@ -157,7 +157,7 @@ void construct(Universe& univ)
 {
 	//univ.zoneMap.resize(
 	//	boost::extents[Universe::MapSizeX][Universe::MapSizeY][Universe::MapSizeZ]);
-	univ.time = 0;
+	univ.roundCount = 0;
 
 	std::set<Coord, CompCoord> coordSet;
 	for(int i = 0; i < 100000; ++i)
@@ -416,10 +416,9 @@ void stopTask(Planet& planet, PlanetTask::Enum tasktype, Building::Enum building
 void execTask(Universe& univ,
               Planet& planet,
               PlanetTask& task,
-              time_t time,
               std::vector<Signal>& signals)
 {
-	if(time_t(task.lauchTime + task.duration) <= univ.time)
+	if((task.lauchTime + task.duration) <= univ.roundCount)
 	{
 		switch(task.type)
 		{
@@ -429,7 +428,7 @@ void execTask(Universe& univ,
 			else
 			{
 				planet.buildingList[task.value] += 1;
-				Event event(univ.nextEventID++, time, Event::Upgraded);
+				Event event(univ.nextEventID++, time(0), Event::Upgraded);
 				planet.eventList.push_back(event);
 				signals.push_back(Signal(planet.playerId, event));
 			}
@@ -439,7 +438,7 @@ void execTask(Universe& univ,
 			Fleet newFleet(univ.nextFleetID++, planet.playerId, planet.coord);
 			newFleet.shipList[task.value] += task.value2;
 			univ.fleetMap.insert(make_pair(newFleet.id, newFleet));
-			Event event(univ.nextEventID++, time, Event::ShipMade);
+			Event event(univ.nextEventID++, time(0), Event::ShipMade);
 			signals.push_back(Signal(planet.playerId, event));
 		}
 		break;
@@ -448,7 +447,7 @@ void execTask(Universe& univ,
 			{
 				//BOOST_THROW_EXCEPTION(std::logic_error("Unconsistent cannon type"));
 				planet.cannonTab[task.value] += 1;
-				Event event(univ.nextEventID++, time, Event::CannonMade);
+				Event event(univ.nextEventID++, time(0), Event::CannonMade);
 				planet.eventList.push_back(event);
 				signals.push_back(Signal(planet.playerId, event));
 			}
@@ -464,10 +463,9 @@ void execTask(Universe& univ,
 void execTask(Universe& univ,
               Fleet& fleet,
               FleetTask& task,
-              time_t time,
               std::vector<Signal>& signals)
 {
-	if(time_t(task.lauchTime + task.duration) <= univ.time)
+	if((task.lauchTime + task.duration) <= univ.roundCount)
 	{
 		switch(task.type)
 		{
@@ -481,7 +479,7 @@ void execTask(Universe& univ,
 			{
 				boost::geometry::add_point(fleet.ressourceSet.tab, planet.ressourceSet.tab);
 				boost::geometry::assign_value(planet.ressourceSet.tab, 0);
-				Event event(univ.nextEventID++, time, Event::PlanetHarvested);
+				Event event(univ.nextEventID++, time(0), Event::PlanetHarvested);
 				fleet.eventList.push_back(event);
 				signals.push_back(Signal(planet.playerId, event));
 			}
@@ -492,7 +490,7 @@ void execTask(Universe& univ,
 			Planet& planet = mapFind(univ.planetMap, task.position)->second;
 			if(planet.playerId == Player::NoId && fleet.shipList[Ship::Queen])
 			{
-				Event event(univ.nextEventID++, time, Event::PlanetColonized);
+				Event event(univ.nextEventID++, time(0), Event::PlanetColonized);
 				fleet.eventList.push_back(event);
 				signals.push_back(Signal(planet.playerId, event));
 				fleet.shipList[Ship::Queen] -= 1;
@@ -542,10 +540,10 @@ void execBuilding(Planet& planet, Building::Enum type, size_t level)
 	};
 }
 
-void planetRound(Universe& univ, Planet& planet, time_t time, std::vector<Signal>& signals)
+void planetRound(Universe& univ, Planet& planet, std::vector<Signal>& signals)
 {
 	for(PlanetTask & task: planet.taskQueue)
-		execTask(univ, planet, task, time, signals);
+		execTask(univ, planet, task, signals);
 
 	boost::remove_erase_if(planet.taskQueue, bind(&PlanetTask::expired, placeholders::_1));
 
@@ -554,10 +552,10 @@ void planetRound(Universe& univ, Planet& planet, time_t time, std::vector<Signal
 }
 
 
-void fleetRound(Universe& univ, Fleet& fleet, time_t time, std::vector<Signal>& signals)
+void fleetRound(Universe& univ, Fleet& fleet, std::vector<Signal>& signals)
 {
 	for(FleetTask & task: fleet.taskQueue)
-		execTask(univ, fleet, task, time, signals);
+		execTask(univ, fleet, task, signals);
 
 	boost::remove_erase_if(fleet.taskQueue, bind(&FleetTask::expired, placeholders::_1));
 }

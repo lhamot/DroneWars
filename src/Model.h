@@ -442,7 +442,7 @@ struct Universe
 		ar& nextFleetID;
 		ar& nextEventID;
 		ar& nextFightID;
-		ar& time;
+		ar& roundCount;
 		ar& roundDuration;
 	}
 
@@ -464,7 +464,7 @@ struct Universe
 	Fleet::ID nextFleetID;
 	Event::ID nextEventID;
 	size_t nextFightID;
-	time_t time;
+	size_t roundCount;
 	double roundDuration;
 
 	typedef boost::shared_mutex Mutex;
@@ -476,7 +476,7 @@ struct Universe
 		nextFleetID(0),
 		nextEventID(0),
 		nextFightID(0),
-		time(0),
+		roundCount(0),
 		roundDuration(0.)
 	{
 	}
@@ -490,7 +490,7 @@ struct Universe
 		nextFleetID(other.nextFleetID),
 		nextEventID(other.nextEventID),
 		nextFightID(other.nextFightID),
-		time(other.time),
+		roundCount(other.roundCount),
 		roundDuration(other.roundDuration)
 	{
 	}
@@ -511,7 +511,7 @@ struct Universe
 		std::swap(nextFleetID, other.nextFleetID);
 		std::swap(nextEventID, other.nextEventID);
 		std::swap(nextFightID, other.nextFightID);
-		std::swap(time, other.time);
+		std::swap(roundCount, other.roundCount);
 		std::swap(roundDuration, other.roundDuration);
 	}
 };
@@ -560,11 +560,11 @@ void stopTask(Planet& planet, PlanetTask::Enum tasktype, Building::Enum building
 
 //! Gere l'écoulement du temps sur la planète.
 //! Peut modifier la liste dse flotte et des planètes
-void planetRound(Universe& univ, Planet& planet, time_t time, std::vector<Signal>& signals);
+void planetRound(Universe& univ, Planet& planet, std::vector<Signal>& signals);
 
 //! Gere l'écoulement du temps sur la flotte.
 //! Peut modifier la liste des flottes et des planètes
-void fleetRound(Universe& univ, Fleet& fleet, time_t time, std::vector<Signal>& signals);
+void fleetRound(Universe& univ, Fleet& fleet, std::vector<Signal>& signals);
 
 void gather(Fleet& fleet, Fleet const& otherFleet);
 

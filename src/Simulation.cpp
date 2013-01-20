@@ -65,7 +65,6 @@ luabind::object registerCode(
   LuaTools::LuaEngine& luaEngine,
   Player::ID const pid,
   CodeData& code,
-  time_t time,
   bool isFleet,
   std::vector<Signal>& signals)
 try
@@ -80,7 +79,7 @@ try
 	{
 		char const* message = lua_tostring(luaEngine.state(), -1);
 		code.newError(message);
-		Event event(univ_.nextEventID++, time, isFleet ? Event::FleetCodeError : Event::PlanetCodeError, message ? message : "");
+		Event event(univ_.nextEventID++, time(0), isFleet ? Event::FleetCodeError : Event::PlanetCodeError, message ? message : "");
 		mapFind(univ_.playerMap, pid)->second.eventList.push_back(event);
 		signals.push_back(Signal(pid, event));
 		return luabind::object();
@@ -95,7 +94,7 @@ catch(luabind::error& ex)
 {
 	std::string message = GetLuabindErrorString(ex);
 	code.newError(message);
-	Event event(univ_.nextEventID++, time, isFleet ? Event::FleetCodeError : Event::PlanetCodeError, message);
+	Event event(univ_.nextEventID++, time(0), isFleet ? Event::FleetCodeError : Event::PlanetCodeError, message);
 	mapFind(univ_.playerMap, pid)->second.eventList.push_back(event);
 	signals.push_back(Signal(pid, event));
 	return luabind::object();
@@ -103,7 +102,7 @@ catch(luabind::error& ex)
 catch(std::exception const& ex)
 {
 	char const* message = lua_tostring(luaEngine.state(), -1);
-	Event event(univ_.nextEventID++, time, isFleet ? Event::FleetCodeError : Event::PlanetCodeError, ex.what() + string(" ") + (message ? message : ""));
+	Event event(univ_.nextEventID++, time(0), isFleet ? Event::FleetCodeError : Event::PlanetCodeError, ex.what() + string(" ") + (message ? message : ""));
 	mapFind(univ_.playerMap, pid)->second.eventList.push_back(event);
 	signals.push_back(Signal(pid, event));
 	return luabind::object();
@@ -116,7 +115,6 @@ void execPlanet(
   LuaEngine& luaEngine,
   luabind::object code,
   Planet& planet,
-  time_t time,
   std::vector<Fleet const*> const& fleetList,
   std::vector<Signal>& signals)
 try
@@ -140,7 +138,7 @@ try
 		case PlanetAction::Building:
 		{
 			if(canBuild(planet, action.building))
-				addTask(planet, univ_.time, action.building);
+				addTask(planet, univ_.roundCount, action.building);
 		}
 		break;
 		case PlanetAction::StopBuilding:
@@ -151,13 +149,13 @@ try
 		case PlanetAction::Ship:
 		{
 			if(canBuild(planet, action.ship, action.number))
-				addTask(planet, univ_.time, action.ship, action.number);
+				addTask(planet, univ_.roundCount, action.ship, action.number);
 		}
 		break;
 		case PlanetAction::Cannon:
 		{
 			if(canBuild(planet, action.cannon, action.number))
-				addTask(planet, univ_.time, action.cannon, action.number);
+				addTask(planet, univ_.roundCount, action.cannon, action.number);
 		}
 		break;
 		default:
@@ -172,14 +170,14 @@ catch(luabind::error& ex)
 	std::string const message = GetLuabindErrorString(ex);
 	Player& player = mapFind(univ_.playerMap, planet.playerId)->second;
 	player.planetsCode.newError(message);//ex.what() + string(" ") + ss.str());
-	Event event(univ_.nextEventID++, time, Event::PlanetCodeError, message);
+	Event event(univ_.nextEventID++, time(0), Event::PlanetCodeError, message);
 	player.eventList.push_back(event);//ex.what() + string(" ") + ss.str()));
 	signals.push_back(Signal(player.id, event));
 }
 catch(std::exception const& ex)
 {
 	UniqueLock lockPlayer(univ_.playersMutex);
-	Event event(univ_.nextEventID++, time, Event::FleetCodeError, ex.what());
+	Event event(univ_.nextEventID++, time(0), Event::FleetCodeError, ex.what());
 	mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(event);
 	signals.push_back(Signal(planet.playerId, event));
 }
@@ -189,7 +187,6 @@ bool execFleet(Universe& univ_,
                luabind::object code,
                Fleet& fleet,
                FleetCoordMap& fleetMap,
-               time_t time,
                std::vector<Signal>& signals)
 try
 {
@@ -214,7 +211,7 @@ try
 				auto condemned = fleetIter;
 				++fleetIter;
 				fleetMap.erase(condemned);
-				Event event(univ_.nextEventID++, time, Event::FleetsGather);
+				Event event(univ_.nextEventID++, time(0), Event::FleetsGather);
 				fleet.eventList.push_back(event);
 				signals.push_back(Signal(fleet.playerId, event));
 
@@ -248,22 +245,22 @@ try
 		target.Y += action.target.Y;
 		target.Z += action.target.Z;
 		if(canMove(fleet, target))
-			addTask(fleet, univ_.time, target);
+			addTask(fleet, univ_.roundCount, target);
 	}
 	break;
 	case FleetAction::Harvest:
 		if(planet && canHarvest(fleet, *planet))
-			addTaskHarvest(fleet, univ_.time, *planet);
+			addTaskHarvest(fleet, univ_.roundCount, *planet);
 		break;
 	case FleetAction::Colonize:
 		if(planet && canColonize(fleet, *planet))
-			addTaskColonize(fleet, univ_.time, *planet);
+			addTaskColonize(fleet, univ_.roundCount, *planet);
 		break;
 	case FleetAction::Drop:
 		if(planet && canDrop(fleet, *planet))
 		{
 			drop(fleet, *planet);
-			Event event(univ_.nextEventID++, time, Event::FleetDrop);
+			Event event(univ_.nextEventID++, time(0), Event::FleetDrop);
 			fleet.eventList.push_back(event);
 			if(planet->playerId == Player::NoId)
 				BOOST_THROW_EXCEPTION(std::logic_error("planet->playerId == Player::NoId"));
@@ -281,7 +278,7 @@ catch(luabind::error& ex)
 	std::string const message = GetLuabindErrorString(ex);
 	Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
 	player.fleetsCode.newError(message);
-	Event event(univ_.nextEventID++, time, Event::FleetCodeError, message);
+	Event event(univ_.nextEventID++, time(0), Event::FleetCodeError, message);
 	player.eventList.push_back(event);
 	signals.push_back(Signal(player.id, event));
 	return true;
@@ -292,7 +289,7 @@ catch(std::exception const& ex)
 	std::string const message = typeid(ex).name() + string(" ") + ex.what();
 	Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
 	player.fleetsCode.newError(message);
-	Event event(univ_.nextEventID++, time, Event::FleetCodeError, message);
+	Event event(univ_.nextEventID++, time(0), Event::FleetCodeError, message);
 	player.eventList.push_back(event);
 	signals.push_back(Signal(player.id, event));
 	return true;
@@ -328,8 +325,8 @@ void Simulation::updatePlayersCode(LuaTools::LuaEngine& luaEngine,
 		Player& player = mapFind(univ_.playerMap, pid)->second;
 		PlayerCodes newCodes =
 		{
-			registerCode(univ_, luaEngine, player.id, player.fleetsCode, univ_.time, true, signals),
-			registerCode(univ_, luaEngine, player.id, player.planetsCode, univ_.time, false, signals)
+			registerCode(univ_, luaEngine, player.id, player.fleetsCode, true, signals),
+			registerCode(univ_, luaEngine, player.id, player.planetsCode, false, signals)
 		};
 		codesMap[player.id] = newCodes;
 	}
@@ -365,9 +362,9 @@ void execPlanets(Universe& univ_,
 		auto localFleets = fleetMap.equal_range(planet.coord);
 		auto getFleetPointer = [](FleetCoordMap::value_type const & coordFleet) {return &coordFleet.second;};
 		boost::transform(localFleets, back_inserter(fleetList), getFleetPointer);
-		planetRound(univ_, planet, univ_.time, signals);
+		planetRound(univ_, planet, signals);
 		if(planet.playerId != Player::NoId)
-			execPlanet(univ_, luaEngine, codesMap[planet.playerId].planetsCode, planet, univ_.time, fleetList, signals);
+			execPlanet(univ_, luaEngine, codesMap[planet.playerId].planetsCode, planet, fleetList, signals);
 	}
 }
 
@@ -460,13 +457,13 @@ void execFights(Universe& univ_, std::vector<Signal>& signals)
 			{
 				UniqueLock lockPlayer(univ_.playersMutex);
 				deadFleets.push_back(fleet.id);
-				Event event(univ_.nextEventID++, univ_.time, Event::FleetLose, reportID);
+				Event event(univ_.nextEventID++, time(0), Event::FleetLose, reportID);
 				mapFind(univ_.playerMap, fleet.playerId)->second.eventList.push_back(event);
 				signals.push_back(Signal(fleet.playerId, event));
 			}
 			else if(report.hasFight)
 			{
-				Event event(univ_.nextEventID++, univ_.time, Event::FleetWin, reportID);
+				Event event(univ_.nextEventID++, time(0), Event::FleetWin, reportID);
 				fleet.eventList.push_back(event); // CEST ICI QUON MODIFIE LA FLOTTE
 				signals.push_back(Signal(fleet.playerId, event));
 			}
@@ -481,7 +478,7 @@ void execFights(Universe& univ_, std::vector<Signal>& signals)
 				if(planet.playerId != Player::NoId)
 				{
 					UniqueLock lockPlayer(univ_.playersMutex);
-					Event event(univ_.nextEventID++, univ_.time, Event::PlanetLose, reportID);
+					Event event(univ_.nextEventID++, time(0), Event::PlanetLose, reportID);
 					mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(event);
 					signals.push_back(Signal(planet.playerId, event));
 				}
@@ -490,7 +487,7 @@ void execFights(Universe& univ_, std::vector<Signal>& signals)
 			{
 				if(planet.playerId == Player::NoId)
 					BOOST_THROW_EXCEPTION(std::logic_error("planet.playerId == Player::NoId"));
-				Event event(univ_.nextEventID++, univ_.time, Event::PlanetWin, reportID);
+				Event event(univ_.nextEventID++, time(0), Event::PlanetWin, reportID);
 				planet.eventList.push_back(event);
 				signals.push_back(Signal(planet.playerId, event));
 			}
@@ -528,14 +525,13 @@ void execFleets(
 
 		UpToUniqueLock writeLock(lockFleets);
 
-		fleetRound(univ_, iter->second, univ_.time, signals);
+		fleetRound(univ_, iter->second, signals);
 
 		bool keepFleet = execFleet(univ_,
 		                           luaEngine,
 		                           codesMap[iter->second.playerId].fleetsCode,
 		                           iter->second,
 		                           fleetMap,
-		                           univ_.time,
 		                           signals);
 		if(keepFleet == false)
 		{
@@ -595,7 +591,7 @@ try
 {
 	std::cout << time(0) << " ";
 
-	univ_.time += 1; //1 round
+	univ_.roundCount += 1; //1 round
 
 	//! Désactivation de tout les codes qui echoue
 	disableFailingCode(univ_, codesMap);
@@ -783,8 +779,8 @@ try
 			Player& player = playerNVP.second;
 			PlayerCodes newCodes =
 			{
-				registerCode(univ_, luaEngine, player.id, player.fleetsCode, univ_.time, true, signals),
-				registerCode(univ_, luaEngine, player.id, player.planetsCode, univ_.time, false, signals)
+				registerCode(univ_, luaEngine, player.id, player.fleetsCode, true, signals),
+				registerCode(univ_, luaEngine, player.id, player.planetsCode, false, signals)
 			};
 			codesMap.insert(make_pair(player.id, newCodes));
 		}
@@ -865,8 +861,7 @@ double Simulation::getUnivTime()
 	system_clock::time_point const now = system_clock::now();
 	duration<double> const fromStart = now - roundStart;
 	double const roundProgress = fromStart.count() / univ_.roundDuration;
-	std::cout << "UnivTime : " << univ_.time + roundProgress << std::endl;
-	return univ_.time + roundProgress;
+	return univ_.roundCount + roundProgress;
 }
 
 

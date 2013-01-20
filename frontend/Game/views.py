@@ -187,7 +187,8 @@ def ReportsView(request):
             for event in player.eventList:
                 if event_id == event.id:
                     target = event
-            fight_report = service.getFightReport(event.value); 
+            if target and target.type in {Event_Type.FleetLose, Event_Type.FleetWin}:
+                fight_report = service.getFightReport(event.value); 
 
         ReportViewTutoTag = "ReportView"
         if not ReportViewTutoTag in player.tutoDisplayed:
