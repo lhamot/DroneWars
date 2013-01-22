@@ -34,7 +34,7 @@
 	<tr><th>{% trans "Type" %}</th><th>{% trans "Time left" %}</th><th>{% trans "What" %}</th></tr>
 	{% for task in planet.taskQueue %}
 	<tr><td>{{task.type|planettaskname}}</td>
-		<td id="countdown_dashboard_{{task.id}}" style="width: 70px">
+		<td id="countdown_dashboard_{{forloop.counter0}}" style="width: 70px">
 			<!--<div class="dash weeks_dash">
 				<span class="dash_title">weeks</span>
 				<div class="digit">0</div>
@@ -64,7 +64,7 @@
 			</div>
 			<script>
 			jQuery(document).ready(function() {
-				$('#countdown_dashboard_{{task.id}}').countDown({
+				$('#countdown_dashboard_{{forloop.counter0}}').countDown({
 					targetOffset: {
 						'day': 		0,
 						'month': 	0,
@@ -96,6 +96,7 @@
 </table>
 </div>
 <div class="span3">
+<h1>{{planet.name}}</h1>
 <img class="img-polaroid" src="{{ STATIC_URL }}img/Planetes/pl{{planet.imgNumber|stringformat:"03d"}}.jpg"/>
 </div>
 {% endif %}

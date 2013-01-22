@@ -99,6 +99,14 @@ catch(luabind::error& ex)
 	signals.push_back(Signal(pid, event));
 	return luabind::object();
 }
+catch(luabind::cast_failed& ex)
+{
+	std::string message = ex.what() + std::string(" to ") + ex.info().name();
+	Event event(univ_.nextEventID++, time(0), isFleet ? Event::FleetCodeError : Event::PlanetCodeError, message);
+	mapFind(univ_.playerMap, pid)->second.eventList.push_back(event);
+	signals.push_back(Signal(pid, event));
+	return luabind::object();
+}
 catch(std::exception const& ex)
 {
 	char const* message = lua_tostring(luaEngine.state(), -1);
@@ -174,10 +182,21 @@ catch(luabind::error& ex)
 	player.eventList.push_back(event);//ex.what() + string(" ") + ss.str()));
 	signals.push_back(Signal(player.id, event));
 }
+catch(luabind::cast_failed& ex)
+{
+	UniqueLock lockPlayer(univ_.playersMutex);
+	std::string const message = 
+		str(boost::format(gettext("Unable to make cast to %1%")) % ex.info().name());
+	Player& player = mapFind(univ_.playerMap, planet.playerId)->second;
+	player.planetsCode.newError(message);
+	Event event(univ_.nextEventID++, time(0), Event::PlanetCodeError, message);
+	player.eventList.push_back(event);
+	signals.push_back(Signal(player.id, event));
+}
 catch(std::exception const& ex)
 {
 	UniqueLock lockPlayer(univ_.playersMutex);
-	Event event(univ_.nextEventID++, time(0), Event::FleetCodeError, ex.what());
+	Event event(univ_.nextEventID++, time(0), Event::PlanetCodeError, ex.what());
 	mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(event);
 	signals.push_back(Signal(planet.playerId, event));
 }
@@ -276,6 +295,18 @@ catch(luabind::error& ex)
 {
 	UniqueLock lockPlayer(univ_.playersMutex);
 	std::string const message = GetLuabindErrorString(ex);
+	Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
+	player.fleetsCode.newError(message);
+	Event event(univ_.nextEventID++, time(0), Event::FleetCodeError, message);
+	player.eventList.push_back(event);
+	signals.push_back(Signal(player.id, event));
+	return true;
+}
+catch(luabind::cast_failed& ex)
+{
+	UniqueLock lockPlayer(univ_.playersMutex);
+	std::string const message = 
+		str(boost::format(gettext("Unable to make cast to %1%")) % ex.info().name());
 	Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
 	player.fleetsCode.newError(message);
 	Event event(univ_.nextEventID++, time(0), Event::FleetCodeError, message);

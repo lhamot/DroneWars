@@ -58,7 +58,7 @@
 </div>
 <script>
 	Blockly.inject(document.getElementById('blocklyDiv'), { path: '/static/blockly/' });
-	var xml_text = "{{blockly_code|safe|addslashes}}";                                               
+	var xml_text = "{{codeData.blocklyCode|escapejs}}";
 	var xml = Blockly.Xml.textToDom(xml_text);                       
 	Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
 </script>
@@ -83,6 +83,7 @@
 		document.getElementById('blocklyXML').value = xml_text;
 		document.getElementById('saveBlocklyForm').submit();
 		"/>
+<p class="text-error"><strong>{{codeData.lastError|safe}}</strong></p>
 <p class="text-success"><strong>{{message|safe}}</strong></p>
 </div>
 </div>

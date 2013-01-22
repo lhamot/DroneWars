@@ -217,15 +217,14 @@ def BlocklyFleetsCodesView(request):
                 message = _("Code successfully saved")
        
         codeData = service.getPlayerFleetCode(pid)
-        code = codeData.blocklyCode.replace('\n', '').replace('\r', '')
         
         player = service.getPlayer(pid)
         plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0);
         return render(request, 'codesview/blockly.html', {
             "name": "Fleet",
             "level": plLvl,
-            "blockly_code" : code,
             "message": message,
+            "codeData": codeData,
             "tutosText": N_("BLOCKLY_TUTO_" + str(plLvl))
     })
     
@@ -268,15 +267,14 @@ def BlocklyPlanetsCodesView(request):
                     message = _("See in planets tab if the building is in progress")
        
         codeData = service.getPlayerPlanetCode(pid)
-        code = codeData.blocklyCode.replace('\n', '').replace('\r', '')
         
         plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0);
                 
         return render(request, 'codesview/blockly.html', {
             "name": "Planet",
             "level": plLvl,
-            "blockly_code" : code,
             "message": message,
+            "codeData": codeData,
             "tutosText": N_("BLOCKLY_TUTO_" + str(plLvl))
     })
 
