@@ -33,18 +33,10 @@
     <title name="NAME">AI:action</title>
     <comment pinned="false" h="200" w="400">%7%</comment>
     <statement name="STACK">
-      <block type="variables_set" inline="false">
-        <title name="VAR">%4%</title>
-        <value name="VALUE">
-          <block type="dronewars_fleetaction" inline="true">
-            <title name="ACTION">Nothing</title>
-          </block>
-        </value>
-      </block>
     </statement>
     <value name="RETURN">
-      <block type="variables_get">
-        <title name="VAR">%4%</title>
+      <block type="dronewars_fleetaction" inline="true">
+        <title name="ACTION">Nothing</title>
       </block>
     </value>
   </block>

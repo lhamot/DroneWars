@@ -185,8 +185,8 @@ catch(luabind::error& ex)
 catch(luabind::cast_failed& ex)
 {
 	UniqueLock lockPlayer(univ_.playersMutex);
-	std::string const message = 
-		str(boost::format(gettext("Unable to make cast to %1%")) % ex.info().name());
+	std::string const message =
+	  str(boost::format(gettext("Unable to make cast to %1%")) % ex.info().name());
 	Player& player = mapFind(univ_.playerMap, planet.playerId)->second;
 	player.planetsCode.newError(message);
 	Event event(univ_.nextEventID++, time(0), Event::PlanetCodeError, message);
@@ -305,8 +305,8 @@ catch(luabind::error& ex)
 catch(luabind::cast_failed& ex)
 {
 	UniqueLock lockPlayer(univ_.playersMutex);
-	std::string const message = 
-		str(boost::format(gettext("Unable to make cast to %1%")) % ex.info().name());
+	std::string const message =
+	  str(boost::format(gettext("Unable to make cast to %1%")) % ex.info().name());
 	Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
 	player.fleetsCode.newError(message);
 	Event event(univ_.nextEventID++, time(0), Event::FleetCodeError, message);
