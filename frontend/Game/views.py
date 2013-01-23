@@ -220,7 +220,7 @@ def BlocklyFleetsCodesView(request):
         
         player = service.getPlayer(pid)
         plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0);
-        return render(request, 'codesview/blockly.html', {
+        return render(request, 'codesview/blockly_fleet.html', {
             "name": "Fleet",
             "level": plLvl,
             "message": message,
@@ -270,7 +270,7 @@ def BlocklyPlanetsCodesView(request):
         
         plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0);
                 
-        return render(request, 'codesview/blockly.html', {
+        return render(request, 'codesview/blockly_planet.html', {
             "name": "Planet",
             "level": plLvl,
             "message": message,

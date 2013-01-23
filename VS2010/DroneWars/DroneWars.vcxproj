@@ -113,6 +113,9 @@
   <ItemGroup>
     <None Include="..\..\src\thrift.def" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\doc\doc.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{66784FFB-A927-45B0-907F-709FC3AEFD39}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

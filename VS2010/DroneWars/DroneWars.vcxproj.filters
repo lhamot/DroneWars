@@ -119,4 +119,9 @@
       <Filter>autre</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\doc\doc.txt">
+      <Filter>autre</Filter>
+    </Text>
+  </ItemGroup>
 </Project>

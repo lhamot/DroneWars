@@ -11,7 +11,7 @@
 		<div class="container">
 			<ul class="nav">
 				<li
-				{% if name == "Planet" and blockly_code != None %}
+				{% if name == "Planet" and level != None %}
 					class="active"
 				{% endif %}
 					><a href="/ingame/codes/planets/blocks.html">{% trans "Planets" %} : {% trans "Blocks" %}</a></li>
@@ -24,7 +24,7 @@
 				{% endif %}
 				<li class="divider-vertical"></li>
 				<li 
-				{% if name == "Fleet" and blockly_code != None %}
+				{% if name == "Fleet" and level != None %}
 					class="active"
 				{% endif %}
 					><a href="/ingame/codes/fleets/blocks.html">{% trans "Fleets" %} : {% trans "Blocks" %}</a></li>

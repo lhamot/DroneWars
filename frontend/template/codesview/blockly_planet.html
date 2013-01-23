@@ -1,0 +1,38 @@
+{% extends "codesview/blockly.html" %}
+
+{% block language_adds %}
+		{% if level >= 1  %}<script type="text/javascript" src="/static/blockly/language/common/control.js"></script>{% endif %}
+		{% if level >= 10 %}<script type="text/javascript" src="/static/blockly/language/common/text.js">          </script>{% endif %}
+		{% if level >= 10 %}<script type="text/javascript" src="/static/blockly/language/common/lists.js">         </script>{% endif %}
+		{% if level >= 1  %}<script type="text/javascript" src="/static/blockly/language/common/logic.js">         </script>{% endif %}
+		{% if level >= 1  %}<script type="text/javascript" src="/static/blockly/language/common/math.js">          </script>{% endif %}
+	    {% if level >= 0  %}<script type="text/javascript" src="/static/blockly/language/common/procedures.js">    </script>{% endif %}
+	    {% if level >= 0  %}<script type="text/javascript" src="/static/blockly/language/common/variables.js">     </script>{% endif %}
+	    {% if level >= 3  %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_Fleet.js">       </script>{% endif %}
+	    {% if level >= 1  %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_Planet.js">      </script>{% endif %}
+	    {% if level >= 3  %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_RessourceSet.js"></script>{% endif %}
+	    {% if level >= 10 %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_Coord.js">       </script>{% endif %}
+	    {% if level >= 0  %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_PlanetAction.js"></script>{% endif %}
+{% endblock %}
+
+
+{% block whitelist %}
+	{% if level < 1  %}
+	var keepers = ['dronewars_makeBuilding', 'dronewars_doNothing', 'procedures_defreturn',
+	      'procedures_callreturn'];
+	{% elif level < 2  %}
+	var keepers = ['dronewars_makeBuilding', 'dronewars_doNothing', 'procedures_defreturn',
+	      'procedures_callreturn', 'procedures_ifreturn', 'dronewars_building_in_planet',
+	      'math_number', 'logic_compare', 'variables_get'];
+	{% elif level < 3  %}
+	var keepers = ['dronewars_makeBuilding', 'dronewars_doNothing', 'procedures_defreturn',
+	      'procedures_callreturn', 'procedures_ifreturn', 'dronewars_building_in_planet',
+	      'math_number', 'logic_compare', 'variables_get', 'dronewars_makeShip'];
+	{% elif level < 4 %}
+	var keepers = ['dronewars_makeBuilding', 'dronewars_doNothing', 'dronewars_building_in_planet',
+		'dronewars_makeShip', 'procedures_defreturn', 'procedures_callreturn', 'procedures_ifreturn',
+	    'math_number', 'logic_compare', 'variables_get'];
+	{% else %}
+	var keepers = [];
+	{% endif %}
+{% endblock %}
