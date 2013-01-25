@@ -161,7 +161,7 @@ ndw::FleetReport fleetReportToThrift(Report<Fleet> const& fleetReport)
 	result.isDead = fleetReport.isDead;
 	result.hasFight = fleetReport.hasFight;
 	for(size_t id: fleetReport.enemySet)
-		result.enemySet.insert(boost::numeric_cast<ndw::Player_ID>(id));
+		result.enemySet.insert(sizeTypeToInt32(id));
 	result.fightInfo.before = fleetToThrift(fleetReport.fightInfo.before);
 	result.fightInfo.after = fleetToThrift(fleetReport.fightInfo.after);
 	return result;
@@ -188,11 +188,10 @@ ndw::FightReport fightReportToThrift(FightReport const& report)
 	for(Report<Fleet> fleetRep: report.fleetList)
 		result.fleetList.push_back(fleetReportToThrift(fleetRep));
 	result.hasPlanet = report.hasPlanet;
-	if(report.planet.get_ptr())
-	{
-		std::cout << "Il y as une planete" << std::endl;
+	if(result.hasPlanet != bool(report.planet))
+		BOOST_THROW_EXCEPTION(std::logic_error("Unconsistent FightReport::hasPlanet value"));
+	if(report.planet)
 		result.__set_planet(planetReportToThrift(report.planet.get()));
-	}
 	return result;
 }
 

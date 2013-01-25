@@ -1,6 +1,6 @@
 body
 {
-  background-image: url(img/N9-1600.jpg);
+  //background-image: url(img/N9-1600.jpg);
   background-repeat:no-repeat;
   background-position:top;
   background-color:#000000;
@@ -12,7 +12,7 @@ body
 th, form label
 {
     //font-weight: bold;
-    color: #E6EBFB;
+    //color: #E6EBFB;
     //padding-left: 3px;
     background-image: url(img/bg/bg1.gif);
     //text-align:left;
@@ -52,4 +52,31 @@ td, form, p
 .dash, .digit
 {
 	float:left
+}
+
+.ally
+{
+	border-color: #0000FF;
+	border-width: 3px;
+	border-style: solid;
+	border-radius: 5px;
+}
+
+.enemy
+{
+	border-color: #FF0000;
+	border-width: 3px;
+	border-style: solid;
+	border-radius: 5px;
+}
+
+
+.looser
+{
+	color: #808080;
+}
+
+.winner
+{
+	color: #FFFF00;
 }

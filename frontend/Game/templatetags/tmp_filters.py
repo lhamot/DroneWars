@@ -59,8 +59,8 @@ def int2datetime(ts):
     return datetime.datetime.fromtimestamp(ts)
 
 @register.filter
-def coord(coord):
-    return "(%(X);%(Y);%(Z))" % coord; 
+def coord(point):
+    return _("(%i;%i;%i)") % (point.X, point.Y, point.Z); 
 
 
 @register.filter
@@ -72,12 +72,21 @@ def content(planetOrFleet):
         result = ""
         for shipType in range(Ship_Enum.Count):
             if fleet.shipList[shipType]:
-                result += shipname(shipType)[0] + ":" + str(fleet.shipList[shipType]) + ";";
+                result += _("%s:%s;") % (shipname(shipType)[0], fleet.shipList[shipType]);
         if len(result) > 0:
             result = result[:-1] 
         return result
     elif isinstance(planetOrFleet, Planet):
-        pass
+        planet = planetOrFleet
+        if len(planet.cannonTab) != Cannon_Enum.Count:
+            raise AssertionError("planet.cannonTab.size() != Cannon::Count");
+        result = ""
+        for cannonType in range(Cannon_Enum.Count):
+            if planet.cannonTab[cannonType]:
+                result += _("%s:%s;") % (cannonname(cannonType)[0], planet.cannonTab[cannonType]);
+        if len(result) > 0:
+            result = result[:-1] 
+        return result
     else:
         raise AssertionError("Unexpected type")
 

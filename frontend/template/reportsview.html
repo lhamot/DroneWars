@@ -27,20 +27,20 @@
 	<table class="table">
 	{% if target.type == Event_Type.FleetWin or target.type == Event_Type.FleetLose or target.type == Event_Type.PlanetLose or target.type == Event_Type.PlanetWin %}
 	{% for fleetReport in fight_report.fleetList %}
-	<table class="table">
+	<table class="table {% if player.id == fleetReport.fightInfo.before.playerId %}ally{%else%}enemy{%endif%} {% if fleetReport.isDead %}looser{%else%}winner{%endif%}">
 		<tr><th>{% trans "Fleet ID" %}</td><td>{{fleetReport.fightInfo.before.id}}</td></tr>
 		<tr><th>{% trans "Player" %}</td><td>{{fleetReport.fightInfo.before.playerId}}</td></tr>
 		<tr><th>{% trans "Has fight" %}</td><td>{% if fleetReport.hasFight %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</td></tr>
 		<tr><th>{% trans "Is dead" %}</td><td>{% if fleetReport.isDead %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</td></tr>
 		<tr><th>{% trans "Start" %}</td><td>{{fleetReport.fightInfo.before|content}}</td></tr>
 		<tr><th>{% trans "End" %}</td><td>{{fleetReport.fightInfo.after|content}}</td></tr>
-		<tr><th>{% trans "Report ID" %}</td><td>{{target.value}}</td></tr>
+		<!--<tr><th>{% trans "Report ID" %}</td><td>{{target.value}}</td></tr>-->
 	</table>
 	{% endfor %}
-	{% if fight_report.hasPlanet == True %}
-	<table class="table">
-		<tr><th>{% trans "Planet coordinate" %}</td><td>{{fight_report.planet.coord2}}</td></tr>
-		<tr><th>{% trans "Player" %}</td><td>{{fight_report.planet.fightInfo.after.playerID}}</td></tr>
+	{% if fight_report.planet %}
+	<table class="table {% if player.id == fight_report.planet.fightInfo.before.playerId %}ally{%else%}enemy{%endif%} {% if fight_report.planet.isDead %}looser{%else%}winner{%endif%}">
+		<tr><th>{% trans "Planet coordinate" %}</td><td>{{fight_report.planet.fightInfo.before.coord|coord}}</td></tr>
+		<tr><th>{% trans "Player" %}</td><td>{{fight_report.planet.fightInfo.after.playerId}}</td></tr>
 		<tr><th>{% trans "Has fight" %}</td><td>{% if fight_report.planet.hasFight %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</td></tr>
 		<tr><th>{% trans "Is dead" %}</td><td>{% if fight_report.planet.isDead %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</td></tr>
 		<tr><th>{% trans "Start" %}</td><td>{{fight_report.planet.fightInfo.before|content}}</td></tr>

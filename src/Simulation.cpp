@@ -447,8 +447,8 @@ void execFights(Universe& univ_, std::vector<Signal>& signals)
 			else
 				fleetVect.push_back(fighterPtr.getFleet());
 		}
-		if(planetPtr && planetPtr->playerId != Player::NoId)
-			planetPtr = nullptr;
+		//if(planetPtr && planetPtr->playerId != Player::NoId)
+		//	planetPtr = nullptr;
 
 		UpToUniqueLock writeLock(lockFleets);
 		//! - On excecute le combats
@@ -478,6 +478,7 @@ void execFights(Universe& univ_, std::vector<Signal>& signals)
 		univ_.reportMap.insert(make_pair(reportID, fightReport));
 
 		//! - On ajoute les evenement/message dans les flottes/joueur
+		std::set<Player::ID> informedPlayer;
 		for(auto fleetReportPair: range)
 		{
 			//! --Pour les flotes
@@ -489,8 +490,12 @@ void execFights(Universe& univ_, std::vector<Signal>& signals)
 				UniqueLock lockPlayer(univ_.playersMutex);
 				deadFleets.push_back(fleet.id);
 				Event event(univ_.nextEventID++, time(0), Event::FleetLose, reportID);
-				mapFind(univ_.playerMap, fleet.playerId)->second.eventList.push_back(event);
 				signals.push_back(Signal(fleet.playerId, event));
+				if(informedPlayer.count(fleet.playerId) == 0)
+				{
+					mapFind(univ_.playerMap, fleet.playerId)->second.eventList.push_back(event);
+					informedPlayer.insert(fleet.playerId);
+				}
 			}
 			else if(report.hasFight)
 			{
@@ -510,8 +515,9 @@ void execFights(Universe& univ_, std::vector<Signal>& signals)
 				{
 					UniqueLock lockPlayer(univ_.playersMutex);
 					Event event(univ_.nextEventID++, time(0), Event::PlanetLose, reportID);
-					mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(event);
 					signals.push_back(Signal(planet.playerId, event));
+					mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(event);
+					informedPlayer.insert(planet.playerId);
 				}
 			}
 			else if(fightReport.planet.get().hasFight)
