@@ -31,6 +31,11 @@ inline bool operator == (Coord const& a, Coord const& b)
 	return (a.X == b.X) && (a.Y == b.Y) && (a.Z == b.Z);
 }
 
+inline bool operator != (Coord const& a, Coord const& b)
+{
+	return (a == b) == false;
+}
+
 
 struct Event
 {
@@ -136,7 +141,7 @@ private:
 	void serialize(Archive& ar, const unsigned int) //version
 	{
 		ar& id& login& password& fleetsCode& planetsCode&
-		eventList& tutoDisplayed& mainPlanet;
+		eventList& tutoDisplayed& mainPlanet& score;
 	}
 
 public:
@@ -153,8 +158,12 @@ public:
 	static size_t const MaxCodeSize = 16 * 1024;
 	std::map<std::string, size_t> tutoDisplayed;
 	Coord mainPlanet;
+	size_t score;
 
-	Player(ID i, std::string const& lg, std::string const& pass): id(i), login(lg), password(pass) {}
+	Player(ID i, std::string const& lg, std::string const& pass):
+		id(i), login(lg), password(pass), score(0)
+	{
+	}
 
 	size_t getTutoLevel(char const* const tag) const
 	{

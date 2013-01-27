@@ -23,6 +23,7 @@ urlpatterns = patterns('',
     url(r'^ingame/fleets.html', 'Game.views.FleetsView'),
     url(r'^ingame/codes.html', 'Game.views.CodesView'),
     url(r'^ingame/reports.html', 'Game.views.ReportsView'),
+    url(r'^ingame/score.html', 'Game.views.ScoreView'),
 
     # url(r'^DroneWars_frontend/', include('DroneWars_frontend.foo.urls')),
 

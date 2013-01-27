@@ -233,7 +233,8 @@ void handleFighterPair(std::vector<Fleet*> const&, //fleetList,
 	report2.fightInfo.after.eventList.clear();
 }
 
-void fight(std::vector<Fleet*> const& fleetList,
+void fight(Universe const& univ,
+           std::vector<Fleet*> const& fleetList,
            Planet* planet,
            FightReport& reportList)
 {
@@ -241,8 +242,11 @@ void fight(std::vector<Fleet*> const& fleetList,
 		return;
 
 	reportList.fleetList.clear();
-	boost::transform(fleetList, back_inserter(reportList.fleetList),
-	[](Fleet const * fleetPtr) {return Report<Fleet>(*fleetPtr);});
+	boost::transform(fleetList, back_inserter(reportList.fleetList), []
+	                 (Fleet const * fleetPtr)
+	{
+		return Report<Fleet>(*fleetPtr);
+	});
 	if(planet)
 	{
 		reportList.hasPlanet = true;
@@ -261,8 +265,11 @@ void fight(std::vector<Fleet*> const& fleetList,
 			Player::ID const player2 = (*iter2)->playerId;
 			if(player1 != player2 && player1 != Player::NoId && player2 != Player::NoId)
 			{
-				fightingPair.insert(FleetPair(iter1 - fleetList.begin(),
-				                              iter2 - fleetList.begin()));
+				size_t const score1 = mapFind(univ.playerMap, player1)->second.score;
+				size_t const score2 = mapFind(univ.playerMap, player2)->second.score;
+				if((score1 * 5) > score2 && (score2 * 5) > score1)
+					fightingPair.insert(FleetPair(iter1 - fleetList.begin(),
+					                              iter2 - fleetList.begin()));
 			}
 		}
 	}
@@ -278,22 +285,24 @@ void fight(std::vector<Fleet*> const& fleetList,
 		}
 	}
 
-	//! Pour toute les combinaisons de 2 combatant:
+	//! Pour toute les combinaisons de 2 combatant - Combat:
 	for(FleetPair const & fleetPair: fightingPair)
 	{
-		//! -Combat
+		//! - planet vs flotte
 		if(fleetPair.index1 == PlanetIndex)
 		{
 			Report<Planet>& report1 = reportList.planet.get();
 			Report<Fleet>& report2 = reportList.fleetList[fleetPair.index2];
 			handleFighterPair<Planet, Fleet>(fleetList, reportList, fleetPair, report1, *planet, report2, *fleetList[fleetPair.index2]);
 		}
+		//! - flotte vs planet
 		else if(fleetPair.index2 == PlanetIndex)
 		{
 			Report<Fleet>& report1 = reportList.fleetList[fleetPair.index1];
 			Report<Planet>& report2 = reportList.planet.get();
 			handleFighterPair<Fleet, Planet>(fleetList, reportList, fleetPair, report1, *fleetList[fleetPair.index1], report2, *planet);
 		}
+		//! - flotte vs flotte
 		else
 		{
 			Report<Fleet>& report1 = reportList.fleetList[fleetPair.index1];

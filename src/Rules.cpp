@@ -156,7 +156,7 @@ void checkTutos(Universe& univ_, std::vector<Signal>& signals)
 						return fleet.playerId == player.id &&
 						       fleet.shipList[Ship::Mosquito] == 5;
 					});
-					if(count == 3)
+					if(count >= 3)
 						wisePlayer.push_back(&player);
 					break;
 				}
@@ -233,4 +233,32 @@ void checkTutos(Universe& univ_, std::vector<Signal>& signals)
 bool fleetCanSeePlanet(Fleet const& fleet, Planet const& planet)
 {
 	return (fleet.playerId == planet.playerId) || (planet.coord.X > 0);
+}
+
+void updateScore(Universe& univ)
+{
+	std::map<Player::ID, size_t> playerScore;
+
+	for(Planet const & planet: univ.planetMap | boost::adaptors::map_values)
+	{
+		size_t score = 0;
+		for(size_t type = 0; type < Building::Count; ++type)
+			score += Building::List[type].price.tab[0] * planet.buildingList[type];
+		for(size_t type = 0; type < Cannon::Count; ++type)
+			score += Cannon::List[type].price.tab[0] * planet.cannonTab[type];
+
+		playerScore[planet.playerId] += score;
+	}
+
+	for(Fleet const & fleet: univ.fleetMap | boost::adaptors::map_values)
+	{
+		size_t score = 0;
+		for(size_t type = 0; type < Ship::Count; ++type)
+			score += Ship::List[type].price.tab[0] * fleet.shipList[type];
+
+		playerScore[fleet.playerId] += score;
+	}
+
+	for(Player & player: univ.playerMap | boost::adaptors::map_values)
+		player.score = playerScore[player.id];
 }

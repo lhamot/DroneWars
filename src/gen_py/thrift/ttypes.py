@@ -572,6 +572,7 @@ class Player:
    - eventList
    - tutoDisplayed
    - mainPlanet
+   - score
   """
 
   thrift_spec = (
@@ -584,9 +585,10 @@ class Player:
     (6, TType.LIST, 'eventList', (TType.STRUCT,(Event, Event.thrift_spec)), None, ), # 6
     (7, TType.MAP, 'tutoDisplayed', (TType.STRING,None,TType.I32,None), None, ), # 7
     (8, TType.STRUCT, 'mainPlanet', (Coord, Coord.thrift_spec), None, ), # 8
+    (9, TType.I32, 'score', None, 0, ), # 9
   )
 
-  def __init__(self, id=None, login=None, password=None, fleetsCode=None, planetsCode=None, eventList=None, tutoDisplayed=None, mainPlanet=None,):
+  def __init__(self, id=None, login=None, password=None, fleetsCode=None, planetsCode=None, eventList=None, tutoDisplayed=None, mainPlanet=None, score=thrift_spec[9][4],):
     self.id = id
     self.login = login
     self.password = password
@@ -595,6 +597,7 @@ class Player:
     self.eventList = eventList
     self.tutoDisplayed = tutoDisplayed
     self.mainPlanet = mainPlanet
+    self.score = score
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -660,6 +663,11 @@ class Player:
           self.mainPlanet.read(iprot)
         else:
           iprot.skip(ftype)
+      elif fid == 9:
+        if ftype == TType.I32:
+          self.score = iprot.readI32();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -708,6 +716,10 @@ class Player:
     if self.mainPlanet is not None:
       oprot.writeFieldBegin('mainPlanet', TType.STRUCT, 8)
       self.mainPlanet.write(oprot)
+      oprot.writeFieldEnd()
+    if self.score is not None:
+      oprot.writeFieldBegin('score', TType.I32, 9)
+      oprot.writeI32(self.score)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

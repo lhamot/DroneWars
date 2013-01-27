@@ -16,6 +16,7 @@ Cannon_Enum = gen_py.thrift.ttypes.Cannon_Enum
 PlanetTask_Enum = gen_py.thrift.ttypes.PlanetTask_Enum
 Ship_Enum = gen_py.thrift.ttypes.Ship_Enum
 Event_Type = gen_py.thrift.ttypes.Event_Type
+Player = gen_py.thrift.ttypes.Player
 
 #trans = gettext.translation('DroneWars','I:/C/Bit_them_all/',["fr_FR.utf8"])
 #trans.install()
@@ -217,16 +218,19 @@ def BlocklyFleetsCodesView(request):
                 service.setPlayerFleetCode(pid, request.POST["scriptXML"].encode("utf8"))
                 message = _("Code successfully saved")
        
-        codeData = service.getPlayerFleetCode(pid)
-        
+       
         player = service.getPlayer(pid)
+        codeData = player.fleetsCode
         plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0);
+        tutosText = N_("BLOCKLY_TUTO_" + str(plLvl)) if plLvl <= 8 else None
+         
         return render(request, 'codesview/blockly_fleet.html', {
             "name": "Fleet",
             "level": plLvl,
             "message": message,
             "codeData": codeData,
-            "tutosText": N_("BLOCKLY_TUTO_" + str(plLvl))
+            "tutosText": tutosText,
+            "mode": "blockly"
     })
     
 
@@ -240,13 +244,18 @@ def TextFleetsCodesView(request):
                 service.setPlayerFleetCode(pid, request.POST["TextArea"].encode("utf8"))
                 message = _("Code successfully saved")
 
-        codeData = service.getPlayerFleetCode(pid)
+        player = service.getPlayer(pid)
+        plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0);
+        codeData = player.fleetsCode
 
         return render(request, 'codesview/text.html', {
             "name": "Fleet",
             "codeData": codeData,
             "message": message,
-            "script": codeData.code
+            "script": codeData.code,
+            "level": plLvl,
+            "mode": "text",
+            
     })
 
 
@@ -267,16 +276,17 @@ def BlocklyPlanetsCodesView(request):
                     service.incrementTutoDisplayed(pid, FirstSaveTag)
                     message = _("See in planets tab if the building is in progress")
        
-        codeData = service.getPlayerPlanetCode(pid)
-        
-        plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0);
+        plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0)
+        codeData = player.planetsCode
+        tutosText = N_("BLOCKLY_TUTO_" + str(plLvl)) if plLvl <= 8 else None 
                 
         return render(request, 'codesview/blockly_planet.html', {
             "name": "Planet",
             "level": plLvl,
             "message": message,
             "codeData": codeData,
-            "tutosText": N_("BLOCKLY_TUTO_" + str(plLvl))
+            "tutosText": tutosText,
+            "mode": "blockly",
     })
 
 
@@ -291,14 +301,37 @@ def TextPlanetsCodesView(request):
                 message = _("Code successfully saved")
         
         
-        codeData = service.getPlayerPlanetCode(pid)
+        player = service.getPlayer(pid)
+        plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0);
+        codeData = player.planetsCode
     
         return render(request, 'codesview/text.html', {
             "name": "Planet",
             "codeData": codeData,
             "message": message,
-            "script": codeData.code
+            "script": codeData.code,
+            "level": plLvl,    
+            "mode": "text",        
         })
     
+
+def ScoreView(request):
+    #pid = request.session["PlayerID"]
+    service = createEngineClient()
+    players = service.getPlayers()
+    
+    sort_order = request.GET["sort_order"] if "sort_order" in request.GET else "login"  
+    asc = request.GET["asc"] != "True" if "asc" in request.GET else False
+    key = {
+        "login": lambda player: player.login,
+        "score": lambda player: player.score,
+    }
+     
+    players = sorted(players, key=key[sort_order], reverse=asc)
+    
+    return render(request, 'scoreview.html', {
+        "players": players,
+        "asc": asc
+    })
     
     

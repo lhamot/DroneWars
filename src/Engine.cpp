@@ -185,6 +185,7 @@ std::vector<Player> Engine::getPlayers() const
 {
 	SharedLock lock(univ_.playersMutex);
 	std::vector<Player> playerList;
+	playerList.reserve(univ_.playerMap.size());
 	boost::copy(univ_.playerMap | boost::adaptors::map_values, back_inserter(playerList));
 	return playerList;
 }

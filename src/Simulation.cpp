@@ -453,7 +453,7 @@ void execFights(Universe& univ_, std::vector<Signal>& signals)
 		UpToUniqueLock writeLock(lockFleets);
 		//! - On excecute le combats
 		FightReport fightReport;
-		fight(fleetVect, planetPtr, fightReport);
+		fight(univ_, fleetVect, planetPtr, fightReport);
 		bool hasFight = false;
 		auto range = make_zip_range(fleetVect, fightReport.fleetList);
 		for(auto fleetReportPair: range)
@@ -652,6 +652,9 @@ try
 		UniqueLock lockPlayers(univ_.playersMutex);
 		removeOldEvents(univ_);
 	}
+
+	//! Met a jour les score des joueurs (modifie les joueurs)
+	updateScore(univ_);
 
 	//! CheckTutos
 	checkTutos(univ_, signals);

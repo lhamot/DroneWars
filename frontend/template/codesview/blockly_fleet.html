@@ -34,8 +34,7 @@
 	var keepers = ['dronewars_fleetaction', 'dronewars_ship_in_fleet', 'dronewars_randDir',
 		'procedures_defreturn', 'procedures_callreturn', 'procedures_ifreturn',
 		'logic_boolean', 'math_number',	'logic_compare', 'variables_get', 'math_arithmetic'];
-	{% elif level < 7  %}
+	{% else %}
 	var keepers = [];
-	{% elif level < 8  %}
 	{% endif %}
 {% endblock %}

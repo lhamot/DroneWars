@@ -492,7 +492,7 @@ void execTask(Universe& univ,
 			{
 				Event event(univ.nextEventID++, time(0), Event::PlanetColonized);
 				fleet.eventList.push_back(event);
-				signals.push_back(Signal(planet.playerId, event));
+				signals.push_back(Signal(fleet.playerId, event));
 				fleet.shipList[Ship::Queen] -= 1;
 
 				planet.buildingList[Building::CommandCenter] = 1;

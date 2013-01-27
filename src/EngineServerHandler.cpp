@@ -151,6 +151,7 @@ ndw::Player playerToThrift(Player const& player)
 		outPlayer.eventList.push_back(eventToThrift(ev));
 	for(auto tutoNVP: player.tutoDisplayed)
 		outPlayer.tutoDisplayed[tutoNVP.first] = boost::numeric_cast<int32_t>(tutoNVP.second);
+	outPlayer.score = boost::numeric_cast<int32_t>(player.score);
 	return outPlayer;
 }
 
@@ -269,8 +270,7 @@ void EngineServerHandler::getPlayers(std::vector<ndw::Player>& _return)
 {
 	std::vector<Player> players = engine_.getPlayers();
 	_return.reserve(players.size());
-	for(Player const & player: players)
-		_return.push_back(playerToThrift(player));
+	boost::transform(players, back_inserter(_return), playerToThrift);
 }
 
 void EngineServerHandler::getPlayer(ndw::Player& _return, const ndw::Player_ID pid)

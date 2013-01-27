@@ -34,7 +34,10 @@ public:
 };
 
 //! Planet peut etre NULL
-void fight(std::vector<Fleet*> const& fleetList, Planet* planet, FightReport& reportList);
+void fight(Universe const& univ,
+           std::vector<Fleet*> const& fleetList,
+           Planet* planet,
+           FightReport& reportList);
 
 
 #endif //__BTA_FIGHTING__

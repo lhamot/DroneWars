@@ -66,8 +66,9 @@ struct Player
 	4: CodeData fleetsCode,
 	5: CodeData planetsCode,
 	6: list<Event> eventList,
-	7: map<string, i32> tutoDisplayed;
-	8: Coord mainPlanet
+	7: map<string, i32> tutoDisplayed,
+	8: Coord mainPlanet,
+	9: i32 score = 0
 }
 
 

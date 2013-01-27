@@ -11,26 +11,26 @@
 		<div class="container">
 			<ul class="nav">
 				<li
-				{% if name == "Planet" and level != None %}
+				{% if name == "Planet" and mode == "blockly" %}
 					class="active"
 				{% endif %}
 					><a href="/ingame/codes/planets/blocks.html">{% trans "Planets" %} : {% trans "Blocks" %}</a></li>
-				{% if level >= 10 %}
+				{% if level > 8 %}
 				<li 
-				{% if name == "Planet" and script != None %}
+				{% if name == "Planet" and mode == "text" %}
 					class="active"
 				{% endif %}
 					><a href="/ingame/codes/planets/text.html">{% trans "Planets" %} : {% trans "Script" %}</a></li>
 				{% endif %}
 				<li class="divider-vertical"></li>
 				<li 
-				{% if name == "Fleet" and level != None %}
+				{% if name == "Fleet" and mode == "blockly" %}
 					class="active"
 				{% endif %}
 					><a href="/ingame/codes/fleets/blocks.html">{% trans "Fleets" %} : {% trans "Blocks" %}</a></li>
-				{% if level >= 10 %}
+				{% if level > 8 %}
 				<li 
-				{% if name == "Fleet" and script != None %}
+				{% if name == "Fleet" and mode == "text" %}
 					class="active"
 				{% endif %}
 					><a href="/ingame/codes/fleets/text.html">{% trans "Fleets" %} : {% trans "Script" %}</a></li>
