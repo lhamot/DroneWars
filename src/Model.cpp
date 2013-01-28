@@ -310,6 +310,10 @@ bool canBuild(Planet const& planet, Ship::Enum type, size_t number)
 {
 	if(type >= Ship::Count)
 		return false;
+	if(planet.buildingList[Building::Factory] == 0)
+		return false;
+	if(planet.taskQueue.size() > 0)
+		return false;
 
 	RessourceSet price = Ship::List[type].price;
 	boost::geometry::multiply_value(price.tab, number);
@@ -325,6 +329,10 @@ bool canBuild(Planet const& planet, Building::Enum type)
 {
 	if(type >= Building::Count)
 		return false;
+	if(planet.buildingList[Building::CommandCenter] == 0)
+		return false;
+	if(planet.taskQueue.size() > 0)
+		return false;
 
 	size_t const buLevel = planet.buildingList[type];
 	RessourceSet const price = getBuilingPrice(type, buLevel + 1);
@@ -339,11 +347,38 @@ bool canBuild(Planet const& planet, Building::Enum type)
 		return false;
 }
 
+
+bool canBuild(Planet const& planet, Cannon::Enum type, size_t number)
+{
+	if(type >= Cannon::Count)
+		return false;
+	if(planet.buildingList[Building::Factory] == 0)
+		return false;
+	if(planet.taskQueue.size() > 0)
+		return false;
+
+	RessourceSet price = Cannon::List[type].price;
+	boost::geometry::multiply_value(price.tab, number);
+	for(int i = 0; i < RessourceSet::Tab::static_size; ++i)
+	{
+		if(price.tab[i] > planet.ressourceSet.tab[i])
+			return false;
+	}
+	return true;
+}
+
+
 void addTask(Planet& planet, size_t roundCount, Building::Enum building)
 {
-	size_t const buLevel =  planet.buildingList[building];
-	size_t const mult = 1;
-	size_t const duration = static_cast<size_t>((pow(buLevel + 1., 1.5) * mult) + 0.5);
+	size_t const buLevel =  planet.buildingList[building] + 1;
+	size_t const centerLevel = planet.buildingList[Building::CommandCenter];
+	if(centerLevel == 0)
+		BOOST_THROW_EXCEPTION(std::logic_error("Can't create Building without CommandCenter"));
+
+	//size_t const duration = static_cast<size_t>((pow(buLevel + 1., 1.5) * mult) + 0.5);
+
+	size_t const duration = static_cast<size_t>(
+	                          ((Building::List[building].price.tab[0] * pow(buLevel, 2.)) / (log(centerLevel + 1) * 100)) + 0.5);
 	PlanetTask task(PlanetTask::UpgradeBuilding, roundCount, duration);
 	task.value = building;
 	RessourceSet const price = getBuilingPrice(building, buLevel + 1);
@@ -359,8 +394,12 @@ void addTask(Planet& planet, size_t roundCount, Building::Enum building)
 
 void addTask(Planet& planet, size_t roundCount, Ship::Enum ship, size_t number)
 {
-	size_t const div = 100;
-	size_t duration = Ship::List[ship].price.tab[0] / div;
+	size_t const div = 7;
+	size_t const factoryLevel = planet.buildingList[Building::Factory];
+	if(factoryLevel == 0)
+		BOOST_THROW_EXCEPTION(std::logic_error("Can't create ship without Factory"));
+	size_t duration = static_cast<size_t>(
+	                    ((Ship::List[ship].price.tab[0] / div) / factoryLevel) + 0.5);
 	if(duration == 0)
 		duration = 1;
 	PlanetTask task(PlanetTask::MakeShip, roundCount, duration);
@@ -375,8 +414,12 @@ void addTask(Planet& planet, size_t roundCount, Ship::Enum ship, size_t number)
 
 void addTask(Planet& planet, size_t roundCount, Cannon::Enum cannon, size_t number)
 {
-	size_t const div = 100;
-	size_t duration = Cannon::List[cannon].price.tab[0] / div;
+	size_t const div = 7;
+	size_t const factoryLevel = planet.buildingList[Building::Factory];
+	if(factoryLevel == 0)
+		BOOST_THROW_EXCEPTION(std::logic_error("Can't create ship without Factory"));
+	size_t duration = static_cast<size_t>(
+	                    ((Cannon::List[cannon].price.tab[0] / div) / factoryLevel) + 0.5);
 	if(duration == 0)
 		duration = 1;
 	PlanetTask task(PlanetTask::MakeCannon, roundCount, duration);
@@ -632,19 +675,5 @@ void drop(Fleet& fleet, Planet& planet)
 {
 	boost::geometry::add_point(planet.ressourceSet.tab, fleet.ressourceSet.tab);
 	boost::geometry::assign_value(fleet.ressourceSet.tab, 0);
-}
-
-bool canBuild(Planet const& planet, Cannon::Enum type, size_t number)
-{
-	if(type >= Cannon::Count)
-		return false;
-	RessourceSet price = Cannon::List[type].price;
-	boost::geometry::multiply_value(price.tab, number);
-	for(int i = 0; i < RessourceSet::Tab::static_size; ++i)
-	{
-		if(price.tab[i] > planet.ressourceSet.tab[i])
-			return false;
-	}
-	return true;
 }
 

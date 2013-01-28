@@ -276,6 +276,7 @@ def BlocklyPlanetsCodesView(request):
                     service.incrementTutoDisplayed(pid, FirstSaveTag)
                     message = _("See in planets tab if the building is in progress")
        
+        player = service.getPlayer(pid) #Redemendé car code modifié
         plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0)
         codeData = player.planetsCode
         tutosText = N_("BLOCKLY_TUTO_" + str(plLvl)) if plLvl <= 8 else None 
