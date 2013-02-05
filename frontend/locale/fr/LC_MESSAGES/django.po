@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-17 22:32+0100\n"
-"PO-Revision-Date: 2013-01-27 15:15+0100\n"
+"POT-Creation-Date: 2013-02-05 22:03+0100\n"
+"PO-Revision-Date: 2013-02-05 22:06+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 "X-Poedit-KeywordsList: gettext;gettextWT\n"
 "X-Poedit-Basepath: I:\\C\\Bit_them_all\\src\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.5.5\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: .\Game\TranslationTools.py:3
@@ -221,10 +221,11 @@ msgstr "Canon6"
 msgid "BLOCKLY_TUTO_0"
 msgstr ""
 "Ceci est la première étape du tutoriel:<br/>\n"
-"Essayez de créer un batiment \"Mine de métal\" (en envoyant le bon ordre)."
-"<br/>\n"
-"Tips : Glissez l'\"ordre de créer un batiment\" à la place de l'\"ordre ne "
-"de rien faire\"."
+"Essayez de créer un batiment \"<strong>Mine de métal</strong>\" (en envoyant "
+"le bon ordre).<br/>\n"
+"Tips : Glissez l'\"<strong>ordre de créer un batiment</strong>\", depuis "
+"l'élément \"<strong>DronreWars: Ordre</strong>\", à la place de "
+"l'\"<strong>ordre ne de rien faire</strong>\"."
 
 #: .\Game\TranslationTools.py:62
 msgid "BLOCKLY_TUTO_1"
@@ -232,8 +233,10 @@ msgstr ""
 "Ceci est la deuxième étape du tutoriel :<br/>\n"
 "Essayez de créer une fabrique une fois que votre mine de métal a atteint le "
 "niveau 4.<br>\n"
-"Tips : N'oubliez pas que vous aurez d'autres planètes qui auront besoin "
-"d'une mine de métal."
+"Aide : N'oubliez pas que vous aurez d'autres planètes qui auront besoin "
+"d'une mine de métal.<br>\n"
+"Aide 2 : La commande Procedures -> \"Si > retourne\" pourait bien vous ètre "
+"utile."
 
 #: .\Game\TranslationTools.py:63
 msgid "BLOCKLY_TUTO_2"
@@ -272,86 +275,98 @@ msgstr ""
 "Votre prochain objectif est de coloniser d'autres planètes.<br/>Aide : C'est "
 "la Reine qui permet de colonier."
 
-#: .\Game\views.py:24 .\Game\views.py:31
+#: .\Game\views.py:28 .\Game\views.py:35
 msgid "Login"
 msgstr "Identifiant"
 
-#: .\Game\views.py:25 .\Game\views.py:32
+#: .\Game\views.py:29 .\Game\views.py:36
 msgid "Password"
 msgstr "Mot de passe"
 
-#: .\Game\views.py:26
+#: .\Game\views.py:30
 msgid "Password2"
 msgstr "Mot de passe (verif)"
 
-#: .\Game\views.py:57
+#: .\Game\views.py:61
 msgid "Passwords don't match!"
 msgstr "Les mots de passes ne corespondent pas!"
 
-#: .\Game\views.py:62
+#: .\Game\views.py:66
 msgid "Registration successful"
 msgstr "L'enregistrement as reussit."
 
-#: .\Game\views.py:65
+#: .\Game\views.py:69
 msgid "Login still exist."
 msgstr "Cet identifiant existe déja."
 
-#: .\Game\views.py:76
+#: .\Game\views.py:80
 msgid "Wrong login or password."
 msgstr "Mauvais idanifiant ou mot de passe"
 
-#: .\Game\views.py:114
+#: .\Game\views.py:116
 msgid "PLANET_TUTOS"
 msgstr ""
 "Ici, vous verez la liste de vos planètes. Cliquez sur l'une d'elle pour en "
-"savoir plus."
+"savoir plus. \n"
+"Cliquez sur \"Commandement pour commencer le tutoriel\""
 
-#: .\Game\views.py:141
+#: .\Game\views.py:145
 msgid "FLEET_TUTOS"
 msgstr ""
 "Ici, vous verrez la liste de vos flottes. Si il n'y en as pas, demandez à "
 "vos planètes d'en fabriquer."
 
-#: .\Game\views.py:159
-msgid "CODE_TUTOS"
-msgstr ""
-"Ici, vous pourrez définir la ligne de conduite de vos amiraux(flottes) et "
-"gouverneurs(planètes). Allez dans l'onglet \"Planètes : Blocks\" pour "
-"commencer le tutoriel."
-
-#: .\Game\views.py:182
+#: .\Game\views.py:193
 msgid "REPORT_TUTOS"
 msgstr ""
 "Ici vous verrez les 10 dernier évenement important qui ce sont produit dans "
 "votre empire."
 
-#: .\Game\views.py:202 .\Game\views.py:226 .\Game\views.py:249
-#: .\Game\views.py:277
+#: .\Game\views.py:216 .\Game\views.py:242 .\Game\views.py:270
+#: .\Game\views.py:302
 msgid "Code successfully saved"
 msgstr "Code sauvegardé avec succes."
 
-#: .\Game\views.py:253
+#: .\Game\views.py:274
 msgid "See in planets tab if the building is in progress"
 msgstr ""
 "Code sauvegardé avec succes.<br/>\n"
 "Allez voir dans l'onglet \"Planètes\" si votre nouveau batiment est en cours "
 "de création. (Cela peut prendre quelque minutes)"
 
-#: .\template\codesview.html.py:16 .\template\codesview.html.py:22
-#: .\template\ingame_base.html.py:11
+#: .\Game\views.py:281
+msgid "CODE_TUTOS"
+msgstr ""
+"Ici, vous pourrez définir la ligne de conduite de vos amiraux(flottes) et "
+"gouverneurs(planètes). Allez dans l'onglet \"Planètes : Blocks\" pour "
+"commencer le tutoriel."
+
+#: .\Game\templatetags\tmp_filters.py:77
+#, python-format
+msgid "(%i;%i;%i)"
+msgstr "(%i; %i; %i)"
+
+#: .\Game\templatetags\tmp_filters.py:89
+#: .\Game\templatetags\tmp_filters.py:100
+#, python-format
+msgid "%s:%s;"
+msgstr "%s : %s;"
+
+#: .\template\codesview.html.py:16 .\template\codesview.html.py:21
+#: .\template\ingame_base.html.py:13
 msgid "Planets"
 msgstr "Planètes"
 
-#: .\template\codesview.html.py:16 .\template\codesview.html.py:29
+#: .\template\codesview.html.py:16 .\template\codesview.html.py:28
 msgid "Blocks"
 msgstr "Visuel"
 
-#: .\template\codesview.html.py:22 .\template\codesview.html.py:35
+#: .\template\codesview.html.py:21 .\template\codesview.html.py:33
 msgid "Script"
 msgstr "Textuel"
 
-#: .\template\codesview.html.py:29 .\template\codesview.html.py:35
-#: .\template\ingame_base.html.py:12
+#: .\template\codesview.html.py:28 .\template\codesview.html.py:33
+#: .\template\ingame_base.html.py:14
 msgid "Fleets"
 msgstr "Flottes"
 
@@ -367,19 +382,21 @@ msgstr "Contenu"
 msgid "Ressources"
 msgstr "Resources"
 
-#: .\template\fleetsview.html.py:35 .\template\ingame_base.html.py:14
+#: .\template\fleetsview.html.py:35 .\template\ingame_base.html.py:15
+#: .\template\planetsview.html.py:32
 msgid "Reports"
 msgstr "Raports"
 
-#: .\template\fleetsview.html.py:37
+#: .\template\fleetsview.html.py:37 .\template\planetsview.html.py:34
 msgid "Date"
 msgstr "Date"
 
 #: .\template\fleetsview.html.py:37 .\template\planetsview.html.py:34
+#: .\template\planetsview.html.py:46
 msgid "Type"
 msgstr "Type"
 
-#: .\template\fleetsview.html.py:37
+#: .\template\fleetsview.html.py:37 .\template\planetsview.html.py:34
 msgid "Comment"
 msgstr "Commentaire"
 
@@ -424,11 +441,15 @@ msgstr ""
 "déplacer ou conquérir une planète libre).<br/></li>\n"
 "</ol>"
 
-#: .\template\ingame_base.html.py:13
+#: .\template\ingame_base.html.py:12
 msgid "Command"
 msgstr "Commandement"
 
-#: .\template\ingame_base.html.py:16
+#: .\template\ingame_base.html.py:16 .\template\scoreview.html.py:15
+msgid "Score"
+msgstr "Score"
+
+#: .\template\ingame_base.html.py:18
 msgid "Log out"
 msgstr "Déconnexion"
 
@@ -436,57 +457,104 @@ msgstr "Déconnexion"
 msgid "View"
 msgstr "Visuel"
 
-#: .\template\planetsview.html.py:15 .\template\planetsview.html.py:41
-#: .\template\planetsview.html.py:48
+#: .\template\planetsview.html.py:15 .\template\planetsview.html.py:97
+#: .\template\planetsview.html.py:104 .\template\scoreview.html.py:15
 msgid "Name"
 msgstr "Nom"
 
-#: .\template\planetsview.html.py:33
+#: .\template\planetsview.html.py:34
+msgid "Object"
+msgstr "Objet"
+
+#: .\template\planetsview.html.py:45
 msgid "Tasks"
 msgstr "Taches"
 
-#: .\template\planetsview.html.py:34
-msgid "Start"
-msgstr "Debut"
+#: .\template\planetsview.html.py:46
+msgid "Time left"
+msgstr "Temps réstant"
 
-#: .\template\planetsview.html.py:34
-msgid "End"
-msgstr "Fin"
-
-#: .\template\planetsview.html.py:34
+#: .\template\planetsview.html.py:46
 msgid "What"
 msgstr "Quoi"
 
-#: .\template\planetsview.html.py:40
+#: .\template\planetsview.html.py:57
+msgid "days"
+msgstr "jours"
+
+#: .\template\planetsview.html.py:96
 msgid "Buildings"
 msgstr "Bâtiments"
 
-#: .\template\planetsview.html.py:41 .\template\planetsview.html.py:48
+#: .\template\planetsview.html.py:97 .\template\planetsview.html.py:104
 msgid "Level"
 msgstr "Niveau"
 
-#: .\template\planetsview.html.py:47
+#: .\template\planetsview.html.py:103
 msgid "Cannons"
 msgstr "Canons"
 
-#: .\template\codesview\blockly.html.py:67
+#: .\template\reportsview.html.py:31
+msgid "Fleet ID"
+msgstr "ID de flotte"
+
+#: .\template\reportsview.html.py:32 .\template\reportsview.html.py:43
+msgid "Player"
+msgstr "Joueur"
+
+#: .\template\reportsview.html.py:33 .\template\reportsview.html.py:44
+msgid "Has fight"
+msgstr "A combattu"
+
+#: .\template\reportsview.html.py:33 .\template\reportsview.html.py:34
+#: .\template\reportsview.html.py:44 .\template\reportsview.html.py:45
+msgid "Yes"
+msgstr "Oui"
+
+#: .\template\reportsview.html.py:33 .\template\reportsview.html.py:34
+#: .\template\reportsview.html.py:44 .\template\reportsview.html.py:45
+msgid "No"
+msgstr "Non"
+
+#: .\template\reportsview.html.py:34 .\template\reportsview.html.py:45
+msgid "Is dead"
+msgstr "Est détruit"
+
+#: .\template\reportsview.html.py:35 .\template\reportsview.html.py:46
+msgid "Start"
+msgstr "Debut"
+
+#: .\template\reportsview.html.py:36 .\template\reportsview.html.py:47
+msgid "End"
+msgstr "Fin"
+
+#: .\template\reportsview.html.py:37 .\template\reportsview.html.py:48
+msgid "Report ID"
+msgstr "ID Raport"
+
+#: .\template\reportsview.html.py:42
+msgid "Planet coordinate"
+msgstr "Coordonées de planete"
+
+#: .\template\scoreview.html.py:15
+msgid "Index"
+msgstr "Index"
+
+#: .\template\codesview\blockly.html.py:54
 msgid "Import"
 msgstr "Import"
 
-#: .\template\codesview\blockly.html.py:72
+#: .\template\codesview\blockly.html.py:59
 msgid "Export"
 msgstr "Export"
 
-#: .\template\codesview\blockly.html.py:77
+#: .\template\codesview\blockly.html.py:64
 msgid "Reload"
 msgstr "Recharger"
 
-#: .\template\codesview\blockly.html.py:78
+#: .\template\codesview\blockly.html.py:65
 msgid "Save"
 msgstr "Enregistrer"
-
-#~ msgid "Planet"
-#~ msgstr "Planète"
 
 #~ msgid "Fleet"
 #~ msgstr "Flotte"
@@ -499,9 +567,6 @@ msgstr "Enregistrer"
 
 #~ msgid "Code"
 #~ msgstr "Code"
-
-#~ msgid "Time"
-#~ msgstr "Temps"
 
 #~ msgid "Message"
 #~ msgstr "Message"
@@ -521,26 +586,8 @@ msgstr "Enregistrer"
 #~ msgid "Text"
 #~ msgstr "Texte"
 
-#~ msgid "Fleet ID"
-#~ msgstr "ID de flotte"
-
-#~ msgid "Has fight"
-#~ msgstr "A combattu"
-
-#~ msgid "Yes"
-#~ msgstr "Oui"
-
-#~ msgid "No"
-#~ msgstr "Non"
-
-#~ msgid "Is dead"
-#~ msgstr "Est détruit"
-
 #~ msgid "Report ID = %i"
 #~ msgstr "ID Raport = %i"
-
-#~ msgid "Planet coordinate"
-#~ msgstr "Coordonées de planete"
 
 #~ msgid "myFleet"
 #~ msgstr "ma_flotte"
@@ -550,9 +597,6 @@ msgstr "Enregistrer"
 
 #~ msgid "planet"
 #~ msgstr "planète"
-
-#~ msgid "order"
-#~ msgstr "ordre"
 
 #~ msgid "DO_GATHER_CODE_COMMENT"
 #~ msgstr ""
@@ -620,6 +664,3 @@ msgstr "Enregistrer"
 
 #~ msgid "Fleet name"
 #~ msgstr "Nom de la flote"
-
-#~ msgid "Report ID = "
-#~ msgstr "ID Raport ="

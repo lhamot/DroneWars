@@ -5,11 +5,11 @@
 #include "NameGen.h"
 #include <boost/range/numeric.hpp>
 #include <boost/format.hpp>
+#include <boost/bind.hpp>
 
 
 BOOST_GEOMETRY_REGISTER_BOOST_ARRAY_CS(cs::cartesian)
 
-using namespace std::placeholders;
 using namespace std;
 //using namespace boost;
 
@@ -37,7 +37,7 @@ Ship const Ship::List[] =
 	{RessourceSet(10000, 0, 0),  8,       8}, //Dragon
 	{RessourceSet(40000, 0, 0),  16,     16}, //Behemoth
 	{RessourceSet(200000, 0, 0), 32,     32}, //Azathoth
-	{RessourceSet(2000, 0, 0),   4,       2},	//Queen
+	{RessourceSet(2000, 0, 0),   4,       2}, //Queen
 	{RessourceSet(400, 0, 0),    2,       0}, //Cargo
 	{RessourceSet(2000, 0, 0),   8,       0}  //LargeCargo
 };
@@ -81,9 +81,9 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 		}
 		player.fleetsCode.setBlocklyCode(
 		  (boost::format(blocklyFleetDefaultCode.str()) %
-		   gettext("myFleet") %
+		   gettext("my_fleet") %
 		   gettext("otherFleet") %
-		   gettext("planet") %
+		   gettext("local_planet") %
 		   gettext("order") %
 		   gettext("DO_GATHER_CODE_COMMENT") %
 		   gettext("DO_FIGHT_CODE_COMMENT") %
@@ -112,7 +112,7 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 		}
 		player.planetsCode.setBlocklyCode(
 		  (boost::format(blocklyPlanetDefaultCode.str()) %
-		   gettext("planet") %
+		   gettext("my_planet") %
 		   gettext("fleets") %
 		   gettext("order") %
 		   gettext("PLANET_ACTION_CODE_COMMENT")).str());
@@ -263,25 +263,25 @@ void loadFromStream(std::istream& in, Universe& univ)
 	std::cout << "OK" << std::endl;
 }
 
-
-bool canPay(Planet const& planet, RessourceSet const& price)
+bool canPay(RessourceSet const& stock, RessourceSet const& price)
 {
 	for(int i = 0; i < Ressource::Count; ++i)
 	{
-		if(planet.ressourceSet.tab[i] < price.tab[i])
+		if(stock.tab[i] < price.tab[i])
 			return false;
 	}
 	return true;
 }
 
+
+bool canPay(Planet const& planet, RessourceSet const& price)
+{
+	return canPay(planet.ressourceSet, price);
+}
+
 bool canPay(Fleet const& fleet, RessourceSet const& price)
 {
-	for(int i = 0; i < Ressource::Count; ++i)
-	{
-		if(fleet.ressourceSet.tab[i] < price.tab[i])
-			return false;
-	}
-	return true;
+	return canPay(fleet.ressourceSet, price);
 }
 
 void pay(Planet& planet, RessourceSet const& price)
@@ -317,12 +317,7 @@ bool canBuild(Planet const& planet, Ship::Enum type, size_t number)
 
 	RessourceSet price = Ship::List[type].price;
 	boost::geometry::multiply_value(price.tab, number);
-	for(int i = 0; i < RessourceSet::Tab::static_size; ++i)
-	{
-		if(price.tab[i] > planet.ressourceSet.tab[i])
-			return false;
-	}
-	return true;
+	return canPay(planet, price);
 }
 
 bool canBuild(Planet const& planet, Building::Enum type)
@@ -334,8 +329,8 @@ bool canBuild(Planet const& planet, Building::Enum type)
 	if(planet.taskQueue.size() > 0)
 		return false;
 
-	size_t const buLevel = planet.buildingList[type];
-	RessourceSet const price = getBuilingPrice(type, buLevel + 1);
+	size_t const buNextLevel = planet.buildingList[type] + 1;
+	RessourceSet const price = getBuilingPrice(type, buNextLevel);
 	if(false == canPay(planet, price))
 		return false;
 
@@ -359,18 +354,13 @@ bool canBuild(Planet const& planet, Cannon::Enum type, size_t number)
 
 	RessourceSet price = Cannon::List[type].price;
 	boost::geometry::multiply_value(price.tab, number);
-	for(int i = 0; i < RessourceSet::Tab::static_size; ++i)
-	{
-		if(price.tab[i] > planet.ressourceSet.tab[i])
-			return false;
-	}
-	return true;
+	return canPay(planet, price);
 }
 
 
 void addTask(Planet& planet, size_t roundCount, Building::Enum building)
 {
-	size_t const buLevel =  planet.buildingList[building] + 1;
+	size_t const buNextLevel =  planet.buildingList[building] + 1;
 	size_t const centerLevel = planet.buildingList[Building::CommandCenter];
 	if(centerLevel == 0)
 		BOOST_THROW_EXCEPTION(std::logic_error("Can't create Building without CommandCenter"));
@@ -378,10 +368,10 @@ void addTask(Planet& planet, size_t roundCount, Building::Enum building)
 	//size_t const duration = static_cast<size_t>((pow(buLevel + 1., 1.5) * mult) + 0.5);
 
 	size_t const duration = static_cast<size_t>(
-	                          ((Building::List[building].price.tab[0] * pow(buLevel, 2.)) / (log(centerLevel + 1) * 100)) + 0.5);
+	                          ((Building::List[building].price.tab[0] * pow(buNextLevel, 2.)) / (log(centerLevel + 1) * 100)) + 0.5);
 	PlanetTask task(PlanetTask::UpgradeBuilding, roundCount, duration);
 	task.value = building;
-	RessourceSet const price = getBuilingPrice(building, buLevel + 1);
+	RessourceSet const price = getBuilingPrice(building, buNextLevel);
 	task.startCost = price;
 
 	if(false == canPay(planet, price))
@@ -471,7 +461,7 @@ void execTask(Universe& univ,
 			else
 			{
 				planet.buildingList[task.value] += 1;
-				Event event(univ.nextEventID++, time(0), Event::Upgraded);
+				Event event(univ.nextEventID++, time(0), Event::Upgraded, task.value);
 				planet.eventList.push_back(event);
 				signals.push_back(Signal(planet.playerId, event));
 			}
@@ -481,7 +471,7 @@ void execTask(Universe& univ,
 			Fleet newFleet(univ.nextFleetID++, planet.playerId, planet.coord);
 			newFleet.shipList[task.value] += task.value2;
 			univ.fleetMap.insert(make_pair(newFleet.id, newFleet));
-			Event event(univ.nextEventID++, time(0), Event::ShipMade);
+			Event event(univ.nextEventID++, time(0), Event::ShipMade, task.value);
 			signals.push_back(Signal(planet.playerId, event));
 		}
 		break;
@@ -490,7 +480,7 @@ void execTask(Universe& univ,
 			{
 				//BOOST_THROW_EXCEPTION(std::logic_error("Unconsistent cannon type"));
 				planet.cannonTab[task.value] += 1;
-				Event event(univ.nextEventID++, time(0), Event::CannonMade);
+				Event event(univ.nextEventID++, time(0), Event::CannonMade, task.value);
 				planet.eventList.push_back(event);
 				signals.push_back(Signal(planet.playerId, event));
 			}
@@ -530,19 +520,27 @@ void execTask(Universe& univ,
 		break;
 		case FleetTask::Colonize:
 		{
+			using namespace boost;
 			Planet& planet = mapFind(univ.planetMap, task.position)->second;
 			if(planet.playerId == Player::NoId && fleet.shipList[Ship::Queen])
 			{
-				Event event(univ.nextEventID++, time(0), Event::PlanetColonized);
-				fleet.eventList.push_back(event);
-				signals.push_back(Signal(fleet.playerId, event));
-				fleet.shipList[Ship::Queen] -= 1;
+				//Comptage du nombre de planète du joueur
+				size_t const planetCount = count_if(
+				                             univ.planetMap | adaptors::map_values,
+				                             boost::bind(&Planet::playerId, _1) == fleet.playerId);
+				if(planetCount < 1000)
+				{
+					Event event(univ.nextEventID++, time(0), Event::PlanetColonized);
+					fleet.eventList.push_back(event);
+					signals.push_back(Signal(fleet.playerId, event));
+					fleet.shipList[Ship::Queen] -= 1;
 
-				planet.buildingList[Building::CommandCenter] = 1;
-				boost::geometry::add_point(planet.ressourceSet.tab, RessourceSet(2000, 500, 0).tab);
-				planet.playerId = fleet.playerId;
-				if(planet.playerId > 100000)
-					BOOST_THROW_EXCEPTION(std::logic_error("planet.playerId > 100000"));
+					planet.buildingList[Building::CommandCenter] = 1;
+					boost::geometry::add_point(planet.ressourceSet.tab, RessourceSet(2000, 500, 0).tab);
+					planet.playerId = fleet.playerId;
+					if(planet.playerId > 100000)
+						BOOST_THROW_EXCEPTION(std::logic_error("planet.playerId > 100000"));
+				}
 			}
 		}
 		break;

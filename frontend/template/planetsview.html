@@ -31,9 +31,14 @@
 <div class="span4">
 <h4>{% trans "Reports" %}</h4>
 <table class="table table-condensed">
-	<tr><th>{% trans "Date" %}</th><th>{% trans "Type" %}</th><th>{% trans "Comment" %}</th></tr>
+	<tr><th>{% trans "Date" %}</th><th>{% trans "Type" %}</th><th>{% trans "Object" %}</th><th>{% trans "Comment" %}</th></tr>
 	{% for event in planet.eventList %}
-	<tr><td>{{event.time|int2datetime|date:"DATETIME_FORMAT"}}</td><td>{{event.type|eventname}}</td><td>{{event.comment}}</td></tr>
+	<tr>
+		<td>{{event.time|int2datetime|date:"DATETIME_FORMAT"}}</td>
+		<td>{{event.type|eventname}}</td>
+		<td>{{event|eventvalue}}</td>
+		<td>{{event.comment}}</td>
+	</tr>
 	{% endfor %}
 </table>
 <table class="table table-condensed">

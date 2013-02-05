@@ -8,7 +8,7 @@
 		{% if level >= 1  %}<script type="text/javascript" src="/static/blockly/language/common/math.js">          </script>{% endif %}
 	    {% if level >= 0  %}<script type="text/javascript" src="/static/blockly/language/common/procedures.js">    </script>{% endif %}
 	    {% if level >= 0  %}<script type="text/javascript" src="/static/blockly/language/common/variables.js">     </script>{% endif %}
-	    {% if level >= 3  %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_Fleet.js">       </script>{% endif %}
+	    {% if level >= 2  %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_Fleet.js">       </script>{% endif %}
 	    {% if level >= 1  %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_Planet.js">      </script>{% endif %}
 	    {% if level >= 3  %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_RessourceSet.js"></script>{% endif %}
 	    {% if level >= 10 %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_Coord.js">       </script>{% endif %}
@@ -27,7 +27,8 @@
 	{% elif level < 3  %}
 	var keepers = ['dronewars_makeBuilding', 'dronewars_doNothing', 'procedures_defreturn',
 	      'procedures_callreturn', 'procedures_ifreturn', 'dronewars_building_in_planet',
-	      'math_number', 'logic_compare', 'variables_get', 'dronewars_makeShip'];
+	      'dronewars_ship_in_fleet', 'math_number', 'logic_compare', 'variables_get', 
+	      'dronewars_makeShip'];
 	{% elif level < 4 %}
 	var keepers = ['dronewars_makeBuilding', 'dronewars_doNothing', 'dronewars_building_in_planet',
 		'dronewars_makeShip', 'procedures_defreturn', 'procedures_callreturn', 'procedures_ifreturn',

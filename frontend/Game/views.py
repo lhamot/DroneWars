@@ -75,7 +75,7 @@ def OutPage(request):
                 optPlayer = service.logPlayer(userInfo["login"], userInfo["password"])
                 if optPlayer.player != None:
                     request.session["PlayerID"] = optPlayer.player.id
-                    return redirect("/ingame/planets.html") 
+                    return redirect("/ingame/codes.html") 
                 else:
                     logMessage = _("Wrong login or password.")
         else:
@@ -135,7 +135,6 @@ def FleetsView(request):
 
         if "fleet" in request.GET:
             fleetID = int(request.GET["fleet"])
-            print fleetID
             fleet = next((f for f in fleetList if f.id == fleetID), None)
         else:
             fleet = None
@@ -155,22 +154,18 @@ def FleetsView(request):
     })
 
 
+CodeViewTutoTag = "CodeView"
 def CodesView(request):
         pid = request.session["PlayerID"]
         service = createEngineClient()
         player = service.getPlayer(pid)
-        CodeViewTutoTag = "CodeView"
         if not CodeViewTutoTag in player.tutoDisplayed:
-            helpMessage = _("CODE_TUTOS")
             service.incrementTutoDisplayed(pid, CodeViewTutoTag);
-        else:
-            helpMessage = ""
             
         plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0);
         #Ce test permet d'afficher immediatement la page BlocklyPlanets pour les debutant
         if plLvl >= 3:
             return render(request, 'codesview.html', {
-                'helpMessage': helpMessage,
                 'level': plLvl 
                 })
         else:
@@ -281,7 +276,9 @@ def BlocklyPlanetsCodesView(request):
         player = service.getPlayer(pid) #Redemendé car code modifié
         plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0)
         codeData = player.planetsCode
-        tutosText = N_("BLOCKLY_TUTO_" + str(plLvl)) if plLvl <= 8 else None 
+        tutosText = N_("BLOCKLY_TUTO_" + str(plLvl)) if plLvl <= 8 else None
+        
+        helpMessage = _("CODE_TUTOS") if not CodeViewTutoTag in player.tutoDisplayed else None
                 
         return render(request, 'codesview/blockly_planet.html', {
             "name": "Planet",
@@ -290,6 +287,7 @@ def BlocklyPlanetsCodesView(request):
             "codeData": codeData,
             "tutosText": tutosText,
             "mode": "blockly",
+            "helpMessage": helpMessage,
     })
 
 
@@ -323,8 +321,8 @@ def ScoreView(request):
     service = createEngineClient()
     players = service.getPlayers()
     
-    sort_order = request.GET["sort_order"] if "sort_order" in request.GET else "login"  
-    asc = request.GET["asc"] != "True" if "asc" in request.GET else False
+    sort_order = request.GET["sort_order"] if "sort_order" in request.GET else "score"  
+    asc = request.GET["asc"] != "True" if "asc" in request.GET else True
     key = {
         "login": lambda player: player.login,
         "score": lambda player: player.score,

@@ -12,9 +12,9 @@
 <div class="row">
 <div class="span6">
 <table class="table">
-	<tr><th><a href="?sort_order=login&asc={{asc}}">{% trans "Name" %}</a></th><th><a href="?sort_order=score&asc={{asc}}">{% trans "Score" %}</a></th></tr>
+	<tr><th>{% trans "Index" %}</th><th><a href="?sort_order=login&asc={{asc}}">{% trans "Name" %}</a></th><th><a href="?sort_order=score&asc={{asc}}">{% trans "Score" %}</a></th></tr>
 	{% for player in players %}
-	<tr><td>{{player.login}}</td><td>{{player.score}}</td></tr>
+	<tr><td>{{forloop.counter}}</td><td>{{player.login}}</td><td>{{player.score}}</td></tr>
 	{% endfor %}
 </table>
 </div>

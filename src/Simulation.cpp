@@ -107,14 +107,15 @@ catch(luabind::cast_failed& ex)
 	signals.push_back(Signal(pid, event));
 	return luabind::object();
 }
-catch(std::exception const& ex)
+//Les logic_error ne doivent pas etre catchées
+/*catch(std::exception const& ex)
 {
 	char const* message = lua_tostring(luaEngine.state(), -1);
 	Event event(univ_.nextEventID++, time(0), isFleet ? Event::FleetCodeError : Event::PlanetCodeError, ex.what() + string(" ") + (message ? message : ""));
 	mapFind(univ_.playerMap, pid)->second.eventList.push_back(event);
 	signals.push_back(Signal(pid, event));
 	return luabind::object();
-}
+}*/
 
 
 //! Excecute le code de la planete et lui ajoute des tache
@@ -193,13 +194,14 @@ catch(luabind::cast_failed& ex)
 	player.eventList.push_back(event);
 	signals.push_back(Signal(player.id, event));
 }
-catch(std::exception const& ex)
+//Les logic_error ne doivent pas etre catchées
+/*catch(std::exception const& ex)
 {
 	UniqueLock lockPlayer(univ_.playersMutex);
 	Event event(univ_.nextEventID++, time(0), Event::PlanetCodeError, ex.what());
 	mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(event);
 	signals.push_back(Signal(planet.playerId, event));
-}
+}*/
 
 bool execFleet(Universe& univ_,
                LuaEngine& luaEngine,
@@ -314,7 +316,8 @@ catch(luabind::cast_failed& ex)
 	signals.push_back(Signal(player.id, event));
 	return true;
 }
-catch(std::exception const& ex)
+//Les logic_error ne doivent pas etre catchées
+/*catch(std::exception const& ex)
 {
 	UniqueLock lockPlayer(univ_.playersMutex);
 	std::string const message = typeid(ex).name() + string(" ") + ex.what();
@@ -324,7 +327,7 @@ catch(std::exception const& ex)
 	player.eventList.push_back(event);
 	signals.push_back(Signal(player.id, event));
 	return true;
-}
+}*/
 
 
 //! Désactivation de tout les codes qui echoue

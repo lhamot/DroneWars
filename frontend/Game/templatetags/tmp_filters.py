@@ -2,6 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 from django import template
 from gen_py.thrift.ttypes import *
 import datetime
+from Game.views import Ship_Enum
 
 register = template.Library()
 
@@ -12,6 +13,19 @@ def shipname(value):
 @register.filter
 def eventname(value):
     return  _(Event_Type._VALUES_TO_NAMES[value])
+
+@register.filter
+def eventvalue(event):
+    if event.value == -1:
+        return ""
+    if event.type == Event_Type.CannonMade:
+        return  _(Cannon_Enum._VALUES_TO_NAMES[event.value])
+    elif event.type == Event_Type.ShipMade:
+        return  _(Ship_Enum._VALUES_TO_NAMES[event.value])
+    elif event.type == Event_Type.Upgraded:
+        return  _(Building_Enum._VALUES_TO_NAMES[event.value])
+    else:
+        return ""
 
 @register.filter
 def buildingname(value):

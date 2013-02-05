@@ -28,7 +28,7 @@
 {% endblock %}
 
 {% block code_content %}
-<div id="blocklyDiv" style="height: 600px; width: 95%; border: 1px solid #ccc">
+<div id="blocklyDiv" style="height: 60%; width: 95%; border: 1px solid #ccc">
 </div>
 <script>
 	// Whitelist of blocks to keep.
@@ -50,29 +50,39 @@
 	Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
 </script>
 <div class="container">
-<div class="row">
-<input class="btn btn-primary" type="submit" value="{% trans "Import" %}" name="import_button" 
-	onclick="
-		var xml_text = prompt('Load', '');
-		var xml = Blockly.Xml.textToDom(xml_text);
-		Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);"/>
-<input class="btn btn-primary" type="submit" value="{% trans "Export" %}" name="export_button"
-	onclick="
-		var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-		var xml_text = Blockly.Xml.domToText(xml);
-		alert(xml_text);"/>
-<input class="btn btn-primary" type="submit" value="{% trans "Reload" %}" name="reload_button" onclick="document.location.href=''"/>
-<input class="btn btn-primary" type="submit" value="{% trans "Save" %}" name="save_button" onclick="
-		var code = window.Blockly.Generator.workspaceToCode('lua');
-		document.getElementById('scriptXML').value = code;
-		var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-		var xml_text = Blockly.Xml.domToText(xml);
-		document.getElementById('blocklyXML').value = xml_text;
-		document.getElementById('saveBlocklyForm').submit();
-		"/>
-<p class="text-error"><strong>{{codeData.lastError|safe}}</strong></p>
-<p class="text-success"><strong>{{message|safe}}</strong></p>
-</div>
+	<div class="row">
+		<input class="btn btn-primary" type="submit" value="{% trans "Import" %}" name="import_button" 
+			onclick="
+				var xml_text = prompt('Load', '');
+				var xml = Blockly.Xml.textToDom(xml_text);
+				Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);"/>
+		<input class="btn btn-primary" type="submit" value="{% trans "Export" %}" name="export_button"
+			onclick="
+				var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+				var xml_text = Blockly.Xml.domToText(xml);
+				alert(xml_text);"/>
+		<input class="btn btn-primary" type="submit" value="{% trans "Reload" %}" name="reload_button" onclick="document.location.href=''"/>
+		<input class="btn btn-primary" type="submit" value="{% trans "Save" %}" name="save_button" onclick="
+				var code = window.Blockly.Generator.workspaceToCode('lua');
+				document.getElementById('scriptXML').value = code;
+				var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+				var xml_text = Blockly.Xml.domToText(xml);
+				document.getElementById('blocklyXML').value = xml_text;
+				document.getElementById('saveBlocklyForm').submit();
+				"/>
+		{%if codeData.lastError %}
+		<div class="alert text-error">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			<strong>{{codeData.lastError|safe}}</strong>
+		</div>
+		{% endif %}
+		{%if message %}
+		<div class="alert text-success">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			<strong>{{message|safe}}</strong>
+		</div>
+		{% endif %}
+	</div>
 </div>
 <form method="post" action="" id="saveBlocklyForm">
 {% csrf_token %}

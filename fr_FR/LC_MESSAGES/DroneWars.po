@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-22 19:53+0100\n"
-"PO-Revision-Date: 2013-01-22 19:57+0100\n"
+"POT-Creation-Date: 2013-02-05 22:18+0100\n"
+"PO-Revision-Date: 2013-02-05 22:19+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "Language: fr\n"
@@ -18,20 +18,22 @@ msgstr ""
 "X-Poedit-KeywordsList: gettext;gettextWT\n"
 "X-Poedit-Basepath: I:\\C\\Bit_them_all\\src\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.5.5\n"
+"Plural-Forms: Plural-Forms: nplurals=2; plural=n == 1 ? 0 : 1;\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: Model.cpp:84
-msgid "myFleet"
+#, fuzzy
+msgid "my_fleet"
 msgstr "ma_flotte"
 
 #: Model.cpp:85
 msgid "otherFleet"
 msgstr "autre_flotte"
 
-#: Model.cpp:86 Model.cpp:115
-msgid "planet"
-msgstr "planète"
+#: Model.cpp:86
+msgid "local_planet"
+msgstr "planete_locale"
 
 #: Model.cpp:87 Model.cpp:117
 msgid "order"
@@ -66,6 +68,10 @@ msgstr ""
 "Cette procedure retourne la variable \"ordre\" qui contient l'ordre à donner "
 "aux vaisseaux de la flotte."
 
+#: Model.cpp:115
+msgid "my_planet"
+msgstr "ma_planete"
+
 #: Model.cpp:116
 msgid "fleets"
 msgstr "flottes"
@@ -81,7 +87,7 @@ msgstr ""
 "Cette procedure retourne la variable \"ordre\" qui contient l'ordre a donner "
 "aux battisseurs présent sur la planète."
 
-#: Simulation.cpp:190 Simulation.cpp:310
+#: Simulation.cpp:190 Simulation.cpp:311
 msgid "Unable to make cast to %1%"
 msgstr "La valeur de retour n'est pas %1%, comme attendue."
 

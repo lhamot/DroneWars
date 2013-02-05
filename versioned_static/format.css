@@ -6,6 +6,12 @@ body
   background-color:#000000;
   background-size: cover;
   color: #E6EBFB;
+  height: 100%;
+}
+
+html
+{
+  height: 100%;
 }
 
 
@@ -42,7 +48,7 @@ td, form, p
 .tutorial
 {
 	background-image: url(img/bg/bg3.gif);
-	border-color: #000000;
+	border-color: #9999BB;
 	border-width: 3px;
 	border-style: solid;
 	border-radius: 5px;
