@@ -29,9 +29,7 @@ typedef boost::upgrade_to_unique_lock<Universe::Mutex> UpToUniqueLock;
 
 using namespace LuaTools;
 using namespace std;
-using namespace boost::locale;
-
-
+namespace BL = boost::locale;
 
 static size_t const LuaMaxInstruction = 20000;
 static size_t const MaxCodeExecTry = 10;
@@ -188,7 +186,7 @@ catch(luabind::cast_failed& ex)
 {
 	UniqueLock lockPlayer(univ_.playersMutex);
 	std::string const message =
-	  str(boost::format(gettext("Unable to make cast to %1%")) % ex.info().name());
+	  str(boost::format(BL::gettext("Unable to make cast to %1%")) % ex.info().name());
 	Player& player = mapFind(univ_.playerMap, planet.playerId)->second;
 	player.planetsCode.newError(message);
 	Event event(univ_.nextEventID++, time(0), Event::PlanetCodeError, message);
@@ -309,7 +307,7 @@ catch(luabind::cast_failed& ex)
 {
 	UniqueLock lockPlayer(univ_.playersMutex);
 	std::string const message =
-	  str(boost::format(gettext("Unable to make cast to %1%")) % ex.info().name());
+	  str(boost::format(BL::gettext("Unable to make cast to %1%")) % ex.info().name());
 	Player& player = mapFind(univ_.playerMap, fleet.playerId)->second;
 	player.fleetsCode.newError(message);
 	Event event(univ_.nextEventID++, time(0), Event::FleetCodeError, message);

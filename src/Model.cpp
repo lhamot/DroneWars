@@ -12,7 +12,7 @@ BOOST_GEOMETRY_REGISTER_BOOST_ARRAY_CS(cs::cartesian)
 
 using namespace std;
 //using namespace boost;
-using namespace boost::locale;
+namespace BL = boost::locale;
 
 
 Building const Building::List[] =
@@ -82,13 +82,13 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 		}
 		player.fleetsCode.setBlocklyCode(
 		  (boost::format(blocklyFleetDefaultCode.str()) %
-		   gettext("my_fleet") %
-		   gettext("otherFleet") %
-		   gettext("local_planet") %
-		   gettext("order") %
-		   gettext("DO_GATHER_CODE_COMMENT") %
-		   gettext("DO_FIGHT_CODE_COMMENT") %
-		   gettext("FLEET_ACTION_CODE_COMMENT")).str());
+		   BL::gettext("my_fleet") %
+		   BL::gettext("otherFleet") %
+		   BL::gettext("local_planet") %
+		   BL::gettext("order") %
+		   BL::gettext("DO_GATHER_CODE_COMMENT") %
+		   BL::gettext("DO_FIGHT_CODE_COMMENT") %
+		   BL::gettext("FLEET_ACTION_CODE_COMMENT")).str());
 		player.fleetsCode.setCode(
 		  "function AI:do_gather(myFleet, otherFleet)\n"
 		  "  return true\n"
@@ -113,10 +113,10 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 		}
 		player.planetsCode.setBlocklyCode(
 		  (boost::format(blocklyPlanetDefaultCode.str()) %
-		   gettext("my_planet") %
-		   gettext("fleets") %
-		   gettext("order") %
-		   gettext("PLANET_ACTION_CODE_COMMENT")).str());
+		   BL::gettext("my_planet") %
+		   BL::gettext("fleets") %
+		   BL::gettext("order") %
+		   BL::gettext("PLANET_ACTION_CODE_COMMENT")).str());
 		player.planetsCode.setCode(
 		  "function AI(planet, fleets)\n"
 		  "  return noPlanetAction()\n"
