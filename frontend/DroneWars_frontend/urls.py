@@ -1,6 +1,8 @@
 from django.conf.urls import patterns, include, url
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 import gettext
 import os
+from Game.models import Ticket
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -24,6 +26,11 @@ urlpatterns = patterns('',
     url(r'^ingame/codes.html', 'Game.views.CodesView'),
     url(r'^ingame/reports.html', 'Game.views.ReportsView'),
     url(r'^ingame/score.html', 'Game.views.ScoreView'),
+    url(r'^ingame/ticket_list.html', ListView.as_view(model=Ticket)),
+    url(r'^ingame/add_ticket.html', CreateView.as_view(model=Ticket, success_url="/ingame/ticket_list.html")),
+    url(r'^ingame/view_ticket.html/(?P<pk>\d+)', UpdateView.as_view(model=Ticket, success_url="/ingame/ticket_list.html")),
+    url(r'^ingame/del_ticket.html/(?P<pk>\d+)', DeleteView.as_view(model=Ticket, success_url="/ingame/ticket_list.html")),
+    
 
     # url(r'^DroneWars_frontend/', include('DroneWars_frontend.foo.urls')),
 

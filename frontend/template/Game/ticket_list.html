@@ -1,0 +1,35 @@
+{% extends "ingame_base.html" %}
+
+{% load i18n %}
+
+{% load tmp_filters %}
+
+{% block content %}
+
+<div class="container">
+	<div class="row">
+		<div class="span12">
+			<table>
+				<tr>
+					<th>{% trans "Origin" %}</th>
+					<th>{% trans "Title" %}</th>
+					<th>{% trans "Severity" %}</th>
+					<th>{% trans "Status" %}</th>
+				</tr>
+				{% for ticket in object_list %}
+				{% if ticket.status != "CLOSED" %}
+				<tr>
+					<td>{{ticket.who}}</td>
+					<td><a href="view_ticket.html/{{ticket.id}}">{{ticket.title}}</a></td>
+					<td>{{ticket.get_severity_display}}</td>
+					<td>{{ticket.get_status_display}}</td>
+				</tr>
+				{% endif %}
+				{% endfor %}
+				<tr><td colspan=4><a href="add_ticket.html">{% trans "Add" %}</a></td></tr>
+			</table>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

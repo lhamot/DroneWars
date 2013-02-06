@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-05 22:03+0100\n"
-"PO-Revision-Date: 2013-02-05 22:06+0100\n"
+"POT-Creation-Date: 2013-02-06 22:34+0100\n"
+"PO-Revision-Date: 2013-02-06 22:35+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "MIME-Version: 1.0\n"
@@ -275,6 +275,61 @@ msgstr ""
 "Votre prochain objectif est de coloniser d'autres planètes.<br/>Aide : C'est "
 "la Reine qui permet de colonier."
 
+#. Translators: Criticity
+#: .\Game\models.py:9
+msgid "Low"
+msgstr "Faible"
+
+#. Translators: Criticity
+#: .\Game\models.py:11
+msgid "Medium"
+msgstr "Moyenne"
+
+#. Translators: Criticity
+#: .\Game\models.py:13
+msgid "High"
+msgstr "Haute"
+
+#. Translators: Criticity
+#: .\Game\models.py:15
+msgid "Critical"
+msgstr "Critique"
+
+#. Translators: Ticket status
+#: .\Game\models.py:19
+msgid "Open"
+msgstr "Ouvert"
+
+#. Translators: Ticket status
+#: .\Game\models.py:21
+msgid "Close"
+msgstr "Fermé"
+
+#. Translators: Ticket poster
+#: .\Game\models.py:25 .\template\Game\ticket_list.html.py:14
+msgid "Origin"
+msgstr "Origine"
+
+#: .\Game\models.py:27 .\template\Game\ticket_list.html.py:15
+msgid "Title"
+msgstr "Titre"
+
+#: .\Game\models.py:28
+msgid "Location"
+msgstr "Localisation"
+
+#: .\Game\models.py:29
+msgid "Description"
+msgstr "Déscription"
+
+#: .\Game\models.py:30 .\template\Game\ticket_list.html.py:16
+msgid "Severity"
+msgstr "Criticité"
+
+#: .\Game\models.py:31 .\template\Game\ticket_list.html.py:17
+msgid "Status"
+msgstr "Status"
+
 #: .\Game\views.py:28 .\Game\views.py:35
 msgid "Login"
 msgstr "Identifiant"
@@ -450,6 +505,10 @@ msgid "Score"
 msgstr "Score"
 
 #: .\template\ingame_base.html.py:18
+msgid "Tickets"
+msgstr "Tickets"
+
+#: .\template\ingame_base.html.py:19
 msgid "Log out"
 msgstr "Déconnexion"
 
@@ -540,6 +599,10 @@ msgstr "Coordonées de planete"
 msgid "Index"
 msgstr "Index"
 
+#: .\template\Game\ticket_list.html.py:29
+msgid "Add"
+msgstr "Ajouter"
+
 #: .\template\codesview\blockly.html.py:54
 msgid "Import"
 msgstr "Import"
@@ -556,6 +619,10 @@ msgstr "Recharger"
 msgid "Save"
 msgstr "Enregistrer"
 
+#, fuzzy
+#~ msgid "remove"
+#~ msgstr "Déplacement"
+
 #~ msgid "Fleet"
 #~ msgstr "Flotte"
 
@@ -564,9 +631,6 @@ msgstr "Enregistrer"
 
 #~ msgid "Tutorial"
 #~ msgstr "Tutoriel"
-
-#~ msgid "Code"
-#~ msgstr "Code"
 
 #~ msgid "Message"
 #~ msgstr "Message"
