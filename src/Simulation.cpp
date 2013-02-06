@@ -29,6 +29,7 @@ typedef boost::upgrade_to_unique_lock<Universe::Mutex> UpToUniqueLock;
 
 using namespace LuaTools;
 using namespace std;
+using namespace boost::locale;
 
 
 

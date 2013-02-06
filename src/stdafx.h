@@ -51,6 +51,6 @@
 #include <boost/thread.hpp>
 #include <boost/thread/shared_mutex.hpp>
 #include <boost/variant.hpp>
+#include <boost/locale.hpp>
 #pragma warning(pop)
 
-#include <libintl.h>

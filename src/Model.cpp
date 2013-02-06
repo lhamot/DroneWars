@@ -12,6 +12,7 @@ BOOST_GEOMETRY_REGISTER_BOOST_ARRAY_CS(cs::cartesian)
 
 using namespace std;
 //using namespace boost;
+using namespace boost::locale;
 
 
 Building const Building::List[] =

@@ -26,14 +26,12 @@ int main()//(int argc, char** argv)
 {
 	srand(static_cast<unsigned int>(time(NULL)));
 
-	putenv(const_cast<char*>("LANG=fr_FR"));
-#ifdef _WIN32
-	printf("Locale is: %s\n", setlocale(LC_ALL, "fr"));
-#else
-	printf("Locale is: %s\n", setlocale(LC_ALL, "fr_FR.UTF8"));
-#endif
-	bindtextdomain("DroneWars", "./");
-	textdomain("DroneWars");
+	boost::locale::generator gen;
+	// Specify location of dictionaries
+	gen.add_messages_path(".");
+	gen.add_messages_domain("DroneWars");
+	// Generate locales and imbue them to iostream
+	std::locale::global(gen("fr_FR.UTF8"));
 
 #if defined(WIN32)
 	WSADATA wsa_data;
