@@ -564,7 +564,10 @@ void planetRound(Universe& univ, Planet& planet, std::vector<Signal>& signals);
 
 //! Gere l'écoulement du temps sur la flotte.
 //! Peut modifier la liste des flottes et des planètes
-void fleetRound(Universe& univ, Fleet& fleet, std::vector<Signal>& signals);
+void fleetRound(Universe& univ,
+                Fleet& fleet,
+                std::vector<Signal>& signals,
+                std::map<Player::ID, size_t> const& playersPlanetCount);
 
 void gather(Fleet& fleet, Fleet const& otherFleet);
 

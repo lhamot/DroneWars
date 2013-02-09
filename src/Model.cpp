@@ -497,7 +497,8 @@ void execTask(Universe& univ,
 void execTask(Universe& univ,
               Fleet& fleet,
               FleetTask& task,
-              std::vector<Signal>& signals)
+              std::vector<Signal>& signals,
+              std::map<Player::ID, size_t> const& playersPlanetCount)
 {
 	if((task.lauchTime + task.duration) <= univ.roundCount)
 	{
@@ -525,10 +526,7 @@ void execTask(Universe& univ,
 			Planet& planet = mapFind(univ.planetMap, task.position)->second;
 			if(planet.playerId == Player::NoId && fleet.shipList[Ship::Queen])
 			{
-				//Comptage du nombre de planète du joueur
-				size_t const planetCount = count_if(
-				                             univ.planetMap | adaptors::map_values,
-				                             boost::bind(&Planet::playerId, _1) == fleet.playerId);
+				size_t const planetCount = mapFind(playersPlanetCount, fleet.playerId)->second;
 				if(planetCount < 1000)
 				{
 					Event event(univ.nextEventID++, time(0), Event::PlanetColonized);
@@ -595,10 +593,13 @@ void planetRound(Universe& univ, Planet& planet, std::vector<Signal>& signals)
 }
 
 
-void fleetRound(Universe& univ, Fleet& fleet, std::vector<Signal>& signals)
+void fleetRound(Universe& univ,
+                Fleet& fleet,
+                std::vector<Signal>& signals,
+                std::map<Player::ID, size_t> const& playersPlanetCount)
 {
 	for(FleetTask & task: fleet.taskQueue)
-		execTask(univ, fleet, task, signals);
+		execTask(univ, fleet, task, signals, playersPlanetCount);
 
 	boost::remove_erase_if(fleet.taskQueue, bind(&FleetTask::expired, placeholders::_1));
 }

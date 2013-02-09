@@ -556,6 +556,10 @@ void execFleets(
 	for(Fleet & fleet: univ_.fleetMap | boost::adaptors::map_values)
 		fleetMap.insert(make_pair(fleet.coord, fleet));
 
+	std::map<Player::ID, size_t> playersPlanetCount;
+	for(auto planetKVP: univ_.planetMap)
+		++playersPlanetCount[planetKVP.second.playerId];
+
 	auto iter = fleetMap.begin();
 	while(iter != fleetMap.end())
 	{
@@ -564,7 +568,7 @@ void execFleets(
 
 		UpToUniqueLock writeLock(lockFleets);
 
-		fleetRound(univ_, iter->second, signals);
+		fleetRound(univ_, iter->second, signals, playersPlanetCount);
 
 		bool keepFleet = execFleet(univ_,
 		                           luaEngine,
