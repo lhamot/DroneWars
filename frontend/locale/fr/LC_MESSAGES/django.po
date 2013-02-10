@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-06 22:34+0100\n"
-"PO-Revision-Date: 2013-02-08 18:47+0100\n"
+"POT-Creation-Date: 2013-02-10 16:36+0100\n"
+"PO-Revision-Date: 2013-02-10 16:37+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "MIME-Version: 1.0\n"
@@ -261,7 +261,7 @@ msgid "BLOCKLY_TUTO_6"
 msgstr ""
 "Pour réussir la septième étape du tutoriel,<br/>\n"
 "récoltez un maximum de ressources sur les planètes inhabitées.<br/>\n"
-"Aise : Pour tester si il y a une planète, testez \"Si 'planète' alors : \" ."
+"Aide : Pour tester si il y a une planète, testez \"Si 'planète' alors : \" ."
 
 #: .\Game\TranslationTools.py:68
 msgid "BLOCKLY_TUTO_7"
@@ -371,25 +371,25 @@ msgstr ""
 "Ici, vous verrez la liste de vos flottes. Si il n'y en a pas, demandez à vos "
 "planètes d'en fabriquer."
 
-#: .\Game\views.py:193
+#: .\Game\views.py:199
 msgid "REPORT_TUTOS"
 msgstr ""
 "Ici vous verrez les 10 derniers événements importants qui se sont produits "
 "dans votre empire."
 
-#: .\Game\views.py:216 .\Game\views.py:242 .\Game\views.py:270
-#: .\Game\views.py:302
+#: .\Game\views.py:226 .\Game\views.py:254 .\Game\views.py:283
+#: .\Game\views.py:317
 msgid "Code successfully saved"
 msgstr "Code sauvegardé avec succès."
 
-#: .\Game\views.py:274
+#: .\Game\views.py:287
 msgid "See in planets tab if the building is in progress"
 msgstr ""
 "Code sauvegardé avec succès.<br/>\n"
 "Allez voir dans l'onglet \"Planètes\" si votre nouveau bâtiment est en cours "
 "de création. (Cela peut prendre quelque minutes)"
 
-#: .\Game\views.py:281
+#: .\Game\views.py:294
 msgid "CODE_TUTOS"
 msgstr ""
 "Ici, vous pourrez définir la ligne de conduite de vos amiraux(flottes) et "
@@ -408,7 +408,7 @@ msgid "%s:%s;"
 msgstr "%s : %s;"
 
 #: .\template\codesview.html.py:16 .\template\codesview.html.py:21
-#: .\template\ingame_base.html.py:13
+#: .\template\ingame_base.html.py:17
 msgid "Planets"
 msgstr "Planètes"
 
@@ -421,11 +421,11 @@ msgid "Script"
 msgstr "Textuel"
 
 #: .\template\codesview.html.py:28 .\template\codesview.html.py:33
-#: .\template\ingame_base.html.py:14
+#: .\template\ingame_base.html.py:18
 msgid "Fleets"
 msgstr "Flottes"
 
-#: .\template\fleetsview.html.py:15 .\template\planetsview.html.py:15
+#: .\template\fleetsview.html.py:15 .\template\planetsview.html.py:13
 msgid "Coordinate"
 msgstr "Coordonnées"
 
@@ -433,25 +433,25 @@ msgstr "Coordonnées"
 msgid "Contents"
 msgstr "Contenu"
 
-#: .\template\fleetsview.html.py:15 .\template\planetsview.html.py:15
+#: .\template\fleetsview.html.py:15 .\template\planetsview.html.py:13
 msgid "Ressources"
 msgstr "Ressources"
 
-#: .\template\fleetsview.html.py:35 .\template\ingame_base.html.py:15
-#: .\template\planetsview.html.py:32
+#: .\template\fleetsview.html.py:35 .\template\ingame_base.html.py:19
+#: .\template\planetsview.html.py:30
 msgid "Reports"
 msgstr "Rapports"
 
-#: .\template\fleetsview.html.py:37 .\template\planetsview.html.py:34
+#: .\template\fleetsview.html.py:37 .\template\planetsview.html.py:32
 msgid "Date"
 msgstr "Date"
 
-#: .\template\fleetsview.html.py:37 .\template\planetsview.html.py:34
-#: .\template\planetsview.html.py:46
+#: .\template\fleetsview.html.py:37 .\template\planetsview.html.py:32
+#: .\template\planetsview.html.py:44
 msgid "Type"
 msgstr "Type"
 
-#: .\template\fleetsview.html.py:37 .\template\planetsview.html.py:34
+#: .\template\fleetsview.html.py:37 .\template\planetsview.html.py:32
 msgid "Comment"
 msgstr "Commentaire"
 
@@ -496,60 +496,64 @@ msgstr ""
 "déplacer ou conquérir une planète libre).<br/></li>\n"
 "</ol>"
 
-#: .\template\ingame_base.html.py:12
+#: .\template\ingame_base.html.py:16
 msgid "Command"
 msgstr "Commandement"
 
-#: .\template\ingame_base.html.py:16 .\template\scoreview.html.py:15
+#: .\template\ingame_base.html.py:20 .\template\scoreview.html.py:15
 msgid "Score"
 msgstr "Score"
 
-#: .\template\ingame_base.html.py:18
+#: .\template\ingame_base.html.py:22
 msgid "Tickets"
 msgstr "Tickets"
 
-#: .\template\ingame_base.html.py:19
+#: .\template\ingame_base.html.py:23
 msgid "Log out"
 msgstr "Déconnexion"
 
-#: .\template\planetsview.html.py:15
+#: .\template\ingame_base.html.py:24
+msgid "Next round :"
+msgstr "Tour suivant :"
+
+#: .\template\planetsview.html.py:13
 msgid "View"
 msgstr "Visuel"
 
-#: .\template\planetsview.html.py:15 .\template\planetsview.html.py:97
-#: .\template\planetsview.html.py:104 .\template\scoreview.html.py:15
+#: .\template\planetsview.html.py:13 .\template\planetsview.html.py:95
+#: .\template\planetsview.html.py:102 .\template\scoreview.html.py:15
 msgid "Name"
 msgstr "Nom"
 
-#: .\template\planetsview.html.py:34
+#: .\template\planetsview.html.py:32
 msgid "Object"
 msgstr "Objet"
 
-#: .\template\planetsview.html.py:45
+#: .\template\planetsview.html.py:43
 msgid "Tasks"
 msgstr "Tâches"
 
-#: .\template\planetsview.html.py:46
+#: .\template\planetsview.html.py:44
 msgid "Time left"
 msgstr "Temps restant"
 
-#: .\template\planetsview.html.py:46
+#: .\template\planetsview.html.py:44
 msgid "What"
 msgstr "Quoi"
 
-#: .\template\planetsview.html.py:57
+#: .\template\planetsview.html.py:55
 msgid "days"
 msgstr "jours"
 
-#: .\template\planetsview.html.py:96
+#: .\template\planetsview.html.py:94
 msgid "Buildings"
 msgstr "Bâtiments"
 
-#: .\template\planetsview.html.py:97 .\template\planetsview.html.py:104
+#: .\template\planetsview.html.py:95 .\template\planetsview.html.py:102
 msgid "Level"
 msgstr "Niveau"
 
-#: .\template\planetsview.html.py:103
+#: .\template\planetsview.html.py:101
 msgid "Cannons"
 msgstr "Canons"
 

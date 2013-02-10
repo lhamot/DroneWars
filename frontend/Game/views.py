@@ -93,227 +93,244 @@ def OutPage(request):
 
 PlanetImageCount = 23
 def PlanetsView(request):
-        pid = request.session["PlayerID"]
-        service = createEngineClient()
-        planetList = service.getPlayerPlanets(pid)
-        player = service.getPlayer(pid)
-        target = None
-        targetCoord = None
-        if "planet_coord" in request.GET:
-            tab = request.GET["planet_coord"].split("_")
-            tab = [int(val) for val in tab]
-            targetCoord = gen_py.thrift.ttypes.Coord(tab[0], tab[1], tab[2])
-        else:
-            targetCoord = player.mainPlanet
-        for planet in planetList:
-            planetHash = planet.coord.X + (planet.coord.Y * 1000) + (planet.coord.Z * 1000000) 
-            planet.imgNumber = planetHash % PlanetImageCount;
-            if targetCoord and targetCoord == planet.coord:
-                target = planet
+    pid = request.session["PlayerID"]
+    service = createEngineClient()
+    planetList = service.getPlayerPlanets(pid)
+    player = service.getPlayer(pid)
+    target = None
+    targetCoord = None
+    if "planet_coord" in request.GET:
+        tab = request.GET["planet_coord"].split("_")
+        tab = [int(val) for val in tab]
+        targetCoord = gen_py.thrift.ttypes.Coord(tab[0], tab[1], tab[2])
+    else:
+        targetCoord = player.mainPlanet
+    for planet in planetList:
+        planetHash = planet.coord.X + (planet.coord.Y * 1000) + (planet.coord.Z * 1000000) 
+        planet.imgNumber = planetHash % PlanetImageCount;
+        if targetCoord and targetCoord == planet.coord:
+            target = planet
 
-        PlanetViewTutoTag = "PlanetView"
-        if not PlanetViewTutoTag in player.tutoDisplayed:
-            helpMessage = _("PLANET_TUTOS")
-            service.incrementTutoDisplayed(pid, PlanetViewTutoTag);
-        else:
-            helpMessage = ""
-            
-        timeInfo = service.getTimeInfo();
+    PlanetViewTutoTag = "PlanetView"
+    if not PlanetViewTutoTag in player.tutoDisplayed:
+        helpMessage = _("PLANET_TUTOS")
+        service.incrementTutoDisplayed(pid, PlanetViewTutoTag);
+    else:
+        helpMessage = ""
         
-        return render(request, 'planetsview.html', {
-            'planetList': planetList,
-            'planet' : target,
-            'helpMessage': helpMessage,
-            'timeInfo': timeInfo
+    timeInfo = service.getTimeInfo();
+    
+    return render(request, 'planetsview.html', {
+        'planetList': planetList,
+        'planet' : target,
+        'helpMessage': helpMessage,
+        'timeInfo': timeInfo,
     })
 
 
 def FleetsView(request):
-        pid = request.session["PlayerID"]
-        service = createEngineClient()
-        fleetList = service.getPlayerFleets(pid)
+    pid = request.session["PlayerID"]
+    service = createEngineClient()
+    fleetList = service.getPlayerFleets(pid)
 
-        if "fleet" in request.GET:
-            fleetID = int(request.GET["fleet"])
-            fleet = next((f for f in fleetList if f.id == fleetID), None)
-        else:
-            fleet = None
+    if "fleet" in request.GET:
+        fleetID = int(request.GET["fleet"])
+        fleet = next((f for f in fleetList if f.id == fleetID), None)
+    else:
+        fleet = None
 
-        player = service.getPlayer(pid)
-        FleetViewTutoTag = "FleetView"
-        if not FleetViewTutoTag in player.tutoDisplayed:
-            helpMessage = _("FLEET_TUTOS")
-            service.incrementTutoDisplayed(pid, FleetViewTutoTag);
-        else:
-            helpMessage = ""
+    player = service.getPlayer(pid)
+    FleetViewTutoTag = "FleetView"
+    if not FleetViewTutoTag in player.tutoDisplayed:
+        helpMessage = _("FLEET_TUTOS")
+        service.incrementTutoDisplayed(pid, FleetViewTutoTag);
+    else:
+        helpMessage = ""
         
-        return render(request, 'fleetsview.html', {
-            'fleetList': fleetList,
-            'fleet': fleet,
-            'helpMessage': helpMessage
+    timeInfo = service.getTimeInfo();
+    
+    return render(request, 'fleetsview.html', {
+        'fleetList': fleetList,
+        'fleet': fleet,
+        'helpMessage': helpMessage,
+        'timeInfo': timeInfo,
     })
 
 
 CodeViewTutoTag = "CodeView"
 def CodesView(request):
-        pid = request.session["PlayerID"]
-        service = createEngineClient()
-        player = service.getPlayer(pid)
-        if not CodeViewTutoTag in player.tutoDisplayed:
-            service.incrementTutoDisplayed(pid, CodeViewTutoTag);
-            
-        plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0);
-        #Ce test permet d'afficher immediatement la page BlocklyPlanets pour les debutant
-        if plLvl >= 3:
-            return render(request, 'codesview.html', {
-                'level': plLvl 
-                })
-        else:
-            return redirect("/ingame/codes/planets/blocks.html");
+    pid = request.session["PlayerID"]
+    service = createEngineClient()
+    player = service.getPlayer(pid)
+    if not CodeViewTutoTag in player.tutoDisplayed:
+        service.incrementTutoDisplayed(pid, CodeViewTutoTag);
+        
+    plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0);
+    
+    #Ce test permet d'afficher immediatement la page BlocklyPlanets pour les debutant
+    if plLvl >= 3:
+        timeInfo = service.getTimeInfo();
+        return render(request, 'codesview.html', {
+            'level': plLvl,
+            'timeInfo': timeInfo, 
+            })
+    else:
+        return redirect("/ingame/codes/planets/blocks.html");
 
 
 def ReportsView(request):
-        pid = request.session["PlayerID"]
-        service = createEngineClient()
-        player = service.getPlayer(pid)
-        
-        target = None
-        fight_report = None
-        if "event_id" in request.GET:
-            event_id = int(request.GET["event_id"])
-            for event in player.eventList:
-                if event_id == int(event.id):
-                    target = event
-            if target and target.type in {Event_Type.FleetLose, Event_Type.FleetWin, 
-                                          Event_Type.PlanetLose, Event_Type.PlanetWin}:
-                fight_report = service.getFightReport(target.value);
+    pid = request.session["PlayerID"]
+    service = createEngineClient()
+    player = service.getPlayer(pid)
+    
+    target = None
+    fight_report = None
+    if "event_id" in request.GET:
+        event_id = int(request.GET["event_id"])
+        for event in player.eventList:
+            if event_id == int(event.id):
+                target = event
+        if target and target.type in {Event_Type.FleetLose, Event_Type.FleetWin, 
+                                      Event_Type.PlanetLose, Event_Type.PlanetWin}:
+            fight_report = service.getFightReport(target.value);
 
-        ReportViewTutoTag = "ReportView"
-        if not ReportViewTutoTag in player.tutoDisplayed:
-            helpMessage = _("REPORT_TUTOS")
-            service.incrementTutoDisplayed(pid, ReportViewTutoTag);
-        else:
-            helpMessage = ""
+    ReportViewTutoTag = "ReportView"
+    if not ReportViewTutoTag in player.tutoDisplayed:
+        helpMessage = _("REPORT_TUTOS")
+        service.incrementTutoDisplayed(pid, ReportViewTutoTag)
+    else:
+        helpMessage = ""
 
-        return render(request, 'reportsview.html', {
-            'player': player,
-            'helpMessage': helpMessage,
-            'target': target,
-            'Event_Type': Event_Type,
-            'fight_report': fight_report
+    timeInfo = service.getTimeInfo()
+
+    return render(request, 'reportsview.html', {
+        'player': player,
+        'helpMessage': helpMessage,
+        'target': target,
+        'Event_Type': Event_Type,
+        'fight_report': fight_report,
+        'timeInfo': timeInfo,
     })
+
 
 CoddingLevelTag = "BlocklyCodding"
 def BlocklyFleetsCodesView(request):
-        pid = request.session["PlayerID"]
-        service = createEngineClient()
-    
-        message = ""
-        if request.method == "POST":
-            if "blocklyXML" in request.POST:
-                service.setPlayerFleetBlocklyCode(pid, request.POST["blocklyXML"].encode("utf8"))
-                service.setPlayerFleetCode(pid, request.POST["scriptXML"].encode("utf8"))
-                message = _("Code successfully saved")
-       
-       
-        player = service.getPlayer(pid)
-        codeData = player.fleetsCode
-        plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0);
-        tutosText = N_("BLOCKLY_TUTO_" + str(plLvl)) if plLvl <= 8 else None
-         
-        return render(request, 'codesview/blockly_fleet.html', {
-            "name": "Fleet",
-            "level": plLvl,
-            "message": message,
-            "codeData": codeData,
-            "tutosText": tutosText,
-            "mode": "blockly"
+    pid = request.session["PlayerID"]
+    service = createEngineClient()
+
+    message = ""
+    if request.method == "POST":
+        if "blocklyXML" in request.POST:
+            service.setPlayerFleetBlocklyCode(pid, request.POST["blocklyXML"].encode("utf8"))
+            service.setPlayerFleetCode(pid, request.POST["scriptXML"].encode("utf8"))
+            message = _("Code successfully saved")
+   
+   
+    player = service.getPlayer(pid)
+    codeData = player.fleetsCode
+    plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0);
+    tutosText = N_("BLOCKLY_TUTO_" + str(plLvl)) if plLvl <= 8 else None
+    timeInfo = service.getTimeInfo()
+     
+    return render(request, 'codesview/blockly_fleet.html', {
+        "name": "Fleet",
+        "level": plLvl,
+        "message": message,
+        "codeData": codeData,
+        "tutosText": tutosText,
+        "mode": "blockly",
+        'timeInfo': timeInfo,
     })
     
 
 def TextFleetsCodesView(request):
-        pid = request.session["PlayerID"]
-        service = createEngineClient()
-    
-        message = ""
-        if request.method == "POST":
-            if "save_button" in request.POST:
-                service.setPlayerFleetCode(pid, request.POST["TextArea"].encode("utf8"))
-                message = _("Code successfully saved")
+    pid = request.session["PlayerID"]
+    service = createEngineClient()
 
-        player = service.getPlayer(pid)
-        plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0);
-        codeData = player.fleetsCode
+    message = ""
+    if request.method == "POST":
+        if "save_button" in request.POST:
+            service.setPlayerFleetCode(pid, request.POST["TextArea"].encode("utf8"))
+            message = _("Code successfully saved")
 
-        return render(request, 'codesview/text.html', {
-            "name": "Fleet",
-            "codeData": codeData,
-            "message": message,
-            "script": codeData.code,
-            "level": plLvl,
-            "mode": "text",
-            
+    player = service.getPlayer(pid)
+    plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0);
+    codeData = player.fleetsCode
+    timeInfo = service.getTimeInfo()
+
+    return render(request, 'codesview/text.html', {
+        "name": "Fleet",
+        "codeData": codeData,
+        "message": message,
+        "script": codeData.code,
+        "level": plLvl,
+        "mode": "text",
+        "timeInfo": timeInfo,
     })
 
 
 def BlocklyPlanetsCodesView(request):
-        FirstSaveTag = "firstSave"
-        pid = request.session["PlayerID"]
-        service = createEngineClient()
-        player = service.getPlayer(pid)
+    FirstSaveTag = "firstSave"
+    pid = request.session["PlayerID"]
+    service = createEngineClient()
+    player = service.getPlayer(pid)
+
+    message = ""
+    if request.method == "POST":
+        if "blocklyXML" in request.POST:
+            service.setPlayerPlanetBlocklyCode(pid, request.POST["blocklyXML"].encode("utf8"))
+            service.setPlayerPlanetCode(pid, request.POST["scriptXML"].encode("utf8"))
+            message = _("Code successfully saved")
+            firstSave = player.tutoDisplayed.get(FirstSaveTag, 0);
+            if firstSave == 0:
+                service.incrementTutoDisplayed(pid, FirstSaveTag)
+                message = _("See in planets tab if the building is in progress")
+   
+    player = service.getPlayer(pid) #Redemendé car code modifié
+    plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0)
+    codeData = player.planetsCode
+    tutosText = N_("BLOCKLY_TUTO_" + str(plLvl)) if plLvl <= 8 else None
     
-        message = ""
-        if request.method == "POST":
-            if "blocklyXML" in request.POST:
-                service.setPlayerPlanetBlocklyCode(pid, request.POST["blocklyXML"].encode("utf8"))
-                service.setPlayerPlanetCode(pid, request.POST["scriptXML"].encode("utf8"))
-                message = _("Code successfully saved")
-                firstSave = player.tutoDisplayed.get(FirstSaveTag, 0);
-                if firstSave == 0:
-                    service.incrementTutoDisplayed(pid, FirstSaveTag)
-                    message = _("See in planets tab if the building is in progress")
-       
-        player = service.getPlayer(pid) #Redemendé car code modifié
-        plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0)
-        codeData = player.planetsCode
-        tutosText = N_("BLOCKLY_TUTO_" + str(plLvl)) if plLvl <= 8 else None
-        
-        helpMessage = _("CODE_TUTOS") if not CodeViewTutoTag in player.tutoDisplayed else None
-                
-        return render(request, 'codesview/blockly_planet.html', {
-            "name": "Planet",
-            "level": plLvl,
-            "message": message,
-            "codeData": codeData,
-            "tutosText": tutosText,
-            "mode": "blockly",
-            "helpMessage": helpMessage,
+    helpMessage = _("CODE_TUTOS") if not CodeViewTutoTag in player.tutoDisplayed else None
+    timeInfo = service.getTimeInfo()
+            
+    return render(request, 'codesview/blockly_planet.html', {
+        "name": "Planet",
+        "level": plLvl,
+        "message": message,
+        "codeData": codeData,
+        "tutosText": tutosText,
+        "mode": "blockly",
+        "helpMessage": helpMessage,
+        "timeInfo": timeInfo,
     })
 
 
 def TextPlanetsCodesView(request):
-        pid = request.session["PlayerID"]
-        service = createEngineClient()
-        
-        message = ""
-        if request.method == "POST":
-            if "save_button" in request.POST:
-                service.setPlayerPlanetCode(pid, request.POST["TextArea"].encode("utf8"))
-                message = _("Code successfully saved")
-        
-        
-        player = service.getPlayer(pid)
-        plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0);
-        codeData = player.planetsCode
+    pid = request.session["PlayerID"]
+    service = createEngineClient()
     
-        return render(request, 'codesview/text.html', {
-            "name": "Planet",
-            "codeData": codeData,
-            "message": message,
-            "script": codeData.code,
-            "level": plLvl,    
-            "mode": "text",        
-        })
+    message = ""
+    if request.method == "POST":
+        if "save_button" in request.POST:
+            service.setPlayerPlanetCode(pid, request.POST["TextArea"].encode("utf8"))
+            message = _("Code successfully saved")
+    
+    
+    player = service.getPlayer(pid)
+    plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0);
+    codeData = player.planetsCode
+    timeInfo = service.getTimeInfo()
+
+    return render(request, 'codesview/text.html', {
+        "name": "Planet",
+        "codeData": codeData,
+        "message": message,
+        "script": codeData.code,
+        "level": plLvl,    
+        "mode": "text",
+        "timeInfo": timeInfo,         
+    })
     
 
 def ScoreView(request):
@@ -329,10 +346,12 @@ def ScoreView(request):
     }
      
     players = sorted(players, key=key[sort_order], reverse=asc)
+    timeInfo = service.getTimeInfo()
     
     return render(request, 'scoreview.html', {
         "players": players,
-        "asc": asc
+        "asc": asc,
+        "timeInfo": timeInfo,
     })
     
     

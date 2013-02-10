@@ -110,7 +110,12 @@ def timeleft(task, timeinfo):
     end = task.lauchTime + task.duration
     roundLeft = end - timeinfo.univTime
     return roundLeft * timeinfo.roundDuration
-    
 
+    
+@register.filter
+def roundtimeleft(timeinfo):
+    intDec = divmod(timeinfo.univTime, 1.)
+    roundleft = timeinfo.roundDuration * (1. - intDec[1])
+    return roundleft
 
 

@@ -2,22 +2,30 @@
 
 {% load i18n %}
 
+{% load l10n %}
+
+{% load tmp_filters %}
+
 {% block body %}
 			<header>
 			</header>
 			<div class="navbar navbar-inverse navbar-static-top">
 				<div class="navbar-inner">
 					<div class="container">
-							<ul class="nav">
-								<li class="{% block codes_class %}tab{% endblock %}"><a href="/ingame/codes.html">{% trans "Command" %}</a></li>
-								<li class="{% block planets_class %}tab{% endblock %}"><a href="/ingame/planets.html">{% trans "Planets" %}</a></li>
-								<li class="{% block fleets_class %}tab{% endblock %}"><a href="/ingame/fleets.html">{% trans "Fleets" %}</a></li>
-								<li class="{% block reports_class %}tab{% endblock %}"><a href="/ingame/reports.html">{% trans "Reports" %}</a></li>
-								<li class="{% block score_class %}tab{% endblock %}"><a href="/ingame/score.html">{% trans "Score" %}</a></li>
-								<li class="divider-vertical"></li>
-								<li class="{% block ticket_class %}tab{% endblock %}"><a href="/ingame/ticket_list.html">{% trans "Tickets" %}</a></li>
-								<li><a href="/" class="tab">{% trans "Log out" %}</a></li>
-							</ul>
+						<ul class="nav">
+							<li class="{% block codes_class %}tab{% endblock %}"><a href="/ingame/codes.html">{% trans "Command" %}</a></li>
+							<li class="{% block planets_class %}tab{% endblock %}"><a href="/ingame/planets.html">{% trans "Planets" %}</a></li>
+							<li class="{% block fleets_class %}tab{% endblock %}"><a href="/ingame/fleets.html">{% trans "Fleets" %}</a></li>
+							<li class="{% block reports_class %}tab{% endblock %}"><a href="/ingame/reports.html">{% trans "Reports" %}</a></li>
+							<li class="{% block score_class %}tab{% endblock %}"><a href="/ingame/score.html">{% trans "Score" %}</a></li>
+							<li class="divider-vertical"> </li>
+							<li class="{% block ticket_class %}tab{% endblock %}"><a href="/ingame/ticket_list.html">{% trans "Tickets" %}</a></li>
+							<li><a href="/" class="tab">{% trans "Log out" %}</a></li>
+							<li><p class="navbar-text">{% trans "Next round :" %} 
+								<span id="roundleft" title="{{timeInfo|roundtimeleft|unlocalize}}">0</span>
+								</p>
+							</li>
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -37,4 +45,28 @@
 				</p>
 			</footer>
 			-->
+<script type="text/javascript">
+start = new Date();
+function t(eltname)
+{
+	window.setTimeout("t(\"" + eltname + "\");", 1000);
+	now = new Date();
+	element = document.getElementById(eltname);
+	secLeft = element.title;
+	s = Math.round(secLeft - ((now.getTime() - start.getTime()) / 1000.));
+	m=0; h=0;
+	if(s < 0) 
+		element.innerHTML="-";
+	else
+	{
+		if(s > 59) {m = Math.floor(s / 60); s = s - (m * 60);}
+		if(m > 59) {h = Math.floor(m / 60); m = m - h * 60;}
+		if(s < 10) s = "0" + s;
+		if(m < 10) m = "0" + m;
+		//element.innerHTML = h + ":" + m + ":" + s;
+		element.innerHTML = s;
+	}
+}
+t("roundleft");
+</script>			
 {% endblock %}

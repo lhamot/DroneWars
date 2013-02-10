@@ -251,7 +251,10 @@ try
 	if(planet && fleetCanSeePlanet(fleet, *planet) == false)
 		planet = nullptr;
 	if(planet)
-		action = luabind::call_member<FleetAction>(code, "action", boost::cref(fleet), boost::cref(*planet));
+	{
+		auto result = luabind::call_member<FleetAction>(code, "action", boost::cref(fleet), boost::cref(*planet));
+		action = result.operator FleetAction();
+	}
 	else
 		action = luabind::call_member<FleetAction>(code, "action", boost::cref(fleet), (Planet*)nullptr);
 	switch(action.action)
