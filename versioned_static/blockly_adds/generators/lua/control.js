@@ -18,7 +18,7 @@
  */
 
 /**
- * @fileoverview Generating Python for control blocks.
+ * @fileoverview Generating LUA for control blocks.
  * @author Loïc HAMOT
  * Due to the frequency of long strings, the 80-column wrap rule need not apply
  * to language files.

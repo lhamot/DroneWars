@@ -21,10 +21,12 @@
 							<li class="divider-vertical"> </li>
 							<li class="{% block ticket_class %}tab{% endblock %}"><a href="/ingame/ticket_list.html">{% trans "Tickets" %}</a></li>
 							<li><a href="/" class="tab">{% trans "Log out" %}</a></li>
+							{% if timeInfo %}
 							<li><p class="navbar-text">{% trans "Next round :" %} 
 								<span id="roundleft" title="{{timeInfo|roundtimeleft|unlocalize}}">0</span>
 								</p>
 							</li>
+							{% endif %}
 						</ul>
 					</div>
 				</div>

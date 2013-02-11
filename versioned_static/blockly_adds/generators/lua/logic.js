@@ -19,7 +19,7 @@
 
 /**
  * @fileoverview Generating lua for logic blocks.
- * @author Loïc HAMOT
+ * @author LoÃ¯c HAMOT
  */
 
 Blockly.lua = Blockly.Generator.get('lua');
@@ -77,4 +77,21 @@ Blockly.lua.logic_boolean = function()
 	// Boolean values true and false.
 	var code = (this.getTitleValue('BOOL') == 'TRUE') ? 'true' : 'false';
 	return [code, Blockly.lua.ORDER_ATOMIC];
+};
+
+Blockly.lua.logic_null = function() {
+  // Null data type.
+  return ['nil', Blockly.lua.ORDER_ATOMIC];
+};
+
+Blockly.lua.logic_ternary = function() {
+  // Ternary operator.
+  var value_if = Blockly.lua.valueToCode(this, 'IF',
+      Blockly.lua.ORDER_RELATIONAL) || 'false';
+  var value_then = Blockly.lua.valueToCode(this, 'THEN',
+      Blockly.lua.ORDER_RELATIONAL) || 'null';
+  var value_else = Blockly.lua.valueToCode(this, 'ELSE',
+      Blockly.lua.ORDER_RELATIONAL) || 'null';
+  var code = value_if + ' and ' + value_then + ' or ' + value_else;
+  return [code, Blockly.lua.ORDER_RELATIONAL];
 };
