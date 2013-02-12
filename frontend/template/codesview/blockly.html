@@ -63,12 +63,21 @@
 				alert(xml_text);"/>
 		<input class="btn btn-primary" type="submit" value="{% trans "Reload" %}" name="reload_button" onclick="document.location.href=''"/>
 		<input class="btn btn-primary" type="submit" value="{% trans "Save" %}" name="save_button" onclick="
-				var code = window.Blockly.Generator.workspaceToCode('lua');
-				document.getElementById('scriptXML').value = code;
-				var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-				var xml_text = Blockly.Xml.domToText(xml);
-				document.getElementById('blocklyXML').value = xml_text;
-				document.getElementById('saveBlocklyForm').submit();
+				try
+				{
+					var code = window.Blockly.Generator.workspaceToCode('lua');
+					document.getElementById('scriptXML').value = code;
+					var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+					var xml_text = Blockly.Xml.domToText(xml);
+					document.getElementById('blocklyXML').value = xml_text;
+					document.getElementById('saveBlocklyForm').submit();
+				}
+				catch(error)
+				{
+					errorElt = document.getElementById('save_button_error')
+					errorElt.value = error
+					document.getElementById('saveBlocklyForm').submit();
+				}
 				"/>
 		{%if codeData.lastError %}
 		<div class="alert text-error">
@@ -88,5 +97,6 @@
 {% csrf_token %}
 <input type="hidden" id="blocklyXML" name="blocklyXML" value=""/>
 <input type="hidden" id="scriptXML" name="scriptXML" value=""/>
+<input type="hidden" value="" name="save_button_error" id="save_button_error"/>
 </form>
 {% endblock %}

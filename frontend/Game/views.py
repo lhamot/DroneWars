@@ -7,6 +7,7 @@ from django.utils.translation import ugettext_lazy as N_
 #from django.shortcuts import render_to_response
 from django.shortcuts import render, redirect
 from django import forms
+import logging
 
 import thrift.transport.TSocket
 import thrift.protocol.TBinaryProtocol
@@ -277,7 +278,11 @@ def BlocklyPlanetsCodesView(request):
 
     message = ""
     if request.method == "POST":
-        if "blocklyXML" in request.POST:
+        if "save_button_error" in request.POST and len(request.POST["save_button_error"]):
+            message = request.POST["save_button_error"]
+            logger = logging.getLogger(__name__)
+            logger.error("javascript error when saving blockly code : " + message);
+        elif "blocklyXML" in request.POST:
             service.setPlayerPlanetBlocklyCode(pid, request.POST["blocklyXML"].encode("utf8"))
             service.setPlayerPlanetCode(pid, request.POST["scriptXML"].encode("utf8"))
             message = _("Code successfully saved")
