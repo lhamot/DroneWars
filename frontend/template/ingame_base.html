@@ -49,9 +49,9 @@
 			-->
 <script type="text/javascript">
 start = new Date();
-function t(eltname)
+function countdown(eltname, format)
 {
-	window.setTimeout("t(\"" + eltname + "\");", 1000);
+	window.setTimeout("countdown(\"" + eltname + "\", \"" + format + "\");", 1000);
 	now = new Date();
 	element = document.getElementById(eltname);
 	secLeft = element.title;
@@ -63,12 +63,14 @@ function t(eltname)
 	{
 		if(s > 59) {m = Math.floor(s / 60); s = s - (m * 60);}
 		if(m > 59) {h = Math.floor(m / 60); m = m - h * 60;}
-		if(s < 10) s = "0" + s;
-		if(m < 10) m = "0" + m;
-		//element.innerHTML = h + ":" + m + ":" + s;
-		element.innerHTML = s;
+		var dict = {
+  		  h: h,
+  		  m: m,
+  		  s: s,
+		};
+		element.innerHTML = sprintf(format, dict);
 	}
 }
-t("roundleft");
+countdown("roundleft", "%(s)02u");
 </script>			
 {% endblock %}
