@@ -115,7 +115,7 @@ ndw::Planet planetToThrift(Planet const& planet)
 
 	res.name = planet.name;
 	res.coord = coordToThrift(planet.coord);
-	res.playerId = boost::numeric_cast<int32_t>(planet.playerId);
+	res.playerId = sizeTypeToInt32(planet.playerId);
 	res.buildingList.reserve(planet.buildingList.size());
 	for(size_t value: planet.buildingList)
 		res.buildingList.push_back(sizeTypeToInt32(value));
@@ -186,7 +186,7 @@ ndw::FightReport fightReportToThrift(FightReport const& report)
 {
 	ndw::FightReport result;
 	result.fleetList.reserve(report.fleetList.size());
-	for(Report<Fleet> fleetRep: report.fleetList)
+	for(Report<Fleet> const & fleetRep: report.fleetList)
 		result.fleetList.push_back(fleetReportToThrift(fleetRep));
 	result.hasPlanet = report.hasPlanet;
 	if(result.hasPlanet != bool(report.planet))
