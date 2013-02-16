@@ -80,6 +80,14 @@ form legend, table caption
 	border-radius: 5px;
 }
 
+.neutral
+{
+	border-color: #808080;
+	border-width: 3px;
+	border-style: solid;
+	border-radius: 5px;
+}
+
 
 .looser
 {

@@ -260,6 +260,35 @@ class FleetAction_Type:
     "Colonize": 3,
   }
 
+class Sort_Type:
+  Name = 0
+  X = 1
+  Y = 2
+  Z = 3
+  M = 4
+  C = 5
+  L = 6
+
+  _VALUES_TO_NAMES = {
+    0: "Name",
+    1: "X",
+    2: "Y",
+    3: "Z",
+    4: "M",
+    5: "C",
+    6: "L",
+  }
+
+  _NAMES_TO_VALUES = {
+    "Name": 0,
+    "X": 1,
+    "Y": 2,
+    "Z": 3,
+    "M": 4,
+    "C": 5,
+    "L": 6,
+  }
+
 
 class Coord:
   """
@@ -1245,15 +1274,96 @@ class Fleet:
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'id', None, None, ), # 1
-    (2, TType.I32, 'playerId', None, None, ), # 2
-    (3, TType.STRUCT, 'coord', (Coord, Coord.thrift_spec), None, ), # 3
-    (4, TType.STRUCT, 'origin', (Coord, Coord.thrift_spec), None, ), # 4
-    (5, TType.STRING, 'name', None, None, ), # 5
-    (6, TType.LIST, 'shipList', (TType.I32,None), None, ), # 6
-    (7, TType.STRUCT, 'ressourceSet', (RessourceSet, RessourceSet.thrift_spec), None, ), # 7
-    (8, TType.LIST, 'taskQueue', (TType.STRUCT,(FleetTask, FleetTask.thrift_spec)), None, ), # 8
-    (9, TType.LIST, 'eventList', (TType.STRUCT,(Event, Event.thrift_spec)), None, ), # 9
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'id', None, None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.I32, 'playerId', None, None, ), # 20
+    None, # 21
+    None, # 22
+    None, # 23
+    None, # 24
+    None, # 25
+    None, # 26
+    None, # 27
+    None, # 28
+    None, # 29
+    (30, TType.STRUCT, 'coord', (Coord, Coord.thrift_spec), None, ), # 30
+    None, # 31
+    None, # 32
+    None, # 33
+    None, # 34
+    None, # 35
+    None, # 36
+    None, # 37
+    None, # 38
+    None, # 39
+    (40, TType.STRUCT, 'origin', (Coord, Coord.thrift_spec), None, ), # 40
+    None, # 41
+    None, # 42
+    None, # 43
+    None, # 44
+    None, # 45
+    None, # 46
+    None, # 47
+    None, # 48
+    None, # 49
+    (50, TType.STRING, 'name', None, None, ), # 50
+    None, # 51
+    None, # 52
+    None, # 53
+    None, # 54
+    None, # 55
+    None, # 56
+    None, # 57
+    None, # 58
+    None, # 59
+    (60, TType.LIST, 'shipList', (TType.I32,None), None, ), # 60
+    None, # 61
+    None, # 62
+    None, # 63
+    None, # 64
+    None, # 65
+    None, # 66
+    None, # 67
+    None, # 68
+    None, # 69
+    (70, TType.STRUCT, 'ressourceSet', (RessourceSet, RessourceSet.thrift_spec), None, ), # 70
+    None, # 71
+    None, # 72
+    None, # 73
+    None, # 74
+    None, # 75
+    None, # 76
+    None, # 77
+    None, # 78
+    None, # 79
+    (80, TType.LIST, 'taskQueue', (TType.STRUCT,(FleetTask, FleetTask.thrift_spec)), None, ), # 80
+    None, # 81
+    None, # 82
+    None, # 83
+    None, # 84
+    None, # 85
+    None, # 86
+    None, # 87
+    None, # 88
+    None, # 89
+    (90, TType.LIST, 'eventList', (TType.STRUCT,(Event, Event.thrift_spec)), None, ), # 90
   )
 
   def __init__(self, id=None, playerId=None, coord=None, origin=None, name=None, shipList=None, ressourceSet=None, taskQueue=None, eventList=None,):
@@ -1276,34 +1386,34 @@ class Fleet:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
+      if fid == 10:
         if ftype == TType.I32:
           self.id = iprot.readI32();
         else:
           iprot.skip(ftype)
-      elif fid == 2:
+      elif fid == 20:
         if ftype == TType.I32:
           self.playerId = iprot.readI32();
         else:
           iprot.skip(ftype)
-      elif fid == 3:
+      elif fid == 30:
         if ftype == TType.STRUCT:
           self.coord = Coord()
           self.coord.read(iprot)
         else:
           iprot.skip(ftype)
-      elif fid == 4:
+      elif fid == 40:
         if ftype == TType.STRUCT:
           self.origin = Coord()
           self.origin.read(iprot)
         else:
           iprot.skip(ftype)
-      elif fid == 5:
+      elif fid == 50:
         if ftype == TType.STRING:
           self.name = iprot.readString();
         else:
           iprot.skip(ftype)
-      elif fid == 6:
+      elif fid == 60:
         if ftype == TType.LIST:
           self.shipList = []
           (_etype54, _size51) = iprot.readListBegin()
@@ -1313,13 +1423,13 @@ class Fleet:
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
-      elif fid == 7:
+      elif fid == 70:
         if ftype == TType.STRUCT:
           self.ressourceSet = RessourceSet()
           self.ressourceSet.read(iprot)
         else:
           iprot.skip(ftype)
-      elif fid == 8:
+      elif fid == 80:
         if ftype == TType.LIST:
           self.taskQueue = []
           (_etype60, _size57) = iprot.readListBegin()
@@ -1330,7 +1440,7 @@ class Fleet:
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
-      elif fid == 9:
+      elif fid == 90:
         if ftype == TType.LIST:
           self.eventList = []
           (_etype66, _size63) = iprot.readListBegin()
@@ -1352,45 +1462,45 @@ class Fleet:
       return
     oprot.writeStructBegin('Fleet')
     if self.id is not None:
-      oprot.writeFieldBegin('id', TType.I32, 1)
+      oprot.writeFieldBegin('id', TType.I32, 10)
       oprot.writeI32(self.id)
       oprot.writeFieldEnd()
     if self.playerId is not None:
-      oprot.writeFieldBegin('playerId', TType.I32, 2)
+      oprot.writeFieldBegin('playerId', TType.I32, 20)
       oprot.writeI32(self.playerId)
       oprot.writeFieldEnd()
     if self.coord is not None:
-      oprot.writeFieldBegin('coord', TType.STRUCT, 3)
+      oprot.writeFieldBegin('coord', TType.STRUCT, 30)
       self.coord.write(oprot)
       oprot.writeFieldEnd()
     if self.origin is not None:
-      oprot.writeFieldBegin('origin', TType.STRUCT, 4)
+      oprot.writeFieldBegin('origin', TType.STRUCT, 40)
       self.origin.write(oprot)
       oprot.writeFieldEnd()
     if self.name is not None:
-      oprot.writeFieldBegin('name', TType.STRING, 5)
+      oprot.writeFieldBegin('name', TType.STRING, 50)
       oprot.writeString(self.name)
       oprot.writeFieldEnd()
     if self.shipList is not None:
-      oprot.writeFieldBegin('shipList', TType.LIST, 6)
+      oprot.writeFieldBegin('shipList', TType.LIST, 60)
       oprot.writeListBegin(TType.I32, len(self.shipList))
       for iter69 in self.shipList:
         oprot.writeI32(iter69)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.ressourceSet is not None:
-      oprot.writeFieldBegin('ressourceSet', TType.STRUCT, 7)
+      oprot.writeFieldBegin('ressourceSet', TType.STRUCT, 70)
       self.ressourceSet.write(oprot)
       oprot.writeFieldEnd()
     if self.taskQueue is not None:
-      oprot.writeFieldBegin('taskQueue', TType.LIST, 8)
+      oprot.writeFieldBegin('taskQueue', TType.LIST, 80)
       oprot.writeListBegin(TType.STRUCT, len(self.taskQueue))
       for iter70 in self.taskQueue:
         iter70.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.eventList is not None:
-      oprot.writeFieldBegin('eventList', TType.LIST, 9)
+      oprot.writeFieldBegin('eventList', TType.LIST, 90)
       oprot.writeListBegin(TType.STRUCT, len(self.eventList))
       for iter71 in self.eventList:
         iter71.write(oprot)
@@ -2383,6 +2493,234 @@ class TimeInfo:
     if self.univTime is not None:
       oprot.writeFieldBegin('univTime', TType.DOUBLE, 20)
       oprot.writeDouble(self.univTime)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class FleetList:
+  """
+  Attributes:
+   - fleetList
+   - planetList
+   - fleetCount
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.LIST, 'fleetList', (TType.STRUCT,(Fleet, Fleet.thrift_spec)), None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.LIST, 'planetList', (TType.STRUCT,(Planet, Planet.thrift_spec)), None, ), # 20
+    None, # 21
+    None, # 22
+    None, # 23
+    None, # 24
+    None, # 25
+    None, # 26
+    None, # 27
+    None, # 28
+    None, # 29
+    (30, TType.I32, 'fleetCount', None, None, ), # 30
+  )
+
+  def __init__(self, fleetList=None, planetList=None, fleetCount=None,):
+    self.fleetList = fleetList
+    self.planetList = planetList
+    self.fleetCount = fleetCount
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.LIST:
+          self.fleetList = []
+          (_etype132, _size129) = iprot.readListBegin()
+          for _i133 in xrange(_size129):
+            _elem134 = Fleet()
+            _elem134.read(iprot)
+            self.fleetList.append(_elem134)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 20:
+        if ftype == TType.LIST:
+          self.planetList = []
+          (_etype138, _size135) = iprot.readListBegin()
+          for _i139 in xrange(_size135):
+            _elem140 = Planet()
+            _elem140.read(iprot)
+            self.planetList.append(_elem140)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 30:
+        if ftype == TType.I32:
+          self.fleetCount = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('FleetList')
+    if self.fleetList is not None:
+      oprot.writeFieldBegin('fleetList', TType.LIST, 10)
+      oprot.writeListBegin(TType.STRUCT, len(self.fleetList))
+      for iter141 in self.fleetList:
+        iter141.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.planetList is not None:
+      oprot.writeFieldBegin('planetList', TType.LIST, 20)
+      oprot.writeListBegin(TType.STRUCT, len(self.planetList))
+      for iter142 in self.planetList:
+        iter142.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.fleetCount is not None:
+      oprot.writeFieldBegin('fleetCount', TType.I32, 30)
+      oprot.writeI32(self.fleetCount)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class PlanetList:
+  """
+  Attributes:
+   - planetList
+   - planetCount
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.LIST, 'planetList', (TType.STRUCT,(Planet, Planet.thrift_spec)), None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.I32, 'planetCount', None, None, ), # 20
+  )
+
+  def __init__(self, planetList=None, planetCount=None,):
+    self.planetList = planetList
+    self.planetCount = planetCount
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.LIST:
+          self.planetList = []
+          (_etype146, _size143) = iprot.readListBegin()
+          for _i147 in xrange(_size143):
+            _elem148 = Planet()
+            _elem148.read(iprot)
+            self.planetList.append(_elem148)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 20:
+        if ftype == TType.I32:
+          self.planetCount = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('PlanetList')
+    if self.planetList is not None:
+      oprot.writeFieldBegin('planetList', TType.LIST, 10)
+      oprot.writeListBegin(TType.STRUCT, len(self.planetList))
+      for iter149 in self.planetList:
+        iter149.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.planetCount is not None:
+      oprot.writeFieldBegin('planetCount', TType.I32, 20)
+      oprot.writeI32(self.planetCount)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

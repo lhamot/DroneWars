@@ -5,30 +5,30 @@ typedef i32 Coord_Value
 
 struct Coord
 {
-	1: Coord_Value X,
-	2: Coord_Value Y,
+	1: Coord_Value X
+	2: Coord_Value Y
 	3: Coord_Value Z
 }
 
 
 enum Event_Type 
 {
-	FleetCodeError = 0,
-	FleetCodeExecError,
-	PlanetCodeError,
-	PlanetCodeExecError,
-	Upgraded,
-	ShipMade,
-	PlanetHarvested,
-	FleetWin,
-	FleetDraw,
-	FleetsGather,
-	PlanetColonized,
-	FleetLose,
-	FleetDrop,
-	PlanetLose,
-	PlanetWin,
-	CannonMade,
+	FleetCodeError = 0
+	FleetCodeExecError
+	PlanetCodeError
+	PlanetCodeExecError
+	Upgraded
+	ShipMade
+	PlanetHarvested
+	FleetWin
+	FleetDraw
+	FleetsGather
+	PlanetColonized
+	FleetLose
+	FleetDrop
+	PlanetLose
+	PlanetWin
+	CannonMade
 	Count
 }
 
@@ -36,20 +36,20 @@ typedef i32 Event_ID
 
 struct Event 
 {
-	1: Event_ID id,
-	2: i32 time,
-	3: Event_Type type,
-	4: string comment,
-	5: i32 value,
+	1: Event_ID id
+	2: i32 time
+	3: Event_Type type
+	4: string comment
+	5: i32 value
 	6: bool viewed
 }
 
 
 struct CodeData
 {
-	1: string blocklyCode,
-	2: string code,
-	3: i32 failCount,
+	1: string blocklyCode
+	2: string code
+	3: i32 failCount
 	4: string lastError
 }
 
@@ -60,23 +60,23 @@ const Player_ID Player_NoId = -1
 
 struct Player
 {
-	1: Player_ID id,
-	2: string login,
-	3: string password,
-	4: CodeData fleetsCode,
-	5: CodeData planetsCode,
-	6: list<Event> eventList,
-	7: map<string, i32> tutoDisplayed,
-	8: Coord mainPlanet,
+	1: Player_ID id
+	2: string login
+	3: string password
+	4: CodeData fleetsCode
+	5: CodeData planetsCode
+	6: list<Event> eventList
+	7: map<string, i32> tutoDisplayed
+	8: Coord mainPlanet
 	9: i32 score = 0
 }
 
 
 enum Ressource
 {
-	Metal = 0,
-	Carbon,
-	Loicium,
+	Metal = 0
+	Carbon
+	Loicium
 	Count
 }
 
@@ -87,60 +87,60 @@ struct RessourceSet
 
 enum PlanetTask_Enum
 {
-	UpgradeBuilding = 0,
-	MakeShip,
-	MakeCannon,
+	UpgradeBuilding = 0
+	MakeShip
+	MakeCannon
 	Count
 }
 
 struct PlanetTask
 {
-	1: PlanetTask_Enum type = 0,
-	2: i32 value,
-	3: i32 value2,
-	4: i32 lauchTime,
-	5: i32 duration,
-	6: RessourceSet startCos,
+	1: PlanetTask_Enum type = 0
+	2: i32 value
+	3: i32 value2
+	4: i32 lauchTime
+	5: i32 duration
+	6: RessourceSet startCos
 	7: bool expired
 }
 
 enum Building_Enum
 {
-	CommandCenter = 0,
-	MetalMine,
-	CarbonMine,
-	LoiciumFilter,
-	Factory,
-	Laboratory,
-	CarbonicCentral,
-	SolarCentral,
-	GeothermicCentral,
+	CommandCenter = 0
+	MetalMine
+	CarbonMine
+	LoiciumFilter
+	Factory
+	Laboratory
+	CarbonicCentral
+	SolarCentral
+	GeothermicCentral
 	Count
 }
 
 
 enum Ship_Enum
 {
-	Mosquito = 0,
-	Hornet,
-	Vulture,
-	Dragon,
-	Behemoth,
-	Azathoth,
-	Queen,
-	Cargo,
-	LargeCargo,
+	Mosquito = 0
+	Hornet
+	Vulture
+	Dragon
+	Behemoth
+	Azathoth
+	Queen
+	Cargo
+	LargeCargo
 	Count
 }
 
 enum Cannon_Enum
 {
-	Cannon1 = 0,
-	Cannon2,
-	Cannon3,
-	Cannon4,
-	Cannon5,
-	Cannon6,
+	Cannon1 = 0
+	Cannon2
+	Cannon3
+	Cannon4
+	Cannon5
+	Cannon6
 	Count
 }
 
@@ -148,18 +148,18 @@ enum Cannon_Enum
 
 enum FleetTask_Enum
 {
-	Move = 0,
-	Harvest,
-	Colonize,
+	Move = 0
+	Harvest
+	Colonize
 	Count
 }
 
 struct FleetTask
 {
-	1: FleetTask_Enum type,
-	2: i32 lauchTime,
-	3: i32 duration,
-	4: Coord position,
+	1: FleetTask_Enum type
+	2: i32 lauchTime
+	3: i32 duration
+	4: Coord position
 	5: bool expired
 }
 
@@ -167,13 +167,13 @@ typedef list<i32> BuildingTab
 
 struct Planet
 {
-	1: string name,
-	2: Coord coord,
-	3: Player_ID playerId,
-	4: BuildingTab buildingList,
-	5: list<PlanetTask> taskQueue,
-	6: RessourceSet ressourceSet,
-	7: list<Event> eventList,
+	1: string name
+	2: Coord coord
+	3: Player_ID playerId
+	4: BuildingTab buildingList
+	5: list<PlanetTask> taskQueue
+	6: RessourceSet ressourceSet
+	7: list<Event> eventList
 	8: list<i32> cannonTab
 }
 
@@ -184,30 +184,30 @@ typedef list<i32> Fleet_ShipTab
 
 struct Fleet
 {
-	1: Fleet_ID id,
-	2: Player_ID playerId,
-	3: Coord coord,
-	4: Coord origin,
-	5: string name,
-	6: Fleet_ShipTab shipList,
-	7: RessourceSet ressourceSet,
-	8: list<FleetTask> taskQueue,
-	9: list<Event> eventList
+	10: Fleet_ID id
+	20: Player_ID playerId
+	30: Coord coord
+	40: Coord origin
+	50: string name
+	60: Fleet_ShipTab shipList
+	70: RessourceSet ressourceSet
+	80: list<FleetTask> taskQueue
+	90: list<Event> eventList
 }
 
 
 enum FleetAction_Type
 {
-	Nothing = 0,
-	Move,
-	Harvest,
+	Nothing = 0
+	Move
+	Harvest
 	Colonize
 }
 
 
 struct FleetAction
 {
-	1: FleetAction_Type action,
+	1: FleetAction_Type action
 	2: Coord target
 }
 
@@ -216,39 +216,39 @@ typedef list<FleetAction> FleetActionList
 
 struct FleetFightInfo
 {
-	10: Fleet before,
+	10: Fleet before
 	20: Fleet after
 }
 
 
 struct FleetReport
 {
-	10: bool isDead,
-	20: bool hasFight,
-	30: set<i32> enemySet,
+	10: bool isDead
+	20: bool hasFight
+	30: set<i32> enemySet
 	40: FleetFightInfo fightInfo
 }
 
 
 struct PlanetFightInfo
 {
-	10: Planet before,
-	20: Planet after,
+	10: Planet before
+	20: Planet after
 }
 
 
 struct PlanetReport
 {
-	10: bool isDead,
-	20: bool hasFight,
-	30: set<i32> enemySet,
+	10: bool isDead
+	20: bool hasFight
+	30: set<i32> enemySet
 	40: PlanetFightInfo fightInfo
 }
 
 struct FightReport
 {
-	10: list<FleetReport> fleetList,
-	20: bool hasPlanet,
+	10: list<FleetReport> fleetList
+	20: bool hasPlanet
 	30: optional PlanetReport planet
 }
 
@@ -263,12 +263,12 @@ typedef map<i32, FightReport> ReportMap
 
 struct Universe
 {
-	1: Universe_PlayerMap playerMap,
-	2: Universe_PlanetMap planetMap,
-	3: map<Fleet_ID, Fleet> fleetMap,
-	4: ReportMap reportMap,
-	5: Player_ID nextPlayerID,
-	6: Fleet_ID nextFleetID,
+	1: Universe_PlayerMap playerMap
+	2: Universe_PlanetMap planetMap
+	3: map<Fleet_ID, Fleet> fleetMap
+	4: ReportMap reportMap
+	5: Player_ID nextPlayerID
+	6: Fleet_ID nextFleetID
 	7: i32 time
 }
 
@@ -279,8 +279,35 @@ struct OptionalPlayer
 
 struct TimeInfo
 {
-	10: double roundDuration,
+	10: double roundDuration
 	20: double univTime
+}
+
+
+enum Sort_Type
+{
+	Name
+	X
+	Y
+	Z
+	M
+	C
+	L
+}
+
+
+struct FleetList
+{
+	10: list<Fleet> fleetList
+	20: list<Planet> planetList
+	30: i32 fleetCount
+}
+
+
+struct PlanetList
+{
+	10: list<Planet> planetList
+	20: i32 planetCount
 }
 
 
@@ -289,8 +316,8 @@ service EngineServer
 	void start(),
 	void stop(),
 	bool addPlayer(10: string login, 20: string password),
-	list<Fleet> getPlayerFleets(10: Player_ID pid),
-	list<Planet> getPlayerPlanets(10: Player_ID pid),
+	FleetList getPlayerFleets(10: Player_ID pid, 20: i32 beginIndex, 30: i32 endIndex, 40: Sort_Type sortType, 50: bool asc),
+	PlanetList getPlayerPlanets(10: Player_ID pid, 20: i32 beginIndex, 30: i32 endIndex, 40: Sort_Type sortType, 50: bool asc),
 	void setPlayerFleetCode(10: Player_ID pid, 20: string code),
 	void setPlayerPlanetCode(10: Player_ID pid, 20: string code),
 	void setPlayerFleetBlocklyCode(10: Player_ID pid, 20: string code),

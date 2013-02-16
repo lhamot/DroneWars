@@ -1,0 +1,67 @@
+{% extends "ingame_base.html" %}
+
+{% load i18n %}
+
+{% load l10n %}
+
+{% load tmp_filters %}
+
+{% block planets_class %}active{% endblock %}
+
+{% block content %}
+<div class="container">
+<div class="row">
+<div class="span5">
+<h4>{% trans "Reports" %}</h4>
+<table class="table table-condensed">
+	<tr><th>{% trans "Date" %}</th><th>{% trans "Type" %}</th><th>{% trans "Object" %}</th><th>{% trans "Comment" %}</th></tr>
+	{% for event in planet.eventList %}
+	<tr>
+		<td>{{event.time|int2datetime|date:"DATETIME_FORMAT"}}</td>
+		<td>{{event.type|eventname}}</td>
+		<td>{{event|eventvalue}}</td>
+		<td>{{event.comment}}</td>
+	</tr>
+	{% endfor %}
+</table>
+</div>
+<div class="span4">
+<table class="table table-condensed">
+	<caption>{% trans "Tasks" %}</caption>
+	<tr><th>{% trans "Type" %}</th><th>{% trans "Time left" %}</th><th>{% trans "What" %}</th></tr>
+	{% for task in planet.taskQueue %}
+	<tr><td>{{task.type|planettaskname}}</td>
+		<td><span id="countdown_dashboard_{{forloop.counter0}}" title="{{task|timeleft:timeInfo|unlocalize}}">0</span></td>
+		<script type="text/javascript">
+			function countdownRedirect()
+			{
+				window.setTimeout(
+					"countdown(\"countdown_dashboard_{{forloop.counter0}}\", '%(m)02u:%(s)02u');", 0);
+			}
+			countdownRedirect();
+		</script>	
+		<td>{{task|planettasktarget}}</td></tr>
+	{% endfor %}
+</table>
+<table class="table table-condensed">
+	<caption>{% trans "Buildings" %}</caption>
+	<tr><th>{% trans "Name" %}</th><th>{% trans "Level" %}</th></tr>
+	{% for level in planet.buildingList %}
+	<tr><td>{{forloop.counter0|buildingname}}</td><td>{{level}}</td></tr>
+	{% endfor %}
+</table>
+<table class="table table-condensed">
+	<caption>{% trans "Cannons" %}</caption>
+	<tr><th>{% trans "Name" %}</th><th>{% trans "Level" %}</th></tr>
+	{% for level in planet.cannonTab %}
+	<tr><td>{{forloop.counter0|cannonname}}</td><td>{{level}}</td></tr>
+	{% endfor %}
+</table>
+</div>
+<div class="span3">
+<h1>{{planet.name}}</h1>
+<img class="img-polaroid" src="{{ STATIC_URL }}{{planet|img_path:'pl'}}"/>
+</div>
+</div>
+</div>
+{% endblock %}

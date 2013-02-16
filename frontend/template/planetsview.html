@@ -10,76 +10,56 @@
 
 {% block content %}
 <div class="container">
-<div class="row">
-<div class="span5">
-<table class="table table-condensed">
-<tr>
-	<th>{% trans "View" %}</th><th>{% trans "Name" %}</th><th>{% trans "Coordinate" %}</th><th>{% trans "Ressources" %}</th>
-</tr>
-{% for planet in planetList %}
-<tr onclick="document.location.href='?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}'">
-	<td>
-		<img src="{{ STATIC_URL }}img/Planetes/min{{planet.imgNumber|stringformat:"03d"}}.jpg" />
-	</td>
-	<td><a href="?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}">{{planet.name}}</a></td>
-	<td>X:{{planet.coord.X}}<br/>Y:{{planet.coord.Y}}<br/>Z:{{planet.coord.Z}}</td>
-	<td>M:{{planet.ressourceSet.tab.0}}<br/>C:{{planet.ressourceSet.tab.1}}<br/>L:{{planet.ressourceSet.tab.2}}</td>
-</tr>
-{% endfor %}
-</table>
-</div>
-
-{% if planet != None %}
-<div class="span4">
-<h4>{% trans "Reports" %}</h4>
-<table class="table table-condensed">
-	<tr><th>{% trans "Date" %}</th><th>{% trans "Type" %}</th><th>{% trans "Object" %}</th><th>{% trans "Comment" %}</th></tr>
-	{% for event in planet.eventList %}
-	<tr>
-		<td>{{event.time|int2datetime|date:"DATETIME_FORMAT"}}</td>
-		<td>{{event.type|eventname}}</td>
-		<td>{{event|eventvalue}}</td>
-		<td>{{event.comment}}</td>
-	</tr>
-	{% endfor %}
-</table>
-<table class="table table-condensed">
-	<caption>{% trans "Tasks" %}</caption>
-	<tr><th>{% trans "Type" %}</th><th>{% trans "Time left" %}</th><th>{% trans "What" %}</th></tr>
-	{% for task in planet.taskQueue %}
-	<tr><td>{{task.type|planettaskname}}</td>
-		<td><span id="countdown_dashboard_{{forloop.counter0}}" title="{{task|timeleft:timeInfo|unlocalize}}">0</span></td>
-		<script type="text/javascript">
-			function countdownRedirect()
-			{
-				window.setTimeout(
-					"countdown(\"countdown_dashboard_{{forloop.counter0}}\", '%(m)02u:%(s)02u');", 0);
-			}
-			countdownRedirect();
-		</script>	
-		<td>{{task|planettasktarget}}</td></tr>
-	{% endfor %}
-</table>
-<table class="table table-condensed">
-	<caption>{% trans "Buildings" %}</caption>
-	<tr><th>{% trans "Name" %}</th><th>{% trans "Level" %}</th></tr>
-	{% for level in planet.buildingList %}
-	<tr><td>{{forloop.counter0|buildingname}}</td><td>{{level}}</td></tr>
-	{% endfor %}
-</table>
-<table class="table table-condensed">
-	<caption>{% trans "Cannons" %}</caption>
-	<tr><th>{% trans "Name" %}</th><th>{% trans "Level" %}</th></tr>
-	{% for level in planet.cannonTab %}
-	<tr><td>{{forloop.counter0|cannonname}}</td><td>{{level}}</td></tr>
-	{% endfor %}
-</table>
-</div>
-<div class="span3">
-<h1>{{planet.name}}</h1>
-<img class="img-polaroid" src="{{ STATIC_URL }}img/Planetes/pl{{planet.imgNumber|stringformat:"03d"}}.jpg"/>
-</div>
-{% endif %}
-</div>
+	<div class="row">
+		<div class="span12">
+			<div class="pagination">
+				<ul>
+					{% if prevpage < 0 %}
+					<li class="disabled"><a class="btn-inverse">Prev</a></li>
+					{% else %}
+					<li><a class="btn-inverse" href="?page={{prevpage}}&sort={{sort}}&asc={{asc}}">Prev</a></li>
+					{% endif %}
+					
+					{% for i in pageList %}
+					{% if i == currentpage %}
+					<li class="disabled"><a class="btn-inverse">{{i}}</a></li>
+					{% else %}
+					<li><a class="btn-inverse" href="?page={{i}}&sort={{sort}}&asc={{asc}}">{{i}}</a></li>
+					{% endif %}
+					{% endfor %}
+					
+					{% if nextpage >= pagecount %}
+					<li class="disabled"><a class="btn-inverse">Next</a></li>
+					{% else %}
+					<li><a class="btn-inverse" href="?page={{nextpage}}&sort={{sort}}&asc={{asc}}">Next</a></li>
+					{% endif %}
+				</ul>
+			</div>
+		</div>
+		<div class="span8 offset2">
+			<table class="table table-condensed">
+				<tr>
+					<th>{% trans "View" %}</th>
+					<th><a href="?page={{currentpage}}&sort=0&asc={{titleOrder.0}}">{{titleAfter.0|safe}}{% trans "Name" %}</a></th>
+					<th><a href="?page={{currentpage}}&sort=1&asc={{titleOrder.1}}">{{titleAfter.1|safe}}X</a></th>
+					<th><a href="?page={{currentpage}}&sort=2&asc={{titleOrder.2}}">{{titleAfter.2|safe}}Y</a></th>
+					<th><a href="?page={{currentpage}}&sort=3&asc={{titleOrder.3}}">{{titleAfter.3|safe}}Z</a></th>
+					<th><a href="?page={{currentpage}}&sort=4&asc={{titleOrder.4}}">{{titleAfter.4|safe}}M</a></th>
+					<th><a href="?page={{currentpage}}&sort=5&asc={{titleOrder.5}}">{{titleAfter.5|safe}}C</a></th>
+					<th><a href="?page={{currentpage}}&sort=6&asc={{titleOrder.6}}">{{titleAfter.6|safe}}L</a></th>
+				</tr>
+				{% for planet in planetList %}
+				<tr onclick="document.location.href='planet.html?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}'">
+					<td>
+						<img src="{{ STATIC_URL }}{{planet|img_path:'min'}}" width="40"/>
+					</td>
+					<td><a href="planet.html?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}">{{planet.name}}</a></td>
+					<td>{{planet.coord.X}}</td><td>{{planet.coord.Y}}</td><td>{{planet.coord.Z}}</td>
+					<td>{{planet.ressourceSet.tab.0}}</td><td>{{planet.ressourceSet.tab.1}}</td><td>{{planet.ressourceSet.tab.2}}</td>
+				</tr>
+			{% endfor %}
+			</table>
+		</div>
+	</div>
 </div>
 {% endblock %}

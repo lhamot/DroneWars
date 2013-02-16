@@ -46,6 +46,8 @@ public:
 
 	Planet getPlanet(Coord coord) const;
 
+	std::vector<Planet> getPlanets(std::vector<Coord> const& coord) const;
+
 	Fleet getFleet(Fleet::ID fid) const;
 
 	boost::optional<Player> getPlayer(std::string const& login, std::string const& password) const;

@@ -8,39 +8,66 @@
 
 {% block content %}
 <div class="container">
-<div class="row">
-<div class="span6">
-<table class="table">
-<tr>
-	<th>{% trans "Coordinate" %}</th><th>{% trans "Contents" %}</th><th>{% trans "Ressources" %}</th>
-</tr>
-{% for fleet in fleetList %}
-<tr>
-	<td><a href="?fleet={{fleet.id}}">X:{{fleet.coord.X}}; Y:{{fleet.coord.Y}}; Z:{{fleet.coord.Z}}</a></td>
-	<td>
-{% for level in fleet.shipList %}
-{% if level > 0 %}
-{{forloop.counter0|shipname|stringformat:".1s"}}:{{level}};
-{% endif %}
-{% endfor %}
-	</td>
-	<td>M:{{fleet.ressourceSet.tab.0}}; C:{{fleet.ressourceSet.tab.1}}; L:{{fleet.ressourceSet.tab.2}}</td>
-</tr>
-{% endfor %}
-</table>
-</div>
-
-{% if fleet != None %}
-<div class="span6">
-<h4>{% trans "Reports" %}</h4>
-<table>
-	<tr><th>{% trans "Date" %}</th><th>{% trans "Type" %}</th><th>{% trans "Comment" %}</th></tr>
-	{% for event in fleet.eventList %}
-	<tr><td>{{event.time|int2datetime|date:"DATETIME_FORMAT"}}</td><td>{{event.type|eventname}}</td><td>{{event.comment}}</td></tr>
-	{% endfor %}
-</table>
-</div>
-{% endif %}
-</div>
+	<div class="row">
+		<div class="span12">
+			<div class="pagination">
+				<ul>
+					{% if prevpage < 0 %}
+					<li class="disabled"><a class="btn-inverse">Prev</a></li>
+					{% else %}
+					<li><a class="btn-inverse" href="?page={{prevpage}}&sort={{sort}}&asc={{asc}}">Prev</a></li>
+					{% endif %}
+					
+					{% for i in pageList %}
+					{% if i == currentpage %}
+					<li class="disabled"><a class="btn-inverse">{{i}}</a></li>
+					{% else %}
+					<li><a class="btn-inverse" href="?page={{i}}&sort={{sort}}&asc={{asc}}">{{i}}</a></li>
+					{% endif %}
+					{% endfor %}
+					
+					{% if nextpage >= pagecount %}
+					<li class="disabled"><a class="btn-inverse">Next</a></li>
+					{% else %}
+					<li><a class="btn-inverse" href="?page={{nextpage}}&sort={{sort}}&asc={{asc}}">Next</a></li>
+					{% endif %}
+				</ul>
+			</div>
+		</div>
+		<div class="span8 offset2">
+			<table class="table">
+				<tr>
+					<th>{% trans "Planet" %}</th>
+					<th><a href="?page={{currentpage}}&sort=1&asc={{titleOrder.1}}">{{titleAfter.1|safe}}X</a></th>
+					<th><a href="?page={{currentpage}}&sort=2&asc={{titleOrder.2}}">{{titleAfter.2|safe}}Y</a></th>
+					<th><a href="?page={{currentpage}}&sort=3&asc={{titleOrder.3}}">{{titleAfter.3|safe}}Z</a></th>
+					<th><a href="?page={{currentpage}}&sort=4&asc={{titleOrder.4}}">{{titleAfter.4|safe}}M</a></th>
+					<th><a href="?page={{currentpage}}&sort=5&asc={{titleOrder.5}}">{{titleAfter.5|safe}}C</a></th>
+					<th><a href="?page={{currentpage}}&sort=6&asc={{titleOrder.6}}">{{titleAfter.6|safe}}L</a></th>
+					<th>{% trans "Content" %}</th>
+				</tr>
+				{% for fleet, planet in planetFleetPairs %}
+				<tr onclick="document.location.href='fleet.html?fleet={{fleet.id}}'">
+					<td>
+						{% if planet %}
+						{% if planet.playerId == fleet.playerId %}
+						<a href="planet.html?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}">
+							<img src="{{ STATIC_URL }}{{planet|img_path:'min'}}" width="40" class="ally"/>
+						</a>
+						{% elif planet.playerId != -1 %}
+						<img src="{{ STATIC_URL }}{{planet|img_path:'min'}}" width="40" class="enemy"/>
+						{% else %}
+							<img src="{{ STATIC_URL }}{{planet|img_path:'min'}}" width="40" class="neutral"/>
+						{% endif %}
+						{% endif %}
+					</td>
+					<td>{{fleet.coord.X}}</td><td>{{fleet.coord.Y}}</td><td>{{fleet.coord.Z}}</td>
+					<td>{{fleet.ressourceSet.tab.0}}</td><td>{{fleet.ressourceSet.tab.1}}</td><td>{{fleet.ressourceSet.tab.2}}</td>
+					<td>{{fleet|content}}</td>
+				</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
 </div>
 {% endblock %}

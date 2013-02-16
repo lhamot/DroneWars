@@ -195,6 +195,28 @@ const char* _kFleetAction_TypeNames[] =
 };
 const std::map<int, const char*> _FleetAction_Type_VALUES_TO_NAMES(::apache::thrift::TEnumIterator(4, _kFleetAction_TypeValues, _kFleetAction_TypeNames), ::apache::thrift::TEnumIterator(-1, NULL, NULL));
 
+int _kSort_TypeValues[] =
+{
+	Sort_Type::Name,
+	Sort_Type::X,
+	Sort_Type::Y,
+	Sort_Type::Z,
+	Sort_Type::M,
+	Sort_Type::C,
+	Sort_Type::L
+};
+const char* _kSort_TypeNames[] =
+{
+	"Name",
+	"X",
+	"Y",
+	"Z",
+	"M",
+	"C",
+	"L"
+};
+const std::map<int, const char*> _Sort_Type_VALUES_TO_NAMES(::apache::thrift::TEnumIterator(7, _kSort_TypeValues, _kSort_TypeNames), ::apache::thrift::TEnumIterator(-1, NULL, NULL));
+
 const char* Coord::ascii_fingerprint = "6435B39C87AB0E30F30BEDEFD7328C0D";
 const uint8_t Coord::binary_fingerprint[16] = {0x64, 0x35, 0xB3, 0x9C, 0x87, 0xAB, 0x0E, 0x30, 0xF3, 0x0B, 0xED, 0xEF, 0xD7, 0x32, 0x8C, 0x0D};
 
@@ -1457,8 +1479,8 @@ void swap(Planet& a, Planet& b)
 	swap(a.__isset, b.__isset);
 }
 
-const char* Fleet::ascii_fingerprint = "CF19FAF02905030F504A79F9A409DAE3";
-const uint8_t Fleet::binary_fingerprint[16] = {0xCF, 0x19, 0xFA, 0xF0, 0x29, 0x05, 0x03, 0x0F, 0x50, 0x4A, 0x79, 0xF9, 0xA4, 0x09, 0xDA, 0xE3};
+const char* Fleet::ascii_fingerprint = "7F2E377571D9724BAAE2721C92DC886A";
+const uint8_t Fleet::binary_fingerprint[16] = {0x7F, 0x2E, 0x37, 0x75, 0x71, 0xD9, 0x72, 0x4B, 0xAA, 0xE2, 0x72, 0x1C, 0x92, 0xDC, 0x88, 0x6A};
 
 uint32_t Fleet::read(::apache::thrift::protocol::TProtocol* iprot)
 {
@@ -1482,7 +1504,7 @@ uint32_t Fleet::read(::apache::thrift::protocol::TProtocol* iprot)
 		}
 		switch(fid)
 		{
-		case 1:
+		case 10:
 			if(ftype == ::apache::thrift::protocol::T_I32)
 			{
 				xfer += iprot->readI32(this->id);
@@ -1493,7 +1515,7 @@ uint32_t Fleet::read(::apache::thrift::protocol::TProtocol* iprot)
 				xfer += iprot->skip(ftype);
 			}
 			break;
-		case 2:
+		case 20:
 			if(ftype == ::apache::thrift::protocol::T_I32)
 			{
 				xfer += iprot->readI32(this->playerId);
@@ -1504,7 +1526,7 @@ uint32_t Fleet::read(::apache::thrift::protocol::TProtocol* iprot)
 				xfer += iprot->skip(ftype);
 			}
 			break;
-		case 3:
+		case 30:
 			if(ftype == ::apache::thrift::protocol::T_STRUCT)
 			{
 				xfer += this->coord.read(iprot);
@@ -1515,7 +1537,7 @@ uint32_t Fleet::read(::apache::thrift::protocol::TProtocol* iprot)
 				xfer += iprot->skip(ftype);
 			}
 			break;
-		case 4:
+		case 40:
 			if(ftype == ::apache::thrift::protocol::T_STRUCT)
 			{
 				xfer += this->origin.read(iprot);
@@ -1526,7 +1548,7 @@ uint32_t Fleet::read(::apache::thrift::protocol::TProtocol* iprot)
 				xfer += iprot->skip(ftype);
 			}
 			break;
-		case 5:
+		case 50:
 			if(ftype == ::apache::thrift::protocol::T_STRING)
 			{
 				xfer += iprot->readString(this->name);
@@ -1537,7 +1559,7 @@ uint32_t Fleet::read(::apache::thrift::protocol::TProtocol* iprot)
 				xfer += iprot->skip(ftype);
 			}
 			break;
-		case 6:
+		case 60:
 			if(ftype == ::apache::thrift::protocol::T_LIST)
 			{
 				{
@@ -1560,7 +1582,7 @@ uint32_t Fleet::read(::apache::thrift::protocol::TProtocol* iprot)
 				xfer += iprot->skip(ftype);
 			}
 			break;
-		case 7:
+		case 70:
 			if(ftype == ::apache::thrift::protocol::T_STRUCT)
 			{
 				xfer += this->ressourceSet.read(iprot);
@@ -1571,7 +1593,7 @@ uint32_t Fleet::read(::apache::thrift::protocol::TProtocol* iprot)
 				xfer += iprot->skip(ftype);
 			}
 			break;
-		case 8:
+		case 80:
 			if(ftype == ::apache::thrift::protocol::T_LIST)
 			{
 				{
@@ -1594,7 +1616,7 @@ uint32_t Fleet::read(::apache::thrift::protocol::TProtocol* iprot)
 				xfer += iprot->skip(ftype);
 			}
 			break;
-		case 9:
+		case 90:
 			if(ftype == ::apache::thrift::protocol::T_LIST)
 			{
 				{
@@ -1634,27 +1656,27 @@ uint32_t Fleet::write(::apache::thrift::protocol::TProtocol* oprot) const
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("Fleet");
 
-	xfer += oprot->writeFieldBegin("id", ::apache::thrift::protocol::T_I32, 1);
+	xfer += oprot->writeFieldBegin("id", ::apache::thrift::protocol::T_I32, 10);
 	xfer += oprot->writeI32(this->id);
 	xfer += oprot->writeFieldEnd();
 
-	xfer += oprot->writeFieldBegin("playerId", ::apache::thrift::protocol::T_I32, 2);
+	xfer += oprot->writeFieldBegin("playerId", ::apache::thrift::protocol::T_I32, 20);
 	xfer += oprot->writeI32(this->playerId);
 	xfer += oprot->writeFieldEnd();
 
-	xfer += oprot->writeFieldBegin("coord", ::apache::thrift::protocol::T_STRUCT, 3);
+	xfer += oprot->writeFieldBegin("coord", ::apache::thrift::protocol::T_STRUCT, 30);
 	xfer += this->coord.write(oprot);
 	xfer += oprot->writeFieldEnd();
 
-	xfer += oprot->writeFieldBegin("origin", ::apache::thrift::protocol::T_STRUCT, 4);
+	xfer += oprot->writeFieldBegin("origin", ::apache::thrift::protocol::T_STRUCT, 40);
 	xfer += this->origin.write(oprot);
 	xfer += oprot->writeFieldEnd();
 
-	xfer += oprot->writeFieldBegin("name", ::apache::thrift::protocol::T_STRING, 5);
+	xfer += oprot->writeFieldBegin("name", ::apache::thrift::protocol::T_STRING, 50);
 	xfer += oprot->writeString(this->name);
 	xfer += oprot->writeFieldEnd();
 
-	xfer += oprot->writeFieldBegin("shipList", ::apache::thrift::protocol::T_LIST, 6);
+	xfer += oprot->writeFieldBegin("shipList", ::apache::thrift::protocol::T_LIST, 60);
 	{
 		xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>(this->shipList.size()));
 		std::vector<int32_t> ::const_iterator _iter62;
@@ -1666,11 +1688,11 @@ uint32_t Fleet::write(::apache::thrift::protocol::TProtocol* oprot) const
 	}
 	xfer += oprot->writeFieldEnd();
 
-	xfer += oprot->writeFieldBegin("ressourceSet", ::apache::thrift::protocol::T_STRUCT, 7);
+	xfer += oprot->writeFieldBegin("ressourceSet", ::apache::thrift::protocol::T_STRUCT, 70);
 	xfer += this->ressourceSet.write(oprot);
 	xfer += oprot->writeFieldEnd();
 
-	xfer += oprot->writeFieldBegin("taskQueue", ::apache::thrift::protocol::T_LIST, 8);
+	xfer += oprot->writeFieldBegin("taskQueue", ::apache::thrift::protocol::T_LIST, 80);
 	{
 		xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->taskQueue.size()));
 		std::vector<FleetTask> ::const_iterator _iter63;
@@ -1682,7 +1704,7 @@ uint32_t Fleet::write(::apache::thrift::protocol::TProtocol* oprot) const
 	}
 	xfer += oprot->writeFieldEnd();
 
-	xfer += oprot->writeFieldBegin("eventList", ::apache::thrift::protocol::T_LIST, 9);
+	xfer += oprot->writeFieldBegin("eventList", ::apache::thrift::protocol::T_LIST, 90);
 	{
 		xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->eventList.size()));
 		std::vector<Event> ::const_iterator _iter64;
@@ -1801,8 +1823,8 @@ void swap(FleetAction& a, FleetAction& b)
 	swap(a.__isset, b.__isset);
 }
 
-const char* FleetFightInfo::ascii_fingerprint = "B929437BE27F477FE12F0B07E1CC2F2A";
-const uint8_t FleetFightInfo::binary_fingerprint[16] = {0xB9, 0x29, 0x43, 0x7B, 0xE2, 0x7F, 0x47, 0x7F, 0xE1, 0x2F, 0x0B, 0x07, 0xE1, 0xCC, 0x2F, 0x2A};
+const char* FleetFightInfo::ascii_fingerprint = "C87F4D7054D96EC55B454D5172A46D0D";
+const uint8_t FleetFightInfo::binary_fingerprint[16] = {0xC8, 0x7F, 0x4D, 0x70, 0x54, 0xD9, 0x6E, 0xC5, 0x5B, 0x45, 0x4D, 0x51, 0x72, 0xA4, 0x6D, 0x0D};
 
 uint32_t FleetFightInfo::read(::apache::thrift::protocol::TProtocol* iprot)
 {
@@ -1886,8 +1908,8 @@ void swap(FleetFightInfo& a, FleetFightInfo& b)
 	swap(a.__isset, b.__isset);
 }
 
-const char* FleetReport::ascii_fingerprint = "F42A75E8E1ADE7187A33686404DD9276";
-const uint8_t FleetReport::binary_fingerprint[16] = {0xF4, 0x2A, 0x75, 0xE8, 0xE1, 0xAD, 0xE7, 0x18, 0x7A, 0x33, 0x68, 0x64, 0x04, 0xDD, 0x92, 0x76};
+const char* FleetReport::ascii_fingerprint = "1F5F50236CAA73FEC7CFE595305D8FB4";
+const uint8_t FleetReport::binary_fingerprint[16] = {0x1F, 0x5F, 0x50, 0x23, 0x6C, 0xAA, 0x73, 0xFE, 0xC7, 0xCF, 0xE5, 0x95, 0x30, 0x5D, 0x8F, 0xB4};
 
 uint32_t FleetReport::read(::apache::thrift::protocol::TProtocol* iprot)
 {
@@ -2247,8 +2269,8 @@ void swap(PlanetReport& a, PlanetReport& b)
 	swap(a.__isset, b.__isset);
 }
 
-const char* FightReport::ascii_fingerprint = "6A2D8E38A94D8D1F71FBAC22FAA6BBEF";
-const uint8_t FightReport::binary_fingerprint[16] = {0x6A, 0x2D, 0x8E, 0x38, 0xA9, 0x4D, 0x8D, 0x1F, 0x71, 0xFB, 0xAC, 0x22, 0xFA, 0xA6, 0xBB, 0xEF};
+const char* FightReport::ascii_fingerprint = "96A98A1FF609CB59E84D83BDF94663D3";
+const uint8_t FightReport::binary_fingerprint[16] = {0x96, 0xA9, 0x8A, 0x1F, 0xF6, 0x09, 0xCB, 0x59, 0xE8, 0x4D, 0x83, 0xBD, 0xF9, 0x46, 0x63, 0xD3};
 
 uint32_t FightReport::read(::apache::thrift::protocol::TProtocol* iprot)
 {
@@ -2370,8 +2392,8 @@ void swap(FightReport& a, FightReport& b)
 	swap(a.__isset, b.__isset);
 }
 
-const char* Universe::ascii_fingerprint = "2D926907C971B96AA75678427384A8BB";
-const uint8_t Universe::binary_fingerprint[16] = {0x2D, 0x92, 0x69, 0x07, 0xC9, 0x71, 0xB9, 0x6A, 0xA7, 0x56, 0x78, 0x42, 0x73, 0x84, 0xA8, 0xBB};
+const char* Universe::ascii_fingerprint = "923D2BD6A38F7ED98D913B8CB37A26C5";
+const uint8_t Universe::binary_fingerprint[16] = {0x92, 0x3D, 0x2B, 0xD6, 0xA3, 0x8F, 0x7E, 0xD9, 0x8D, 0x91, 0x3B, 0x8C, 0xB3, 0x7A, 0x26, 0xC5};
 
 uint32_t Universe::read(::apache::thrift::protocol::TProtocol* iprot)
 {
@@ -2784,6 +2806,252 @@ void swap(TimeInfo& a, TimeInfo& b)
 	using ::std::swap;
 	swap(a.roundDuration, b.roundDuration);
 	swap(a.univTime, b.univTime);
+	swap(a.__isset, b.__isset);
+}
+
+const char* FleetList::ascii_fingerprint = "A1C1A0D49440713B2A068AA50D07EE7A";
+const uint8_t FleetList::binary_fingerprint[16] = {0xA1, 0xC1, 0xA0, 0xD4, 0x94, 0x40, 0x71, 0x3B, 0x2A, 0x06, 0x8A, 0xA5, 0x0D, 0x07, 0xEE, 0x7A};
+
+uint32_t FleetList::read(::apache::thrift::protocol::TProtocol* iprot)
+{
+
+	uint32_t xfer = 0;
+	std::string fname;
+	::apache::thrift::protocol::TType ftype;
+	int16_t fid;
+
+	xfer += iprot->readStructBegin(fname);
+
+	using ::apache::thrift::protocol::TProtocolException;
+
+
+	while(true)
+	{
+		xfer += iprot->readFieldBegin(fname, ftype, fid);
+		if(ftype == ::apache::thrift::protocol::T_STOP)
+		{
+			break;
+		}
+		switch(fid)
+		{
+		case 10:
+			if(ftype == ::apache::thrift::protocol::T_LIST)
+			{
+				{
+					this->fleetList.clear();
+					uint32_t _size118;
+					::apache::thrift::protocol::TType _etype121;
+					xfer += iprot->readListBegin(_etype121, _size118);
+					this->fleetList.resize(_size118);
+					uint32_t _i122;
+					for(_i122 = 0; _i122 < _size118; ++_i122)
+					{
+						xfer += this->fleetList[_i122].read(iprot);
+					}
+					xfer += iprot->readListEnd();
+				}
+				this->__isset.fleetList = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		case 20:
+			if(ftype == ::apache::thrift::protocol::T_LIST)
+			{
+				{
+					this->planetList.clear();
+					uint32_t _size123;
+					::apache::thrift::protocol::TType _etype126;
+					xfer += iprot->readListBegin(_etype126, _size123);
+					this->planetList.resize(_size123);
+					uint32_t _i127;
+					for(_i127 = 0; _i127 < _size123; ++_i127)
+					{
+						xfer += this->planetList[_i127].read(iprot);
+					}
+					xfer += iprot->readListEnd();
+				}
+				this->__isset.planetList = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		case 30:
+			if(ftype == ::apache::thrift::protocol::T_I32)
+			{
+				xfer += iprot->readI32(this->fleetCount);
+				this->__isset.fleetCount = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		default:
+			xfer += iprot->skip(ftype);
+			break;
+		}
+		xfer += iprot->readFieldEnd();
+	}
+
+	xfer += iprot->readStructEnd();
+
+	return xfer;
+}
+
+uint32_t FleetList::write(::apache::thrift::protocol::TProtocol* oprot) const
+{
+	uint32_t xfer = 0;
+	xfer += oprot->writeStructBegin("FleetList");
+
+	xfer += oprot->writeFieldBegin("fleetList", ::apache::thrift::protocol::T_LIST, 10);
+	{
+		xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->fleetList.size()));
+		std::vector<Fleet> ::const_iterator _iter128;
+		for(_iter128 = this->fleetList.begin(); _iter128 != this->fleetList.end(); ++_iter128)
+		{
+			xfer += (*_iter128).write(oprot);
+		}
+		xfer += oprot->writeListEnd();
+	}
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldBegin("planetList", ::apache::thrift::protocol::T_LIST, 20);
+	{
+		xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->planetList.size()));
+		std::vector<Planet> ::const_iterator _iter129;
+		for(_iter129 = this->planetList.begin(); _iter129 != this->planetList.end(); ++_iter129)
+		{
+			xfer += (*_iter129).write(oprot);
+		}
+		xfer += oprot->writeListEnd();
+	}
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldBegin("fleetCount", ::apache::thrift::protocol::T_I32, 30);
+	xfer += oprot->writeI32(this->fleetCount);
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldStop();
+	xfer += oprot->writeStructEnd();
+	return xfer;
+}
+
+void swap(FleetList& a, FleetList& b)
+{
+	using ::std::swap;
+	swap(a.fleetList, b.fleetList);
+	swap(a.planetList, b.planetList);
+	swap(a.fleetCount, b.fleetCount);
+	swap(a.__isset, b.__isset);
+}
+
+const char* PlanetList::ascii_fingerprint = "18C7E957C40A9FD4002304AEBEA00438";
+const uint8_t PlanetList::binary_fingerprint[16] = {0x18, 0xC7, 0xE9, 0x57, 0xC4, 0x0A, 0x9F, 0xD4, 0x00, 0x23, 0x04, 0xAE, 0xBE, 0xA0, 0x04, 0x38};
+
+uint32_t PlanetList::read(::apache::thrift::protocol::TProtocol* iprot)
+{
+
+	uint32_t xfer = 0;
+	std::string fname;
+	::apache::thrift::protocol::TType ftype;
+	int16_t fid;
+
+	xfer += iprot->readStructBegin(fname);
+
+	using ::apache::thrift::protocol::TProtocolException;
+
+
+	while(true)
+	{
+		xfer += iprot->readFieldBegin(fname, ftype, fid);
+		if(ftype == ::apache::thrift::protocol::T_STOP)
+		{
+			break;
+		}
+		switch(fid)
+		{
+		case 10:
+			if(ftype == ::apache::thrift::protocol::T_LIST)
+			{
+				{
+					this->planetList.clear();
+					uint32_t _size130;
+					::apache::thrift::protocol::TType _etype133;
+					xfer += iprot->readListBegin(_etype133, _size130);
+					this->planetList.resize(_size130);
+					uint32_t _i134;
+					for(_i134 = 0; _i134 < _size130; ++_i134)
+					{
+						xfer += this->planetList[_i134].read(iprot);
+					}
+					xfer += iprot->readListEnd();
+				}
+				this->__isset.planetList = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		case 20:
+			if(ftype == ::apache::thrift::protocol::T_I32)
+			{
+				xfer += iprot->readI32(this->planetCount);
+				this->__isset.planetCount = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		default:
+			xfer += iprot->skip(ftype);
+			break;
+		}
+		xfer += iprot->readFieldEnd();
+	}
+
+	xfer += iprot->readStructEnd();
+
+	return xfer;
+}
+
+uint32_t PlanetList::write(::apache::thrift::protocol::TProtocol* oprot) const
+{
+	uint32_t xfer = 0;
+	xfer += oprot->writeStructBegin("PlanetList");
+
+	xfer += oprot->writeFieldBegin("planetList", ::apache::thrift::protocol::T_LIST, 10);
+	{
+		xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->planetList.size()));
+		std::vector<Planet> ::const_iterator _iter135;
+		for(_iter135 = this->planetList.begin(); _iter135 != this->planetList.end(); ++_iter135)
+		{
+			xfer += (*_iter135).write(oprot);
+		}
+		xfer += oprot->writeListEnd();
+	}
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldBegin("planetCount", ::apache::thrift::protocol::T_I32, 20);
+	xfer += oprot->writeI32(this->planetCount);
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldStop();
+	xfer += oprot->writeStructEnd();
+	return xfer;
+}
+
+void swap(PlanetList& a, PlanetList& b)
+{
+	using ::std::swap;
+	swap(a.planetList, b.planetList);
+	swap(a.planetCount, b.planetCount);
 	swap(a.__isset, b.__isset);
 }
 

@@ -26,8 +26,8 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  void start()'
   print '  void stop()'
   print '  bool addPlayer(string login, string password)'
-  print '   getPlayerFleets(Player_ID pid)'
-  print '   getPlayerPlanets(Player_ID pid)'
+  print '  FleetList getPlayerFleets(Player_ID pid, i32 beginIndex, i32 endIndex, Sort_Type sortType, bool asc)'
+  print '  PlanetList getPlayerPlanets(Player_ID pid, i32 beginIndex, i32 endIndex, Sort_Type sortType, bool asc)'
   print '  void setPlayerFleetCode(Player_ID pid, string code)'
   print '  void setPlayerPlanetCode(Player_ID pid, string code)'
   print '  void setPlayerFleetBlocklyCode(Player_ID pid, string code)'
@@ -112,16 +112,16 @@ elif cmd == 'addPlayer':
   pp.pprint(client.addPlayer(args[0],args[1],))
 
 elif cmd == 'getPlayerFleets':
-  if len(args) != 1:
-    print 'getPlayerFleets requires 1 args'
+  if len(args) != 5:
+    print 'getPlayerFleets requires 5 args'
     sys.exit(1)
-  pp.pprint(client.getPlayerFleets(eval(args[0]),))
+  pp.pprint(client.getPlayerFleets(eval(args[0]),eval(args[1]),eval(args[2]),eval(args[3]),eval(args[4]),))
 
 elif cmd == 'getPlayerPlanets':
-  if len(args) != 1:
-    print 'getPlayerPlanets requires 1 args'
+  if len(args) != 5:
+    print 'getPlayerPlanets requires 5 args'
     sys.exit(1)
-  pp.pprint(client.getPlayerPlanets(eval(args[0]),))
+  pp.pprint(client.getPlayerPlanets(eval(args[0]),eval(args[1]),eval(args[2]),eval(args[3]),eval(args[4]),))
 
 elif cmd == 'setPlayerFleetCode':
   if len(args) != 2:

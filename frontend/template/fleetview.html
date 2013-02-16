@@ -1,0 +1,23 @@
+{% extends "ingame_base.html" %}
+
+{% load i18n %}
+
+{% load tmp_filters %}
+
+{% block fleets_class %}active{% endblock %}
+
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="span6 offset3">
+			<h4>{% trans "Reports" %}</h4>
+			<table>
+				<tr><th>{% trans "Date" %}</th><th>{% trans "Type" %}</th><th>{% trans "Comment" %}</th></tr>
+				{% for event in fleet.eventList %}
+				<tr><td>{{event.time|int2datetime|date:"DATETIME_FORMAT"}}</td><td>{{event.type|eventname}}</td><td>{{event.comment}}</td></tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
+</div>
+{% endblock %}

@@ -21,9 +21,19 @@ public:
 
 	bool addPlayer(const std::string& login, const std::string& password);
 
-	void getPlayerFleets(std::vector<ndw::Fleet>& _return, const ndw::Player_ID pid);
+	void getPlayerFleets(ndw::FleetList& _return,
+	                     const ndw::Player_ID pid,
+	                     const int32_t beginIndex,
+	                     const int32_t endIndex,
+	                     const ndw::Sort_Type::type sortType,
+	                     const bool asc);
 
-	void getPlayerPlanets(std::vector<ndw::Planet>& _return, const ndw::Player_ID pid);
+	void getPlayerPlanets(ndw::PlanetList& _return,
+	                      const ndw::Player_ID pid,
+	                      const int32_t beginIndex,
+	                      const int32_t endIndex,
+	                      const  ndw::Sort_Type::type sortType,
+	                      const bool asc);
 
 	void setPlayerFleetCode(const ndw::Player_ID pid, const std::string& code);
 

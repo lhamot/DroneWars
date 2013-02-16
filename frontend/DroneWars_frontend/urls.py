@@ -21,8 +21,10 @@ urlpatterns = patterns('',
     url(r'^ingame/codes/planets/text.html',        'Game.views.TextPlanetsCodesView'),
 
     
-    url(r'^ingame/planets.html', 'Game.views.PlanetsView'),
-    url(r'^ingame/fleets.html', 'Game.views.FleetsView'),
+    url(r'^ingame/planetlist.html', 'Game.views.PlanetListView'),
+    url(r'^ingame/planet.html', 'Game.views.PlanetView'),
+    url(r'^ingame/fleetlist.html', 'Game.views.FleetListView'),
+    url(r'^ingame/fleet.html', 'Game.views.FleetView'),
     url(r'^ingame/codes.html', 'Game.views.CodesView'),
     url(r'^ingame/reports.html', 'Game.views.ReportsView'),
     url(r'^ingame/score.html', 'Game.views.ScoreView'),

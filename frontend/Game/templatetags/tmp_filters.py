@@ -86,7 +86,7 @@ def content(planetOrFleet):
         result = ""
         for shipType in range(Ship_Enum.Count):
             if fleet.shipList[shipType]:
-                result += _("%s:%s;") % (shipname(shipType)[0], fleet.shipList[shipType]);
+                result += " " + _("%s:%s;") % (shipname(shipType)[0], fleet.shipList[shipType]);
         if len(result) > 0:
             result = result[:-1] 
         return result
@@ -119,3 +119,8 @@ def roundtimeleft(timeinfo):
     return roundleft
 
 
+@register.filter()
+def img_path(planet, prefix):
+    PlanetImageCount = 23
+    planetHash = planet.coord.X + (planet.coord.Y * 1000) + (planet.coord.Z * 1000000) 
+    return "img/Planetes/%s%03i.jpg" % (prefix, planetHash % PlanetImageCount);

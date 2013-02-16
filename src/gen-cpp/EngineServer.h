@@ -20,8 +20,8 @@ public:
 	virtual void start() = 0;
 	virtual void stop() = 0;
 	virtual bool addPlayer(const std::string& login, const std::string& password) = 0;
-	virtual void getPlayerFleets(std::vector<Fleet>& _return, const Player_ID pid) = 0;
-	virtual void getPlayerPlanets(std::vector<Planet>& _return, const Player_ID pid) = 0;
+	virtual void getPlayerFleets(FleetList& _return, const Player_ID pid, const int32_t beginIndex, const int32_t endIndex, const Sort_Type::type sortType, const bool asc) = 0;
+	virtual void getPlayerPlanets(PlanetList& _return, const Player_ID pid, const int32_t beginIndex, const int32_t endIndex, const Sort_Type::type sortType, const bool asc) = 0;
 	virtual void setPlayerFleetCode(const Player_ID pid, const std::string& code) = 0;
 	virtual void setPlayerPlanetCode(const Player_ID pid, const std::string& code) = 0;
 	virtual void setPlayerFleetBlocklyCode(const Player_ID pid, const std::string& code) = 0;
@@ -82,11 +82,11 @@ public:
 		bool _return = false;
 		return _return;
 	}
-	void getPlayerFleets(std::vector<Fleet>& /* _return */, const Player_ID /* pid */)
+	void getPlayerFleets(FleetList& /* _return */, const Player_ID /* pid */, const int32_t /* beginIndex */, const int32_t /* endIndex */, const Sort_Type::type /* sortType */, const bool /* asc */)
 	{
 		return;
 	}
-	void getPlayerPlanets(std::vector<Planet>& /* _return */, const Player_ID /* pid */)
+	void getPlayerPlanets(PlanetList& /* _return */, const Player_ID /* pid */, const int32_t /* beginIndex */, const int32_t /* endIndex */, const Sort_Type::type /* sortType */, const bool /* asc */)
 	{
 		return;
 	}
@@ -445,21 +445,29 @@ public:
 
 typedef struct _EngineServer_getPlayerFleets_args__isset
 {
-	_EngineServer_getPlayerFleets_args__isset() : pid(false) {}
+	_EngineServer_getPlayerFleets_args__isset() : pid(false), beginIndex(false), endIndex(false), sortType(false), asc(false) {}
 	bool pid;
+	bool beginIndex;
+	bool endIndex;
+	bool sortType;
+	bool asc;
 } _EngineServer_getPlayerFleets_args__isset;
 
 class EngineServer_getPlayerFleets_args
 {
 public:
 
-	EngineServer_getPlayerFleets_args() : pid(0)
+	EngineServer_getPlayerFleets_args() : pid(0), beginIndex(0), endIndex(0), sortType((Sort_Type::type)0), asc(0)
 	{
 	}
 
 	virtual ~EngineServer_getPlayerFleets_args() throw() {}
 
 	Player_ID pid;
+	int32_t beginIndex;
+	int32_t endIndex;
+	Sort_Type::type sortType;
+	bool asc;
 
 	_EngineServer_getPlayerFleets_args__isset __isset;
 
@@ -468,9 +476,37 @@ public:
 		pid = val;
 	}
 
+	void __set_beginIndex(const int32_t val)
+	{
+		beginIndex = val;
+	}
+
+	void __set_endIndex(const int32_t val)
+	{
+		endIndex = val;
+	}
+
+	void __set_sortType(const Sort_Type::type val)
+	{
+		sortType = val;
+	}
+
+	void __set_asc(const bool val)
+	{
+		asc = val;
+	}
+
 	bool operator == (const EngineServer_getPlayerFleets_args& rhs) const
 	{
 		if(!(pid == rhs.pid))
+			return false;
+		if(!(beginIndex == rhs.beginIndex))
+			return false;
+		if(!(endIndex == rhs.endIndex))
+			return false;
+		if(!(sortType == rhs.sortType))
+			return false;
+		if(!(asc == rhs.asc))
 			return false;
 		return true;
 	}
@@ -495,6 +531,10 @@ public:
 	virtual ~EngineServer_getPlayerFleets_pargs() throw() {}
 
 	const Player_ID* pid;
+	const int32_t* beginIndex;
+	const int32_t* endIndex;
+	const Sort_Type::type* sortType;
+	const bool* asc;
 
 	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
 
@@ -516,11 +556,11 @@ public:
 
 	virtual ~EngineServer_getPlayerFleets_result() throw() {}
 
-	std::vector<Fleet>  success;
+	FleetList success;
 
 	_EngineServer_getPlayerFleets_result__isset __isset;
 
-	void __set_success(const std::vector<Fleet>& val)
+	void __set_success(const FleetList& val)
 	{
 		success = val;
 	}
@@ -556,7 +596,7 @@ public:
 
 	virtual ~EngineServer_getPlayerFleets_presult() throw() {}
 
-	std::vector<Fleet>* success;
+	FleetList* success;
 
 	_EngineServer_getPlayerFleets_presult__isset __isset;
 
@@ -566,21 +606,29 @@ public:
 
 typedef struct _EngineServer_getPlayerPlanets_args__isset
 {
-	_EngineServer_getPlayerPlanets_args__isset() : pid(false) {}
+	_EngineServer_getPlayerPlanets_args__isset() : pid(false), beginIndex(false), endIndex(false), sortType(false), asc(false) {}
 	bool pid;
+	bool beginIndex;
+	bool endIndex;
+	bool sortType;
+	bool asc;
 } _EngineServer_getPlayerPlanets_args__isset;
 
 class EngineServer_getPlayerPlanets_args
 {
 public:
 
-	EngineServer_getPlayerPlanets_args() : pid(0)
+	EngineServer_getPlayerPlanets_args() : pid(0), beginIndex(0), endIndex(0), sortType((Sort_Type::type)0), asc(0)
 	{
 	}
 
 	virtual ~EngineServer_getPlayerPlanets_args() throw() {}
 
 	Player_ID pid;
+	int32_t beginIndex;
+	int32_t endIndex;
+	Sort_Type::type sortType;
+	bool asc;
 
 	_EngineServer_getPlayerPlanets_args__isset __isset;
 
@@ -589,9 +637,37 @@ public:
 		pid = val;
 	}
 
+	void __set_beginIndex(const int32_t val)
+	{
+		beginIndex = val;
+	}
+
+	void __set_endIndex(const int32_t val)
+	{
+		endIndex = val;
+	}
+
+	void __set_sortType(const Sort_Type::type val)
+	{
+		sortType = val;
+	}
+
+	void __set_asc(const bool val)
+	{
+		asc = val;
+	}
+
 	bool operator == (const EngineServer_getPlayerPlanets_args& rhs) const
 	{
 		if(!(pid == rhs.pid))
+			return false;
+		if(!(beginIndex == rhs.beginIndex))
+			return false;
+		if(!(endIndex == rhs.endIndex))
+			return false;
+		if(!(sortType == rhs.sortType))
+			return false;
+		if(!(asc == rhs.asc))
 			return false;
 		return true;
 	}
@@ -616,6 +692,10 @@ public:
 	virtual ~EngineServer_getPlayerPlanets_pargs() throw() {}
 
 	const Player_ID* pid;
+	const int32_t* beginIndex;
+	const int32_t* endIndex;
+	const Sort_Type::type* sortType;
+	const bool* asc;
 
 	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
 
@@ -637,11 +717,11 @@ public:
 
 	virtual ~EngineServer_getPlayerPlanets_result() throw() {}
 
-	std::vector<Planet>  success;
+	PlanetList success;
 
 	_EngineServer_getPlayerPlanets_result__isset __isset;
 
-	void __set_success(const std::vector<Planet>& val)
+	void __set_success(const PlanetList& val)
 	{
 		success = val;
 	}
@@ -677,7 +757,7 @@ public:
 
 	virtual ~EngineServer_getPlayerPlanets_presult() throw() {}
 
-	std::vector<Planet>* success;
+	PlanetList* success;
 
 	_EngineServer_getPlayerPlanets_presult__isset __isset;
 
@@ -2326,12 +2406,12 @@ public:
 	bool addPlayer(const std::string& login, const std::string& password);
 	void send_addPlayer(const std::string& login, const std::string& password);
 	bool recv_addPlayer();
-	void getPlayerFleets(std::vector<Fleet>& _return, const Player_ID pid);
-	void send_getPlayerFleets(const Player_ID pid);
-	void recv_getPlayerFleets(std::vector<Fleet>& _return);
-	void getPlayerPlanets(std::vector<Planet>& _return, const Player_ID pid);
-	void send_getPlayerPlanets(const Player_ID pid);
-	void recv_getPlayerPlanets(std::vector<Planet>& _return);
+	void getPlayerFleets(FleetList& _return, const Player_ID pid, const int32_t beginIndex, const int32_t endIndex, const Sort_Type::type sortType, const bool asc);
+	void send_getPlayerFleets(const Player_ID pid, const int32_t beginIndex, const int32_t endIndex, const Sort_Type::type sortType, const bool asc);
+	void recv_getPlayerFleets(FleetList& _return);
+	void getPlayerPlanets(PlanetList& _return, const Player_ID pid, const int32_t beginIndex, const int32_t endIndex, const Sort_Type::type sortType, const bool asc);
+	void send_getPlayerPlanets(const Player_ID pid, const int32_t beginIndex, const int32_t endIndex, const Sort_Type::type sortType, const bool asc);
+	void recv_getPlayerPlanets(PlanetList& _return);
 	void setPlayerFleetCode(const Player_ID pid, const std::string& code);
 	void send_setPlayerFleetCode(const Player_ID pid, const std::string& code);
 	void recv_setPlayerFleetCode();
@@ -2497,27 +2577,27 @@ public:
 		return ifaces_[i]->addPlayer(login, password);
 	}
 
-	void getPlayerFleets(std::vector<Fleet>& _return, const Player_ID pid)
+	void getPlayerFleets(FleetList& _return, const Player_ID pid, const int32_t beginIndex, const int32_t endIndex, const Sort_Type::type sortType, const bool asc)
 	{
 		size_t sz = ifaces_.size();
 		size_t i = 0;
 		for(; i < (sz - 1); ++i)
 		{
-			ifaces_[i]->getPlayerFleets(_return, pid);
+			ifaces_[i]->getPlayerFleets(_return, pid, beginIndex, endIndex, sortType, asc);
 		}
-		ifaces_[i]->getPlayerFleets(_return, pid);
+		ifaces_[i]->getPlayerFleets(_return, pid, beginIndex, endIndex, sortType, asc);
 		return;
 	}
 
-	void getPlayerPlanets(std::vector<Planet>& _return, const Player_ID pid)
+	void getPlayerPlanets(PlanetList& _return, const Player_ID pid, const int32_t beginIndex, const int32_t endIndex, const Sort_Type::type sortType, const bool asc)
 	{
 		size_t sz = ifaces_.size();
 		size_t i = 0;
 		for(; i < (sz - 1); ++i)
 		{
-			ifaces_[i]->getPlayerPlanets(_return, pid);
+			ifaces_[i]->getPlayerPlanets(_return, pid, beginIndex, endIndex, sortType, asc);
 		}
-		ifaces_[i]->getPlayerPlanets(_return, pid);
+		ifaces_[i]->getPlayerPlanets(_return, pid, beginIndex, endIndex, sortType, asc);
 		return;
 	}
 

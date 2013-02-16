@@ -202,6 +202,20 @@ Planet Engine::getPlanet(Coord coord) const
 	return mapFind(univ_.planetMap, coord)->second;
 }
 
+std::vector<Planet> Engine::getPlanets(std::vector<Coord> const& coordVect) const
+{
+	SharedLock lock(univ_.planetsFleetsReportsmutex);
+	std::vector<Planet> result;
+	result.reserve(coordVect.size());
+	for(Coord const & coord: coordVect)
+	{
+		auto iter = univ_.planetMap.find(coord);
+		if(iter != univ_.planetMap.end())
+			result.push_back(iter->second);
+	}
+	return result;
+}
+
 Fleet Engine::getFleet(Fleet::ID fid) const
 {
 	SharedLock lock(univ_.planetsFleetsReportsmutex);

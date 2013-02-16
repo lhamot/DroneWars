@@ -220,20 +220,126 @@ bool EngineServerHandler::addPlayer(const std::string& login, const std::string&
 	return engine_.addPlayer(login, password);
 }
 
-void EngineServerHandler::getPlayerFleets(std::vector<ndw::Fleet>& _return, const ndw::Player_ID pid)
+
+template<class RandomAccessRange, class Attribute>
+RandomAccessRange& sortOnAttr(RandomAccessRange& rng, bool asc, Attribute attr)
 {
-	auto fleetList = engine_.getPlayerFleets(pid);
-	_return.reserve(fleetList.size());
-	for(Fleet const & fleet: fleetList)
-		_return.push_back(fleetToThrift(fleet));
+	typedef typename RandomAccessRange::value_type value_type;
+	if(asc)
+		boost::range::sort(rng, [&](value_type const & a, value_type const & b)
+	{
+		return attr(a) < attr(b);
+	});
+	else
+		boost::range::sort(rng, [&](value_type const & a, value_type const & b)
+	{
+		return attr(a) > attr(b);
+	});
+	return rng;
 }
 
-void EngineServerHandler::getPlayerPlanets(std::vector<ndw::Planet>& _return, const ndw::Player_ID pid)
+
+template<typename Range>
+void sortOnType(Range& range, const ndw::Sort_Type::type sortType, const bool asc)
 {
-	auto planetList = engine_.getPlayerPlanets(pid);
-	_return.reserve(planetList.size());
+	typedef typename Range::value_type FleetOrPlanet;
+	switch(sortType)
+	{
+	case ndw::Sort_Type::Name:
+		sortOnAttr(range, asc, [](FleetOrPlanet const & elt) {return elt.name;});
+		break;
+	case ndw::Sort_Type::X:
+		sortOnAttr(range, asc, [](FleetOrPlanet const & elt) {return elt.coord.X;});
+		break;
+	case ndw::Sort_Type::Y:
+		sortOnAttr(range, asc, [](FleetOrPlanet const & elt) {return elt.coord.Y;});
+		break;
+	case ndw::Sort_Type::Z:
+		sortOnAttr(range, asc, [](FleetOrPlanet const & elt) {return elt.coord.Z;});
+		break;
+	case ndw::Sort_Type::M:
+		sortOnAttr(range, asc, [](FleetOrPlanet const & elt) {return elt.ressourceSet.tab[0];});
+		break;
+	case ndw::Sort_Type::C:
+		sortOnAttr(range, asc, [](FleetOrPlanet const & elt) {return elt.ressourceSet.tab[1];});
+		break;
+	case ndw::Sort_Type::L:
+		sortOnAttr(range, asc, [](FleetOrPlanet const & elt) {return elt.ressourceSet.tab[2];});
+		break;
+	default:
+		BOOST_THROW_EXCEPTION(std::runtime_error(__FUNCTION__ " Unconsistent Sort_Type"));
+	};
+}
+
+
+void EngineServerHandler::getPlayerFleets(
+  ndw::FleetList& _return,
+  const ndw::Player_ID pid,
+  const int32_t beginIndexC,
+  const int32_t endIndexC,
+  const ndw::Sort_Type::type sortType,
+  const bool asc)
+{
+	int32_t beginIndex = beginIndexC;
+	int32_t endIndex = endIndexC;
+	auto fleetList = engine_.getPlayerFleets(pid);
+	if(beginIndex > endIndex || beginIndex < 0)
+		BOOST_THROW_EXCEPTION(std::runtime_error(__FUNCTION__ " Unconsistent index"));
+	if(endIndex > fleetList.size())
+	{
+		int32_t const diff = endIndex - beginIndex;
+		endIndex = boost::numeric_cast<int32_t>(fleetList.size());
+		beginIndex = endIndex - diff;
+	}
+
+	sortOnType(fleetList, sortType, asc);
+
+	_return.fleetList.reserve(endIndex - beginIndex);
+	auto pageRange = boost::make_iterator_range(fleetList.begin() + beginIndex,
+	                 fleetList.begin() + endIndex);
+	std::set<Coord, CompCoord> fleetCoordSet;
+	for(Fleet const & fleet: pageRange)
+	{
+		_return.fleetList.push_back(fleetToThrift(fleet));
+		fleetCoordSet.insert(fleet.coord);
+	}
+	std::vector<Coord> fleetCoordVect(fleetCoordSet.begin(), fleetCoordSet.end());
+	auto planetList = engine_.getPlanets(fleetCoordVect);
 	for(Planet const & planet: planetList)
-		_return.push_back(planetToThrift(planet));
+		_return.planetList.push_back(planetToThrift(planet));
+
+	_return.fleetCount = boost::numeric_cast<int32_t>(fleetList.size());
+}
+
+
+void EngineServerHandler::getPlayerPlanets(
+  ndw::PlanetList& _return,
+  const ndw::Player_ID pid,
+  const int32_t beginIndexC,
+  const int32_t endIndexC,
+  const  ndw::Sort_Type::type sortType,
+  const bool asc)
+{
+	int32_t beginIndex = beginIndexC;
+	int32_t endIndex = endIndexC;
+	auto planetList = engine_.getPlayerPlanets(pid);
+	if(beginIndex > endIndex || beginIndex < 0)
+		BOOST_THROW_EXCEPTION(std::runtime_error(__FUNCTION__ " Unconsistent index"));
+	if(endIndex > planetList.size())
+	{
+		int32_t const diff = endIndex - beginIndex;
+		endIndex = boost::numeric_cast<int32_t>(planetList.size());
+		beginIndex = endIndex - diff;
+	}
+
+	sortOnType(planetList, sortType, asc);
+
+	_return.planetList.reserve(endIndex - beginIndex);
+	auto pageRange = boost::make_iterator_range(planetList.begin() + beginIndex,
+	                 planetList.begin() + endIndex);
+	for(Planet const & planet: pageRange)
+		_return.planetList.push_back(planetToThrift(planet));
+	_return.planetCount = boost::numeric_cast<int32_t>(planetList.size());
 }
 
 void EngineServerHandler::setPlayerFleetCode(const ndw::Player_ID pid, const std::string& code)
