@@ -267,7 +267,7 @@ void sortOnType(Range& range, const ndw::Sort_Type::type sortType, const bool as
 		sortOnAttr(range, asc, [](FleetOrPlanet const & elt) {return elt.ressourceSet.tab[2];});
 		break;
 	default:
-		BOOST_THROW_EXCEPTION(std::runtime_error(__FUNCTION__ " Unconsistent Sort_Type"));
+		BOOST_THROW_EXCEPTION(std::runtime_error("Unconsistent Sort_Type"));
 	};
 }
 
@@ -284,7 +284,7 @@ void EngineServerHandler::getPlayerFleets(
 	int32_t endIndex = endIndexC;
 	auto fleetList = engine_.getPlayerFleets(pid);
 	if(beginIndex > endIndex || beginIndex < 0)
-		BOOST_THROW_EXCEPTION(std::runtime_error(__FUNCTION__ " Unconsistent index"));
+		BOOST_THROW_EXCEPTION(std::runtime_error("Unconsistent index"));
 	if(endIndex > fleetList.size())
 	{
 		int32_t const diff = endIndex - beginIndex;
@@ -324,7 +324,7 @@ void EngineServerHandler::getPlayerPlanets(
 	int32_t endIndex = endIndexC;
 	auto planetList = engine_.getPlayerPlanets(pid);
 	if(beginIndex > endIndex || beginIndex < 0)
-		BOOST_THROW_EXCEPTION(std::runtime_error(__FUNCTION__ " Unconsistent index"));
+		BOOST_THROW_EXCEPTION(std::runtime_error("Unconsistent index"));
 	if(endIndex > planetList.size())
 	{
 		int32_t const diff = endIndex - beginIndex;
