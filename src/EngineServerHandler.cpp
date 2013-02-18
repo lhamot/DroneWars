@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "EngineServerHandler.h"
+#include <algorithm>
 
 bool ndw::Coord::operator < (const ndw::Coord& b) const
 {
@@ -290,6 +291,7 @@ void EngineServerHandler::getPlayerFleets(
 		int32_t const diff = endIndex - beginIndex;
 		endIndex = boost::numeric_cast<int32_t>(fleetList.size());
 		beginIndex = endIndex - diff;
+		beginIndex = std::max(0, beginIndex);
 	}
 
 	sortOnType(fleetList, sortType, asc);
@@ -330,6 +332,7 @@ void EngineServerHandler::getPlayerPlanets(
 		int32_t const diff = endIndex - beginIndex;
 		endIndex = boost::numeric_cast<int32_t>(planetList.size());
 		beginIndex = endIndex - diff;
+		beginIndex = std::max(0, beginIndex);
 	}
 
 	sortOnType(planetList, sortType, asc);
