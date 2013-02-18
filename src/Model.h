@@ -236,6 +236,7 @@ struct Planet
 			BOOST_THROW_EXCEPTION(std::logic_error("taskQueue shourld be empty"));
 		if(buildingList.size() != Building::Count)
 			BOOST_THROW_EXCEPTION(std::logic_error("buildingList.size() != Building::Count"));
+		ar& parentCoord;
 	}
 
 	std::string name;
@@ -248,6 +249,7 @@ struct Planet
 	typedef boost::array<size_t, Cannon::Count> CannonTab;
 	std::vector<Event> eventList;
 	CannonTab cannonTab;
+	Coord parentCoord;
 
 	Planet(): playerId(1111111111), buildingList(Building::Count) {}
 	Planet(Coord c): coord(c), playerId(Player::NoId), buildingList(Building::Count)

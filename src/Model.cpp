@@ -175,6 +175,7 @@ void construct(Universe& univ)
 			Planet planet(coord);
 			planet.ressourceSet = ress;
 			planet.name = nameGen();
+			planet.parentCoord = coord;
 			univ.planetMap.insert(std::make_pair(coord, planet));
 			coordSet.insert(coord);
 		}
@@ -537,6 +538,7 @@ void execTask(Universe& univ,
 					planet.buildingList[Building::CommandCenter] = 1;
 					boost::geometry::add_point(planet.ressourceSet.tab, RessourceSet(2000, 500, 0).tab);
 					planet.playerId = fleet.playerId;
+					planet.parentCoord = fleet.origin;
 					if(planet.playerId > 100000)
 						BOOST_THROW_EXCEPTION(std::logic_error("planet.playerId > 100000"));
 				}
