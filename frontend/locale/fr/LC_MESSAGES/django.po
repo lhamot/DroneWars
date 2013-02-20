@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-19 22:27+0100\n"
-"PO-Revision-Date: 2013-02-20 20:24+0100\n"
+"PO-Revision-Date: 2013-02-20 21:46+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "MIME-Version: 1.0\n"
@@ -433,7 +433,6 @@ msgid "Planet"
 msgstr "Planète"
 
 #: .\template\fleetsview.html.py:47
-#, fuzzy
 msgid "Content"
 msgstr "Contenu"
 

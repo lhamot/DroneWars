@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-05 22:18+0100\n"
-"PO-Revision-Date: 2013-02-05 22:19+0100\n"
+"PO-Revision-Date: 2013-02-20 21:45+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "Language: fr\n"
@@ -23,7 +23,6 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: Model.cpp:84
-#, fuzzy
 msgid "my_fleet"
 msgstr "ma_flotte"
 
