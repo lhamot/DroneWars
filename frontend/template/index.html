@@ -5,46 +5,46 @@
 {% block body %}
 
 <div class="container">
-<h1>Neutryos</h1>
-<h2>DroneWars</h2>
-<div class="row">
-	<div class="span6">
-		<form method="post">
-			{% csrf_token %}
-			<fieldset>
-				<legend>{% trans "Log in" %}</legend>
-				{{ logForm.as_p }}
-				<input class="btn btn-success" type="submit" value="{% trans "Log in" %}" name="login_action">
-				{% if logMessage %}
-				<p class="text-error">{{logMessage}}<p></p>
-				{% endif %}
-			</fieldset>
-		</form>
+	<div class="row">
+		<div class="span3 offset4">
+			<h1>Neutryos</h1>
+			<h2>DroneWars</h2>
+			<h3>Alpha 1</h3>
+		</div>
 	</div>
-
-	<div class="span6">
-		<form method="post">
-			{% csrf_token %}
-			<fieldset>
-				<legend>{% trans "Create account" %}</legend>
-				{{ subForm.as_p }}
-				<input class="btn btn-success" type="submit" value="{% trans "Register" %}" name="subscribe_action">
-				{% if regMessage %}
-					{% if regMessageState %}
-						<p class="text-success">{{regMessage}}<p></p>
-					{% else %}
-						<p class="text-error">{{regMessage}}<p></p>
+	<div class="row">
+		<div class="span3 offset1">
+			<form method="post">
+				{% csrf_token %}
+				<fieldset>
+					<legend>{% trans "Log in" %}</legend>
+					{{ logForm.as_p }}
+					<input class="btn btn-success" type="submit" value="{% trans "Log in" %}" name="login_action">
+					{% if logMessage %}
+					<p class="text-error">{{logMessage}}<p></p>
 					{% endif %}
-				{% endif %}
-			</fieldset>
-		</form>
-	</div>
+				</fieldset>
+			</form>
 	
-	{% if False %}
-	<div>
-		<div class="manual">{% trans "ABOUT_TEXT" %}</div>
+			<form method="post">
+				{% csrf_token %}
+				<fieldset>
+					<legend>{% trans "Create account" %}</legend>
+					{{ subForm.as_p }}
+					<input class="btn btn-success" type="submit" value="{% trans "Register" %}" name="subscribe_action">
+					{% if regMessage %}
+						{% if regMessageState %}
+							<p class="text-success">{{regMessage}}</p>
+						{% else %}
+							<p class="text-error">{{regMessage}}</p>
+						{% endif %}
+					{% endif %}
+				</fieldset>
+			</form>
+		</div>
+		<div class="span7">
+			<div class="manual">{% trans "ABOUT_TEXT" %}</div>
+		</div>
 	</div>
-	{% endif %}
-</div>
 </div>
 {% endblock %}

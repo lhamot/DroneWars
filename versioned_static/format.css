@@ -28,7 +28,7 @@ th, form label
     //text-align:left;
 }
 
-form legend, table caption
+form legend, table caption, h1, h2, h3
 {
 	color: #E6EBFB;
 	background: #0f0f0f; /* Old browsers */
@@ -42,12 +42,32 @@ form legend, table caption
 }
 
 
-.neutrybase, td, form
+.neutrybase, td, form, .manual
 {
     //text-align: center;
     color: #E6EBFB;
     background-image: url(img/bg/bg3.gif);
 }
+
+h1
+{
+	color: #CCDDFF;
+	text-shadow: 0px 0px 0px #CCDDFF, 0 0 1em #CCDDFF, 0 0 0.2em #CCDDFF;
+}
+
+h2, h3
+{
+	color: #AACCFF;
+	text-shadow: 0px 0px 0px #AACCFF, 0 0 0.2em #AACCFF;
+}
+
+.manual
+{
+	//outline: 5px solid #000000;
+	color: #AACCFF;
+	text-shadow: 0px 0px 0px #AACCFF, 0 0 0.05em #AACCFF;
+}
+
 
 .tutorial
 {
