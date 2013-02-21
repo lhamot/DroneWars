@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-05 22:18+0100\n"
-"PO-Revision-Date: 2013-02-20 21:45+0100\n"
+"POT-Creation-Date: 2013-02-21 23:44+0100\n"
+"PO-Revision-Date: 2013-02-22 00:03+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "Language: fr\n"
@@ -22,23 +22,23 @@ msgstr ""
 "Plural-Forms: Plural-Forms: nplurals=2; plural=n == 1 ? 0 : 1;\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: Model.cpp:84
+#: Model.cpp:85
 msgid "my_fleet"
 msgstr "ma_flotte"
 
-#: Model.cpp:85
+#: Model.cpp:86
 msgid "otherFleet"
 msgstr "autre_flotte"
 
-#: Model.cpp:86
+#: Model.cpp:87
 msgid "local_planet"
 msgstr "planete_locale"
 
-#: Model.cpp:87 Model.cpp:117
+#: Model.cpp:88 Model.cpp:118
 msgid "order"
 msgstr "ordre"
 
-#: Model.cpp:88
+#: Model.cpp:89
 msgid "DO_GATHER_CODE_COMMENT"
 msgstr ""
 "Cette procedure permet à un capitaine de décider si sa flotte doit fusioner "
@@ -47,7 +47,7 @@ msgstr ""
 "\"autre_flotte\", ce qui doit lui permetre de décider si il vaut mieu "
 "fusioner ou non."
 
-#: Model.cpp:89
+#: Model.cpp:90
 msgid "DO_FIGHT_CODE_COMMENT"
 msgstr ""
 "Cette procedure permet a un capitaine de décider si sa flotte doit combatre "
@@ -56,7 +56,7 @@ msgstr ""
 "\"autre_flotte\", ce qui doit lui permetre de décider si il vaut mieu "
 "combatre ou fuire."
 
-#: Model.cpp:90
+#: Model.cpp:91
 msgid "FLEET_ACTION_CODE_COMMENT"
 msgstr ""
 "Cette procédure décrit le comportment d'une flotte à chaque tour. \n"
@@ -67,15 +67,15 @@ msgstr ""
 "Cette procedure retourne la variable \"ordre\" qui contient l'ordre à donner "
 "aux vaisseaux de la flotte."
 
-#: Model.cpp:115
+#: Model.cpp:116
 msgid "my_planet"
 msgstr "ma_planete"
 
-#: Model.cpp:116
+#: Model.cpp:117
 msgid "fleets"
 msgstr "flottes"
 
-#: Model.cpp:118
+#: Model.cpp:119
 msgid "PLANET_ACTION_CODE_COMMENT"
 msgstr ""
 "Cette procédure décrit le comportment d'une planète à chaque tour. \n"
@@ -86,7 +86,11 @@ msgstr ""
 "Cette procedure retourne la variable \"ordre\" qui contient l'ordre a donner "
 "aux battisseurs présent sur la planète."
 
-#: Simulation.cpp:190 Simulation.cpp:311
+#: Simulation.cpp:143
+msgid "Procedure \"%1%\" not found."
+msgstr "Procédure \"%1%\" introuvable."
+
+#: Simulation.cpp:208 Simulation.cpp:342
 msgid "Unable to make cast to %1%"
 msgstr "La valeur de retour n'est pas %1%, comme attendue."
 

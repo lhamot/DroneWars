@@ -25,7 +25,7 @@ std::string GetLuabindErrorString(const luabind::error& err)
 	pStr = lua_tostring(L, -1);
 	if(pStr)
 	{
-		result += std::string(pStr);
+		//result += std::string(pStr);
 		lua_pop(L, 1);
 	}
 
@@ -65,10 +65,12 @@ int LuaEngine::panicf(lua_State* L)
 {
 	//add_file_and_line(L);
 	//std::string message = lua_tostring(L, -1);
-	luabind::object error_msg(luabind::from_stack(L, -1));
-	std::stringstream ss;
-	ss << error_msg;
-	throw ScriptException(ss.str());
+
+	//luabind::object error_msg(luabind::from_stack(L, -1));
+	//std::stringstream ss;
+	//ss << error_msg;
+	//throw ScriptException(ss.str());
+	throw luabind::error(L);
 }
 
 LuaEngine::LuaEngine(): L(luaL_newstate())

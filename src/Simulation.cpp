@@ -101,6 +101,7 @@ catch(luabind::error& ex)
 catch(luabind::cast_failed& ex)
 {
 	std::string message = ex.what() + std::string(" to ") + ex.info().name();
+	code.newError(message);
 	Event event(univ_.nextEventID++, time(0), isFleet ? Event::FleetCodeError : Event::PlanetCodeError, message);
 	mapFind(univ_.playerMap, pid)->second.eventList.push_back(event);
 	signals.push_back(Signal(pid, event));
@@ -127,8 +128,21 @@ void execPlanet(
   std::vector<Signal>& signals)
 try
 {
-	if(false == code.is_valid() || luabind::type(code) != LUA_TFUNCTION)
+	if(false == code.is_valid())
 		return;
+	if(luabind::type(code) != LUA_TFUNCTION)
+	{
+		//call_function crash quand on lui passe autre chose qu'une fonction
+		UniqueLock lockPlayer(univ_.playersMutex);
+		std::string const message =
+		  str(boost::format(BL::gettext("Procedure \"%1%\" not found.")) % "AI");
+		Player& player = mapFind(univ_.playerMap, planet.playerId)->second;
+		player.planetsCode.newError(message);
+		Event event(univ_.nextEventID++, time(0), Event::PlanetCodeError, message);
+		player.eventList.push_back(event);
+		signals.push_back(Signal(player.id, event));
+		return;
+	}
 	lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 
 	if(planet.buildingList.size() != Building::Count)
@@ -400,7 +414,11 @@ void execPlanets(Universe& univ_,
 		boost::transform(localFleets, back_inserter(fleetList), getFleetPointer);
 		planetRound(univ_, planet, signals);
 		if(planet.playerId != Player::NoId)
+		{
+			if(univ_.playerMap[planet.playerId].planetsCode.getFailCount() > 10)
+				codesMap[planet.playerId].planetsCode = luabind::object();
 			execPlanet(univ_, luaEngine, codesMap[planet.playerId].planetsCode, planet, fleetList, signals);
+		}
 	}
 }
 
@@ -573,6 +591,8 @@ void execFleets(
 
 		fleetRound(univ_, iter->second, signals, playersPlanetCount);
 
+		if(univ_.playerMap[iter->second.playerId].fleetsCode.getFailCount() > 10)
+			codesMap[iter->second.playerId].fleetsCode = luabind::object();
 		bool keepFleet = execFleet(univ_,
 		                           luaEngine,
 		                           codesMap[iter->second.playerId].fleetsCode,
@@ -916,7 +936,7 @@ double Simulation::getUnivTime()
 
 void Simulation::save(std::string const& saveName) const
 {
-	auto savingFunc = [](Universe const & clone, std::string const & saveName)
+	auto savingFunc = [](std::shared_ptr<Universe const> clone, std::string const & saveName)
 	{
 		try
 		{
@@ -926,7 +946,7 @@ void Simulation::save(std::string const& saveName) const
 				ofstream saveFile(newSaveName.c_str(), ios::out | ios::binary);
 				if(saveFile.is_open() == false)
 					BOOST_THROW_EXCEPTION(std::ios::failure("Can't save in " + newSaveName));
-				saveToStream(clone, saveFile);
+				saveToStream(*clone, saveFile);
 			}
 			std::string const ansSaveName = saveName + ".ans";
 			remove(ansSaveName.c_str());
@@ -944,7 +964,8 @@ void Simulation::save(std::string const& saveName) const
 
 	SharedLock lockPlayers(univ_.playersMutex);
 	SharedLock lockAllOthers(univ_.planetsFleetsReportsmutex);
-	boost::thread savingThread(savingFunc, univ_, saveName);
+	std::shared_ptr<Universe const> clone = make_shared<Universe>(univ_);
+	boost::thread savingThread(savingFunc, clone, saveName);
 }
 
 

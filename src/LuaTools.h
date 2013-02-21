@@ -12,12 +12,6 @@ extern "C"
 namespace LuaTools
 {
 
-struct ScriptException : std::runtime_error
-{
-	ScriptException(std::string const& message): std::runtime_error(message) {}
-};
-
-
 std::string GetLuabindErrorString(const luabind::error& err);
 
 class LuaEngine
