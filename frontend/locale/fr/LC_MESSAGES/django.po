@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-19 22:27+0100\n"
-"PO-Revision-Date: 2013-02-20 23:11+0100\n"
+"POT-Creation-Date: 2013-02-22 23:17+0100\n"
+"PO-Revision-Date: 2013-02-22 23:30+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "MIME-Version: 1.0\n"
@@ -454,7 +454,7 @@ msgstr "Type"
 msgid "Comment"
 msgstr "Commentaire"
 
-#: .\template\index.html.py:18 .\template\index.html.py:20
+#: .\template\index.html.py:20 .\template\index.html.py:22
 msgid "Log in"
 msgstr "Connexion"
 
@@ -466,7 +466,7 @@ msgstr "Créer un compte"
 msgid "Register"
 msgstr "Enregistrer"
 
-#: .\template\index.html.py:48
+#: .\template\index.html.py:46
 msgid "ABOUT_TEXT"
 msgstr ""
 "<h3>Présentation</h3><br/>\n"
@@ -600,21 +600,42 @@ msgstr "Index"
 msgid "Add"
 msgstr "Ajouter"
 
-#: .\template\codesview\blockly.html.py:54
+#: .\template\codesview\blockly.html.py:55
 msgid "Import"
 msgstr "Import"
 
-#: .\template\codesview\blockly.html.py:59
+#: .\template\codesview\blockly.html.py:60
 msgid "Export"
 msgstr "Export"
 
-#: .\template\codesview\blockly.html.py:64
+#: .\template\codesview\blockly.html.py:65
 msgid "Reload"
 msgstr "Recharger"
 
-#: .\template\codesview\blockly.html.py:65
+#: .\template\codesview\blockly.html.py:66
 msgid "Save"
 msgstr "Enregistrer"
+
+#: .\template\codesview\blockly_planet.html.py:63
+msgid "Need help"
+msgstr "Besoin d d'aide!"
+
+#: .\template\codesview\blockly_planet.html.py:64
+msgid "Help"
+msgstr "Aide"
+
+#: .\template\codesview\blockly_planet.html.py:65
+msgid "TUTO_1_HELP_1"
+msgstr ""
+"Vous devez d'abord tester si la mine de métal de votre planète et inférieure "
+"à 4, et lancer son amélioration dans ce cas.<br/>\n"
+"Sinon, vous devez lancer l'amélioration de votre fabrique.<br/>\n"
+"Cela devrait ressembler à cela:<br/>\n"
+"<br/>\n"
+"Si <b>Mine de métal</b> présent sur <i>ma planète</i> < 4 <br/>\n"
+"&nbsp&nbsp&nbsp&nbsp=> Retourne ordre de créer une <b>Mine de métal</b><br/"
+">\n"
+"(sinon) Retourne ordre de créer une <b>Fabrique</b>"
 
 #~ msgid "INTRO_TEXT"
 #~ msgstr ""
@@ -653,9 +674,6 @@ msgstr "Enregistrer"
 
 #~ msgid "Info"
 #~ msgstr "Info"
-
-#~ msgid "Help"
-#~ msgstr "Aide"
 
 #~ msgid "Visual"
 #~ msgstr "Visuel"

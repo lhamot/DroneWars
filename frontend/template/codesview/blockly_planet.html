@@ -1,5 +1,7 @@
 {% extends "codesview/blockly.html" %}
 
+{% load i18n %}
+
 {% block language_adds %}
 		{% if level >= 1  %}<script type="text/javascript" src="/static/blockly/language/common/control.js"></script>{% endif %}
 		{% if level >= 10 %}<script type="text/javascript" src="/static/blockly/language/common/text.js">          </script>{% endif %}
@@ -37,3 +39,31 @@
 	var keepers = [];
 	{% endif %}
 {% endblock %}
+
+{% block help_button %}
+	{% if level == 1 %}
+	<script>
+		 $(function() {
+			$( "#dialog" ).dialog({
+				autoOpen: false,
+				show: {
+					effect: "drop",
+					duration: 600
+				},
+				hide: {
+					effect: "drop",
+					duration: 600
+				}
+			});
+			$( "#opener" ).click(function() {
+				$( "#dialog" ).dialog( "open" );
+			});
+		});
+	</script>
+		<button class="btn btn-success" id="opener">{% trans "Need help" %}</button>
+	<div id="dialog" title="{% trans "Help" %}">
+		<p class="neutrybase">{% trans "TUTO_1_HELP_1" %}</p>
+	</div>
+	{% endif %}
+{% endblock %}
+

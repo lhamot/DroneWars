@@ -28,7 +28,7 @@ th, form label
     //text-align:left;
 }
 
-form legend, table caption, h1, h2, h3
+form legend, table caption, h1, h2, h3, .ui-dialog-titlebar
 {
 	color: #E6EBFB;
 	background: #0f0f0f; /* Old browsers */
@@ -41,8 +41,13 @@ form legend, table caption, h1, h2, h3
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0f0f0f', endColorstr='#000000',GradientType=0 ); /* IE6-9 */
 }
 
+.ui-dialog
+{
+	background-color: #AACCFF
+}
 
-.neutrybase, td, form, .manual
+
+.neutrybase, td, form, .manual, .ui-dialog .ui-dialog-content
 {
     //text-align: center;
     color: #E6EBFB;
@@ -51,8 +56,8 @@ form legend, table caption, h1, h2, h3
 
 h1
 {
-	color: #CCDDFF;
-	text-shadow: 0px 0px 0px #CCDDFF, 0 0 1em #CCDDFF, 0 0 0.2em #CCDDFF;
+	color: #AACCFF;
+	text-shadow: 0px 0px 0px #AACCFF, 0 0 1em #AACCFF, 0 0 0.2em #AACCFF;
 }
 
 h2, h3
@@ -72,7 +77,7 @@ h2, h3
 .tutorial
 {
 	background-image: url(img/bg/bg3.gif);
-	border-color: #9999BB;
+	border-color: #AACCFF;
 	border-width: 3px;
 	border-style: solid;
 	border-radius: 5px;

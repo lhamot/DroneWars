@@ -51,42 +51,47 @@
 </script>
 <div class="container">
 	<div class="row">
-		<input class="btn btn-primary" type="submit" value="{% trans "Import" %}" name="import_button" 
-			onclick="
-				var xml_text = prompt('Load', '');
-				var xml = Blockly.Xml.textToDom(xml_text);
-				Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);"/>
-		<input class="btn btn-primary" type="submit" value="{% trans "Export" %}" name="export_button"
-			onclick="
-				var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-				var xml_text = Blockly.Xml.domToText(xml);
-				alert(xml_text);"/>
-		<input class="btn btn-primary" type="submit" value="{% trans "Reload" %}" name="reload_button" onclick="document.location.href=''"/>
-		<input class="btn btn-primary" type="submit" value="{% trans "Save" %}" name="save_button" onclick="
-				try
-				{
-					var code = window.Blockly.Generator.workspaceToCode('lua');
-					document.getElementById('scriptXML').value = code;
+		<div class="span6">
+			<input class="btn btn-primary" type="submit" value="{% trans "Import" %}" name="import_button" 
+				onclick="
+					var xml_text = prompt('Load', '');
+					var xml = Blockly.Xml.textToDom(xml_text);
+					Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);"/>
+			<input class="btn btn-primary" type="submit" value="{% trans "Export" %}" name="export_button"
+				onclick="
 					var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
 					var xml_text = Blockly.Xml.domToText(xml);
-					document.getElementById('blocklyXML').value = xml_text;
-					document.getElementById('saveBlocklyForm').submit();
-				}
-				catch(error)
-				{
-					errorElt = document.getElementById('save_button_error')
-					errorElt.value = error
-					document.getElementById('saveBlocklyForm').submit();
-				}
-				"/>
+					alert(xml_text);"/>
+			<input class="btn btn-primary" type="submit" value="{% trans "Reload" %}" name="reload_button" onclick="document.location.href=''"/>
+			<input class="btn btn-primary" type="submit" value="{% trans "Save" %}" name="save_button" onclick="
+					try
+					{
+						var code = window.Blockly.Generator.workspaceToCode('lua');
+						document.getElementById('scriptXML').value = code;
+						var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+						var xml_text = Blockly.Xml.domToText(xml);
+						document.getElementById('blocklyXML').value = xml_text;
+						document.getElementById('saveBlocklyForm').submit();
+					}
+					catch(error)
+					{
+						errorElt = document.getElementById('save_button_error')
+						errorElt.value = error
+						document.getElementById('saveBlocklyForm').submit();
+					}
+					"/>
+		</div>
+		<div class="span6">
+			{% block help_button %}{% endblock %}
+		</div>
 		{%if codeData.lastError %}
-		<div class="alert text-error">
+		<div class="alert text-error span10">
 			<button type="button" class="close" data-dismiss="alert">&times;</button>
 			<strong>{{codeData.lastError|safe}}</strong>
 		</div>
 		{% endif %}
 		{%if message %}
-		<div class="alert text-success">
+		<div class="alert text-success span10">
 			<button type="button" class="close" data-dismiss="alert">&times;</button>
 			<strong>{{message|safe}}</strong>
 		</div>
