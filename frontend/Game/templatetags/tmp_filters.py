@@ -6,13 +6,16 @@ from Game.views import Ship_Enum
 
 register = template.Library()
 
+
 @register.filter
 def shipname(value):
     return  _(Ship_Enum._VALUES_TO_NAMES[value])
 
+
 @register.filter
 def eventname(value):
     return  _(Event_Type._VALUES_TO_NAMES[value])
+
 
 @register.filter
 def eventvalue(event):
@@ -27,6 +30,7 @@ def eventvalue(event):
     else:
         return ""
 
+
 @register.filter
 def buildingname(value):
     return  _(Building_Enum._VALUES_TO_NAMES[value])
@@ -36,9 +40,16 @@ def buildingname(value):
 def cannonname(value):
     return  _(Cannon_Enum._VALUES_TO_NAMES[value])
 
+
 @register.filter
 def planettaskname(value):
     return  _(PlanetTask_Enum._VALUES_TO_NAMES[value])
+
+
+@register.filter
+def fleettaskname(value):
+    return  _(FleetTask_Enum._VALUES_TO_NAMES[value])
+
 
 @register.filter
 def planettasktarget(task):
@@ -51,6 +62,11 @@ def planettasktarget(task):
     else:
         raise AssertionError("Unconsistent PlanetTask")
     
+
+@register.filter
+def fleettasktarget(task):
+    return coord(task.position)
+
 
 @register.tag
 def forlevel(mode, level, planetmin, fleetmin):

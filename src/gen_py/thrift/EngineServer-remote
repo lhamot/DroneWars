@@ -36,7 +36,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  CodeData getPlayerPlanetCode(Player_ID pid)'
   print '   getPlayers()'
   print '  Player getPlayer(Player_ID pid)'
-  print '  Planet getPlanet(Coord coord)'
+  print '   getPlanet(Coord coord)'
   print '  Fleet getFleet(Fleet_ID fid)'
   print '  OptionalPlayer logPlayer(string login, string password)'
   print '  void incrementTutoDisplayed(Player_ID pid, string tutoName)'

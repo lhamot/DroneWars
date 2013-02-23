@@ -196,10 +196,13 @@ Player Engine::getPlayer(Player::ID pid) const
 	return mapFind(univ_.playerMap, pid)->second;
 }
 
-Planet Engine::getPlanet(Coord coord) const
+boost::optional<Planet> Engine::getPlanet(Coord coord) const
 {
 	SharedLock lock(univ_.planetsFleetsReportsmutex);
-	return mapFind(univ_.planetMap, coord)->second;
+	auto iter = univ_.planetMap.find(coord);
+	return iter == univ_.planetMap.end() ?
+	       boost::optional<Planet>() :
+	       iter->second;
 }
 
 std::vector<Planet> Engine::getPlanets(std::vector<Coord> const& coordVect) const

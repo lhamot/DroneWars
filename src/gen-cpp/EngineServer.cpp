@@ -2441,9 +2441,21 @@ uint32_t EngineServer_getPlanet_result::read(::apache::thrift::protocol::TProtoc
 		switch(fid)
 		{
 		case 0:
-			if(ftype == ::apache::thrift::protocol::T_STRUCT)
+			if(ftype == ::apache::thrift::protocol::T_LIST)
 			{
-				xfer += this->success.read(iprot);
+				{
+					this->success.clear();
+					uint32_t _size149;
+					::apache::thrift::protocol::TType _etype152;
+					xfer += iprot->readListBegin(_etype152, _size149);
+					this->success.resize(_size149);
+					uint32_t _i153;
+					for(_i153 = 0; _i153 < _size149; ++_i153)
+					{
+						xfer += this->success[_i153].read(iprot);
+					}
+					xfer += iprot->readListEnd();
+				}
 				this->__isset.success = true;
 			}
 			else
@@ -2472,8 +2484,16 @@ uint32_t EngineServer_getPlanet_result::write(::apache::thrift::protocol::TProto
 
 	if(this->__isset.success)
 	{
-		xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_STRUCT, 0);
-		xfer += this->success.write(oprot);
+		xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
+		{
+			xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
+			std::vector<Planet> ::const_iterator _iter154;
+			for(_iter154 = this->success.begin(); _iter154 != this->success.end(); ++_iter154)
+			{
+				xfer += (*_iter154).write(oprot);
+			}
+			xfer += oprot->writeListEnd();
+		}
 		xfer += oprot->writeFieldEnd();
 	}
 	xfer += oprot->writeFieldStop();
@@ -2504,9 +2524,21 @@ uint32_t EngineServer_getPlanet_presult::read(::apache::thrift::protocol::TProto
 		switch(fid)
 		{
 		case 0:
-			if(ftype == ::apache::thrift::protocol::T_STRUCT)
+			if(ftype == ::apache::thrift::protocol::T_LIST)
 			{
-				xfer += (*(this->success)).read(iprot);
+				{
+					(*(this->success)).clear();
+					uint32_t _size155;
+					::apache::thrift::protocol::TType _etype158;
+					xfer += iprot->readListBegin(_etype158, _size155);
+					(*(this->success)).resize(_size155);
+					uint32_t _i159;
+					for(_i159 = 0; _i159 < _size155; ++_i159)
+					{
+						xfer += (*(this->success))[_i159].read(iprot);
+					}
+					xfer += iprot->readListEnd();
+				}
 				this->__isset.success = true;
 			}
 			else
@@ -4187,7 +4219,7 @@ void EngineServerClient::recv_getPlayer(Player& _return)
 	throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "getPlayer failed: unknown result");
 }
 
-void EngineServerClient::getPlanet(Planet& _return, const Coord& coord)
+void EngineServerClient::getPlanet(std::vector<Planet>& _return, const Coord& coord)
 {
 	send_getPlanet(coord);
 	recv_getPlanet(_return);
@@ -4207,7 +4239,7 @@ void EngineServerClient::send_getPlanet(const Coord& coord)
 	oprot_->getTransport()->flush();
 }
 
-void EngineServerClient::recv_getPlanet(Planet& _return)
+void EngineServerClient::recv_getPlanet(std::vector<Planet>& _return)
 {
 
 	int32_t rseqid = 0;

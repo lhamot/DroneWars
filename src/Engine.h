@@ -44,7 +44,7 @@ public:
 
 	Player getPlayer(Player::ID pid) const;
 
-	Planet getPlanet(Coord coord) const;
+	boost::optional<Planet> getPlanet(Coord coord) const;
 
 	std::vector<Planet> getPlanets(std::vector<Coord> const& coord) const;
 

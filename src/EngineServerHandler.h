@@ -51,7 +51,7 @@ public:
 
 	void getPlayer(ndw::Player& _return, const ndw::Player_ID pid);
 
-	void getPlanet(ndw::Planet& _return, const ndw::Coord& coord);
+	void getPlanet(std::vector<ndw::Planet>& _return, const ndw::Coord& coord);
 
 	void getFleet(ndw::Fleet& _return, const ndw::Fleet_ID fid);
 

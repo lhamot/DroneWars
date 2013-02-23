@@ -175,7 +175,7 @@ def PlanetView(request):
     tab = [int(val) for val in tab]
     targetCoord = gen_py.thrift.ttypes.Coord(tab[0], tab[1], tab[2])
         
-    target = service.getPlanet(targetCoord)
+    target = service.getPlanet(targetCoord)[0]
     if target.playerId != pid:
         raise RuntimeError("Try to access to a not owned planet")
         
@@ -252,12 +252,15 @@ def FleetView(request):
     fleet = service.getFleet(fleetID)
     if fleet.playerId != pid:
         raise RuntimeError("Try to access to a not owned fleet")
+    planet = service.getPlanet(fleet.coord)
+    planet = None if len(planet) == 0 else planet[0]
         
     timeInfo = service.getTimeInfo();
     
     return render(request, 'fleetview.html', {
         'fleet': fleet,
         'timeInfo': timeInfo,
+        'planet': planet,
     })    
 
 

@@ -30,9 +30,9 @@ _("Queen");
 _("Cargo");
 _("LargeCargo");
 
-_("Metal");
-_("Carbon");
-_("Loicium");
+_("RESOURCE_0");
+_("RESOURCE_1");
+_("RESOURCE_2");
 
 _("FleetCodeError");
 _("FleetCodeExecError");

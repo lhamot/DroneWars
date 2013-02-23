@@ -2,6 +2,8 @@
 #include "EngineServerHandler.h"
 #include <algorithm>
 
+using namespace boost;
+
 bool ndw::Coord::operator < (const ndw::Coord& b) const
 {
 	if(X < b.X)
@@ -387,9 +389,12 @@ void EngineServerHandler::getPlayer(ndw::Player& _return, const ndw::Player_ID p
 	_return = playerToThrift(engine_.getPlayer(pid));
 }
 
-void EngineServerHandler::getPlanet(ndw::Planet& _return, const ndw::Coord& coord)
+void EngineServerHandler::getPlanet(std::vector<ndw::Planet>& _return, const ndw::Coord& coord)
 {
-	_return = planetToThrift(engine_.getPlanet(Coord(coord.X, coord.Y, coord.Z)));
+	boost::optional<Planet> planet =
+	  engine_.getPlanet(Coord(coord.X, coord.Y, coord.Z));
+	if(planet.is_initialized())
+		_return.push_back(planetToThrift(*planet));
 }
 
 void EngineServerHandler::getFleet(ndw::Fleet& _return, const ndw::Fleet_ID fid)

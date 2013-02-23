@@ -9,6 +9,7 @@
 {% block content %}
 <div class="container">
 	<div class="row">
+		{% if pagecount > 1 %}
 		<div class="span12">
 			<div class="pagination">
 				<ul>
@@ -34,17 +35,24 @@
 				</ul>
 			</div>
 		</div>
-		<div class="span8 offset2">
+		{% endif %}
+		<div class="span10 offset1">
 			<table class="table">
 				<tr>
+					<th></th>
+					<th colspan="3" class="left-border-col"><center>{% trans "Coordinates" %}</center></th>
+					<th colspan="3" class="left-border-col"><center>{% trans "Resources" %}</center></th>
+					<th class="left-border-col"></th>
+				</tr>
+				<tr>
 					<th>{% trans "Planet" %}</th>
-					<th><a href="?page={{currentpage}}&sort=1&asc={{titleOrder.1}}">{{titleAfter.1|safe}}X</a></th>
+					<th class="left-border-col"><a href="?page={{currentpage}}&sort=1&asc={{titleOrder.1}}">{{titleAfter.1|safe}}X</a></th>
 					<th><a href="?page={{currentpage}}&sort=2&asc={{titleOrder.2}}">{{titleAfter.2|safe}}Y</a></th>
 					<th><a href="?page={{currentpage}}&sort=3&asc={{titleOrder.3}}">{{titleAfter.3|safe}}Z</a></th>
-					<th><a href="?page={{currentpage}}&sort=4&asc={{titleOrder.4}}">{{titleAfter.4|safe}}M</a></th>
-					<th><a href="?page={{currentpage}}&sort=5&asc={{titleOrder.5}}">{{titleAfter.5|safe}}C</a></th>
-					<th><a href="?page={{currentpage}}&sort=6&asc={{titleOrder.6}}">{{titleAfter.6|safe}}L</a></th>
-					<th>{% trans "Content" %}</th>
+					<th class="left-border-col"><a href="?page={{currentpage}}&sort=4&asc={{titleOrder.4}}">{{titleAfter.4|safe}}{% trans "RESOURCE_0" %}</a></th>
+					<th><a href="?page={{currentpage}}&sort=5&asc={{titleOrder.5}}">{{titleAfter.5|safe}}{% trans "RESOURCE_1" %}</a></th>
+					<th><a href="?page={{currentpage}}&sort=6&asc={{titleOrder.6}}">{{titleAfter.6|safe}}{% trans "RESOURCE_2" %}</a></th>
+					<th class="left-border-col">{% trans "Content" %}</th>
 				</tr>
 				{% for fleet, planet in planetFleetPairs %}
 				<tr onclick="document.location.href='fleet.html?fleet={{fleet.id}}'">
@@ -61,9 +69,13 @@
 						{% endif %}
 						{% endif %}
 					</td>
-					<td>{{fleet.coord.X}}</td><td>{{fleet.coord.Y}}</td><td>{{fleet.coord.Z}}</td>
-					<td>{{fleet.ressourceSet.tab.0}}</td><td>{{fleet.ressourceSet.tab.1}}</td><td>{{fleet.ressourceSet.tab.2}}</td>
-					<td>{{fleet|content}}</td>
+					<td class="left-border-col">{{fleet.coord.X}}</td>
+					<td>{{fleet.coord.Y}}</td>
+					<td>{{fleet.coord.Z}}</td>
+					<td class="left-border-col">{{fleet.ressourceSet.tab.0}}</td>
+					<td>{{fleet.ressourceSet.tab.1}}</td>
+					<td>{{fleet.ressourceSet.tab.2}}</td>
+					<td class="left-border-col">{{fleet|content}}</td>
 				</tr>
 				{% endfor %}
 			</table>

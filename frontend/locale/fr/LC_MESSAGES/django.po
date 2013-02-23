@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-22 23:17+0100\n"
-"PO-Revision-Date: 2013-02-22 23:30+0100\n"
+"POT-Creation-Date: 2013-02-23 16:30+0100\n"
+"PO-Revision-Date: 2013-02-23 16:31+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "MIME-Version: 1.0\n"
@@ -117,16 +117,19 @@ msgstr "Cargo"
 msgid "LargeCargo"
 msgstr "Grand cargo"
 
-#: .\Game\TranslationTools.py:33
-msgid "Metal"
+#: .\Game\TranslationTools.py:33 .\template\fleetsview.html.py:48
+#: .\template\planetsview.html.py:51 .\template\planetview.html.py:73
+msgid "RESOURCE_0"
 msgstr "Métal"
 
-#: .\Game\TranslationTools.py:34
-msgid "Carbon"
+#: .\Game\TranslationTools.py:34 .\template\fleetsview.html.py:49
+#: .\template\planetsview.html.py:52 .\template\planetview.html.py:74
+msgid "RESOURCE_1"
 msgstr "Carbone"
 
-#: .\Game\TranslationTools.py:35
-msgid "Loicium"
+#: .\Game\TranslationTools.py:35 .\template\fleetsview.html.py:50
+#: .\template\planetsview.html.py:53 .\template\planetview.html.py:75
+msgid "RESOURCE_2"
 msgstr "Loïcium"
 
 #: .\Game\TranslationTools.py:37
@@ -257,7 +260,7 @@ msgstr "Etape 5 : Créer 3 flottes composées de 5 mosquito exactement."
 
 #: .\Game\TranslationTools.py:66
 msgid "BLOCKLY_TUTO_5"
-msgstr "Etape 6 : Envoyez 6 flottes dans 6 endroits différents"
+msgstr "Etape 6 : Envoyez 6 flottes dans 6 endroits différents."
 
 #: .\Game\TranslationTools.py:67
 msgid "BLOCKLY_TUTO_6"
@@ -359,7 +362,7 @@ msgstr "Cet identifiant existe déja."
 
 #: .\Game\views.py:82
 msgid "Wrong login or password."
-msgstr "Mauvais identifiant ou mot de passe"
+msgstr "Mauvais identifiant ou mot de passe."
 
 #: .\Game\views.py:137
 msgid "PLANET_TUTOS"
@@ -374,38 +377,38 @@ msgstr ""
 "Ici, vous verrez la liste de vos flottes. Si il n'y en a pas, demandez à vos "
 "planètes d'en fabriquer."
 
-#: .\Game\views.py:303
+#: .\Game\views.py:306
 msgid "REPORT_TUTOS"
 msgstr ""
 "Ici vous verrez les 10 derniers événements importants qui se sont produits "
 "dans votre empire."
 
-#: .\Game\views.py:330 .\Game\views.py:358 .\Game\views.py:391
-#: .\Game\views.py:425
+#: .\Game\views.py:333 .\Game\views.py:361 .\Game\views.py:394
+#: .\Game\views.py:428
 msgid "Code successfully saved"
 msgstr "Code sauvegardé avec succès."
 
-#: .\Game\views.py:395
+#: .\Game\views.py:398
 msgid "See in planets tab if the building is in progress"
 msgstr ""
 "Code sauvegardé avec succès.<br/>\n"
 "Allez voir dans l'onglet \"Planètes\" si votre nouveau bâtiment est en cours "
 "de création. (Cela peut prendre quelque minutes)"
 
-#: .\Game\views.py:402
+#: .\Game\views.py:405
 msgid "CODE_TUTOS"
 msgstr ""
 "Ici, vous pourrez définir la ligne de conduite de vos amiraux(flottes) et "
 "gouverneurs(planètes). Allez dans l'onglet \"Planètes : Blocks\" pour "
 "commencer le tutoriel."
 
-#: .\Game\templatetags\tmp_filters.py:77
+#: .\Game\templatetags\tmp_filters.py:93
 #, python-format
 msgid "(%i;%i;%i)"
 msgstr "(%i; %i; %i)"
 
-#: .\Game\templatetags\tmp_filters.py:89
-#: .\Game\templatetags\tmp_filters.py:100
+#: .\Game\templatetags\tmp_filters.py:105
+#: .\Game\templatetags\tmp_filters.py:116
 #, python-format
 msgid "%s:%s;"
 msgstr "%s : %s;"
@@ -428,31 +431,65 @@ msgstr "Textuel"
 msgid "Fleets"
 msgstr "Flottes"
 
-#: .\template\fleetsview.html.py:40
+#: .\template\fleetsview.html.py:42
 msgid "Planet"
 msgstr "Planète"
 
-#: .\template\fleetsview.html.py:47
+#: .\template\fleetsview.html.py:43 .\template\planetsview.html.py:46
+msgid "Coord:"
+msgstr "Coord :"
+
+#: .\template\fleetsview.html.py:47 .\template\planetsview.html.py:50
+msgid "Resource:"
+msgstr "Ressources :"
+
+#: .\template\fleetsview.html.py:51
 msgid "Content"
 msgstr "Contenu"
 
-#: .\template\fleetview.html.py:13 .\template\ingame_base.html.py:19
-#: .\template\planetview.html.py:15
+#: .\template\fleetview.html.py:16 .\template\ingame_base.html.py:19
+#: .\template\planetview.html.py:16
 msgid "Reports"
 msgstr "Rapports"
 
-#: .\template\fleetview.html.py:15 .\template\planetview.html.py:17
+#: .\template\fleetview.html.py:18 .\template\planetview.html.py:18
 msgid "Date"
 msgstr "Date"
 
-#: .\template\fleetview.html.py:15 .\template\planetview.html.py:17
-#: .\template\planetview.html.py:31
+#: .\template\fleetview.html.py:19 .\template\fleetview.html.py:34
+#: .\template\planetview.html.py:19 .\template\planetview.html.py:36
 msgid "Type"
 msgstr "Type"
 
-#: .\template\fleetview.html.py:15 .\template\planetview.html.py:17
+#: .\template\fleetview.html.py:20 .\template\planetview.html.py:21
 msgid "Comment"
 msgstr "Commentaire"
+
+#: .\template\fleetview.html.py:33 .\template\planetview.html.py:35
+msgid "Tasks"
+msgstr "Tâches"
+
+#: .\template\fleetview.html.py:34 .\template\planetview.html.py:36
+msgid "Time left"
+msgstr "Temps restant"
+
+#: .\template\fleetview.html.py:34
+msgid "Where"
+msgstr "Où"
+
+#: .\template\fleetview.html.py:50
+msgid "Ships"
+msgstr "Vaisseaux"
+
+#: .\template\fleetview.html.py:51 .\template\planetsview.html.py:45
+#: .\template\planetview.html.py:53 .\template\planetview.html.py:60
+#: .\template\scoreview.html.py:15
+msgid "Name"
+msgstr "Nom"
+
+#: .\template\fleetview.html.py:51 .\template\planetview.html.py:60
+msgid "Count"
+msgstr "Quantité"
 
 #: .\template\index.html.py:20 .\template\index.html.py:22
 msgid "Log in"
@@ -513,42 +550,37 @@ msgstr "Déconnexion"
 msgid "Next round :"
 msgstr "Tour suivant :"
 
-#: .\template\planetsview.html.py:42
+#: .\template\planetsview.html.py:44
 msgid "View"
 msgstr "Visuel"
 
-#: .\template\planetsview.html.py:43 .\template\planetview.html.py:48
-#: .\template\planetview.html.py:55 .\template\scoreview.html.py:15
-msgid "Name"
-msgstr "Nom"
-
-#: .\template\planetview.html.py:17
+#: .\template\planetview.html.py:20
 msgid "Object"
 msgstr "Objet"
 
-#: .\template\planetview.html.py:30
-msgid "Tasks"
-msgstr "Tâches"
-
-#: .\template\planetview.html.py:31
-msgid "Time left"
-msgstr "Temps restant"
-
-#: .\template\planetview.html.py:31
+#: .\template\planetview.html.py:36
 msgid "What"
 msgstr "Quoi"
 
-#: .\template\planetview.html.py:47
+#: .\template\planetview.html.py:52
 msgid "Buildings"
 msgstr "Bâtiments"
 
-#: .\template\planetview.html.py:48 .\template\planetview.html.py:55
+#: .\template\planetview.html.py:53
 msgid "Level"
 msgstr "Niveau"
 
-#: .\template\planetview.html.py:54
+#: .\template\planetview.html.py:59
 msgid "Cannons"
 msgstr "Canons"
+
+#: .\template\planetview.html.py:72
+msgid "Resources"
+msgstr "Ressources"
+
+#: .\template\planetview.html.py:78
+msgid "Coordinates"
+msgstr "Coordonnées"
 
 #: .\template\reportsview.html.py:31
 msgid "Fleet ID"
@@ -637,18 +669,33 @@ msgstr ""
 ">\n"
 "(sinon) Retourne ordre de créer une <b>Fabrique</b>"
 
+#~ msgid "RESOURCE_3"
+#~ msgstr "Loïcium"
+
+#~ msgid "RESSOURCE_1"
+#~ msgstr "Métal"
+
+#~ msgid "RESSOURCE_2"
+#~ msgstr "Carbone"
+
+#~ msgid "RESSOURCE_3"
+#~ msgstr "Loïcium"
+
+#~ msgid "Metal"
+#~ msgstr "Métal"
+
+#~ msgid "Carbon"
+#~ msgstr "Carbone"
+
+#~ msgid "Loicium"
+#~ msgstr "Loïcium"
+
 #~ msgid "INTRO_TEXT"
 #~ msgstr ""
 #~ "<h1>Neutrynos - DroneWars</h1>\n"
 #~ "L'univers est infinie, tous comme votre soiffe de conquête.<br/>\n"
 #~ "Mettez a profit votre ingeniosité pour exterminer vos advaisaires.<br/>\n"
 #~ "Commandez vos généraux et mennez les a la victoire.<br/>"
-
-#~ msgid "Coordinate"
-#~ msgstr "Coordonnées"
-
-#~ msgid "Ressources"
-#~ msgstr "Ressources"
 
 #~ msgid "days"
 #~ msgstr "jours"

@@ -2,6 +2,8 @@
 
 {% load i18n %}
 
+{% load l10n %}
+
 {% load tmp_filters %}
 
 {% block fleets_class %}active{% endblock %}
@@ -9,15 +11,77 @@
 {% block content %}
 <div class="container">
 	<div class="row">
-		<div class="span6 offset3">
-			<h4>{% trans "Reports" %}</h4>
-			<table>
-				<tr><th>{% trans "Date" %}</th><th>{% trans "Type" %}</th><th>{% trans "Comment" %}</th></tr>
+		<div class="span4">
+			<table class="table table-condensed">
+				<caption>{% trans "Tasks" %}</caption>
+				<tr><th>{% trans "Type" %}</th><th>{% trans "Time left" %}</th><th>{% trans "Where" %}</th></tr>
+				{% for task in fleet.taskQueue %}
+				<tr><td>{{task.type|fleettaskname}}</td>
+					<td><span id="countdown_dashboard_{{forloop.counter0}}" title="{{task|timeleft:timeInfo|unlocalize}}">0</span></td>
+					<script type="text/javascript">
+						function countdownRedirect()
+						{
+							window.setTimeout(
+								"countdown(\"countdown_dashboard_{{forloop.counter0}}\", '%(m)02u:%(s)02u');", 0);
+						}
+						countdownRedirect();
+					</script>	
+					<td>{{task|fleettasktarget}}</td></tr>
+				{% endfor %}
+			</table>
+			<table class="table table-condensed">
+				<caption>{% trans "Ships" %}</caption>
+				<tr><th>{% trans "Name" %}</th><th>{% trans "Count" %}</th></tr>
+				{% for count in fleet.shipList %}
+				{% if count %}
+				<tr><td>{{forloop.counter0|shipname}}</td><td>{{count}}</td></tr>
+				{% endif %}
+				{% endfor %}
+			</table>
+			<table class="table table-condensed">
+				<caption>{% trans "Resources" %}</caption>
+				<tr><th>{% trans "RESOURCE_0" %}</th><td>{{fleet.ressourceSet.tab.0}}</td></tr>
+				<tr><th>{% trans "RESOURCE_1" %}</th><td>{{fleet.ressourceSet.tab.1}}</td></tr>
+				<tr><th>{% trans "RESOURCE_2" %}</th><td>{{fleet.ressourceSet.tab.2}}</td></tr>
+			</table>
+			<table class="table table-condensed">
+				<caption>{% trans "Coordinates" %}</caption>
+				<tr><th>X</th><td>{{fleet.coord.X}}</td></tr>
+				<tr><th>Y</th><td>{{fleet.coord.Y}}</td></tr>
+				<tr><th>Z</th><td>{{fleet.coord.Z}}</td></tr>
+			</table>
+		</div>
+		<div class="span5">
+			<table class="table table-condensed">
+				<caption>{% trans "Reports" %}</caption>
+				<tr>
+					<th>{% trans "Date" %}</th>
+					<th>{% trans "Type" %}</th>
+					<!--<th>{% trans "Comment" %}</th>-->
+				</tr>
 				{% for event in fleet.eventList %}
-				<tr><td>{{event.time|int2datetime|date:"DATETIME_FORMAT"}}</td><td>{{event.type|eventname}}</td><td>{{event.comment}}</td></tr>
+				<tr>
+					<td>{{event.time|int2datetime|date:"DATETIME_FORMAT"}}</td>
+					<td>{{event.type|eventname}}</td>
+					<!--<td>{{event.comment}}</td>-->
+				</tr>
 				{% endfor %}
 			</table>
 		</div>
+		{% if planet %}
+		<div class="span3">
+			<h1>{{planet.name}}</h1>
+			{% if planet.playerId == fleet.playerId %}
+			<a href="planet.html?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}">
+				<img class="ally" src="{{ STATIC_URL }}{{planet|img_path:'pl'}}"/>
+			</a>
+			{% elif planet.playerId != -1 %}
+			<img class="enemy" src="{{ STATIC_URL }}{{planet|img_path:'pl'}}"/>
+			{% else %}
+			<img class="neutral" src="{{ STATIC_URL }}{{planet|img_path:'pl'}}"/>
+			{% endif %}
+		</div>
+		{% endif %}
 	</div>
 </div>
 {% endblock %}

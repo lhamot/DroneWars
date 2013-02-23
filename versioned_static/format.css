@@ -123,3 +123,8 @@ h2, h3
 {
 	color: #FFFF00;
 }
+
+.left-border-col
+{
+	border-left: double 1px #305F94;
+}

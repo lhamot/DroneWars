@@ -30,7 +30,7 @@ public:
 	virtual void getPlayerPlanetCode(CodeData& _return, const Player_ID pid) = 0;
 	virtual void getPlayers(std::vector<Player>& _return) = 0;
 	virtual void getPlayer(Player& _return, const Player_ID pid) = 0;
-	virtual void getPlanet(Planet& _return, const Coord& coord) = 0;
+	virtual void getPlanet(std::vector<Planet>& _return, const Coord& coord) = 0;
 	virtual void getFleet(Fleet& _return, const Fleet_ID fid) = 0;
 	virtual void logPlayer(OptionalPlayer& _return, const std::string& login, const std::string& password) = 0;
 	virtual void incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName) = 0;
@@ -122,7 +122,7 @@ public:
 	{
 		return;
 	}
-	void getPlanet(Planet& /* _return */, const Coord& /* coord */)
+	void getPlanet(std::vector<Planet>& /* _return */, const Coord& /* coord */)
 	{
 		return;
 	}
@@ -1738,11 +1738,11 @@ public:
 
 	virtual ~EngineServer_getPlanet_result() throw() {}
 
-	Planet success;
+	std::vector<Planet>  success;
 
 	_EngineServer_getPlanet_result__isset __isset;
 
-	void __set_success(const Planet& val)
+	void __set_success(const std::vector<Planet>& val)
 	{
 		success = val;
 	}
@@ -1778,7 +1778,7 @@ public:
 
 	virtual ~EngineServer_getPlanet_presult() throw() {}
 
-	Planet* success;
+	std::vector<Planet>* success;
 
 	_EngineServer_getPlanet_presult__isset __isset;
 
@@ -2436,9 +2436,9 @@ public:
 	void getPlayer(Player& _return, const Player_ID pid);
 	void send_getPlayer(const Player_ID pid);
 	void recv_getPlayer(Player& _return);
-	void getPlanet(Planet& _return, const Coord& coord);
+	void getPlanet(std::vector<Planet>& _return, const Coord& coord);
 	void send_getPlanet(const Coord& coord);
-	void recv_getPlanet(Planet& _return);
+	void recv_getPlanet(std::vector<Planet>& _return);
 	void getFleet(Fleet& _return, const Fleet_ID fid);
 	void send_getFleet(const Fleet_ID fid);
 	void recv_getFleet(Fleet& _return);
@@ -2693,7 +2693,7 @@ public:
 		return;
 	}
 
-	void getPlanet(Planet& _return, const Coord& coord)
+	void getPlanet(std::vector<Planet>& _return, const Coord& coord)
 	{
 		size_t sz = ifaces_.size();
 		size_t i = 0;

@@ -2821,7 +2821,7 @@ class getPlanet_result:
   """
 
   thrift_spec = (
-    (0, TType.STRUCT, 'success', (Planet, Planet.thrift_spec), None, ), # 0
+    (0, TType.LIST, 'success', (TType.STRUCT,(Planet, Planet.thrift_spec)), None, ), # 0
   )
 
   def __init__(self, success=None,):
@@ -2837,9 +2837,14 @@ class getPlanet_result:
       if ftype == TType.STOP:
         break
       if fid == 0:
-        if ftype == TType.STRUCT:
-          self.success = Planet()
-          self.success.read(iprot)
+        if ftype == TType.LIST:
+          self.success = []
+          (_etype160, _size157) = iprot.readListBegin()
+          for _i161 in xrange(_size157):
+            _elem162 = Planet()
+            _elem162.read(iprot)
+            self.success.append(_elem162)
+          iprot.readListEnd()
         else:
           iprot.skip(ftype)
       else:
@@ -2853,8 +2858,11 @@ class getPlanet_result:
       return
     oprot.writeStructBegin('getPlanet_result')
     if self.success is not None:
-      oprot.writeFieldBegin('success', TType.STRUCT, 0)
-      self.success.write(oprot)
+      oprot.writeFieldBegin('success', TType.LIST, 0)
+      oprot.writeListBegin(TType.STRUCT, len(self.success))
+      for iter163 in self.success:
+        iter163.write(oprot)
+      oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
