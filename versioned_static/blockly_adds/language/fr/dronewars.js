@@ -37,7 +37,7 @@ Blockly.LANG_DRONEWARS_FLEET_NAME = 'nom de la flotte';
 Blockly.LANG_DRONEWARS_FLEET_SHIPLIST = 'vaisseaux de la flotte';
 Blockly.LANG_DRONEWARS_FLEET_RESSOURCESET = 'resources de la flotte';
 
-Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_1 = 'ordre de';
+Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_1 = '[NE PLUS UTILISER] ordre de';
 Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_2 = ' dans la direction';
 
 
@@ -63,6 +63,12 @@ Blockly.LANG_DRONEWARS_FLEETACTION2 = 'voyager';
 Blockly.LANG_DRONEWARS_FLEETACTION3 = 'récolter';
 Blockly.LANG_DRONEWARS_FLEETACTION4 = 'coloniser';
 Blockly.LANG_DRONEWARS_FLEETACTION5 = 'décharger';
+
+Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_DO_NOTHING = 'ordre de ne rien faire';
+Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_MOVE = 'ordre de voyager dans la direction';
+Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_HARVEST = 'ordre de récolter';
+Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_COLONIZE = 'ordre de coloniser';
+Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_DROP = 'ordre de décharger';
 
 Blockly.LANG_DRONEWARS_BUILDING1 = 'Centre de commande';
 Blockly.LANG_DRONEWARS_BUILDING2 = 'Mine de métal';

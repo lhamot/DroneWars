@@ -23,17 +23,22 @@
 	{% elif level < 2  %}
 	{% elif level < 3  %}
 	{% elif level < 4  %}
-	var keepers = ['dronewars_fleetaction', 
-		'procedures_defreturn', 'procedures_callreturn', 'procedures_ifreturn',
-		'logic_boolean', 'math_number', 'logic_compare', 'variables_get'];
+	var keepers = ['dronewars_fleetaction', 'dronewars_fleetDoNothing', 'dronewars_fleetMove', 
+		'dronewars_fleetHarvest', 'dronewars_fleetColonize', 'dronewars_fleetDrop',
+		'procedures_defreturn', 'procedures_callreturn', 'procedures_ifreturn', 'logic_boolean', 
+		'math_number', 'logic_compare', 'variables_get'];
 	{% elif level < 5  %}
-	var keepers = ['dronewars_fleetaction', 'dronewars_ship_in_fleet', 
-		'procedures_defreturn', 'procedures_callreturn', 'procedures_ifreturn',
-		'logic_boolean', 'math_number', 'logic_compare', 'variables_get', 'math_arithmetic'];
+	var keepers = ['dronewars_fleetaction', 'dronewars_fleetDoNothing', 'dronewars_fleetMove', 
+		'dronewars_fleetHarvest', 'dronewars_fleetColonize', 'dronewars_fleetDrop',
+		'dronewars_ship_in_fleet', 'procedures_defreturn', 'procedures_callreturn', 
+		'procedures_ifreturn', 'logic_boolean', 'math_number', 'logic_compare', 'variables_get', 
+		'math_arithmetic'];
 	{% elif level < 6  %}
-	var keepers = ['dronewars_fleetaction', 'dronewars_ship_in_fleet', 'dronewars_randDir',
-		'procedures_defreturn', 'procedures_callreturn', 'procedures_ifreturn',
-		'logic_boolean', 'math_number',	'logic_compare', 'variables_get', 'math_arithmetic'];
+	var keepers = ['dronewars_fleetaction', 'dronewars_fleetDoNothing', 'dronewars_fleetMove', 
+		'dronewars_fleetHarvest', 'dronewars_fleetColonize', 'dronewars_fleetDrop',
+		'dronewars_ship_in_fleet', 'dronewars_randDir', 'procedures_defreturn', 
+		'procedures_callreturn', 'procedures_ifreturn',	'logic_boolean', 'math_number',	
+		'logic_compare', 'variables_get', 'math_arithmetic'];
 	{% else %}
 	var keepers = [];
 	{% endif %}
