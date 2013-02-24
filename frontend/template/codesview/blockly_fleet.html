@@ -1,23 +1,201 @@
 {% extends "codesview/blockly.html" %}
 
+{% load i18n %}
 
-
-{% block language_adds %}
-		{% if level >= 1  %}<script type="text/javascript" src="/static/blockly/language/common/control.js"></script>{% endif %}
-		{% if level >= 10 %}<script type="text/javascript" src="/static/blockly/language/common/text.js">          </script>{% endif %}
-		{% if level >= 10 %}<script type="text/javascript" src="/static/blockly/language/common/lists.js">         </script>{% endif %}
-		{% if level >= 0 %}<script type="text/javascript" src="/static/blockly/language/common/logic.js">         </script>{% endif %}
-		{% if level >= 1 %}<script type="text/javascript" src="/static/blockly/language/common/math.js">          </script>{% endif %}
-	    {% if level >= 0 %}<script type="text/javascript" src="/static/blockly/language/common/procedures.js">    </script>{% endif %}
-	    {% if level >= 0 %}<script type="text/javascript" src="/static/blockly/language/common/variables.js">     </script>{% endif %}
-	    {% if level >= 3 %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_Fleet.js">       </script>{% endif %}
-	    {% if level >= 1 %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_Planet.js">      </script>{% endif %}
-	    {% if level >= 3 %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_RessourceSet.js"></script>{% endif %}
-	    {% if level >= 0 %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_Coord.js">       </script>{% endif %}
-	    {% if level >= 0 %}<script type="text/javascript" src="/static/blockly_adds/language/common/dronewars_FleetAction.js"> </script>{% endif %}
+{% block toolbox %}
+{% if level < 1  %}
+{% elif level < 2  %}
+{% elif level < 3  %}
+{% elif level < 4  %}
+<xml id="toolbox" style="display: none">
+	<category name="{% trans "DroneWars: Order" %}">
+		<block type="dronewars_fleetDoNothing"></block>
+		<block type="dronewars_fleetMove"></block>
+		<block type="dronewars_fleetHarvest"></block>
+		<block type="dronewars_fleetColonize"></block>
+		<block type="dronewars_fleetDrop"></block>
+	</category>
+	<category name="{% trans "Procedures" %}">
+		<block type="procedures_ifreturn"></block>
+	</category>
+	<category name="{% trans "Math" %}">
+		<block type="math_number"></block>
+	</category>
+	<category name="{% trans "Logic" %}">
+		<block type="logic_compare"></block>
+		<block type="logic_boolean"></block>
+	</category>
+	<category name="{% trans "Variables" %}">
+		<block type="variables_get"></block>
+    </category>
+</xml>
+{% elif level < 5  %}
+<xml id="toolbox" style="display: none">
+	<category name="{% trans "DroneWars: Order" %}">
+		<block type="dronewars_fleetDoNothing"></block>
+		<block type="dronewars_fleetMove"></block>
+		<block type="dronewars_fleetHarvest"></block>
+		<block type="dronewars_fleetColonize"></block>
+		<block type="dronewars_fleetDrop"></block>
+	</category>
+	<category name="{% trans "DroneWars: Fleet" %}">
+		<block type="dronewars_ship_in_fleet"></block>
+	</category>
+	<category name="{% trans "Procedures" %}">
+		<block type="procedures_ifreturn"></block>
+	</category>
+	<category name="{% trans "Math" %}">
+		<block type="math_number"></block>
+		<block type="math_arithmetic"></block>
+	</category>
+	<category name="{% trans "Logic" %}">
+		<block type="logic_compare"></block>
+		<block type="logic_boolean"></block>
+	</category>
+	<category name="{% trans "Variables" %}">
+		<block type="variables_get"></block>
+    </category>
+</xml>
+{% elif level < 6  %}
+<xml id="toolbox" style="display: none">
+	<category name="{% trans "DroneWars: Order" %}">
+		<block type="dronewars_fleetDoNothing"></block>
+		<block type="dronewars_fleetMove"></block>
+		<block type="dronewars_fleetHarvest"></block>
+		<block type="dronewars_fleetColonize"></block>
+		<block type="dronewars_fleetDrop"></block>
+	</category>
+  <category name="{% trans "DroneWars: Coordinates" %}">
+  	<block type="dronewars_randDir"></block>
+  </category>	
+	<category name="{% trans "DroneWars: Fleet" %}">
+		<block type="dronewars_ship_in_fleet"></block>
+	</category>
+	<category name="{% trans "Procedures" %}">
+		<block type="procedures_ifreturn"></block>
+	</category>
+	<category name="{% trans "Math" %}">
+		<block type="math_number"></block>
+		<block type="math_arithmetic"></block>
+	</category>
+	<category name="{% trans "Logic" %}">
+		<block type="logic_compare"></block>
+		<block type="logic_boolean"></block>
+	</category>
+	<category name="{% trans "Variables" %}">
+		<block type="variables_get"></block>
+    </category>
+</xml>
+{% else %}
+<xml id="toolbox" style="display: none">
+	<category name="{% trans "DroneWars: Order" %}">
+		<block type="dronewars_fleetDoNothing"></block>
+		<block type="dronewars_fleetMove"></block>
+		<block type="dronewars_fleetHarvest"></block>
+		<block type="dronewars_fleetColonize"></block>
+		<block type="dronewars_fleetDrop"></block>
+	</category>
+	<category name="{% trans "DroneWars: Planet" %}">
+		<block type="dronewars_is_planet_free"></block>
+		<block type="dronewars_building_in_planet"></block>
+		<block type="dronewars_cannon_in_planet"></block>
+		<block type="dronewars_ressource_in_planet"></block>
+		<block type="dronewars_Planet_coord"></block>
+		<block type="dronewars_Planet_playerId"></block>
+		<block type="dronewars_Planet_buildingList"></block>
+		<block type="dronewars_Planet_cannonTab"></block>
+		<block type="dronewars_Planet_ressourceSet"></block>
+	</category>
+	<category name="{% trans "DroneWars: Fleet" %}">
+		<block type="dronewars_Fleet_id"></block>
+		<block type="dronewars_Fleet_playerId"></block>
+		<block type="dronewars_Fleet_coord"></block>
+		<block type="dronewars_Fleet_origin"></block>
+		<block type="dronewars_Fleet_name"></block>
+		<block type="dronewars_Fleet_shipList"></block>
+		<block type="dronewars_Fleet_ressourceSet"></block>
+		<block type="dronewars_ship_in_fleet"></block>
+		<block type="dronewars_ressource_in_fleet"></block>
+	</category>
+	<category name="{% trans "DroneWars: Resources" %}">
+		<block type="dronewars_ressourceSet"></block>
+		<block type="dronewars_ressourceSet_at"></block>
+	</category>
+	<category name="{% trans "DroneWars: Coordinates" %}">
+		<block type="dronewars_coord"></block>
+		<block type="dronewars_randDir"></block>
+		<block type="dronewars_dir_from_to"></block>
+	</category>
+	<category name="{% trans "Controls" %}">
+		<block type="controls_if"></block>
+		<block type="controls_repeat"></block>
+		<block type="controls_whileUntil"></block>
+		<block type="controls_for">
+			<value name="FROM"><block type="math_number"><title name="NUM">1</title></block></value>
+			<value name="TO"><block type="math_number"><title name="NUM">10</title></block></value>
+		</block>
+		<block type="controls_forEach"></block>
+		<block type="controls_flow_statements"></block>
+	</category>
+	<category name="{% trans "Logic" %}">
+		<block type="logic_compare"></block>
+		<block type="logic_operation"></block>
+		<block type="logic_negate"></block>
+		<block type="logic_boolean"></block>
+		<block type="logic_null"></block>
+		<block type="logic_ternary"></block>
+	</category>
+	<category name="{% trans "Math" %}">
+		<block type="math_number"></block>		
+		<block type="math_arithmetic"></block>
+		<block type="math_single"></block>
+		<block type="math_trig"></block>
+		<block type="math_constant"></block>
+		<block type="math_number_property"></block>
+		<block type="math_change"><value name="DELTA"><block type="math_number"><title name="NUM">1</title></block></value></block>
+		<block type="math_round"></block>
+		<block type="math_on_list"></block>
+		<block type="math_modulo"></block>
+		<block type="math_constrain">
+			<value name="LOW"><block type="math_number"><title name="NUM">1</title></block></value>
+			<value name="HIGH"><block type="math_number"><title name="NUM">100</title></block></value>
+		</block>
+		<block type="math_random_int">
+			<value name="FROM"><block type="math_number"><title name="NUM">1</title></block></value>
+			<value name="TO"><block type="math_number"><title name="NUM">100</title></block></value>
+		</block>
+	<block type="math_random_float"></block>
+	</category>
+	<category name="{% trans "Text" %}">
+		<block type="text"></block>
+		<block type="text_join"></block>
+		<block type="text_append"><value name="TEXT"><block type="text"></block></value></block>
+		<block type="text_length"></block>
+		<block type="text_isEmpty"></block>
+		<block type="text_endString"></block>
+		<block type="text_indexOf"></block>
+		<block type="text_charAt"></block>
+		<block type="text_changeCase"></block>
+		<block type="text_trim"></block>
+		<block type="text_print"></block>
+		<block type="text_prompt"></block>
+	</category>
+	<category name="{% trans "Lists" %}">
+		<block type="lists_create_empty"></block>
+		<block type="lists_create_with"></block>
+		<block type="lists_repeat"><value name="NUM"><block type="math_number"><title name="NUM">5</title></block></value></block>
+		<block type="lists_length"></block>
+		<block type="lists_isEmpty"></block>
+		<block type="lists_indexOf"></block>
+		<block type="lists_getIndex"></block>
+		<block type="lists_setIndex"></block>
+	</category>
+	<category name="{% trans "Variables" %}" custom="VARIABLE"></category>
+	<category name="{% trans "Procedures" %}" custom="PROCEDURE"></category>
+</xml>
+{% endif %}
 {% endblock %}
-
-
+<!--
 {% block whitelist %}
 	{% if level < 1  %}
 	{% elif level < 2  %}
@@ -43,3 +221,4 @@
 	var keepers = [];
 	{% endif %}
 {% endblock %}
+-->
