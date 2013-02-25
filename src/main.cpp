@@ -63,6 +63,8 @@ int main()//(int argc, char** argv)
 	catch(std::exception const& ex)
 	{
 		std::cerr << typeid(ex).name() << " " << ex.what() << std::endl;
+		std::ofstream out("log.txt");
+		out << boost::diagnostic_information(ex) << std::endl;
 		return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;
