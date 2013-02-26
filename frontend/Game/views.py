@@ -7,6 +7,7 @@ from django.utils.translation import ugettext_lazy as N_
 #from django.shortcuts import render_to_response
 from django.shortcuts import render, redirect
 from django import forms
+from django.contrib.sessions.models import Session
 import logging
 
 import thrift.transport.TSocket
@@ -458,6 +459,15 @@ def ScoreView(request):
      
     players = sorted(players, key=key[sort_order], reverse=asc)
     timeInfo = service.getTimeInfo()
+    
+    sessions = Session.objects.all();
+    id_set = set()
+    for session in sessions:
+        pid = session.get_decoded()["PlayerID"]
+        id_set.add(pid)
+    
+    for player in players:
+        player.logged = player.id in id_set 
     
     return render(request, 'scoreview.html', {
         "players": players,

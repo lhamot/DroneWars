@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-24 22:56+0100\n"
-"PO-Revision-Date: 2013-02-24 22:56+0100\n"
+"POT-Creation-Date: 2013-02-26 22:39+0100\n"
+"PO-Revision-Date: 2013-02-26 22:40+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "MIME-Version: 1.0\n"
@@ -339,66 +339,66 @@ msgstr "Criticité"
 msgid "Status"
 msgstr "Status"
 
-#: .\Game\views.py:30 .\Game\views.py:37
+#: .\Game\views.py:31 .\Game\views.py:38
 msgid "Login"
 msgstr "Identifiant"
 
-#: .\Game\views.py:31 .\Game\views.py:38
+#: .\Game\views.py:32 .\Game\views.py:39
 msgid "Password"
 msgstr "Mot de passe"
 
-#: .\Game\views.py:32
+#: .\Game\views.py:33
 msgid "Password2"
 msgstr "Mot de passe (vérif)"
 
-#: .\Game\views.py:63
+#: .\Game\views.py:64
 msgid "Passwords don't match!"
 msgstr "Les mots de passes ne correspondent pas!"
 
-#: .\Game\views.py:68
+#: .\Game\views.py:69
 msgid "Registration successful"
 msgstr "L'enregistrement a reussi."
 
-#: .\Game\views.py:71
+#: .\Game\views.py:72
 msgid "Login still exist."
 msgstr "Cet identifiant existe déja."
 
-#: .\Game\views.py:82
+#: .\Game\views.py:83
 msgid "Wrong login or password."
 msgstr "Mauvais identifiant ou mot de passe."
 
-#: .\Game\views.py:137
+#: .\Game\views.py:138
 msgid "PLANET_TUTOS"
 msgstr ""
 "Ici, vous verrez la liste de vos planètes. Cliquez sur l'une d'elle pour en "
 "savoir plus. \n"
 "Cliquez sur \"Commandement pour commencer le tutoriel\""
 
-#: .\Game\views.py:215
+#: .\Game\views.py:216
 msgid "FLEET_TUTOS"
 msgstr ""
 "Ici, vous verrez la liste de vos flottes. Si il n'y en a pas, demandez à vos "
 "planètes d'en fabriquer."
 
-#: .\Game\views.py:306
+#: .\Game\views.py:307
 msgid "REPORT_TUTOS"
 msgstr ""
 "Ici vous verrez les 10 derniers événements importants qui se sont produits "
 "dans votre empire."
 
-#: .\Game\views.py:333 .\Game\views.py:361 .\Game\views.py:394
-#: .\Game\views.py:428
+#: .\Game\views.py:334 .\Game\views.py:362 .\Game\views.py:395
+#: .\Game\views.py:429
 msgid "Code successfully saved"
 msgstr "Code sauvegardé avec succès."
 
-#: .\Game\views.py:398
+#: .\Game\views.py:399
 msgid "See in planets tab if the building is in progress"
 msgstr ""
 "Code sauvegardé avec succès.<br/>\n"
 "Allez voir dans l'onglet \"Planètes\" si votre nouveau bâtiment est en cours "
 "de création. (Cela peut prendre quelque minutes)"
 
-#: .\Game\views.py:405
+#: .\Game\views.py:406
 msgid "CODE_TUTOS"
 msgstr ""
 "Ici, vous pourrez définir la ligne de conduite de vos amiraux(flottes) et "
@@ -475,7 +475,7 @@ msgstr "Vaisseaux"
 
 #: .\template\fleetview.html.py:34 .\template\planetsview.html.py:51
 #: .\template\planetview.html.py:52 .\template\planetview.html.py:59
-#: .\template\scoreview.html.py:15
+#: .\template\scoreview.html.py:17
 msgid "Name"
 msgstr "Nom"
 
@@ -539,7 +539,7 @@ msgstr ""
 msgid "Command"
 msgstr "Commandement"
 
-#: .\template\ingame_base.html.py:20 .\template\scoreview.html.py:15
+#: .\template\ingame_base.html.py:20 .\template\scoreview.html.py:18
 msgid "Score"
 msgstr "Score"
 
@@ -621,27 +621,35 @@ msgstr "ID Raport"
 msgid "Planet coordinate"
 msgstr "Coordonnées de planète"
 
-#: .\template\scoreview.html.py:15
+#: .\template\scoreview.html.py:16
 msgid "Index"
 msgstr "Index"
+
+#: .\template\scoreview.html.py:19
+msgid "State"
+msgstr "Etat"
+
+#: .\template\scoreview.html.py:28
+msgid "Logged"
+msgstr "Connecté"
 
 #: .\template\Game\ticket_list.html.py:29
 msgid "Add"
 msgstr "Ajouter"
 
-#: .\template\codesview\blockly.html.py:72
+#: .\template\codesview\blockly.html.py:59
 msgid "Import"
 msgstr "Import"
 
-#: .\template\codesview\blockly.html.py:77
+#: .\template\codesview\blockly.html.py:64
 msgid "Export"
 msgstr "Export"
 
-#: .\template\codesview\blockly.html.py:82
+#: .\template\codesview\blockly.html.py:69
 msgid "Reload"
 msgstr "Recharger"
 
-#: .\template\codesview\blockly.html.py:83
+#: .\template\codesview\blockly.html.py:70
 msgid "Save"
 msgstr "Enregistrer"
 
