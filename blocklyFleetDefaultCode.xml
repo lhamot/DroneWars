@@ -32,11 +32,8 @@
     </mutation>
     <title name="NAME">AI:action</title>
     <comment pinned="false" h="200" w="400">%7%</comment>
-    <statement name="STACK">
-    </statement>
     <value name="RETURN">
-      <block type="dronewars_fleetaction" inline="true">
-        <title name="ACTION">Nothing</title>
+      <block type="dronewars_fleetDoNothing">
       </block>
     </value>
   </block>

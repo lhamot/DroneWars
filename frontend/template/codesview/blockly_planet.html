@@ -193,30 +193,3 @@
 {% endif %}
 {% endblock %}
 
-{% block help_button %}
-	{% if level == 1 %}
-	<script>
-		 $(function() {
-			$( "#dialog" ).dialog({
-				autoOpen: false,
-				show: {
-					effect: "drop",
-					duration: 600
-				},
-				hide: {
-					effect: "drop",
-					duration: 600
-				}
-			});
-			$( "#opener" ).click(function() {
-				$( "#dialog" ).dialog( "open" );
-			});
-		});
-	</script>
-		<button class="btn btn-success" id="opener">{% trans "Need help" %}</button>
-	<div id="dialog" title="{% trans "Help" %}">
-		<p class="neutrybase">{% trans "TUTO_1_HELP_1" %}</p>
-	</div>
-	{% endif %}
-{% endblock %}
-
