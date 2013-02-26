@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy as N_
 from django.shortcuts import render, redirect
 from django import forms
 from django.contrib.sessions.models import Session
+from django.utils import timezone
 import logging
 
 import thrift.transport.TSocket
@@ -463,8 +464,9 @@ def ScoreView(request):
     sessions = Session.objects.all();
     id_set = set()
     for session in sessions:
-        pid = session.get_decoded()["PlayerID"]
-        id_set.add(pid)
+        if session.expire_date > timezone.now():
+            pid = session.get_decoded()["PlayerID"]
+            id_set.add(pid)
     
     for player in players:
         player.logged = player.id in id_set 
