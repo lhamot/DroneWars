@@ -461,12 +461,10 @@ def ScoreView(request):
     players = sorted(players, key=key[sort_order], reverse=asc)
     timeInfo = service.getTimeInfo()
     
-    sessions = Session.objects.all();
+    sessions = Session.objects.filter(expire_date__gte=timezone.now())
     id_set = set()
     for session in sessions:
-        if session.expire_date > timezone.now():
-            pid = session.get_decoded()["PlayerID"]
-            id_set.add(pid)
+        id_set.add(session.get_decoded()["PlayerID"])
     
     for player in players:
         player.logged = player.id in id_set 
