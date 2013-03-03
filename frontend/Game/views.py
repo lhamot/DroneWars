@@ -499,9 +499,10 @@ def ScoreView(request):
     sessions = Session.objects.filter(expire_date__gte=timezone.now())
     id_set = set()
     limit_time = datetime.utcnow() - timedelta(minutes=10)
+    old_time = datetime.utcnow() - timedelta(years=1)
     for session in sessions:
         session_data = session.get_decoded()
-        if session_data["last_request"] > limit_time:
+        if session_data.get("last_request", old_time) > limit_time:
             id_set.add(session_data["PlayerID"])
     
     for player in players:
