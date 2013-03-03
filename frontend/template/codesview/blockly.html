@@ -85,42 +85,6 @@
 					}
 					"/>
 		</div>
-		<div class="span6">
-			<script>
-				 $(function() {
-					$( "#dialog" ).dialog({
-						autoOpen: false,
-						show: {
-							effect: "drop",
-							duration: 600
-						},
-						hide: {
-							effect: "drop",
-							duration: 600
-						}
-					});
-					$( "#opener" ).click(function() {
-						$( "#dialog" ).dialog( "open" );
-					});
-				});
-			</script>
-			{% if level == 1 %}
-			<button class="btn btn-success" id="opener">{% trans "Need help" %}</button>
-			<div id="dialog" title="{% trans "Help" %}">
-				<p class="neutrybase">{% trans "TUTO_1_HELP_1" %}</p>
-			</div>
-			{% elif level == 3 %}
-			<button class="btn btn-success" id="opener">{% trans "Need help" %}</button>
-			<div id="dialog" title="{% trans "Help" %}">
-				<p class="neutrybase">{% trans "TUTO_3_HELP_1" %}</p>
-			</div>
-			{% elif level == 4 %}
-			<button class="btn btn-success" id="opener">{% trans "Need help" %}</button>
-			<div id="dialog" title="{% trans "Help" %}">
-				<p class="neutrybase">{% trans "TUTO_4_HELP_1" %}</p>
-			</div>
-			{% endif %}
-		</div>
 		{%if codeData.lastError %}
 		<div class="alert text-error span10">
 			<button type="button" class="close" data-dismiss="alert">&times;</button>

@@ -78,6 +78,7 @@ def OutPage(request):
                 service = createEngineClient()
                 optPlayer = service.logPlayer(userInfo["login"], userInfo["password"])
                 if optPlayer.player != None:
+                    request.session.clear()
                     request.session["PlayerID"] = optPlayer.player.id
                     return redirect("/ingame/codes.html") 
                 else:
@@ -322,6 +323,15 @@ def ReportsView(request):
     })
 
 
+def checkIfTutoInfoSeen(service, player):
+    plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0)
+    tutoInfoTag = "TUTO_%i_INFO" % plLvl
+    tutoInfoIsSeen = tutoInfoTag in player.tutoDisplayed
+    if tutoInfoIsSeen == False:
+        service.incrementTutoDisplayed(player.id, tutoInfoTag)
+    return tutoInfoIsSeen
+
+
 CoddingLevelTag = "BlocklyCodding"
 def BlocklyFleetsCodesView(request):
     pid = request.session["PlayerID"]
@@ -337,9 +347,11 @@ def BlocklyFleetsCodesView(request):
    
     player = service.getPlayer(pid)
     codeData = player.fleetsCode
-    plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0);
+    plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0)
     tutosText = N_("BLOCKLY_TUTO_" + str(plLvl)) if plLvl <= 8 else None
     timeInfo = service.getTimeInfo()
+
+    tutoInfoIsSeen = checkIfTutoInfoSeen(service, player)
      
     return render(request, 'codesview/blockly_fleet.html', {
         "name": "Fleet",
@@ -349,6 +361,7 @@ def BlocklyFleetsCodesView(request):
         "tutosText": tutosText,
         "mode": "blockly",
         'timeInfo': timeInfo,
+        'tutoInfoIsSeen': tutoInfoIsSeen,
     })
     
 
@@ -406,7 +419,9 @@ def BlocklyPlanetsCodesView(request):
     
     helpMessage = _("CODE_TUTOS") if not CodeViewTutoTag in player.tutoDisplayed else None
     timeInfo = service.getTimeInfo()
-            
+    
+    tutoInfoIsSeen = checkIfTutoInfoSeen(service, player)
+    
     return render(request, 'codesview/blockly_planet.html', {
         "name": "Planet",
         "level": plLvl,
@@ -416,6 +431,7 @@ def BlocklyPlanetsCodesView(request):
         "mode": "blockly",
         "helpMessage": helpMessage,
         "timeInfo": timeInfo,
+        "tutoInfoIsSeen": tutoInfoIsSeen,
     })
 
 

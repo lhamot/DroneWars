@@ -45,6 +45,63 @@
 	<div class="row">
 		{% if tutosText %}
 		<div class="span4 tutorial">{{tutosText|safe}}</div>
+		<div class="span4">
+			<script>
+				 $(function() {
+					$( ".dialog" ).dialog({
+						autoOpen: false,
+						show: {
+							effect: "drop",
+							duration: 600
+						},
+						hide: {
+							effect: "drop",
+							duration: 600
+						}
+					});
+					$( "#help_opener" ).click(function() {
+						$( "#help_dialog" ).dialog( "open" );
+					});
+					$( "#info_opener" ).click(function() {
+						$( "#info_dialog" ).dialog( "open" );
+					});
+					{% if not tutoInfoIsSeen %}
+					$( "#info_opener" ).ready(function() {
+						$( "#info_dialog" ).dialog( "open" );
+					});
+					{% endif %}
+				});
+			</script>
+			<button class="btn btn-success" id="info_opener">{% trans "Informations" %}</button>
+			<br/>
+			<button class="btn btn-success" id="help_opener">{% trans "Need help" %}</button>
+			<div title="{% trans "Informations" %}" id="info_dialog" class="dialog">
+				<p class="neutrybase">
+				{% if level == 0 %}{% trans "TUTO_0_INFO" %}{% endif %}
+				{% if level == 1 %}{% trans "TUTO_1_INFO" %}{% endif %}
+				{% if level == 2 %}{% trans "TUTO_2_INFO" %}{% endif %}
+				{% if level == 3 %}{% trans "TUTO_3_INFO" %}{% endif %}
+				{% if level == 4 %}{% trans "TUTO_4_INFO" %}{% endif %}
+				{% if level == 5 %}{% trans "TUTO_5_INFO" %}{% endif %}
+				{% if level == 6 %}{% trans "TUTO_6_INFO" %}{% endif %}
+				{% if level == 7 %}{% trans "TUTO_7_INFO" %}{% endif %}
+				{% if level == 8 %}{% trans "TUTO_8_INFO" %}{% endif %}
+				</p>
+			</div>
+			<div title="{% trans "Need help" %}" id="help_dialog" class="dialog">
+				<p class="neutrybase">
+				{% if level == 0 %}{% trans "TUTO_0_HELP_1" %}{% endif %}
+				{% if level == 1 %}{% trans "TUTO_1_HELP_1" %}{% endif %}
+				{% if level == 2 %}{% trans "TUTO_2_HELP_1" %}{% endif %}
+				{% if level == 3 %}{% trans "TUTO_3_HELP_1" %}{% endif %}
+				{% if level == 4 %}{% trans "TUTO_4_HELP_1" %}{% endif %}
+				{% if level == 5 %}{% trans "TUTO_5_HELP_1" %}{% endif %}
+				{% if level == 6 %}{% trans "TUTO_6_HELP_1" %}{% endif %}
+				{% if level == 7 %}{% trans "TUTO_7_HELP_1" %}{% endif %}
+				{% if level == 8 %}{% trans "TUTO_8_HELP_1" %}{% endif %}
+				</p>
+			</div>
+		</div>
 		{% endif %}
 	</div>
 </div>

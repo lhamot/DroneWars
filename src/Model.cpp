@@ -184,7 +184,7 @@ void construct(Universe& univ)
 	std::string const& password = "test";
 	for(int i = 0; i < 100; ++i)
 	{
-		Player::ID pid = createPlayer(univ, (boost::format("admin%1%") % i).str(), password);
+		Player::ID pid = createPlayer(univ, nameGen(), password);
 		Player& player = mapFind(univ.playerMap, pid)->second;
 		player.planetsCode.setCode(
 		  "function AI(planet, fleets)\n"

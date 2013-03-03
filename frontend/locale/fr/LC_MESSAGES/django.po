@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 23:21+0100\n"
-"PO-Revision-Date: 2013-02-27 23:46+0100\n"
+"POT-Creation-Date: 2013-03-03 16:29+0100\n"
+"PO-Revision-Date: 2013-03-03 16:21+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "MIME-Version: 1.0\n"
@@ -227,40 +227,30 @@ msgstr "Canon6"
 msgid "BLOCKLY_TUTO_0"
 msgstr ""
 "Ceci est la première étape du tutoriel:<br/>\n"
-"Essayez de créer un batiment \"<strong>Mine de métal</strong>\" (en envoyant "
-"le bon ordre).<br/>\n"
-"Tips : Glissez l'\"<strong>ordre de créer un batiment</strong>\", depuis "
-"l'élément \"<strong>DronreWars: Ordre</strong>\", à la place de "
-"l'\"<strong>ordre ne de rien faire</strong>\"."
+"Demandez à votre planète de créer un batiment \"<strong>Mine de métal</"
+"strong>\" à chaque tour (en envoyant le bon ordre)."
 
 #: .\Game\TranslationTools.py:62
 msgid "BLOCKLY_TUTO_1"
 msgstr ""
 "Ceci est la deuxième étape du tutoriel :<br/>\n"
 "Essayez de créer une fabrique une fois que votre mine de métal a atteint le "
-"niveau 4.<br>\n"
-"Aide : N'oubliez pas que vous aurez d'autres planètes qui auront besoin "
-"d'une mine de métal.<br>\n"
-"Aide 2 : La commande Procedures -> \"Si > retourne\" pourait bien vous être "
-"utile."
+"niveau 4."
 
 #: .\Game\TranslationTools.py:63
 msgid "BLOCKLY_TUTO_2"
 msgstr ""
 "Ceci est la troisième étape du tutoriel : <br/>\n"
-"Pour continuer, vous aurez besoin d'une flotte. Fabriquez des Mosquito.<br/>"
+"Pour continuer, vous aurez besoin de vaisseaux. Fabriquez des Mosquito."
 
 #: .\Game\TranslationTools.py:64
 msgid "BLOCKLY_TUTO_3"
-msgstr ""
-"Etape 4 : Créer 3 flottes.<br/>\n"
-" Aide: Dans la programmation des flottes, la fonction do_gather permet de "
-"déterminer si deux flottes doivent fusionner ou non."
+msgstr "Etape 4 : Créez au moins 3 flottes."
 
 #: .\Game\TranslationTools.py:65
 msgid "BLOCKLY_TUTO_4"
 msgstr ""
-"Etape 5 : Créer au moins 3 flottes composées de 5 mosquitos exactement."
+"Etape 5 : Créez au moins 3 flottes composées de 5 mosquitos exactement."
 
 #: .\Game\TranslationTools.py:66
 msgid "BLOCKLY_TUTO_5"
@@ -269,9 +259,8 @@ msgstr "Etape 6 : Envoyez 6 flottes dans 6 endroits différents."
 #: .\Game\TranslationTools.py:67
 msgid "BLOCKLY_TUTO_6"
 msgstr ""
-"Pour réussir la septième étape du tutoriel,<br/>\n"
-"récoltez un maximum de ressources sur les planètes inhabitées.<br/>\n"
-"Aide : Pour tester si il y a une planète, testez \"Si 'planète' alors : \" ."
+"Pour réussir la septième étape du tutoriel, récoltez un maximum de "
+"ressources sur les planètes inhabitées."
 
 #: .\Game\TranslationTools.py:68
 msgid "BLOCKLY_TUTO_7"
@@ -281,9 +270,7 @@ msgstr ""
 
 #: .\Game\TranslationTools.py:69
 msgid "BLOCKLY_TUTO_8"
-msgstr ""
-"Votre prochain objectif est de coloniser d'autres planètes.<br/>Aide : C'est "
-"la Reine qui permet de colonier."
+msgstr "Votre prochain objectif est de coloniser d'autres planètes."
 
 #. Translators: Criticity
 #: .\Game\models.py:9
@@ -340,66 +327,66 @@ msgstr "Criticité"
 msgid "Status"
 msgstr "Status"
 
-#: .\Game\views.py:34 .\Game\views.py:41
+#: .\Game\views.py:32 .\Game\views.py:39
 msgid "Login"
 msgstr "Identifiant"
 
-#: .\Game\views.py:35 .\Game\views.py:42
+#: .\Game\views.py:33 .\Game\views.py:40
 msgid "Password"
 msgstr "Mot de passe"
 
-#: .\Game\views.py:36
+#: .\Game\views.py:34
 msgid "Password2"
 msgstr "Mot de passe (vérif)"
 
-#: .\Game\views.py:67
+#: .\Game\views.py:65
 msgid "Passwords don't match!"
 msgstr "Les mots de passes ne correspondent pas!"
 
-#: .\Game\views.py:72
+#: .\Game\views.py:70
 msgid "Registration successful"
 msgstr "L'enregistrement a reussi."
 
-#: .\Game\views.py:75
+#: .\Game\views.py:73
 msgid "Login still exist."
 msgstr "Cet identifiant existe déja."
 
-#: .\Game\views.py:86
+#: .\Game\views.py:85
 msgid "Wrong login or password."
 msgstr "Mauvais identifiant ou mot de passe."
 
-#: .\Game\views.py:141
+#: .\Game\views.py:140
 msgid "PLANET_TUTOS"
 msgstr ""
 "Ici, vous verrez la liste de vos planètes. Cliquez sur l'une d'elle pour en "
 "savoir plus. \n"
 "Cliquez sur \"Commandement pour commencer le tutoriel\""
 
-#: .\Game\views.py:219
+#: .\Game\views.py:218
 msgid "FLEET_TUTOS"
 msgstr ""
 "Ici, vous verrez la liste de vos flottes. Si il n'y en a pas, demandez à vos "
 "planètes d'en fabriquer."
 
-#: .\Game\views.py:310
+#: .\Game\views.py:309
 msgid "REPORT_TUTOS"
 msgstr ""
 "Ici vous verrez les 10 derniers événements importants qui se sont produits "
 "dans votre empire."
 
-#: .\Game\views.py:337 .\Game\views.py:365 .\Game\views.py:398
-#: .\Game\views.py:432
+#: .\Game\views.py:345 .\Game\views.py:376 .\Game\views.py:409
+#: .\Game\views.py:446
 msgid "Code successfully saved"
 msgstr "Code sauvegardé avec succès."
 
-#: .\Game\views.py:402
+#: .\Game\views.py:413
 msgid "See in planets tab if the building is in progress"
 msgstr ""
 "Code sauvegardé avec succès.<br/>\n"
 "Allez voir dans l'onglet \"Planètes\" si votre nouveau bâtiment est en cours "
 "de création. (Cela peut prendre quelque minutes)"
 
-#: .\Game\views.py:409
+#: .\Game\views.py:420
 msgid "CODE_TUTOS"
 msgstr ""
 "Ici, vous pourrez définir la ligne de conduite de vos amiraux(flottes) et "
@@ -434,6 +421,201 @@ msgstr "Textuel"
 #: .\template\ingame_base.html.py:18
 msgid "Fleets"
 msgstr "Flottes"
+
+#: .\template\codesview.html.py:75 .\template\codesview.html.py:78
+msgid "Informations"
+msgstr "Informations"
+
+#: .\template\codesview.html.py:77 .\template\codesview.html.py:91
+msgid "Need help"
+msgstr "Besoin d'aide!"
+
+#: .\template\codesview.html.py:80
+msgid "TUTO_0_INFO"
+msgstr ""
+"DroneWars est un jeu qui se déroule en tour par tour, comme la plupars des "
+"jeux de sociétés. A chaque tour, chaque planète et chaque flotte devra "
+"décider de l'action à accomplir.<br/>La procedure \"AI\" permet de décrir le "
+"comportement voulu pour les planètes. Elle sera donc excecutée pour chaque "
+"planètes, à chaque tour."
+
+#: .\template\codesview.html.py:81
+msgid "TUTO_1_INFO"
+msgstr ""
+"Plus tard vous possederez de nombreuses planètes. Le mème scripte sera "
+"excecuté pour toute les planètes. Celle qui seront à peine construites comme "
+"celle qui seront trés évoluées.<br/>\n"
+"A vous de programmer une Inteligence qui marche dans tout les cas.<br/>\n"
+"<br/>\n"
+"Quand un ordre dépend d'une condition, la commande \"<b>Si</b> <i>condition</"
+"i> <b>retourne</b> <i>ordre</i>\", dans la rublique <b>Procédures</b>, "
+"pourait bien vous être utile."
+
+#: .\template\codesview.html.py:82
+msgid "TUTO_2_INFO"
+msgstr ""
+"Les planètes penvent construire des batiments, mais aussi des vaisseaux. Les "
+"vaisseaux sont imediatement envoyés en orbite de la planète. Par defaut, vos "
+"vaisseaux se touvant autour de la mème planète se rassembleront pour former "
+"une flotte unique."
+
+#: .\template\codesview.html.py:83
+msgid "TUTO_3_INFO"
+msgstr ""
+"Jusque là vos vaisseaux se rassemble en une flotte unique, mais se "
+"comportement est modifiable. Chaque fois que deux flottes se rencontre, la "
+"procedure <i>do_gather</i> est appelée. Si elle retourne <b>vrai</b> les "
+"deux flottes n'en formeront plus qu'une, mais si elle retourne <b>faux</b>, "
+"elles continueront séparement."
+
+#: .\template\codesview.html.py:84
+msgid "TUTO_4_INFO"
+msgstr ""
+"La procedure <i>do_gather</i> permet de définir trés finement la taile "
+"désiré des flottes, puisqu'elle peut inspecter le contenue des flottes qui "
+"se rencontre, pour évalué si oui ou non elle doivent fusioner."
+
+#: .\template\codesview.html.py:85
+msgid "TUTO_5_INFO"
+msgstr ""
+"L'univers de DroneWars est découpé en cases comme un damier tridimentionelle "
+"de 100 * 100 * 100 cases.<br/>\n"
+"Vous pouvez y déplacer vos flottes, dans la procédure <i>action</i> en "
+"donnant une direction. A ce stade, il n'y as qu'une manière de donner une "
+"direction, c'est la  procédure <i>direction aléatoire</i>."
+
+#: .\template\codesview.html.py:86
+msgid "TUTO_6_INFO"
+msgstr ""
+"Dans chaque cases il peut y avoir une planète ou ancune. (Mais jamais plus "
+"d'une)<br/>\n"
+"Les planètes libres génères une toute petite quantité de ressource à chaque "
+"round. Une flotte n'est autorisée à récolter ces ressources que si il y as "
+"bien une planète et si elle est libre (càd elle n'appartient à personne)<br/"
+">\n"
+"<br/>\n"
+"Dans la procedure <i>action</i> vous pouvez tester si il y as une planète "
+"dans la zone avec le test :<br/>\n"
+"Si <b>planète</b> alors : "
+
+#: .\template\codesview.html.py:87
+msgid "TUTO_7_INFO"
+msgstr ""
+"Vos flottes connaissent leurs coordonées ainsi que les coordonées de leur "
+"planète d'origine. Elles peuvent donc se diriger dans la direction de leur "
+"planète d'orogine, grace a la procedure <i>direction de X vers Y</i>, dans "
+"la ribrique <b>Coordonées</b>.<br/>\n"
+"<br/>\n"
+"Dans une procedure <b>Si</b> <i>condition</i> <b>alors</b> <i>action</i>, il "
+"est possible d'ajouter une clauses <b>sinon</b> et des clauses <b>sinon, si</"
+"b>. Clicquez sur le [+].<br/>\n"
+"<br/>\n"
+"Pour savoir si une flotte est sur sa planète d'origine, vous pouvez comparer "
+"l'origine de votre flotte avec les coordonée de la planètes."
+
+#: .\template\codesview.html.py:88
+msgid "TUTO_8_INFO"
+msgstr ""
+"Il est possible de coloniser d'autre planètes. Pour qu'une flotte puisse "
+"coloniser une planètes elle doit contenir au moins un vaisseau de type "
+"<i>Queen</i>, ètre dans une case ou il y as une planètes libre, et ordoner "
+"la colonisation."
+
+#: .\template\codesview.html.py:93
+msgid "TUTO_0_HELP_1"
+msgstr ""
+"Glissez l'\"<strong>ordre de créer un batiment</strong>\", depuis l'élément "
+"\"<strong>DronreWars: Ordre</strong>\", à la place de l'\"<strong>ordre ne "
+"de rien faire</strong>\"."
+
+#: .\template\codesview.html.py:94
+msgid "TUTO_1_HELP_1"
+msgstr ""
+"Vous devez d'abord tester si la mine de métal de votre planète et inférieure "
+"à 4, et lancer son amélioration dans ce cas.<br/>\n"
+"Sinon, vous devez lancer l'amélioration de votre fabrique.<br/>\n"
+"Cela devrait ressembler à cela:<br/>\n"
+"<br/>\n"
+"Si <b>Mine de métal</b> présent sur <i>ma planète</i> < 4 <br/>\n"
+"&nbsp&nbsp&nbsp&nbsp=> Retourne ordre de créer une <b>Mine de métal</b><br/"
+">\n"
+"(sinon) Retourne ordre de créer une <b>Fabrique</b>"
+
+#: .\template\codesview.html.py:95
+msgid "TUTO_2_HELP_1"
+msgstr ""
+"Arrengez vous juste pour que l'<i>ordre de créer des vaisseaux</i> "
+"<b>Moskito</b> soit excecuté, aprés que vos batiment soit assez évolués. "
+"Cela pourait ressemblé à ca:<br/>\n"
+"Si <b>Mine de métal</b> présent sur <i>ma planète</i> < 4 <br/>\n"
+"&nbsp&nbsp&nbsp&nbsp=> Retourne ordre de créer une <b>Mine de métal</b><br/"
+">\n"
+"Sinon, Si <b>Fabrique</b> présent sur <i>ma planète</i> < 4 <br/>\n"
+"&nbsp&nbsp&nbsp&nbsp=> Retourne ordre de créer une <b>Fabrique</b><br/>\n"
+"(Sinon) Retourne Ordre de créer un vaisseau <b>Moskito</b>"
+
+#: .\template\codesview.html.py:96
+msgid "TUTO_3_HELP_1"
+msgstr ""
+"Par defaut un vaisseau produit <b>est</b> une flotte. Mais toute flottes se "
+"trouvant dans la mème zone fusionera automatiquement. Se comportement est "
+"controlé par la procedure \"do_gather\". Pour que les flottes ne fusionnent "
+"pas, il suffit d'inverser le comportement de cette procedure."
+
+#: .\template\codesview.html.py:97
+msgid "TUTO_4_HELP_1"
+msgstr ""
+"C'est la procedure \"do_gather\" qui controle <b>quand</b> des flottes "
+"doivent fusioner. Ici, on desir des flottes contenants 5 Moskitos chacunes. "
+"L'idée est de ne fusioner que si les deux flottes cumulées n'ont pas plus de "
+"5 Moskito. Pour savoir si c'est le cas, il va faloir comparer la somme des "
+"deux avec 5. Cela pourait ressembler a ca:<br/>\n"
+"Retourne (<b>Moskito</b> present dans <b>ma_flotte</b> + <b>Moskito</b> "
+"present dans <b>autre_flotte</b>) <= 5"
+
+#: .\template\codesview.html.py:98
+msgid "TUTO_5_HELP_1"
+msgstr ""
+"Pour réusir cet objectif, il vous faut au moins 6 flottes, mais ça, vous "
+"savez déja faire.<br/>\n"
+"L'objectif est de les envoyer chaqune a un endroie different. Votre seul "
+"moyen de déplacement est la <i>direction aléatoire</i>, qui semble etre un "
+"bon moyen pour envoyer vos flottes dans des endroits differents."
+
+#: .\template\codesview.html.py:99
+msgid "TUTO_6_HELP_1"
+msgstr ""
+"L'idée est de voyager aléatoirement jusqu'as trouver une planètes, et a ce "
+"moment, vérifier si elle et libre et si il y as du minerais dessu, pour le "
+"recolter.<br/>\n"
+"<br/>\n"
+"Attention au piège! Vos flotte ne peuvent faire qu'une action par toure, "
+"donc si elles recoltent a chaque fois qu'elles le peuvent, elle ne feront "
+"plus que ca.<br/>\n"
+"<br/>\n"
+"La solution devrait ressembler a ca:Si <b>planete_locale</b> alors:&nbsp;"
+"&nbsp;Si la planète <b>planete_locale</b> est libre alors:&nbsp;&nbsp;&nbsp;"
+"&nbsp; Si il y as plus de 100 métal  sur <b>planete_locale</b>, retourne "
+"ordre de récolter.(Sinon) Retourne ordre de voyager dans une direction "
+"aléatoire."
+
+#: .\template\codesview.html.py:100
+msgid "TUTO_7_HELP_1"
+msgstr ""
+"Quand vous ètes sur une planètes libre, récoltez seulement si il y as des "
+"ressources sur la planètes.<br/>\n"
+"Quand vous ètes sur votre planètes, déchargez seulement si votre flotte "
+"possede des ressources.<br/>\n"
+"Dans les autres cas, sil votre flotte possedes assez de ressources, dirigez "
+"la vers votre planètes.<br/>\n"
+"Sinon, dirigez la aléatoirement.<br/>\n"
+"<br/>\n"
+"Pour savoir si votre flotte est sur sa planète mère, testez:<br/>\n"
+"<b>Si</b> origine de ma flotte == coordonée de la planète locale alors ..."
+
+#: .\template\codesview.html.py:101
+msgid "TUTO_8_HELP_1"
+msgstr "Debrouillez vous!"
 
 #: .\template\fleetsview.html.py:43 .\template\fleetview.html.py:48
 #: .\template\planetsview.html.py:46 .\template\planetview.html.py:26
@@ -654,154 +836,107 @@ msgstr "Recharger"
 msgid "Save"
 msgstr "Enregistrer"
 
-#: .\template\codesview\blockly.html.py:108
-#: .\template\codesview\blockly.html.py:113
-#: .\template\codesview\blockly.html.py:118
-#: .\template\codesview\blockly.html.py:123
-msgid "Need help"
-msgstr "Besoin d d'aide!"
-
-#: .\template\codesview\blockly.html.py:109
-#: .\template\codesview\blockly.html.py:114
-#: .\template\codesview\blockly.html.py:119
-#: .\template\codesview\blockly.html.py:124
-msgid "Help"
-msgstr "Aide"
-
-#: .\template\codesview\blockly.html.py:110
-msgid "TUTO_1_HELP_1"
-msgstr ""
-"Vous devez d'abord tester si la mine de métal de votre planète et inférieure "
-"à 4, et lancer son amélioration dans ce cas.<br/>\n"
-"Sinon, vous devez lancer l'amélioration de votre fabrique.<br/>\n"
-"Cela devrait ressembler à cela:<br/>\n"
-"<br/>\n"
-"Si <b>Mine de métal</b> présent sur <i>ma planète</i> < 4 <br/>\n"
-"&nbsp&nbsp&nbsp&nbsp=> Retourne ordre de créer une <b>Mine de métal</b><br/"
-">\n"
-"(sinon) Retourne ordre de créer une <b>Fabrique</b>"
-
-#: .\template\codesview\blockly.html.py:115
-msgid "TUTO_2_HELP_1"
-msgstr ""
-
-#: .\template\codesview\blockly.html.py:120
-msgid "TUTO_3_HELP_1"
-msgstr ""
-"Par defaut un vaisseau produit <b>est</b> une flotte. Mais toute flottes se "
-"trouvant dans la mème zone fusionera automatiquement. Se comportement est "
-"controlé par la procedure \"do_gather\". Pour que les flottes ne fusionnent "
-"pas, il suffit d'inverser le comportement de cette procedure."
-
-#: .\template\codesview\blockly.html.py:125
-msgid "TUTO_4_HELP_1"
-msgstr ""
-"C'est la procedure \"do_gather\" qui controle <b>quand</b> des flottes "
-"doivent fusioner. Ici, on desir des flottes contenants 5 Moskitos chacunes. "
-"L'idée est de ne fusioner que si les deux flottes cumulées n'ont pas plus de "
-"5 Moskito. Pour savoir si c'est le cas, il va faloir comparer la somme des "
-"deux avec 5. Cela pourait ressembler a ca:<br/>\n"
-"Retourne (<b>Moskito</b> present dans <b>ma_flotte</b> + <b>Moskito</b> "
-"present dans <b>autre_flotte</b>) <= 5"
-
 #: .\template\codesview\blockly_fleet.html.py:11
-#: .\template\codesview\blockly_fleet.html.py:30
-#: .\template\codesview\blockly_fleet.html.py:53
-#: .\template\codesview\blockly_fleet.html.py:83
+#: .\template\codesview\blockly_fleet.html.py:28
+#: .\template\codesview\blockly_fleet.html.py:49
+#: .\template\codesview\blockly_fleet.html.py:77
 #: .\template\codesview\blockly_planet.html.py:8
 #: .\template\codesview\blockly_planet.html.py:15
-#: .\template\codesview\blockly_planet.html.py:37
-#: .\template\codesview\blockly_planet.html.py:63
-#: .\template\codesview\blockly_planet.html.py:89
+#: .\template\codesview\blockly_planet.html.py:35
+#: .\template\codesview\blockly_planet.html.py:59
+#: .\template\codesview\blockly_planet.html.py:83
 msgid "DroneWars: Order"
 msgstr "DroneWars : Ordre"
 
 #: .\template\codesview\blockly_fleet.html.py:14
-#: .\template\codesview\blockly_fleet.html.py:36
-#: .\template\codesview\blockly_fleet.html.py:66
-#: .\template\codesview\blockly_fleet.html.py:186
+#: .\template\codesview\blockly_fleet.html.py:34
+#: .\template\codesview\blockly_fleet.html.py:62
+#: .\template\codesview\blockly_fleet.html.py:180
 #: .\template\codesview\blockly_planet.html.py:22
-#: .\template\codesview\blockly_planet.html.py:48
-#: .\template\codesview\blockly_planet.html.py:74
-#: .\template\codesview\blockly_planet.html.py:191
+#: .\template\codesview\blockly_planet.html.py:46
+#: .\template\codesview\blockly_planet.html.py:70
+#: .\template\codesview\blockly_planet.html.py:185
 msgid "Procedures"
 msgstr "Procédures"
 
 #: .\template\codesview\blockly_fleet.html.py:17
-#: .\template\codesview\blockly_fleet.html.py:39
-#: .\template\codesview\blockly_fleet.html.py:69
-#: .\template\codesview\blockly_fleet.html.py:140
+#: .\template\codesview\blockly_fleet.html.py:37
+#: .\template\codesview\blockly_fleet.html.py:65
+#: .\template\codesview\blockly_fleet.html.py:134
 #: .\template\codesview\blockly_planet.html.py:25
-#: .\template\codesview\blockly_planet.html.py:51
-#: .\template\codesview\blockly_planet.html.py:77
-#: .\template\codesview\blockly_planet.html.py:145
+#: .\template\codesview\blockly_planet.html.py:49
+#: .\template\codesview\blockly_planet.html.py:73
+#: .\template\codesview\blockly_planet.html.py:139
 msgid "Math"
 msgstr "Math"
 
 #: .\template\codesview\blockly_fleet.html.py:20
-#: .\template\codesview\blockly_fleet.html.py:43
-#: .\template\codesview\blockly_fleet.html.py:73
-#: .\template\codesview\blockly_fleet.html.py:132
+#: .\template\codesview\blockly_fleet.html.py:41
+#: .\template\codesview\blockly_fleet.html.py:69
+#: .\template\codesview\blockly_fleet.html.py:126
 #: .\template\codesview\blockly_planet.html.py:28
-#: .\template\codesview\blockly_planet.html.py:54
-#: .\template\codesview\blockly_planet.html.py:80
-#: .\template\codesview\blockly_planet.html.py:137
+#: .\template\codesview\blockly_planet.html.py:52
+#: .\template\codesview\blockly_planet.html.py:76
+#: .\template\codesview\blockly_planet.html.py:131
 msgid "Logic"
 msgstr "Logique"
 
 #: .\template\codesview\blockly_fleet.html.py:24
-#: .\template\codesview\blockly_fleet.html.py:47
-#: .\template\codesview\blockly_fleet.html.py:77
-#: .\template\codesview\blockly_fleet.html.py:185
+#: .\template\codesview\blockly_fleet.html.py:45
+#: .\template\codesview\blockly_fleet.html.py:73
+#: .\template\codesview\blockly_fleet.html.py:179
 #: .\template\codesview\blockly_planet.html.py:31
-#: .\template\codesview\blockly_planet.html.py:57
-#: .\template\codesview\blockly_planet.html.py:83
-#: .\template\codesview\blockly_planet.html.py:190
+#: .\template\codesview\blockly_planet.html.py:55
+#: .\template\codesview\blockly_planet.html.py:79
+#: .\template\codesview\blockly_planet.html.py:184
 msgid "Variables"
 msgstr "Variables"
 
-#: .\template\codesview\blockly_fleet.html.py:33
-#: .\template\codesview\blockly_fleet.html.py:63
-#: .\template\codesview\blockly_fleet.html.py:101
-#: .\template\codesview\blockly_planet.html.py:45
-#: .\template\codesview\blockly_planet.html.py:71
-#: .\template\codesview\blockly_planet.html.py:106
+#: .\template\codesview\blockly_fleet.html.py:31
+#: .\template\codesview\blockly_fleet.html.py:59
+#: .\template\codesview\blockly_fleet.html.py:95
+#: .\template\codesview\blockly_planet.html.py:43
+#: .\template\codesview\blockly_planet.html.py:67
+#: .\template\codesview\blockly_planet.html.py:100
 msgid "DroneWars: Fleet"
 msgstr "DroneWars : Flotte"
 
-#: .\template\codesview\blockly_fleet.html.py:60
-#: .\template\codesview\blockly_fleet.html.py:116
-#: .\template\codesview\blockly_planet.html.py:121
+#: .\template\codesview\blockly_fleet.html.py:56
+#: .\template\codesview\blockly_fleet.html.py:110
+#: .\template\codesview\blockly_planet.html.py:115
 msgid "DroneWars: Coordinates"
 msgstr "DroneWars : Coordonnées"
 
-#: .\template\codesview\blockly_fleet.html.py:90
+#: .\template\codesview\blockly_fleet.html.py:84
 #: .\template\codesview\blockly_planet.html.py:19
-#: .\template\codesview\blockly_planet.html.py:42
-#: .\template\codesview\blockly_planet.html.py:68
-#: .\template\codesview\blockly_planet.html.py:95
+#: .\template\codesview\blockly_planet.html.py:40
+#: .\template\codesview\blockly_planet.html.py:64
+#: .\template\codesview\blockly_planet.html.py:89
 msgid "DroneWars: Planet"
 msgstr "DroneWars : Planète"
 
-#: .\template\codesview\blockly_fleet.html.py:112
-#: .\template\codesview\blockly_planet.html.py:117
+#: .\template\codesview\blockly_fleet.html.py:106
+#: .\template\codesview\blockly_planet.html.py:111
 msgid "DroneWars: Resources"
 msgstr "DroneWars : Ressources"
 
-#: .\template\codesview\blockly_fleet.html.py:121
-#: .\template\codesview\blockly_planet.html.py:126
+#: .\template\codesview\blockly_fleet.html.py:115
+#: .\template\codesview\blockly_planet.html.py:120
 msgid "Controls"
 msgstr "Controles"
 
-#: .\template\codesview\blockly_fleet.html.py:161
-#: .\template\codesview\blockly_planet.html.py:166
+#: .\template\codesview\blockly_fleet.html.py:155
+#: .\template\codesview\blockly_planet.html.py:160
 msgid "Text"
 msgstr "Texte"
 
-#: .\template\codesview\blockly_fleet.html.py:175
-#: .\template\codesview\blockly_planet.html.py:180
+#: .\template\codesview\blockly_fleet.html.py:169
+#: .\template\codesview\blockly_planet.html.py:174
 msgid "Lists"
 msgstr "Listes"
+
+#~ msgid "Help"
+#~ msgstr "Aide"
 
 #~ msgid "Blocks"
 #~ msgstr "Visuel"

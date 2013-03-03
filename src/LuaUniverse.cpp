@@ -108,6 +108,7 @@ extern "C" int initDroneWars(lua_State* L)
 	  class_<Coord>("Coord")
 	  .def(constructor<>())
 	  .def(constructor<Coord::Value, Coord::Value, Coord::Value>())
+	  .def(const_self == other<Coord>())
 	  .def_readonly("X", &Coord::X)
 	  .def_readonly("Y", &Coord::Y)
 	  .def_readonly("Z", &Coord::Z),
