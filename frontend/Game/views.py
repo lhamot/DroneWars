@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from datetime import timedelta, datetime
+
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext_lazy as N_
 
@@ -26,6 +28,13 @@ Sort_Type = gen_py.thrift.ttypes.Sort_Type
 
 #trans = gettext.translation('DroneWars','I:/C/Bit_them_all/',["fr_FR.utf8"])
 #trans.install()
+
+
+def updateLastRequest(viewFunc):
+    def wraped(request):
+        request.session["last_request"] = datetime.utcnow()
+        return viewFunc(request)
+    return wraped
 
 
 class SubscribeForm(forms.Form):
@@ -126,6 +135,7 @@ def getPageList(current_page, page_count):
     return page_list
 
 
+@updateLastRequest
 def PlanetListView(request):
     pid = request.session["PlayerID"]
     service = createEngineClient()
@@ -170,6 +180,7 @@ def PlanetListView(request):
     })
 
 
+@updateLastRequest
 def PlanetView(request):
     pid = request.session["PlayerID"]
     service = createEngineClient()
@@ -194,6 +205,7 @@ def coordToTuple(coord):
     return coord.X, coord.Y, coord.Z
 
 
+@updateLastRequest
 def FleetListView(request):
     pid = request.session["PlayerID"]
     service = createEngineClient()
@@ -247,6 +259,7 @@ def FleetListView(request):
     })
     
 
+@updateLastRequest
 def FleetView(request):
     pid = request.session["PlayerID"]
     service = createEngineClient()
@@ -268,6 +281,7 @@ def FleetView(request):
 
 
 CodeViewTutoTag = "CodeView"
+@updateLastRequest
 def CodesView(request):
     pid = request.session["PlayerID"]
     service = createEngineClient()
@@ -288,6 +302,7 @@ def CodesView(request):
         return redirect("/ingame/codes/planets/blocks.html");
 
 
+@updateLastRequest
 def ReportsView(request):
     pid = request.session["PlayerID"]
     service = createEngineClient()
@@ -333,6 +348,7 @@ def checkIfTutoInfoSeen(service, player):
 
 
 CoddingLevelTag = "BlocklyCodding"
+@updateLastRequest
 def BlocklyFleetsCodesView(request):
     pid = request.session["PlayerID"]
     service = createEngineClient()
@@ -365,6 +381,7 @@ def BlocklyFleetsCodesView(request):
     })
     
 
+@updateLastRequest
 def TextFleetsCodesView(request):
     pid = request.session["PlayerID"]
     service = createEngineClient()
@@ -391,6 +408,7 @@ def TextFleetsCodesView(request):
     })
 
 
+@updateLastRequest
 def BlocklyPlanetsCodesView(request):
     FirstSaveTag = "firstSave"
     pid = request.session["PlayerID"]
@@ -435,6 +453,7 @@ def BlocklyPlanetsCodesView(request):
     })
 
 
+@updateLastRequest
 def TextPlanetsCodesView(request):
     pid = request.session["PlayerID"]
     service = createEngineClient()
@@ -462,8 +481,8 @@ def TextPlanetsCodesView(request):
     })
     
 
+@updateLastRequest
 def ScoreView(request):
-    #pid = request.session["PlayerID"]
     service = createEngineClient()
     players = service.getPlayers()
     
@@ -479,8 +498,11 @@ def ScoreView(request):
     
     sessions = Session.objects.filter(expire_date__gte=timezone.now())
     id_set = set()
+    limit_time = datetime.utcnow() - timedelta(minutes=10)
     for session in sessions:
-        id_set.add(session.get_decoded()["PlayerID"])
+        session_data = session.get_decoded()
+        if session_data["last_request"] > limit_time:
+            id_set.add(session_data["PlayerID"])
     
     for player in players:
         player.logged = player.id in id_set 
