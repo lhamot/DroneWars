@@ -679,3 +679,12 @@ void drop(Fleet& fleet, Planet& planet)
 	boost::geometry::assign_value(fleet.ressourceSet.tab, 0);
 }
 
+
+void eraseAccount(Universe& univ, Player::ID pid)
+{
+	Player& player = mapFind(univ.playerMap, pid)->second;
+	player.login = nameGen();
+	player.password = "gfd8fg451g51df8hgdf";
+	player.fleetsCode.setCode("");
+	player.planetsCode.setCode("");
+}

@@ -589,4 +589,6 @@ bool canDrop(Fleet const& fleet, Planet const& planet);
 
 void drop(Fleet& fleet, Planet& planet);
 
+void eraseAccount(Universe& univ, Player::ID pid);
+
 #endif //_BTA_MODEL_

@@ -427,3 +427,15 @@ void EngineServerHandler::getTimeInfo(ndw::TimeInfo& _return)
 	_return.roundDuration = info.roundDuration;
 	_return.univTime = info.univTime;
 }
+
+bool EngineServerHandler::eraseAccount(const int32_t pid, const std::string& password)
+{
+	Player player = engine_.getPlayer(pid);
+	if(player.password == password)
+	{
+		engine_.eraseAccount(pid);
+		return true;
+	}
+	else
+		return false;
+}

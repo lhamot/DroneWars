@@ -1,0 +1,39 @@
+{% extends "ingame_base.html" %}
+
+{% load i18n %}
+
+{% load tmp_filters %}
+
+{% block account_class %}active{% endblock %}
+
+{% block content %}
+<br/>
+<div class="container">
+	<div class="row">
+		<div class="span4 offset2">
+			<form method="post">
+				{% csrf_token %}
+				<fieldset>
+					<legend>{% trans "Erase account" %}</legend>
+					<p>
+						<label>{% trans "Your password" %}</label>
+						<input type="text" name="password"/>
+					</p>
+					<p>
+						<input class="btn btn-danger" type="submit" name="erase_account" value="{% trans "Erase my account!" %}"/>
+					</p>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+	{%if message %}
+	<div class="row">
+		<div class="alert span3 offset2">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			<strong><p class="text-error">{{message|safe}}</p></strong>
+		</div>
+	</div>
+	{% endif %}
+</div>
+
+{% endblock %}

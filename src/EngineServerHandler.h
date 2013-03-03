@@ -62,4 +62,6 @@ public:
 	void getFightReport(ndw::FightReport& _return, const int32_t id);
 
 	void getTimeInfo(ndw::TimeInfo& _return);
+
+	bool eraseAccount(const int32_t pid, const std::string& password);
 };

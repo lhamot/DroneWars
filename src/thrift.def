@@ -331,5 +331,6 @@ service EngineServer
 	OptionalPlayer logPlayer(10: string login, 20: string password),
 	void incrementTutoDisplayed(10: Player_ID pid, 20: string tutoName),
 	FightReport getFightReport(10: i32 id),
-	TimeInfo getTimeInfo()
+	TimeInfo getTimeInfo(),
+	bool eraseAccount(10: i32 pid, 20: string password),
 }

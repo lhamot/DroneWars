@@ -69,6 +69,8 @@ public:
 
 	TimeInfo getTimeInfo() const;
 
+	void eraseAccount(Player::ID pid);
+
 private:
 	Universe univ_;
 	std::unique_ptr<Simulation> simulation_;

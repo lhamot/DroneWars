@@ -513,5 +513,25 @@ def ScoreView(request):
         "asc": asc,
         "timeInfo": timeInfo,
     })
+
+
+@updateLastRequest
+def AccountView(request):
+    service = createEngineClient()
+    pid = request.session["PlayerID"]
+    player = service.getPlayer(pid)
+    timeInfo = service.getTimeInfo()
     
+    message = ""
+    if "erase_account" in request.POST:
+        if service.eraseAccount(pid, request.POST["password"]) == False:
+            message = _("Passwords don't match!")
+        else:
+            request.session.clear();
+            return redirect("/");
     
+    return render(request, 'account.html', {
+        "player": player,
+        "timeInfo": timeInfo,
+        "message": message,
+    })    

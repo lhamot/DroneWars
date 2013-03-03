@@ -36,6 +36,7 @@ public:
 	virtual void incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName) = 0;
 	virtual void getFightReport(FightReport& _return, const int32_t id) = 0;
 	virtual void getTimeInfo(TimeInfo& _return) = 0;
+	virtual bool eraseAccount(const int32_t pid, const std::string& password) = 0;
 };
 
 class EngineServerIfFactory
@@ -145,6 +146,11 @@ public:
 	void getTimeInfo(TimeInfo& /* _return */)
 	{
 		return;
+	}
+	bool eraseAccount(const int32_t /* pid */, const std::string& /* password */)
+	{
+		bool _return = false;
+		return _return;
 	}
 };
 
@@ -2372,6 +2378,137 @@ public:
 
 };
 
+typedef struct _EngineServer_eraseAccount_args__isset
+{
+	_EngineServer_eraseAccount_args__isset() : pid(false), password(false) {}
+	bool pid;
+	bool password;
+} _EngineServer_eraseAccount_args__isset;
+
+class EngineServer_eraseAccount_args
+{
+public:
+
+	EngineServer_eraseAccount_args() : pid(0), password()
+	{
+	}
+
+	virtual ~EngineServer_eraseAccount_args() throw() {}
+
+	int32_t pid;
+	std::string password;
+
+	_EngineServer_eraseAccount_args__isset __isset;
+
+	void __set_pid(const int32_t val)
+	{
+		pid = val;
+	}
+
+	void __set_password(const std::string& val)
+	{
+		password = val;
+	}
+
+	bool operator == (const EngineServer_eraseAccount_args& rhs) const
+	{
+		if(!(pid == rhs.pid))
+			return false;
+		if(!(password == rhs.password))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_eraseAccount_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_eraseAccount_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_eraseAccount_pargs
+{
+public:
+
+
+	virtual ~EngineServer_eraseAccount_pargs() throw() {}
+
+	const int32_t* pid;
+	const std::string* password;
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_eraseAccount_result__isset
+{
+	_EngineServer_eraseAccount_result__isset() : success(false) {}
+	bool success;
+} _EngineServer_eraseAccount_result__isset;
+
+class EngineServer_eraseAccount_result
+{
+public:
+
+	EngineServer_eraseAccount_result() : success(0)
+	{
+	}
+
+	virtual ~EngineServer_eraseAccount_result() throw() {}
+
+	bool success;
+
+	_EngineServer_eraseAccount_result__isset __isset;
+
+	void __set_success(const bool val)
+	{
+		success = val;
+	}
+
+	bool operator == (const EngineServer_eraseAccount_result& rhs) const
+	{
+		if(!(success == rhs.success))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_eraseAccount_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_eraseAccount_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_eraseAccount_presult__isset
+{
+	_EngineServer_eraseAccount_presult__isset() : success(false) {}
+	bool success;
+} _EngineServer_eraseAccount_presult__isset;
+
+class EngineServer_eraseAccount_presult
+{
+public:
+
+
+	virtual ~EngineServer_eraseAccount_presult() throw() {}
+
+	bool* success;
+
+	_EngineServer_eraseAccount_presult__isset __isset;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
 class EngineServerClient : virtual public EngineServerIf
 {
 public:
@@ -2454,6 +2591,9 @@ public:
 	void getTimeInfo(TimeInfo& _return);
 	void send_getTimeInfo();
 	void recv_getTimeInfo(TimeInfo& _return);
+	bool eraseAccount(const int32_t pid, const std::string& password);
+	void send_eraseAccount(const int32_t pid, const std::string& password);
+	bool recv_eraseAccount();
 protected:
 	boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
 	boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -2489,6 +2629,7 @@ private:
 	void process_incrementTutoDisplayed(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_getFightReport(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_getTimeInfo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_eraseAccount(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 public:
 	EngineServerProcessor(boost::shared_ptr<EngineServerIf> iface) :
 		iface_(iface)
@@ -2512,6 +2653,7 @@ public:
 		processMap_["incrementTutoDisplayed"] = &EngineServerProcessor::process_incrementTutoDisplayed;
 		processMap_["getFightReport"] = &EngineServerProcessor::process_getFightReport;
 		processMap_["getTimeInfo"] = &EngineServerProcessor::process_getTimeInfo;
+		processMap_["eraseAccount"] = &EngineServerProcessor::process_eraseAccount;
 	}
 
 	virtual ~EngineServerProcessor() {}
@@ -2762,6 +2904,17 @@ public:
 		}
 		ifaces_[i]->getTimeInfo(_return);
 		return;
+	}
+
+	bool eraseAccount(const int32_t pid, const std::string& password)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->eraseAccount(pid, password);
+		}
+		return ifaces_[i]->eraseAccount(pid, password);
 	}
 
 };

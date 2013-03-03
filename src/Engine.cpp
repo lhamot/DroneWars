@@ -264,3 +264,11 @@ TimeInfo Engine::getTimeInfo() const
 	TimeInfo info = {univ_.roundDuration, simulation_->getUnivTime()};
 	return info;
 }
+
+
+void Engine::eraseAccount(Player::ID pid)
+{
+	UniqueLock lock(univ_.playersMutex);
+	::eraseAccount(univ_, pid);
+	simulation_->reloadPlayer(pid);
+}
