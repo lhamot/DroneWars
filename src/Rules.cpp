@@ -147,7 +147,7 @@ void checkTutos(Universe& univ_, std::vector<Signal>& signals)
 		{
 			for(Signal const & sig: signals)
 			{
-				if(sig.playerID == player.id && sig.event.type == Event::ShipMade)
+				if(sig.playerID == player.id && sig.event.type == Event::FleetsGather)
 				{
 					size_t count = boost::range::count_if(
 					                 univ_.fleetMap | boost::adaptors::map_values,
