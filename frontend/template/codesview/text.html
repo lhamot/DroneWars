@@ -20,7 +20,7 @@
 {%if codeData.lastError %}
 <div class="alert text-error">
 	<button type="button" class="close" data-dismiss="alert">&times;</button>
-	<strong>{{codeData.lastError|safe}}</strong>
+	<strong>{{codeData.lastError|safe|linebreaksbr}}</strong>
 </div>
 {% endif %}
 <p>{{message}}</p>
