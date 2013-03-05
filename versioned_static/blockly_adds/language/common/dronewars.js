@@ -91,3 +91,69 @@ function addProperty(className, propName, returnType, label, categ) {
     return [object + '.' + propName, Blockly.lua.ORDER_FUNCTION_CALL];
   };
 }
+
+
+
+Blockly.Language.procedures_return = {
+  init: function() {
+    this.setColour(290);
+    this.appendValueInput('VALUE')
+        .appendTitle(Blockly.LANG_PROCEDURES_DEFRETURN_RETURN);
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    //this.setTooltip(Blockly.LANG_PROCEDURES_RETURN_TOOLTIP);
+    this.hasReturnValue_ = true;
+  },
+  mutationToDom: function() {
+    // Save whether this block has a return value.
+    var container = document.createElement('mutation');
+    container.setAttribute('value', Number(this.hasReturnValue_));
+    return container;
+  },
+  domToMutation: function(xmlElement) {
+    // Restore whether this block has a return value.
+    var value = xmlElement.getAttribute('value');
+    this.hasReturnValue_ = (value == 1);
+    if (!this.hasReturnValue_) {
+      this.removeInput('VALUE');
+      this.appendDummyInput('VALUE')
+        .appendTitle(Blockly.LANG_PROCEDURES_DEFRETURN_RETURN);
+    }
+  },
+  onchange: function() {
+    if (!this.workspace) {
+      // Block has been deleted.
+      return;
+    }
+    var legal = false;
+    // Is the block nested in a procedure?
+    var block = this;
+    do {
+      if (block.type == 'procedures_defnoreturn' ||
+          block.type == 'procedures_defreturn') {
+        legal = true;
+        break;
+      }
+      block = block.getSurroundParent();
+    } while (block);
+    if (legal) {
+      // If needed, toggle whether this block has a return value.
+      if (block.type == 'procedures_defnoreturn' && this.hasReturnValue_) {
+        this.removeInput('VALUE');
+        this.appendDummyInput('VALUE')
+          .appendTitle(Blockly.LANG_PROCEDURES_DEFRETURN_RETURN);
+        this.hasReturnValue_ = false;
+      } else if (block.type == 'procedures_defreturn' &&
+                 !this.hasReturnValue_) {
+        this.removeInput('VALUE');
+        this.appendValueInput('VALUE')
+          .appendTitle(Blockly.LANG_PROCEDURES_DEFRETURN_RETURN);
+        this.hasReturnValue_ = true;
+      }
+      this.setWarningText(null);
+    } else {
+      this.setWarningText(Blockly.LANG_PROCEDURES_IFRETURN_WARNING);
+    }
+  }
+};
+

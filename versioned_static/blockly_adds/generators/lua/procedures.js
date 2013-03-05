@@ -19,7 +19,7 @@
 
 /**
  * @fileoverview Generating lua for variable blocks.
- * @author Loïc HAMOT
+ * @author LoÃ¯c HAMOT
  */
 
 Blockly.lua = Blockly.Generator.get('lua');
@@ -116,6 +116,18 @@ Blockly.lua.procedures_ifreturn = function () {
         code += '  return ' + value + '\nend\n';
     } else {
         code += '  return\nend\n';
+    }
+    return code;
+};
+
+Blockly.lua.procedures_return = function () {
+    var code = '';
+    if (this.hasReturnValue_) {
+        var value = Blockly.lua.valueToCode(this, 'VALUE',
+            Blockly.lua.ORDER_NONE) || 'None';
+        code += 'return ' + value + '\n';
+    } else {
+        code += 'return\n';
     }
     return code;
 };
