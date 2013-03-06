@@ -65,7 +65,12 @@
 				onclick="
 					var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
 					var xml_text = Blockly.Xml.domToText(xml);
-					alert(xml_text);"/>
+					export_p = document.getElementById('export_dialog_p')
+					export_p.innerHTML = jQuery('<div />').text(xml_text).html();
+					$( '#export_dialog' ).dialog( 'option', 'width', 800 );
+					$( '#export_dialog' ).dialog( 'option', 'maxHeight', 600 );
+					$( '#export_dialog' ).dialog('open');
+					"/>
 			<input class="btn btn-primary" type="submit" value="{% trans "Reload" %}" name="reload_button" onclick="document.location.href=''"/>
 			<input class="btn btn-primary" type="submit" value="{% trans "Save" %}" name="save_button" onclick="
 					try
@@ -105,4 +110,8 @@
 <input type="hidden" id="scriptXML" name="scriptXML" value=""/>
 <input type="hidden" value="" name="save_button_error" id="save_button_error"/>
 </form>
+<div title="{% trans "Export" %}" id="export_dialog" class="dialog">
+	<p class="neutrybase" id="export_dialog_p"></p>
+</div>
+
 {% endblock %}
