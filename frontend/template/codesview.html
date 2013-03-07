@@ -41,6 +41,21 @@
 	{{helpMessage}}
 </div>
 {% endif %}
+<script>
+	 $(function() {
+		$( ".dialog" ).dialog({
+			autoOpen: false,
+			show: {
+				effect: "drop",
+				duration: 600
+			},
+			hide: {
+				effect: "drop",
+				duration: 600
+			}
+		});
+	});
+</script>
 <div class="container">
 	<div class="row">
 		{% if tutosText %}
@@ -48,17 +63,6 @@
 		<div class="span4">
 			<script>
 				 $(function() {
-					$( ".dialog" ).dialog({
-						autoOpen: false,
-						show: {
-							effect: "drop",
-							duration: 600
-						},
-						hide: {
-							effect: "drop",
-							duration: 600
-						}
-					});
 					$( "#help_opener" ).click(function() {
 						$( "#help_dialog" ).dialog( "open" );
 					});
