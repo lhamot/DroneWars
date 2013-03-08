@@ -692,76 +692,36 @@ try
 	//std::cout << lexical_cast<std::string>(time(0)) + "_save.bta ";
 	//save(lexical_cast<std::string>(time(0)) + "_save.bta");
 
-	/*
 	//Calcule de l'occupation memoire
+	/*
 	size_t playerSize = 0;
-	for(auto const& playerKV: univ_.playerMap)
-	{
-		playerSize += sizeof(playerKV);
-		playerSize += playerKV.second.fleetsCode.getCode().size();
-		playerSize += playerKV.second.planetsCode.getCode().size();
-		playerSize += playerKV.second.login.size();
-		playerSize += playerKV.second.password.size();
-		for(auto const& ev: playerKV.second.eventList)
-		{
-			playerSize += sizeof(ev);
-			playerSize += ev.comment.size();
-		}
-	}
-
 	size_t planetSize = 0;
-	for(auto const& planetKV: univ_.planetMap)
-	{
-		planetSize += sizeof(planetKV);
-		planetSize += planetKV.second.buildingMap.size() * sizeof(Planet::BuildingMap::value_type);
-		planetSize += planetKV.second.taskQueue.size() * sizeof(PlanetTask);
-		for(auto const& ev: planetKV.second.eventList)
-		{
-			planetSize += sizeof(ev);
-			planetSize += ev.comment.size();
-		}
-	}
-
 	size_t fleetSize = 0;
+	size_t fleetHeapSize = 0;
+	size_t fleetSizeMap = 0;
+	size_t reportSize = 0;
+	for(auto const& playerKV: univ_.playerMap)
+		playerSize += sizeof(playerKV) + playerKV.second.heap_size() + 2 * sizeof(size_t);
+	for(auto const& planetKV: univ_.planetMap)
+		planetSize += sizeof(planetKV) + planetKV.second.heap_size() + 2 * sizeof(size_t);
 	for(auto const& fleetKV: univ_.fleetMap)
 	{
-		fleetSize += sizeof(fleetKV);
-		fleetSize += fleetKV.second.shipList.size() * sizeof(Fleet::ShipTab::value_type);
-		fleetSize += fleetKV.second.taskQueue.size() * sizeof(PlanetTask);
-		for(auto const& ev: fleetKV.second.eventList)
-		{
-			fleetSize += sizeof(ev);
-			fleetSize += ev.comment.size();
-		}
+		fleetSize += sizeof(fleetKV.second);
+		fleetHeapSize += fleetKV.second.heap_size();
+		fleetSizeMap += sizeof(fleetKV.first) + 2 * sizeof(size_t);
 	}
-
-	size_t reportSize = 0;
 	for(auto const& reportKV: univ_.reportMap)
-	{
-		reportSize += sizeof(reportKV);
-		for(auto const& fleetReport: reportKV.second)
-		{
-			reportSize += sizeof(fleetReport);
-			reportSize += fleetReport.enemySet.size() * sizeof(size_t);
-			for(auto const& ev: fleetReport.fleetsAfter.eventList)
-			{
-				reportSize += sizeof(ev);
-				reportSize += ev.comment.size();
-			}
-			for(auto const& ev: fleetReport.fleetsBefore.eventList)
-			{
-				reportSize += sizeof(ev);
-				reportSize += ev.comment.size();
-			}
-		}
-	}
+		reportSize += sizeof(reportKV) + reportKV.second.heap_size() + 2 * sizeof(size_t);
 
-	size_t const univSize = playerSize + planetSize + fleetSize + reportSize;
+	size_t const univSize = playerSize + planetSize + fleetSize + reportSize + fleetSizeMap + fleetHeapSize;
 	cout << "Univ global size :" << univSize << endl;
 	cout << "  playerMap:" << playerSize << endl;
 	cout << "  planetMap:" << planetSize << endl;
-	cout << "  fleetMap:" << fleetSize << endl;
+	cout << "  fleets:" << fleetSize << endl;
+	cout << "  fleetsheap:" << fleetHeapSize << endl;
+	cout << "  fleetMap:" << fleetSizeMap << endl;
 	cout << "  reportMap:" << reportSize << endl;
+	cout << "  fleet count:" << double(fleetSize) / sizeof(Fleet) << endl;
 	*/
 
 	std::cout << time(0) << std::endl;

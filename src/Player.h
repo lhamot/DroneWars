@@ -75,6 +75,11 @@ struct Event
 	size_t value;
 	bool viewed;
 
+	size_t heap_size() const
+	{
+		return comment.capacity();
+	}
+
 	Event() {}
 	Event(ID ident, time_t ti, Type ty, size_t val = size_t(-1)):
 		id(ident), time(ti), type(ty), value(val), viewed(false)
@@ -131,6 +136,14 @@ public:
 		lastError_.swap(newError);
 		++failCount_;
 	}
+
+	size_t heap_size() const
+	{
+		return
+		  sizeof(blocklyCode_.capacity()) +
+		  sizeof(code_.capacity()) +
+		  sizeof(lastError_.capacity());
+	}
 };
 
 struct Player
@@ -159,6 +172,22 @@ public:
 	std::map<std::string, size_t> tutoDisplayed;
 	Coord mainPlanet;
 	size_t score;
+
+	size_t heap_size() const
+	{
+		size_t size =
+		  sizeof(login.capacity()) +
+		  sizeof(password.capacity()) +
+		  fleetsCode.heap_size() +
+		  planetsCode.heap_size();
+		for(Event const & ev: eventList)
+			size += ev.heap_size();
+		size += eventList.capacity() * sizeof(Event);
+		for(std::pair<std::string, size_t> const & kv: tutoDisplayed)
+			size += sizeof(kv) + kv.first.capacity() + sizeof(size_t) * 2;
+		return size;
+	}
+
 
 	Player(ID i, std::string const& lg, std::string const& pass):
 		id(i), login(lg), password(pass), score(0)

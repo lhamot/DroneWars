@@ -251,6 +251,18 @@ struct Planet
 	CannonTab cannonTab;
 	Coord parentCoord;
 
+	size_t heap_size() const
+	{
+		size_t res =
+		  name.capacity() +
+		  buildingList.capacity() * sizeof(size_t) +
+		  taskQueue.capacity() * sizeof(PlanetTask) +
+		  eventList.capacity() * sizeof(Event);
+		for(Event const & ev: eventList)
+			res += ev.heap_size();
+		return res;
+	}
+
 	Planet(): playerId(1111111111), buildingList(Building::Count) {}
 	Planet(Coord c): coord(c), playerId(Player::NoId), buildingList(Building::Count)
 	{
@@ -334,6 +346,20 @@ struct Fleet
 	std::vector<FleetTask> taskQueue;
 	std::vector<Event> eventList;
 
+
+	size_t heap_size() const
+	{
+		size_t res =
+		  name.capacity() +
+		  shipList.capacity() * sizeof(size_t) +
+		  taskQueue.capacity() * sizeof(FleetTask) +
+		  eventList.capacity() * sizeof(Event);
+		for(Event const & ev: eventList)
+			res += ev.heap_size();
+		return res;
+	}
+
+
 	Fleet() {}
 	Fleet(ID fid, Player::ID pid, Coord c):
 		id(fid), playerId(pid), coord(c), origin(c), shipList(Ship::Count)
@@ -397,6 +423,11 @@ struct Report
 		T before;
 		T after;
 
+		size_t heap_size() const
+		{
+			return before.heap_size() + after.heap_size();
+		}
+
 		FightInfo() {}
 		FightInfo(T const& bef, T const& aft): before(bef), after(aft) {}
 	};
@@ -411,6 +442,13 @@ struct Report
 	Report() {}
 	Report(T const& fighter): isDead(false), hasFight(false), fightInfo(makeFightInfo(fighter))
 	{
+	}
+
+	size_t heap_size() const
+	{
+		return
+		  enemySet.size() * sizeof(size_t) * 3 +
+		  fightInfo.heap_size();
 	}
 };
 
@@ -428,6 +466,16 @@ struct FightReport
 	boost::optional<Report<Planet> > planet;
 
 	FightReport(): hasPlanet(false) {}
+
+	size_t heap_size() const
+	{
+		size_t res = fleetList.capacity() * sizeof(Report<Fleet>);
+		for(Report<Fleet> const & report: fleetList)
+			res += report.heap_size();
+		if(planet)
+			res += planet->heap_size();
+		return res;
+	}
 };
 
 
@@ -468,6 +516,19 @@ struct Universe
 	size_t nextFightID;
 	size_t roundCount;
 	double roundDuration;
+
+	size_t heap_size() const
+	{
+		size_t res = 0;
+		for(auto const & playerKV: playerMap)
+			res += sizeof(playerKV) + playerKV.second.heap_size() + 2 * sizeof(size_t);
+		for(auto const & planetKV: planetMap)
+			res += sizeof(planetKV) + planetKV.second.heap_size() + 2 * sizeof(size_t);
+		for(auto const & fleetKV: fleetMap)
+			res += sizeof(fleetKV) + fleetKV.second.heap_size() + 2 * sizeof(size_t);
+		for(auto const & reportKV: reportMap)
+			res += sizeof(reportKV) + reportKV.second.heap_size() + 2 * sizeof(size_t);
+	}
 
 	typedef boost::shared_mutex Mutex;
 	mutable Mutex planetsFleetsReportsmutex;

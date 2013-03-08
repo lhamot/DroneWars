@@ -283,17 +283,17 @@ void EngineServerHandler::getPlayerFleets(
   const ndw::Sort_Type::type sortType,
   const bool asc)
 {
-	int32_t beginIndex = beginIndexC;
-	int32_t endIndex = endIndexC;
+	size_t beginIndex = beginIndexC;
+	size_t endIndex = endIndexC;
 	auto fleetList = engine_.getPlayerFleets(pid);
 	if(beginIndex > endIndex || beginIndex < 0)
 		BOOST_THROW_EXCEPTION(std::runtime_error("Unconsistent index"));
 	if(endIndex > fleetList.size())
 	{
-		int32_t const diff = endIndex - beginIndex;
-		endIndex = boost::numeric_cast<int32_t>(fleetList.size());
+		size_t const diff = endIndex - beginIndex;
+		endIndex = fleetList.size();
 		beginIndex = endIndex - diff;
-		beginIndex = std::max(0, beginIndex);
+		beginIndex = std::max(size_t(0), beginIndex);
 	}
 
 	sortOnType(fleetList, sortType, asc);
@@ -324,17 +324,17 @@ void EngineServerHandler::getPlayerPlanets(
   const  ndw::Sort_Type::type sortType,
   const bool asc)
 {
-	int32_t beginIndex = beginIndexC;
-	int32_t endIndex = endIndexC;
+	size_t beginIndex = beginIndexC;
+	size_t endIndex = endIndexC;
 	auto planetList = engine_.getPlayerPlanets(pid);
 	if(beginIndex > endIndex || beginIndex < 0)
 		BOOST_THROW_EXCEPTION(std::runtime_error("Unconsistent index"));
 	if(endIndex > planetList.size())
 	{
-		int32_t const diff = endIndex - beginIndex;
-		endIndex = boost::numeric_cast<int32_t>(planetList.size());
+		size_t const diff = endIndex - beginIndex;
+		endIndex = planetList.size();
 		beginIndex = endIndex - diff;
-		beginIndex = std::max(0, beginIndex);
+		beginIndex = std::max(size_t(0), beginIndex);
 	}
 
 	sortOnType(planetList, sortType, asc);
