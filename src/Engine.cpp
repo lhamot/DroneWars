@@ -131,7 +131,7 @@ void Engine::setPlayerFleetCode(Player::ID pid, std::string const& code)
 {
 	UniqueLock lock(univ_.playersMutex);
 	if(code.size() > Player::MaxCodeSize)
-		BOOST_THROW_EXCEPTION(InvalidData("code"));
+		BOOST_THROW_EXCEPTION(InvalidData("Engine::setPlayerFleetCode - Code size too long"));
 	mapFind(univ_.playerMap, pid)->second.fleetsCode.setCode(code);
 	simulation_->reloadPlayer(pid);
 }
@@ -141,7 +141,7 @@ void Engine::setPlayerPlanetCode(Player::ID pid, std::string const& code)
 {
 	UniqueLock lock(univ_.playersMutex);
 	if(code.size() > Player::MaxCodeSize)
-		BOOST_THROW_EXCEPTION(InvalidData("code"));
+		BOOST_THROW_EXCEPTION(InvalidData("Engine::setPlayerPlanetCode - Code size too long"));
 	mapFind(univ_.playerMap, pid)->second.planetsCode.setCode(code);
 	simulation_->reloadPlayer(pid);
 }
@@ -150,8 +150,8 @@ void Engine::setPlayerPlanetCode(Player::ID pid, std::string const& code)
 void Engine::setPlayerFleetBlocklyCode(Player::ID pid, std::string const& code)
 {
 	UniqueLock lock(univ_.playersMutex);
-	if(code.size() > Player::MaxCodeSize)
-		BOOST_THROW_EXCEPTION(InvalidData("code"));
+	if(code.size() > Player::MaxBlocklySize)
+		BOOST_THROW_EXCEPTION(InvalidData("Engine::setPlayerFleetBlocklyCode - Code size too long"));
 	mapFind(univ_.playerMap, pid)->second.fleetsCode.setBlocklyCode(code);
 	simulation_->reloadPlayer(pid);
 }
@@ -160,8 +160,8 @@ void Engine::setPlayerFleetBlocklyCode(Player::ID pid, std::string const& code)
 void Engine::setPlayerPlanetBlocklyCode(Player::ID pid, std::string const& code)
 {
 	UniqueLock lock(univ_.playersMutex);
-	if(code.size() > Player::MaxCodeSize)
-		BOOST_THROW_EXCEPTION(InvalidData("code"));
+	if(code.size() > Player::MaxBlocklySize)
+		BOOST_THROW_EXCEPTION(InvalidData("Engine::setPlayerPlanetBlocklyCode - Code size too long"));
 	mapFind(univ_.playerMap, pid)->second.planetsCode.setBlocklyCode(code);
 	simulation_->reloadPlayer(pid);
 }

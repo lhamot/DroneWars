@@ -168,7 +168,8 @@ public:
 	CodeData fleetsCode;
 	CodeData planetsCode;
 	std::vector<Event> eventList;
-	static size_t const MaxCodeSize = 16 * 1024;
+	static size_t const MaxCodeSize = 32 * 1024;
+	static size_t const MaxBlocklySize = MaxCodeSize * 8;
 	std::map<std::string, size_t> tutoDisplayed;
 	Coord mainPlanet;
 	size_t score;
