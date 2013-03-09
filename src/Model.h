@@ -334,7 +334,6 @@ struct Fleet
 	}
 
 	typedef size_t ID;
-	static ID const NoID = ID(-1);
 	ID id;
 	Player::ID playerId;
 	Coord coord;
@@ -411,7 +410,7 @@ struct Report
 
 	bool isDead;
 	bool hasFight;
-	std::set<size_t> enemySet; //par index dans le FightReport
+	std::set<intptr_t> enemySet; //par index dans le FightReport
 	struct FightInfo
 	{
 		template<class Archive>

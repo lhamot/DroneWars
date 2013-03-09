@@ -17,8 +17,6 @@
 
 #pragma warning(push)
 #pragma warning(disable:4244 4310 4100 4512 4127 4706 4702)
-#include <boost/archive/binary_iarchive.hpp>
-#include <boost/archive/binary_oarchive.hpp>
 #include <boost/array.hpp>
 #include <boost/exception/all.hpp>
 #include <boost/functional/hash.hpp>
@@ -26,7 +24,6 @@
 #include <boost/geometry/geometries/adapted/boost_array.hpp>
 #include <boost/geometry/arithmetic/arithmetic.hpp>
 #include <boost/iterator/zip_iterator.hpp>
-#include <boost/iostreams/filtering_streambuf.hpp>
 #include <boost/iostreams/copy.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
 #include <boost/logic/tribool.hpp>

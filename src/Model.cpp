@@ -8,6 +8,11 @@
 #include <boost/bind.hpp>
 
 
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/iostreams/filtering_streambuf.hpp>
+
+
 BOOST_GEOMETRY_REGISTER_BOOST_ARRAY_CS(cs::cartesian)
 
 using namespace std;
@@ -463,7 +468,7 @@ void execTask(Universe& univ,
 			else
 			{
 				planet.buildingList[task.value] += 1;
-				Event event(univ.nextEventID++, time(0), Event::Upgraded, task.value);
+				Event event(univ.nextEventID++, time(0), Event::Upgraded, intptr_t(task.value));
 				planet.eventList.push_back(event);
 				signals.push_back(Signal(planet.playerId, event));
 			}
@@ -473,7 +478,7 @@ void execTask(Universe& univ,
 			Fleet newFleet(univ.nextFleetID++, planet.playerId, planet.coord);
 			newFleet.shipList[task.value] += task.value2;
 			univ.fleetMap.insert(make_pair(newFleet.id, newFleet));
-			Event event(univ.nextEventID++, time(0), Event::ShipMade, task.value);
+			Event event(univ.nextEventID++, time(0), Event::ShipMade, intptr_t(task.value));
 			signals.push_back(Signal(planet.playerId, event));
 		}
 		break;
@@ -482,7 +487,7 @@ void execTask(Universe& univ,
 			{
 				//BOOST_THROW_EXCEPTION(std::logic_error("Unconsistent cannon type"));
 				planet.cannonTab[task.value] += 1;
-				Event event(univ.nextEventID++, time(0), Event::CannonMade, task.value);
+				Event event(univ.nextEventID++, time(0), Event::CannonMade, intptr_t(task.value));
 				planet.eventList.push_back(event);
 				signals.push_back(Signal(planet.playerId, event));
 			}

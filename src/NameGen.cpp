@@ -33,7 +33,7 @@ std::string nameGen(size_t length)
 		alt = 1;
 	}
 	--length;
-	for(int i = 0; i < length; i++)
+	for(size_t i = 0; i < length; i++)
 	{
 		if(i == length - 2)
 			--voyCount;

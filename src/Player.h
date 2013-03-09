@@ -67,12 +67,11 @@ struct Event
 	};
 
 	typedef size_t ID;
-	static ID const NoId = ID(-1);
 	ID id;
 	time_t time;
 	Type type;
 	std::string comment;
-	size_t value;
+	intptr_t value;
 	bool viewed;
 
 	size_t heap_size() const
@@ -81,12 +80,12 @@ struct Event
 	}
 
 	Event() {}
-	Event(ID ident, time_t ti, Type ty, size_t val = size_t(-1)):
+	Event(ID ident, time_t ti, Type ty, intptr_t val = -1):
 		id(ident), time(ti), type(ty), value(val), viewed(false)
 	{
 	}
 	Event(ID ident, time_t ti, Type ty, std::string const& comm):
-		id(ident), time(ti), type(ty), comment(comm), value(size_t(-1)), viewed(false)
+		id(ident), time(ti), type(ty), comment(comm), value(-1), viewed(false)
 	{
 	}
 };
@@ -160,8 +159,8 @@ private:
 public:
 	Player() {} //pour boost::serialization
 
-	typedef size_t ID;
-	static ID const NoId = ID(-1);
+	typedef intptr_t ID;
+	static ID const NoId = -1;
 	ID id;
 	std::string login;
 	std::string password;

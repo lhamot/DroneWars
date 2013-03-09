@@ -512,7 +512,7 @@ void execFights(Universe& univ_, std::vector<Signal>& signals)
 			{
 				UniqueLock lockPlayer(univ_.playersMutex);
 				deadFleets.push_back(fleet.id);
-				Event event(univ_.nextEventID++, time(0), Event::FleetLose, reportID);
+				Event event(univ_.nextEventID++, time(0), Event::FleetLose, intptr_t(reportID));
 				signals.push_back(Signal(fleet.playerId, event));
 				if(informedPlayer.count(fleet.playerId) == 0)
 				{
@@ -522,7 +522,7 @@ void execFights(Universe& univ_, std::vector<Signal>& signals)
 			}
 			else if(report.hasFight)
 			{
-				Event event(univ_.nextEventID++, time(0), Event::FleetWin, reportID);
+				Event event(univ_.nextEventID++, time(0), Event::FleetWin, intptr_t(reportID));
 				fleet.eventList.push_back(event); // CEST ICI QUON MODIFIE LA FLOTTE
 				signals.push_back(Signal(fleet.playerId, event));
 			}
@@ -537,7 +537,7 @@ void execFights(Universe& univ_, std::vector<Signal>& signals)
 				if(planet.playerId != Player::NoId)
 				{
 					UniqueLock lockPlayer(univ_.playersMutex);
-					Event event(univ_.nextEventID++, time(0), Event::PlanetLose, reportID);
+					Event event(univ_.nextEventID++, time(0), Event::PlanetLose, intptr_t(reportID));
 					signals.push_back(Signal(planet.playerId, event));
 					mapFind(univ_.playerMap, planet.playerId)->second.eventList.push_back(event);
 					informedPlayer.insert(planet.playerId);
@@ -547,7 +547,7 @@ void execFights(Universe& univ_, std::vector<Signal>& signals)
 			{
 				if(planet.playerId == Player::NoId)
 					BOOST_THROW_EXCEPTION(std::logic_error("planet.playerId == Player::NoId"));
-				Event event(univ_.nextEventID++, time(0), Event::PlanetWin, reportID);
+				Event event(univ_.nextEventID++, time(0), Event::PlanetWin, intptr_t(reportID));
 				planet.eventList.push_back(event);
 				signals.push_back(Signal(planet.playerId, event));
 			}
