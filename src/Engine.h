@@ -29,7 +29,7 @@ public:
 
 	void stop();
 
-	void load(std::string const& univName);
+	void load(std::string const& univName, size_t version);
 
 	//Requetes qui ne modifient pas la base
 	std::vector<Fleet> getPlayerFleets(Player::ID pid) const;

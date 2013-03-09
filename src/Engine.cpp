@@ -16,21 +16,27 @@ Engine::Engine():
 	boost::filesystem::directory_iterator dir("save/"), end;
 
 	time_t maxtime = 0;
+	size_t version = 1;
 	for(const boost::filesystem::path & p: boost::make_iterator_range(dir, end))
 	{
 		std::string const fileStr = p.filename().string();
-		if(fileStr.find("_save.bta") == 10 && fileStr.size() == 19)
+		if((fileStr.find("_save.bta") == 10) &&
+		   (fileStr.size() == 19 || fileStr.size() == 20))
 		{
 			std::string const strTime = fileStr.substr(0, 10);
 			time_t filetime = strtoul(strTime.c_str(), 0, 10);
 			maxtime = max(maxtime, filetime);
+			if(fileStr.size() == 20)
+				version = 2;
 		}
 	}
 	if(maxtime)
 	{
 		std::stringstream ss;
 		ss << "save/" << maxtime << "_save.bta";
-		load(ss.str());
+		if(version == 2)
+			ss << "2";
+		load(ss.str(), version);
 	}
 	else
 		construct(univ_);
@@ -38,7 +44,7 @@ Engine::Engine():
 }
 
 
-void Engine::load(std::string const& univName)
+void Engine::load(std::string const& univName, size_t version)
 {
 	UniqueLock lock(univ_.planetsFleetsReportsmutex);
 	UniqueLock lockPlayers(univ_.playersMutex);
@@ -46,7 +52,12 @@ void Engine::load(std::string const& univName)
 	ifstream loadFile(univName, ios::in | ios::binary);
 	if(loadFile.is_open() == false)
 		BOOST_THROW_EXCEPTION(std::ios::failure("Can't load from " + univName));
-	loadFromStream(loadFile, univ_);
+	if(version == 1)
+		loadFromStream_v1(loadFile, univ_);
+	else if(version == 2)
+		loadFromStream_v2(loadFile, univ_);
+	else
+		BOOST_THROW_EXCEPTION(std::logic_error("Unexpected archive file version"));
 }
 
 

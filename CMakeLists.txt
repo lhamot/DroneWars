@@ -69,6 +69,8 @@ add_executable(
     src/gen-cpp/EngineServer.cpp
     src/gen-cpp/thrift_constants.cpp
     src/gen-cpp/thrift_types.cpp
+    src/portable_binary_iarchive.cpp
+    src/portable_binary_oarchive.cpp
 )
 
 target_link_libraries( DroneWars debug luabindd )

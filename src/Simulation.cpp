@@ -831,7 +831,7 @@ try
 
 		if(newSave <= now)
 		{
-			std::string const filename = (boost::format("save/%1%_save.bta") % time(0)).str();
+			std::string const filename = (boost::format("save/%1%_save.bta2") % time(0)).str();
 			save(filename);
 			removeOldSaves();
 			std::cout << "OK" << std::endl;
@@ -914,6 +914,8 @@ void Simulation::save(std::string const& saveName) const
 			if(stat(saveName.c_str(), &buf) == 0)
 				rename(saveName.c_str(), ansSaveName.c_str());
 			rename(newSaveName.c_str(), saveName.c_str());
+			using namespace boost::filesystem;
+			copy_file(saveName, "save/last_save.bta2", copy_option::overwrite_if_exists);
 		}
 		catch(std::exception const& ex)
 		{
@@ -940,8 +942,9 @@ void Simulation::removeOldSaves() const
 	for(auto path: boost::make_iterator_range(beginFileIter, endFileIter))
 	{
 		std::string const filename = path.path().filename().string();
-		if(filename.find("_save.bta") != 10 || filename.size() != 19) //Ce n'est pas une archive normal
-			continue;
+		if((filename.find("_save.bta") != 10)               ||
+		   (filename.size() != 19 && filename.size() != 20))
+			continue;//Ce n'est pas une archive normal
 
 		std::string const timeStr = path.path().stem().string().substr(0, 10);
 		time_t const timeValue = boost::lexical_cast<time_t>(timeStr);
@@ -976,9 +979,10 @@ void Simulation::removeOldSaves() const
 			++fileCount;
 			if(fileCount == 1)
 				continue;
-			boost::filesystem::path const filename = (boost::format("save/%1%_save.bta") % fileTime).str();
-			//cout << filename << endl;
+			path const filename = str(boost::format("save/%1%_save.bta") % fileTime);
 			remove(filename);
+			path const filename2 = str(boost::format("save/%1%_save.bta2") % fileTime);
+			remove(filename2);
 		}
 	}
 	while(end != timeSet.begin());

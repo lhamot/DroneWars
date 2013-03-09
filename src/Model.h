@@ -602,7 +602,8 @@ void construct(Universe& univ);
 Player::ID createPlayer(Universe& univ, std::string const& login, std::string const& password);
 
 void saveToStream(Universe const& univ, std::ostream& out);
-void loadFromStream(std::istream& in, Universe& univ);
+void loadFromStream_v1(std::istream& in, Universe& univ);
+void loadFromStream_v2(std::istream& in, Universe& univ);
 
 bool canBuild(Planet const& planet, Ship::Enum type, size_t number);
 

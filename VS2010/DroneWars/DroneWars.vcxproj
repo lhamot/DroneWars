@@ -78,6 +78,8 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">-Zm129 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="..\..\src\NameGen.cpp" />
+    <ClCompile Include="..\..\src\portable_binary_iarchive.cpp" />
+    <ClCompile Include="..\..\src\portable_binary_oarchive.cpp" />
     <ClCompile Include="..\..\src\Rules.cpp" />
     <ClCompile Include="..\..\src\Simulation.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
@@ -107,6 +109,10 @@
     <ClInclude Include="..\..\src\Model.h" />
     <ClInclude Include="..\..\src\NameGen.h" />
     <ClInclude Include="..\..\src\Player.h" />
+    <ClInclude Include="..\..\src\portable_archive_exception.hpp" />
+    <ClInclude Include="..\..\src\portable_binary_archive.hpp" />
+    <ClInclude Include="..\..\src\portable_binary_iarchive.hpp" />
+    <ClInclude Include="..\..\src\portable_binary_oarchive.hpp" />
     <ClInclude Include="..\..\src\Rules.h" />
     <ClInclude Include="..\..\src\serialize_unordered_map.h" />
     <ClInclude Include="..\..\src\Simulation.h" />

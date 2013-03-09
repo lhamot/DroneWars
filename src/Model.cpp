@@ -9,8 +9,10 @@
 
 
 #include <boost/archive/binary_iarchive.hpp>
-#include <boost/archive/binary_oarchive.hpp>
+#include "portable_binary_oarchive.hpp"
+#include "portable_binary_iarchive.hpp"
 #include <boost/iostreams/filtering_streambuf.hpp>
+#include <boost/iostreams/filtering_stream.hpp>
 
 
 BOOST_GEOMETRY_REGISTER_BOOST_ARRAY_CS(cs::cartesian)
@@ -249,15 +251,18 @@ void construct(Universe& univ)
 void saveToStream(Universe const& univ, std::ostream& out)
 {
 	using namespace boost::iostreams;
-	filtering_streambuf<output> outFilter;
+	filtering_ostream outFilter;
 	outFilter.push(gzip_compressor());
 	outFilter.push(out);
-	boost::archive::binary_oarchive oa(outFilter);
+	portable_binary_oarchive oa(outFilter);
+	clock_t start = clock();
 	oa& univ;
+	clock_t end = clock();
+	std::cout << "Saving time : " << double(end - start) / CLOCKS_PER_SEC << " sec" << std::endl;
 }
 
 
-void loadFromStream(std::istream& in, Universe& univ)
+void loadFromStream_v1(std::istream& in, Universe& univ)
 {
 	using namespace boost::iostreams;
 	std::cout << "Loading... ";
@@ -266,6 +271,19 @@ void loadFromStream(std::istream& in, Universe& univ)
 	inFilter.push(in);
 
 	boost::archive::binary_iarchive ia(inFilter);
+	ia& univ;
+	std::cout << "OK" << std::endl;
+}
+
+void loadFromStream_v2(std::istream& in, Universe& univ)
+{
+	using namespace boost::iostreams;
+	std::cout << "Loading... ";
+	filtering_istream inFilter;
+	inFilter.push(gzip_decompressor());
+	inFilter.push(in);
+
+	portable_binary_iarchive ia(inFilter);
 	ia& univ;
 	std::cout << "OK" << std::endl;
 }
