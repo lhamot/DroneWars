@@ -71,6 +71,7 @@ add_executable(
     src/gen-cpp/thrift_types.cpp
     src/portable_binary_iarchive.cpp
     src/portable_binary_oarchive.cpp
+    src/Logger.cpp
 )
 
 target_link_libraries( DroneWars debug luabindd )

@@ -46,4 +46,4 @@ public:
 };
 
 
-#endif __DRONEWARS_LOGGER__
+#endif //__DRONEWARS_LOGGER__
