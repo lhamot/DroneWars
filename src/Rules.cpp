@@ -230,9 +230,15 @@ void checkTutos(Universe& univ_, std::vector<Signal>& signals)
 }
 
 
-bool fleetCanSeePlanet(Fleet const& fleet, Planet const& planet)
+bool fleetCanSeePlanet(Fleet const& fleet, Planet const& planet, Universe const& univ)
 {
-	return (fleet.playerId == planet.playerId) || (planet.coord.X > 0);
+	if((fleet.playerId == planet.playerId) || (planet.playerId == Player::NoId))
+		return true;
+
+	size_t const score1 = mapFind(univ.playerMap, fleet.playerId)->second.score;
+	size_t const score2 = mapFind(univ.playerMap, planet.playerId)->second.score;
+	//Bloquage si trop d'équart de niveaux
+	return (score1 * 5) > score2 && (score2 * 5) > score1;
 }
 
 void updateScore(Universe& univ)

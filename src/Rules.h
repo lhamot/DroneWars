@@ -31,7 +31,7 @@ void getBlocklyHTML(size_t tutoLevel, std::string const& codecontext, std::ostre
 //! Verifie si il faut augrmenter le niveau du tutoriel
 void checkTutos(Universe& univ_, std::vector<Signal>& signals);
 
-bool fleetCanSeePlanet(Fleet const& fleet, Planet const& planet);
+bool fleetCanSeePlanet(Fleet const& fleet, Planet const& planet, Universe const& univ);
 
 //! Recalcul le score des joueurs (modifie les joueurs)
 void updateScore(Universe& univ);
