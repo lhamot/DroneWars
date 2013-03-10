@@ -623,6 +623,10 @@ void planetRound(Universe& univ, Planet& planet, std::vector<Signal>& signals)
 		planet.ressourceSet.tab[Ressource::Carbon] += rand() % 5;
 		planet.ressourceSet.tab[Ressource::Loicium] += rand() % 3;
 	}
+
+	//Limitation des ressources à un milliard
+	for(auto & val: planet.ressourceSet.tab)
+		val = std::min(val, size_t(1000000000));
 }
 
 
@@ -635,6 +639,10 @@ void fleetRound(Universe& univ,
 		execTask(univ, fleet, task, signals, playersPlanetCount);
 
 	boost::remove_erase_if(fleet.taskQueue, bind(&FleetTask::expired, placeholders::_1));
+
+	//Limitation des ressources à un milliard
+	for(auto & val: fleet.ressourceSet.tab)
+		val = std::min(val, size_t(1000000000));
 }
 
 
