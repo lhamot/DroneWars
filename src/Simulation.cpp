@@ -263,7 +263,7 @@ try
 	using namespace luabind;
 	FleetAction action(FleetAction::Nothing);
 	lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
-	if(planet && fleetCanSeePlanet(fleet, *planet) == false)
+	if(planet && fleetCanSeePlanet(fleet, *planet, univ_) == false)
 		planet = nullptr;
 	if(planet)
 	{
