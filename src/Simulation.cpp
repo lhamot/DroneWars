@@ -637,7 +637,34 @@ void removeOldEvents(Universe& univ_)
 			player.eventList.erase(player.eventList.begin(), player.eventList.end() - 10);
 		for(Event const & ev: player.eventList)
 		{
-			if(ev.type == Event::FleetLose || ev.type == Event::PlanetLose)
+			if(ev.type == Event::FleetLose || ev.type == Event::PlanetLose ||
+			   ev.type == Event::FleetWin || ev.type == Event::PlanetWin)
+				usedReport.insert(ev.value);
+		}
+	}
+
+	for(Planet & planet: univ_.planetMap | boost::adaptors::map_values)
+	{
+		//La suppression des evenement de planètes est faite ailleurs
+		//if(planet.eventList.size() > 10)
+		//	planet.eventList.erase(planet.eventList.begin(), planet.eventList.end() - 10);
+		for(Event const & ev: planet.eventList)
+		{
+			if(ev.type == Event::FleetLose || ev.type == Event::PlanetLose ||
+			   ev.type == Event::FleetWin || ev.type == Event::PlanetWin)
+				usedReport.insert(ev.value);
+		}
+	}
+
+	for(Fleet & fleet: univ_.fleetMap | boost::adaptors::map_values)
+	{
+		//La suppression des evenement de planètes est faite ailleurs
+		//if(fleet.eventList.size() > 10)
+		//   fleet.eventList.erase(fleet.eventList.begin(), fleet.eventList.end() - 10);
+		for(Event const & ev: fleet.eventList)
+		{
+			if(ev.type == Event::FleetLose || ev.type == Event::PlanetLose ||
+			   ev.type == Event::FleetWin || ev.type == Event::PlanetWin)
 				usedReport.insert(ev.value);
 		}
 	}

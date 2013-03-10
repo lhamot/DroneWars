@@ -1,0 +1,35 @@
+{% load tmp_filters %}
+{% load i18n %}
+			{% if target_event.type == Event_Type.FleetWin or target_event.type == Event_Type.FleetLose or target_event.type == Event_Type.PlanetLose or target_event.type == Event_Type.PlanetWin %}
+			<h1>{{target_event.type|eventname}}</h1>
+			{% for fleetReport in fight_report.fleetList %}
+			<table class="table {% if player.id == fleetReport.fightInfo.before.playerId %}ally{%else%}enemy{%endif%} {% if fleetReport.isDead %}looser{%else%}winner{%endif%}">
+				<tr><th>{% trans "Fleet ID" %}</th><td>{{fleetReport.fightInfo.before.id}}</td></tr>
+				<tr><th>{% trans "Player" %}</th><td>{{fleetReport.fightInfo.before.playerId}}</td></tr>
+				<tr><th>{% trans "Has fight" %}</th><td>{% if fleetReport.hasFight %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</td></tr>
+				<tr><th>{% trans "Is dead" %}</th><td>{% if fleetReport.isDead %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</td></tr>
+				<tr><th>{% trans "Start" %}</th><td>{{fleetReport.fightInfo.before|content}}</td></tr>
+				<tr><th>{% trans "End" %}</th><td>{{fleetReport.fightInfo.after|content}}</td></tr>
+				<!--<tr><th>{% trans "Report ID" %}</td><td>{{target_event.value}}</td></tr>-->
+			</table>
+			{% endfor %}
+			{% if fight_report.planet %}
+			<table class="table {% if player.id == fight_report.planet.fightInfo.before.playerId %}ally{%else%}enemy{%endif%} {% if fight_report.planet.isDead %}looser{%else%}winner{%endif%}">
+				<tr>
+					<th>{% trans "Planet coordinate" %}</th>
+					<td><img src="{{ STATIC_URL }}{{fight_report.planet.fightInfo.before|img_path:'min'}}" width="40"/>{{fight_report.planet.fightInfo.before.coord|coord}}</td>
+				</tr>
+				<tr><th>{% trans "Player" %}</th><td>{{fight_report.planet.fightInfo.after.playerId}}</td></tr>
+				<tr><th>{% trans "Has fight" %}</th><td>{% if fight_report.planet.hasFight %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</td></tr>
+				<tr><th>{% trans "Is dead" %}</th><td>{% if fight_report.planet.isDead %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</td></tr>
+				<tr><th>{% trans "Start" %}</th><td>{{fight_report.planet.fightInfo.before|content}}</td></tr>
+				<tr><th>{% trans "End" %}</th><td>{{fight_report.planet.fightInfo.after|content}}</td></tr>
+				<!--<tr><td>{% trans "Report ID" %}</td><td>{{target_event.value}}</td></tr>-->
+			</table>
+			{% endif %}
+			{% endif %}
+			{% if target_event.type == Event_Type.FleetCodeError or target_event.type == Event_Type.FleetCodeExecError or target_event.type == Event_Type.PlanetCodeError or target_event.type == Event_Type.PlanetCodeExecError %}
+			<h1>{{target_event.type|eventname}}</h1>
+			<p class="text-error span6"><strong>{{target_event.comment}}</strong></p>
+			{% endif %}
+	

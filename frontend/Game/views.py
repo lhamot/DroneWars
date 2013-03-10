@@ -161,8 +161,8 @@ def PlanetListView(request):
     titleAfter = [""] * 7
     titleAfter[sort] = '<i class="icon-chevron-up"></i>' if asc == True else '<i class="icon-chevron-down"></i>'
     titleOrder = [asc] * 7
-    titleOrder[sort] = titleOrder[sort] == False 
-    
+    titleOrder[sort] = titleOrder[sort] == False
+        
     return render(request, 'planetsview.html', {
         'planetList': playerPlanets.planetList,
         'helpMessage': helpMessage,
@@ -180,6 +180,21 @@ def PlanetListView(request):
     })
 
 
+def getEventAndFightReport(request, service, container_entity):
+    target_event = None
+    fight_report = None
+    if "event_id" in request.GET:
+        event_id = int(request.GET["event_id"])
+        for event in container_entity.eventList:
+            if event_id == int(event.id):
+                target_event = event
+        if target_event and target_event.type in {Event_Type.FleetLose, Event_Type.FleetWin, 
+                                      Event_Type.PlanetLose, Event_Type.PlanetWin}:
+            fight_report = service.getFightReport(target_event.value);
+    return target_event, fight_report
+    
+
+
 @updateLastRequest
 def PlanetView(request):
     pid = request.session["PlayerID"]
@@ -195,9 +210,17 @@ def PlanetView(request):
         
     timeInfo = service.getTimeInfo();
     
+    (target_event, fight_report) = getEventAndFightReport(request, service, target) 
+    
+    player = {"id": pid}; #Pour éviter une requete au serveur(Les raport de combat ont besoin de l'id)
+    
     return render(request, 'planetview.html', {
+        'player': player,
         'planet' : target,
         'timeInfo': timeInfo,
+        'target_event': target_event,
+        'fight_report': fight_report,
+        'Event_Type': Event_Type,
     })
 
 
@@ -273,10 +296,18 @@ def FleetView(request):
         
     timeInfo = service.getTimeInfo();
     
+    (target_event, fight_report) = getEventAndFightReport(request, service, fleet) 
+
+    player = {"id": pid}; #Pour éviter une requete au serveur(Les raport de combat ont besoin de l'id)
+    
     return render(request, 'fleetview.html', {
+        'player': player,
         'fleet': fleet,
         'timeInfo': timeInfo,
         'planet': planet,
+        'target_event': target_event,
+        'fight_report': fight_report,
+        'Event_Type': Event_Type,
     })    
 
 
@@ -308,16 +339,7 @@ def ReportsView(request):
     service = createEngineClient()
     player = service.getPlayer(pid)
     
-    target = None
-    fight_report = None
-    if "event_id" in request.GET:
-        event_id = int(request.GET["event_id"])
-        for event in player.eventList:
-            if event_id == int(event.id):
-                target = event
-        if target and target.type in {Event_Type.FleetLose, Event_Type.FleetWin, 
-                                      Event_Type.PlanetLose, Event_Type.PlanetWin}:
-            fight_report = service.getFightReport(target.value);
+    (target, fight_report) = getEventAndFightReport(request, service, player) 
 
     ReportViewTutoTag = "ReportView"
     if not ReportViewTutoTag in player.tutoDisplayed:
@@ -331,7 +353,7 @@ def ReportsView(request):
     return render(request, 'reportsview.html', {
         'player': player,
         'helpMessage': helpMessage,
-        'target': target,
+        'target_event': target,
         'Event_Type': Event_Type,
         'fight_report': fight_report,
         'timeInfo': timeInfo,

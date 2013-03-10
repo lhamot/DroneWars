@@ -72,7 +72,8 @@
 					<!--<th>{% trans "Comment" %}</th>-->
 				</tr>
 				{% for event in planet.eventList %}
-				<tr>
+				<tr onclick="document.location.href=
+'planet.html?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}&event_id={{event.id}}'">
 					<td>{{event.time|int2datetime|date:"DATETIME_FORMAT"}}</td>
 					<td>{{event.type|eventname}}</td>
 					<td>{{event|eventvalue}}</td>
@@ -81,6 +82,13 @@
 				{% endfor %}
 			</table>
 		</div>
+	</div>
+	<div class="row">
+		{% if target_event %}
+		<div class="span10 offset2">
+			{% include "report_func.html" %}
+		</div>
+		{% endif %}
 	</div>
 </div>
 {% endblock %}
