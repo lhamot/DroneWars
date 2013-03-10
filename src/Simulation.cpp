@@ -914,8 +914,10 @@ void Simulation::save(std::string const& saveName) const
 			if(stat(saveName.c_str(), &buf) == 0)
 				rename(saveName.c_str(), ansSaveName.c_str());
 			rename(newSaveName.c_str(), saveName.c_str());
-			using namespace boost::filesystem;
-			copy_file(saveName, "save/last_save.bta2", copy_option::overwrite_if_exists);
+
+			std::ifstream in(saveName, ios::binary | ios::in);
+			std::ofstream out("save/last_save.bta2", ios::binary | ios::out);
+			boost::iostreams::copy(in, out);
 		}
 		catch(std::exception const& ex)
 		{
