@@ -24,6 +24,8 @@ using namespace std;
 
 int main()//(int argc, char** argv)
 {
+	Logger::SetFile("save/errors.txt");
+
 	srand(static_cast<unsigned int>(time(NULL)));
 
 	boost::locale::generator gen;
@@ -59,12 +61,11 @@ int main()//(int argc, char** argv)
 	try
 	{
 		server.serve();
+		LOG_ERROR << "Unexpected server stop";
 	}
 	catch(std::exception const& ex)
 	{
-		std::cerr << typeid(ex).name() << " " << ex.what() << std::endl;
-		std::ofstream out("log.txt");
-		out << boost::diagnostic_information(ex) << std::endl;
+		LOG_ERROR << boost::diagnostic_information(ex);
 		return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;

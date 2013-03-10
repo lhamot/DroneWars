@@ -6,6 +6,7 @@
 #include "serialize_unordered_map.h"
 #include "Player.h"
 #include "Tools.h"
+#include "Logger.h"
 
 
 
@@ -220,7 +221,7 @@ struct Planet
 		{
 			if(playerId >= 100000 && playerId != Player::NoId)
 			{
-				std::cout << playerId << std::endl;
+				LOG_VAR(playerId);
 				BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 			}
 			if(playerId == Player::NoId && taskQueue.empty() == false)

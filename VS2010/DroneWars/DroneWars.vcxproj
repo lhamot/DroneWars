@@ -49,6 +49,7 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
     </ClCompile>
+    <ClCompile Include="..\..\src\Logger.cpp" />
     <ClCompile Include="..\..\src\LuaTools.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
@@ -104,12 +105,12 @@
     <ClInclude Include="..\..\src\gen-cpp\EngineServer.h" />
     <ClInclude Include="..\..\src\gen-cpp\thrift_constants.h" />
     <ClInclude Include="..\..\src\gen-cpp\thrift_types.h" />
+    <ClInclude Include="..\..\src\Logger.h" />
     <ClInclude Include="..\..\src\LuaTools.h" />
     <ClInclude Include="..\..\src\LuaUniverse.h" />
     <ClInclude Include="..\..\src\Model.h" />
     <ClInclude Include="..\..\src\NameGen.h" />
     <ClInclude Include="..\..\src\Player.h" />
-    <ClInclude Include="..\..\src\portable_archive_exception.hpp" />
     <ClInclude Include="..\..\src\portable_binary_archive.hpp" />
     <ClInclude Include="..\..\src\portable_binary_iarchive.hpp" />
     <ClInclude Include="..\..\src\portable_binary_oarchive.hpp" />

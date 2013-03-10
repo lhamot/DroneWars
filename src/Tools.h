@@ -113,6 +113,4 @@ void staticIf(F f)
 }
 
 
-#define TRACE std::cout << __FILE__ << " " << __LINE__ << std::endl;
-
 #endif //__BTA_TOOLS__

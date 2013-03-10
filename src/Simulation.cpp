@@ -6,6 +6,7 @@
 #include "Tools.h"
 #include "LuaTools.h"
 #include "fighting.h"
+#include "Logger.h"
 #pragma warning(push)
 #pragma warning(disable: 4189 4100)
 #include <luabind/stl_container_converter.hpp>
@@ -726,10 +727,7 @@ try
 
 	std::cout << time(0) << std::endl;
 }
-catch(std::exception const& ex)
-{
-	std::cout << boost::diagnostic_information(ex) << std::endl;
-}
+CATCH_LOG_EXCEPTION
 
 static const luaL_Reg loadedlibs[] =
 {
@@ -861,26 +859,12 @@ try
 					std::cout << " -> " << lua_gc(luaEngine.state(), LUA_GCCOUNT, 0) << std::endl;
 				}
 			}
-			catch(std::exception const& ex)
-			{
-				std::cerr << boost::diagnostic_information(ex) << std::endl;
-				throw;
-			}
-			catch(...)
-			{
-				//std::cerr << "Not standard exception" << std::endl;
-				std::cerr << boost::current_exception_diagnostic_information() << std::endl;
-				throw;
-			}
+		CATCH_LOG_RETHROW
 		else if(noWait == false)
 			boost::this_thread::sleep(boost::posix_time::milliseconds(100));
 	}
 }
-catch(std::exception const& ex)
-{
-	std::cerr << boost::diagnostic_information(ex) << std::endl;
-	throw;
-}
+CATCH_LOG_RETHROW
 
 
 double Simulation::getUnivTime()
@@ -919,11 +903,7 @@ void Simulation::save(std::string const& saveName) const
 			std::ofstream out("save/last_save.bta2", ios::binary | ios::out);
 			boost::iostreams::copy(in, out);
 		}
-		catch(std::exception const& ex)
-		{
-			std::cerr << boost::diagnostic_information(ex) << std::endl;
-			throw;
-		}
+		CATCH_LOG_RETHROW
 	};
 
 	SharedLock lockPlayers(univ_.playersMutex);
