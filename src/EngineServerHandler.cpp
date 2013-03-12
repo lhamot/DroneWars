@@ -281,21 +281,21 @@ void EngineServerHandler::getPlayerFleets(
 	size_t beginIndex = beginIndexC;
 	size_t endIndex = endIndexC;
 	auto fleetList = engine_.getPlayerFleets(pid);
-	if(beginIndex > endIndex || beginIndex < 0)
+	if(beginIndexC >= endIndexC || beginIndexC < 0)
 		BOOST_THROW_EXCEPTION(std::runtime_error("Unconsistent index"));
 	if(endIndex > fleetList.size())
-	{
-		size_t const diff = endIndex - beginIndex;
 		endIndex = fleetList.size();
-		beginIndex = endIndex - diff;
-		beginIndex = std::max(size_t(0), beginIndex);
-	}
 
 	sortOnType(fleetList, sortType, asc);
 
+	if(endIndex > fleetList.size())
+		BOOST_THROW_EXCEPTION(std::logic_error("endIndex > fleetList.size()"));
+	if(beginIndex > endIndex)
+		BOOST_THROW_EXCEPTION(std::logic_error("beginIndex > endIndex"));
+
 	_return.fleetList.reserve(endIndex - beginIndex);
 	auto pageRange = make_iterator_range(fleetList.begin() + beginIndex,
-	                 fleetList.begin() + endIndex);
+	                                     fleetList.begin() + endIndex);
 	std::set<Coord, CompCoord> fleetCoordSet;
 	for(Fleet const & fleet: pageRange)
 	{
@@ -322,21 +322,21 @@ void EngineServerHandler::getPlayerPlanets(
 	size_t beginIndex = beginIndexC;
 	size_t endIndex = endIndexC;
 	auto planetList = engine_.getPlayerPlanets(pid);
-	if(beginIndex > endIndex || beginIndex < 0)
+	if(beginIndexC >= endIndexC || beginIndexC < 0)
 		BOOST_THROW_EXCEPTION(std::runtime_error("Unconsistent index"));
 	if(endIndex > planetList.size())
-	{
-		size_t const diff = endIndex - beginIndex;
 		endIndex = planetList.size();
-		beginIndex = endIndex - diff;
-		beginIndex = std::max(size_t(0), beginIndex);
-	}
 
 	sortOnType(planetList, sortType, asc);
 
+	if(endIndex > planetList.size())
+		BOOST_THROW_EXCEPTION(std::logic_error("endIndex > planetList.size()"));
+	if(beginIndex > endIndex)
+		BOOST_THROW_EXCEPTION(std::logic_error("beginIndex > endIndex"));
+
 	_return.planetList.reserve(endIndex - beginIndex);
 	auto pageRange = make_iterator_range(planetList.begin() + beginIndex,
-	                 planetList.begin() + endIndex);
+	                                     planetList.begin() + endIndex);
 	for(Planet const & planet: pageRange)
 		_return.planetList.push_back(planetToThrift(planet));
 	_return.planetCount = numeric_cast<int32_t>(planetList.size());
