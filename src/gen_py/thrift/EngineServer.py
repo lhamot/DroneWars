@@ -2951,7 +2951,7 @@ class getFleet_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I32, 'fid', None, None, ), # 10
+    (10, TType.I64, 'fid', None, None, ), # 10
   )
 
   def __init__(self, fid=None,):
@@ -2967,8 +2967,8 @@ class getFleet_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I32:
-          self.fid = iprot.readI32();
+        if ftype == TType.I64:
+          self.fid = iprot.readI64();
         else:
           iprot.skip(ftype)
       else:
@@ -2982,8 +2982,8 @@ class getFleet_args:
       return
     oprot.writeStructBegin('getFleet_args')
     if self.fid is not None:
-      oprot.writeFieldBegin('fid', TType.I32, 10)
-      oprot.writeI32(self.fid)
+      oprot.writeFieldBegin('fid', TType.I64, 10)
+      oprot.writeI64(self.fid)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

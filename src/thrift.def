@@ -178,7 +178,7 @@ struct Planet
 }
 
 
-typedef i32 Fleet_ID
+typedef i64 Fleet_ID
 
 typedef list<i32> Fleet_ShipTab
 

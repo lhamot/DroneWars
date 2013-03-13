@@ -2581,9 +2581,9 @@ uint32_t EngineServer_getFleet_args::read(::apache::thrift::protocol::TProtocol*
 		switch(fid)
 		{
 		case 10:
-			if(ftype == ::apache::thrift::protocol::T_I32)
+			if(ftype == ::apache::thrift::protocol::T_I64)
 			{
-				xfer += iprot->readI32(this->fid);
+				xfer += iprot->readI64(this->fid);
 				this->__isset.fid = true;
 			}
 			else
@@ -2608,8 +2608,8 @@ uint32_t EngineServer_getFleet_args::write(::apache::thrift::protocol::TProtocol
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_getFleet_args");
 
-	xfer += oprot->writeFieldBegin("fid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32(this->fid);
+	xfer += oprot->writeFieldBegin("fid", ::apache::thrift::protocol::T_I64, 10);
+	xfer += oprot->writeI64(this->fid);
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldStop();
@@ -2622,8 +2622,8 @@ uint32_t EngineServer_getFleet_pargs::write(::apache::thrift::protocol::TProtoco
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_getFleet_pargs");
 
-	xfer += oprot->writeFieldBegin("fid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32((*(this->fid)));
+	xfer += oprot->writeFieldBegin("fid", ::apache::thrift::protocol::T_I64, 10);
+	xfer += oprot->writeI64((*(this->fid)));
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldStop();

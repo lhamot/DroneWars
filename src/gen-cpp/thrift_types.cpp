@@ -1479,8 +1479,8 @@ void swap(Planet& a, Planet& b)
 	swap(a.__isset, b.__isset);
 }
 
-const char* Fleet::ascii_fingerprint = "7F2E377571D9724BAAE2721C92DC886A";
-const uint8_t Fleet::binary_fingerprint[16] = {0x7F, 0x2E, 0x37, 0x75, 0x71, 0xD9, 0x72, 0x4B, 0xAA, 0xE2, 0x72, 0x1C, 0x92, 0xDC, 0x88, 0x6A};
+const char* Fleet::ascii_fingerprint = "5BC565BA35524079BC6AFEB1C4918CA7";
+const uint8_t Fleet::binary_fingerprint[16] = {0x5B, 0xC5, 0x65, 0xBA, 0x35, 0x52, 0x40, 0x79, 0xBC, 0x6A, 0xFE, 0xB1, 0xC4, 0x91, 0x8C, 0xA7};
 
 uint32_t Fleet::read(::apache::thrift::protocol::TProtocol* iprot)
 {
@@ -1505,9 +1505,9 @@ uint32_t Fleet::read(::apache::thrift::protocol::TProtocol* iprot)
 		switch(fid)
 		{
 		case 10:
-			if(ftype == ::apache::thrift::protocol::T_I32)
+			if(ftype == ::apache::thrift::protocol::T_I64)
 			{
-				xfer += iprot->readI32(this->id);
+				xfer += iprot->readI64(this->id);
 				this->__isset.id = true;
 			}
 			else
@@ -1656,8 +1656,8 @@ uint32_t Fleet::write(::apache::thrift::protocol::TProtocol* oprot) const
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("Fleet");
 
-	xfer += oprot->writeFieldBegin("id", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32(this->id);
+	xfer += oprot->writeFieldBegin("id", ::apache::thrift::protocol::T_I64, 10);
+	xfer += oprot->writeI64(this->id);
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldBegin("playerId", ::apache::thrift::protocol::T_I32, 20);
@@ -1823,8 +1823,8 @@ void swap(FleetAction& a, FleetAction& b)
 	swap(a.__isset, b.__isset);
 }
 
-const char* FleetFightInfo::ascii_fingerprint = "C87F4D7054D96EC55B454D5172A46D0D";
-const uint8_t FleetFightInfo::binary_fingerprint[16] = {0xC8, 0x7F, 0x4D, 0x70, 0x54, 0xD9, 0x6E, 0xC5, 0x5B, 0x45, 0x4D, 0x51, 0x72, 0xA4, 0x6D, 0x0D};
+const char* FleetFightInfo::ascii_fingerprint = "72586A296E2C8DAED7B4C26002A639BF";
+const uint8_t FleetFightInfo::binary_fingerprint[16] = {0x72, 0x58, 0x6A, 0x29, 0x6E, 0x2C, 0x8D, 0xAE, 0xD7, 0xB4, 0xC2, 0x60, 0x02, 0xA6, 0x39, 0xBF};
 
 uint32_t FleetFightInfo::read(::apache::thrift::protocol::TProtocol* iprot)
 {
@@ -1908,8 +1908,8 @@ void swap(FleetFightInfo& a, FleetFightInfo& b)
 	swap(a.__isset, b.__isset);
 }
 
-const char* FleetReport::ascii_fingerprint = "1F5F50236CAA73FEC7CFE595305D8FB4";
-const uint8_t FleetReport::binary_fingerprint[16] = {0x1F, 0x5F, 0x50, 0x23, 0x6C, 0xAA, 0x73, 0xFE, 0xC7, 0xCF, 0xE5, 0x95, 0x30, 0x5D, 0x8F, 0xB4};
+const char* FleetReport::ascii_fingerprint = "F021743048F9F928F48E5919EA96790F";
+const uint8_t FleetReport::binary_fingerprint[16] = {0xF0, 0x21, 0x74, 0x30, 0x48, 0xF9, 0xF9, 0x28, 0xF4, 0x8E, 0x59, 0x19, 0xEA, 0x96, 0x79, 0x0F};
 
 uint32_t FleetReport::read(::apache::thrift::protocol::TProtocol* iprot)
 {
@@ -2269,8 +2269,8 @@ void swap(PlanetReport& a, PlanetReport& b)
 	swap(a.__isset, b.__isset);
 }
 
-const char* FightReport::ascii_fingerprint = "96A98A1FF609CB59E84D83BDF94663D3";
-const uint8_t FightReport::binary_fingerprint[16] = {0x96, 0xA9, 0x8A, 0x1F, 0xF6, 0x09, 0xCB, 0x59, 0xE8, 0x4D, 0x83, 0xBD, 0xF9, 0x46, 0x63, 0xD3};
+const char* FightReport::ascii_fingerprint = "21A78A7AC08C0BFA132F7144F0C0EA14";
+const uint8_t FightReport::binary_fingerprint[16] = {0x21, 0xA7, 0x8A, 0x7A, 0xC0, 0x8C, 0x0B, 0xFA, 0x13, 0x2F, 0x71, 0x44, 0xF0, 0xC0, 0xEA, 0x14};
 
 uint32_t FightReport::read(::apache::thrift::protocol::TProtocol* iprot)
 {
@@ -2392,8 +2392,8 @@ void swap(FightReport& a, FightReport& b)
 	swap(a.__isset, b.__isset);
 }
 
-const char* Universe::ascii_fingerprint = "923D2BD6A38F7ED98D913B8CB37A26C5";
-const uint8_t Universe::binary_fingerprint[16] = {0x92, 0x3D, 0x2B, 0xD6, 0xA3, 0x8F, 0x7E, 0xD9, 0x8D, 0x91, 0x3B, 0x8C, 0xB3, 0x7A, 0x26, 0xC5};
+const char* Universe::ascii_fingerprint = "03F243454EDFF3DFB9B0A6B4A09FD37F";
+const uint8_t Universe::binary_fingerprint[16] = {0x03, 0xF2, 0x43, 0x45, 0x4E, 0xDF, 0xF3, 0xDF, 0xB9, 0xB0, 0xA6, 0xB4, 0xA0, 0x9F, 0xD3, 0x7F};
 
 uint32_t Universe::read(::apache::thrift::protocol::TProtocol* iprot)
 {
@@ -2482,7 +2482,7 @@ uint32_t Universe::read(::apache::thrift::protocol::TProtocol* iprot)
 					for(_i104 = 0; _i104 < _size100; ++_i104)
 					{
 						Fleet_ID _key105;
-						xfer += iprot->readI32(_key105);
+						xfer += iprot->readI64(_key105);
 						Fleet& _val106 = this->fleetMap[_key105];
 						xfer += _val106.read(iprot);
 					}
@@ -2533,9 +2533,9 @@ uint32_t Universe::read(::apache::thrift::protocol::TProtocol* iprot)
 			}
 			break;
 		case 6:
-			if(ftype == ::apache::thrift::protocol::T_I32)
+			if(ftype == ::apache::thrift::protocol::T_I64)
 			{
-				xfer += iprot->readI32(this->nextFleetID);
+				xfer += iprot->readI64(this->nextFleetID);
 				this->__isset.nextFleetID = true;
 			}
 			else
@@ -2599,11 +2599,11 @@ uint32_t Universe::write(::apache::thrift::protocol::TProtocol* oprot) const
 
 	xfer += oprot->writeFieldBegin("fleetMap", ::apache::thrift::protocol::T_MAP, 3);
 	{
-		xfer += oprot->writeMapBegin(::apache::thrift::protocol::T_I32, ::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->fleetMap.size()));
+		xfer += oprot->writeMapBegin(::apache::thrift::protocol::T_I64, ::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->fleetMap.size()));
 		std::map<Fleet_ID, Fleet> ::const_iterator _iter116;
 		for(_iter116 = this->fleetMap.begin(); _iter116 != this->fleetMap.end(); ++_iter116)
 		{
-			xfer += oprot->writeI32(_iter116->first);
+			xfer += oprot->writeI64(_iter116->first);
 			xfer += _iter116->second.write(oprot);
 		}
 		xfer += oprot->writeMapEnd();
@@ -2627,8 +2627,8 @@ uint32_t Universe::write(::apache::thrift::protocol::TProtocol* oprot) const
 	xfer += oprot->writeI32(this->nextPlayerID);
 	xfer += oprot->writeFieldEnd();
 
-	xfer += oprot->writeFieldBegin("nextFleetID", ::apache::thrift::protocol::T_I32, 6);
-	xfer += oprot->writeI32(this->nextFleetID);
+	xfer += oprot->writeFieldBegin("nextFleetID", ::apache::thrift::protocol::T_I64, 6);
+	xfer += oprot->writeI64(this->nextFleetID);
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldBegin("time", ::apache::thrift::protocol::T_I32, 7);
@@ -2809,8 +2809,8 @@ void swap(TimeInfo& a, TimeInfo& b)
 	swap(a.__isset, b.__isset);
 }
 
-const char* FleetList::ascii_fingerprint = "A1C1A0D49440713B2A068AA50D07EE7A";
-const uint8_t FleetList::binary_fingerprint[16] = {0xA1, 0xC1, 0xA0, 0xD4, 0x94, 0x40, 0x71, 0x3B, 0x2A, 0x06, 0x8A, 0xA5, 0x0D, 0x07, 0xEE, 0x7A};
+const char* FleetList::ascii_fingerprint = "BF4137B84F4CA008715911A6B72A13B6";
+const uint8_t FleetList::binary_fingerprint[16] = {0xBF, 0x41, 0x37, 0xB8, 0x4F, 0x4C, 0xA0, 0x08, 0x71, 0x59, 0x11, 0xA6, 0xB7, 0x2A, 0x13, 0xB6};
 
 uint32_t FleetList::read(::apache::thrift::protocol::TProtocol* iprot)
 {

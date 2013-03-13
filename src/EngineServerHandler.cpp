@@ -82,7 +82,7 @@ ndw::Event eventToThrift(Event const& event)
 ndw::Fleet fleetToThrift(Fleet const& fleet)
 {
 	ndw::Fleet result;
-	result.id = numeric_cast<int32_t>(fleet.id);
+	result.id = numeric_cast<int64_t>(fleet.id);
 	result.playerId = numeric_cast<int32_t>(fleet.playerId);
 	result.coord = coordToThrift(fleet.coord);
 	//std::cout << result.coord.X << " " << result.coord.Y << " " << result.coord.Z << std::endl;
@@ -159,7 +159,7 @@ ndw::FleetReport fleetReportToThrift(Report<Fleet> const& fleetReport)
 	ndw::FleetReport result;
 	result.isDead = fleetReport.isDead;
 	result.hasFight = fleetReport.hasFight;
-	for(size_t id: fleetReport.enemySet)
+	for(intptr_t id: fleetReport.enemySet)
 		result.enemySet.insert(numeric_cast<int32_t>(id));
 	result.fightInfo.before = fleetToThrift(fleetReport.fightInfo.before);
 	result.fightInfo.after = fleetToThrift(fleetReport.fightInfo.after);
@@ -172,7 +172,7 @@ ndw::PlanetReport planetReportToThrift(Report<Planet> const& planetReport)
 	ndw::PlanetReport result;
 	result.isDead = planetReport.isDead;
 	result.hasFight = planetReport.hasFight;
-	for(size_t id: planetReport.enemySet)
+	for(intptr_t id: planetReport.enemySet)
 		result.enemySet.insert(numeric_cast<ndw::Player_ID>(id));
 	result.fightInfo.before = planetToThrift(planetReport.fightInfo.before);
 	result.fightInfo.after = planetToThrift(planetReport.fightInfo.after);

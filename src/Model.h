@@ -322,19 +322,27 @@ typedef std::vector<PlanetAction> PlanetActionList;
 struct Fleet
 {
 	template<class Archive>
-	void serialize(Archive& ar, const unsigned int)
+	void serialize(Archive& ar, const unsigned int version)
 	{
 		staticIf<Archive::is_saving::value>([&]()
 		{
 			if(playerId >= 100000)
 				BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 		});
-		ar& id& playerId& coord& origin& name& shipList& ressourceSet& taskQueue& eventList;
+		if(version < 1)
+		{
+			size_t val;
+			ar& val;
+			id = val;
+		}
+		else
+			ar& id;
+		ar& playerId& coord& origin& name& shipList& ressourceSet& taskQueue& eventList;
 		if(playerId >= 100000)
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 	}
 
-	typedef size_t ID;
+	typedef uint64_t ID;
 	ID id;
 	Player::ID playerId;
 	Coord coord;
@@ -368,6 +376,8 @@ struct Fleet
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 	}
 };
+
+BOOST_CLASS_VERSION(Fleet, 1);
 
 
 struct FleetAction
