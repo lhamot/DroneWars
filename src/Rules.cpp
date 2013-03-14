@@ -235,8 +235,8 @@ bool fleetCanSeePlanet(Fleet const& fleet, Planet const& planet, Universe const&
 	if((fleet.playerId == planet.playerId) || (planet.playerId == Player::NoId))
 		return true;
 
-	size_t const score1 = mapFind(univ.playerMap, fleet.playerId)->second.score;
-	size_t const score2 = mapFind(univ.playerMap, planet.playerId)->second.score;
+	uint64_t const score1 = mapFind(univ.playerMap, fleet.playerId)->second.score;
+	uint64_t const score2 = mapFind(univ.playerMap, planet.playerId)->second.score;
 	//Bloquage si trop d'équart de niveaux
 	return (score1 * 5) > score2 && (score2 * 5) > score1;
 }

@@ -586,8 +586,8 @@ void swap(CodeData& a, CodeData& b)
 	swap(a.__isset, b.__isset);
 }
 
-const char* Player::ascii_fingerprint = "831CB4584F9FEEEF24515F3E3C644BDF";
-const uint8_t Player::binary_fingerprint[16] = {0x83, 0x1C, 0xB4, 0x58, 0x4F, 0x9F, 0xEE, 0xEF, 0x24, 0x51, 0x5F, 0x3E, 0x3C, 0x64, 0x4B, 0xDF};
+const char* Player::ascii_fingerprint = "EBC625478E10039503754BAC121E6D64";
+const uint8_t Player::binary_fingerprint[16] = {0xEB, 0xC6, 0x25, 0x47, 0x8E, 0x10, 0x03, 0x95, 0x03, 0x75, 0x4B, 0xAC, 0x12, 0x1E, 0x6D, 0x64};
 
 uint32_t Player::read(::apache::thrift::protocol::TProtocol* iprot)
 {
@@ -727,9 +727,9 @@ uint32_t Player::read(::apache::thrift::protocol::TProtocol* iprot)
 			}
 			break;
 		case 9:
-			if(ftype == ::apache::thrift::protocol::T_I32)
+			if(ftype == ::apache::thrift::protocol::T_I64)
 			{
-				xfer += iprot->readI32(this->score);
+				xfer += iprot->readI64(this->score);
 				this->__isset.score = true;
 			}
 			else
@@ -803,8 +803,8 @@ uint32_t Player::write(::apache::thrift::protocol::TProtocol* oprot) const
 	xfer += this->mainPlanet.write(oprot);
 	xfer += oprot->writeFieldEnd();
 
-	xfer += oprot->writeFieldBegin("score", ::apache::thrift::protocol::T_I32, 9);
-	xfer += oprot->writeI32(this->score);
+	xfer += oprot->writeFieldBegin("score", ::apache::thrift::protocol::T_I64, 9);
+	xfer += oprot->writeI64(this->score);
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldStop();
@@ -2392,8 +2392,8 @@ void swap(FightReport& a, FightReport& b)
 	swap(a.__isset, b.__isset);
 }
 
-const char* Universe::ascii_fingerprint = "03F243454EDFF3DFB9B0A6B4A09FD37F";
-const uint8_t Universe::binary_fingerprint[16] = {0x03, 0xF2, 0x43, 0x45, 0x4E, 0xDF, 0xF3, 0xDF, 0xB9, 0xB0, 0xA6, 0xB4, 0xA0, 0x9F, 0xD3, 0x7F};
+const char* Universe::ascii_fingerprint = "7D15BF17D197D025599EFC93C01F1FBD";
+const uint8_t Universe::binary_fingerprint[16] = {0x7D, 0x15, 0xBF, 0x17, 0xD1, 0x97, 0xD0, 0x25, 0x59, 0x9E, 0xFC, 0x93, 0xC0, 0x1F, 0x1F, 0xBD};
 
 uint32_t Universe::read(::apache::thrift::protocol::TProtocol* iprot)
 {
@@ -2653,8 +2653,8 @@ void swap(Universe& a, Universe& b)
 	swap(a.__isset, b.__isset);
 }
 
-const char* OptionalPlayer::ascii_fingerprint = "0C21250C1C875666C102C0D50CFCEE12";
-const uint8_t OptionalPlayer::binary_fingerprint[16] = {0x0C, 0x21, 0x25, 0x0C, 0x1C, 0x87, 0x56, 0x66, 0xC1, 0x02, 0xC0, 0xD5, 0x0C, 0xFC, 0xEE, 0x12};
+const char* OptionalPlayer::ascii_fingerprint = "35A7D79AFF0BD8AE0251388C1CE87997";
+const uint8_t OptionalPlayer::binary_fingerprint[16] = {0x35, 0xA7, 0xD7, 0x9A, 0xFF, 0x0B, 0xD8, 0xAE, 0x02, 0x51, 0x38, 0x8C, 0x1C, 0xE8, 0x79, 0x97};
 
 uint32_t OptionalPlayer::read(::apache::thrift::protocol::TProtocol* iprot)
 {

@@ -614,7 +614,7 @@ class Player:
     (6, TType.LIST, 'eventList', (TType.STRUCT,(Event, Event.thrift_spec)), None, ), # 6
     (7, TType.MAP, 'tutoDisplayed', (TType.STRING,None,TType.I32,None), None, ), # 7
     (8, TType.STRUCT, 'mainPlanet', (Coord, Coord.thrift_spec), None, ), # 8
-    (9, TType.I32, 'score', None, 0, ), # 9
+    (9, TType.I64, 'score', None, 0, ), # 9
   )
 
   def __init__(self, id=None, login=None, password=None, fleetsCode=None, planetsCode=None, eventList=None, tutoDisplayed=None, mainPlanet=None, score=thrift_spec[9][4],):
@@ -693,8 +693,8 @@ class Player:
         else:
           iprot.skip(ftype)
       elif fid == 9:
-        if ftype == TType.I32:
-          self.score = iprot.readI32();
+        if ftype == TType.I64:
+          self.score = iprot.readI64();
         else:
           iprot.skip(ftype)
       else:
@@ -747,8 +747,8 @@ class Player:
       self.mainPlanet.write(oprot)
       oprot.writeFieldEnd()
     if self.score is not None:
-      oprot.writeFieldBegin('score', TType.I32, 9)
-      oprot.writeI32(self.score)
+      oprot.writeFieldBegin('score', TType.I64, 9)
+      oprot.writeI64(self.score)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

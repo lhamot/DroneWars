@@ -265,8 +265,8 @@ void fight(Universe const& univ,
 			Player::ID const player2 = (*iter2)->playerId;
 			if(player1 != player2 && player1 != Player::NoId && player2 != Player::NoId)
 			{
-				size_t const score1 = mapFind(univ.playerMap, player1)->second.score;
-				size_t const score2 = mapFind(univ.playerMap, player2)->second.score;
+				uint64_t const score1 = mapFind(univ.playerMap, player1)->second.score;
+				uint64_t const score2 = mapFind(univ.playerMap, player2)->second.score;
 				if((score1 * 5) > score2 && (score2 * 5) > score1)
 					fightingPair.insert(FleetPair(iter1 - fleetList.begin(),
 					                              iter2 - fleetList.begin()));
@@ -282,8 +282,8 @@ void fight(Universe const& univ,
 			Player::ID const player2 = planet->playerId;
 			if(player1 != player2 && player1 != Player::NoId && player2 != Player::NoId)
 			{
-				size_t const score1 = mapFind(univ.playerMap, player1)->second.score;
-				size_t const score2 = mapFind(univ.playerMap, player2)->second.score;
+				uint64_t const score1 = mapFind(univ.playerMap, player1)->second.score;
+				uint64_t const score2 = mapFind(univ.playerMap, player2)->second.score;
 				//Bloquage si trop d'équart de niveaux
 				if((score1 * 5) > score2 && (score2 * 5) > score1)
 					fightingPair.insert(FleetPair(iter1 - fleetList.begin(), PlanetIndex));

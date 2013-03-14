@@ -22,6 +22,24 @@ bool ndw::Coord::operator < (const ndw::Coord& b) const
 namespace
 {
 
+template<typename I>
+struct NumerciCast
+{
+	I value;
+
+	template<typename O>
+	operator O()
+	{
+		return numeric_cast<O>(value);
+	}
+};
+
+template<typename I>
+NumerciCast<I> numCast(I value)
+{
+	NumerciCast<I> cast = {value};
+	return cast;
+}
 
 ndw::Coord coordToThrift(Coord const& fleet)
 {
@@ -37,7 +55,7 @@ ndw::RessourceSet ressourceToThrift(RessourceSet const& ress)
 	ndw::RessourceSet res;
 	res.tab.reserve(ress.tab.size());
 	for(size_t value: ress.tab)
-		res.tab.push_back(numeric_cast<int32_t>(value));
+		res.tab.push_back(numCast(value));
 	return res;
 }
 
@@ -45,8 +63,8 @@ ndw::FleetTask fleetTaskToThrift(FleetTask const& task)
 {
 	ndw::FleetTask res;
 	res.type = static_cast<ndw::FleetTask_Enum::type>(task.type);
-	res.lauchTime = numeric_cast<int32_t>(task.lauchTime);
-	res.duration = numeric_cast<int32_t>(task.duration);
+	res.lauchTime = numCast(task.lauchTime);
+	res.duration = numCast(task.duration);
 	res.position = coordToThrift(task.position);
 	res.expired = task.expired;
 	return res;
@@ -57,10 +75,10 @@ ndw::PlanetTask planetTaskToThrift(PlanetTask const& task)
 {
 	ndw::PlanetTask res;
 	res.type = static_cast<ndw::PlanetTask_Enum::type>(task.type);
-	res.value = numeric_cast<int32_t>(task.value);
-	res.value2 = numeric_cast<int32_t>(task.value2);
-	res.lauchTime = numeric_cast<int32_t>(task.lauchTime);
-	res.duration = numeric_cast<int32_t>(task.duration);
+	res.value = numCast(task.value);
+	res.value2 = numCast(task.value2);
+	res.lauchTime = numCast(task.lauchTime);
+	res.duration = numCast(task.duration);
 	//res.startCost = task.startCost;
 	res.expired = task.expired;
 	return res;
@@ -69,11 +87,11 @@ ndw::PlanetTask planetTaskToThrift(PlanetTask const& task)
 ndw::Event eventToThrift(Event const& event)
 {
 	ndw::Event res;
-	res.id = numeric_cast<int32_t>(event.id);
-	res.time = numeric_cast<int32_t>(event.time);
+	res.id = numCast(event.id);
+	res.time = numCast(event.time);
 	res.type = static_cast<ndw::Event_Type::type>(event.type);
 	res.comment = event.comment;
-	res.value = numeric_cast<int32_t>(event.value);
+	res.value = numCast(event.value);
 	res.viewed = event.viewed;
 	return res;
 }
@@ -82,8 +100,8 @@ ndw::Event eventToThrift(Event const& event)
 ndw::Fleet fleetToThrift(Fleet const& fleet)
 {
 	ndw::Fleet result;
-	result.id = numeric_cast<int64_t>(fleet.id);
-	result.playerId = numeric_cast<int32_t>(fleet.playerId);
+	result.id = numCast(fleet.id);
+	result.playerId = numCast(fleet.playerId);
 	result.coord = coordToThrift(fleet.coord);
 	//std::cout << result.coord.X << " " << result.coord.Y << " " << result.coord.Z << std::endl;
 	result.origin = coordToThrift(fleet.origin);
@@ -91,7 +109,7 @@ ndw::Fleet fleetToThrift(Fleet const& fleet)
 
 	result.shipList.reserve(fleet.shipList.size());
 	for(size_t value: fleet.shipList)
-		result.shipList.push_back(numeric_cast<int32_t>(value));
+		result.shipList.push_back(numCast(value));
 
 	result.ressourceSet = ressourceToThrift(fleet.ressourceSet);
 
@@ -111,10 +129,10 @@ ndw::Planet planetToThrift(Planet const& planet)
 
 	res.name = planet.name;
 	res.coord = coordToThrift(planet.coord);
-	res.playerId = numeric_cast<int32_t>(planet.playerId);
+	res.playerId = numCast(planet.playerId);
 	res.buildingList.reserve(planet.buildingList.size());
 	for(size_t value: planet.buildingList)
-		res.buildingList.push_back(numeric_cast<int32_t>(value));
+		res.buildingList.push_back(numCast(value));
 	res.taskQueue.reserve(planet.taskQueue.size());
 	range::transform(planet.taskQueue, back_inserter(res.taskQueue), planetTaskToThrift);
 	res.ressourceSet = ressourceToThrift(planet.ressourceSet);
@@ -122,7 +140,7 @@ ndw::Planet planetToThrift(Planet const& planet)
 	range::transform(planet.eventList, back_inserter(res.eventList), eventToThrift);
 	res.cannonTab.reserve(planet.cannonTab.size());
 	for(size_t value: planet.cannonTab)
-		res.cannonTab.push_back(numeric_cast<int32_t>(value));
+		res.cannonTab.push_back(numCast(value));
 
 	return res;
 }
@@ -131,14 +149,14 @@ void codeDataCppToThrift(CodeData const& in, ndw::CodeData& out)
 {
 	out.blocklyCode = in.getBlocklyCode();
 	out.code = in.getCode();
-	out.failCount = numeric_cast<int32_t>(in.getFailCount());
+	out.failCount = numCast(in.getFailCount());
 	out.lastError = in.getLastError();
 }
 
 ndw::Player playerToThrift(Player const& player)
 {
 	ndw::Player outPlayer;
-	outPlayer.id          = numeric_cast<ndw::Player_ID>(player.id);
+	outPlayer.id          = numCast(player.id);
 	outPlayer.login       = player.login;
 	outPlayer.password    = player.password;
 	codeDataCppToThrift(player.fleetsCode, outPlayer.fleetsCode);
@@ -148,8 +166,8 @@ ndw::Player playerToThrift(Player const& player)
 	for(Event const & ev: player.eventList)
 		outPlayer.eventList.push_back(eventToThrift(ev));
 	for(auto tutoNVP: player.tutoDisplayed)
-		outPlayer.tutoDisplayed[tutoNVP.first] = numeric_cast<int32_t>(tutoNVP.second);
-	outPlayer.score = numeric_cast<int32_t>(player.score);
+		outPlayer.tutoDisplayed[tutoNVP.first] = numCast(tutoNVP.second);
+	outPlayer.score = numCast(player.score);
 	return outPlayer;
 }
 
@@ -160,7 +178,7 @@ ndw::FleetReport fleetReportToThrift(Report<Fleet> const& fleetReport)
 	result.isDead = fleetReport.isDead;
 	result.hasFight = fleetReport.hasFight;
 	for(intptr_t id: fleetReport.enemySet)
-		result.enemySet.insert(numeric_cast<int32_t>(id));
+		result.enemySet.insert(numCast(id));
 	result.fightInfo.before = fleetToThrift(fleetReport.fightInfo.before);
 	result.fightInfo.after = fleetToThrift(fleetReport.fightInfo.after);
 	return result;
@@ -173,7 +191,7 @@ ndw::PlanetReport planetReportToThrift(Report<Planet> const& planetReport)
 	result.isDead = planetReport.isDead;
 	result.hasFight = planetReport.hasFight;
 	for(intptr_t id: planetReport.enemySet)
-		result.enemySet.insert(numeric_cast<ndw::Player_ID>(id));
+		result.enemySet.insert(numCast(id));
 	result.fightInfo.before = planetToThrift(planetReport.fightInfo.before);
 	result.fightInfo.after = planetToThrift(planetReport.fightInfo.after);
 	return result;
@@ -307,7 +325,7 @@ void EngineServerHandler::getPlayerFleets(
 	for(Planet const & planet: planetList)
 		_return.planetList.push_back(planetToThrift(planet));
 
-	_return.fleetCount = numeric_cast<int32_t>(fleetList.size());
+	_return.fleetCount = numCast(fleetList.size());
 }
 
 
@@ -339,7 +357,7 @@ void EngineServerHandler::getPlayerPlanets(
 	                                     planetList.begin() + endIndex);
 	for(Planet const & planet: pageRange)
 		_return.planetList.push_back(planetToThrift(planet));
-	_return.planetCount = numeric_cast<int32_t>(planetList.size());
+	_return.planetCount = numCast(planetList.size());
 }
 
 void EngineServerHandler::setPlayerFleetCode(const ndw::Player_ID pid, const std::string& code)

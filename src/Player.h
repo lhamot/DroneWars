@@ -150,10 +150,18 @@ struct Player
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
-	void serialize(Archive& ar, const unsigned int) //version
+	void serialize(Archive& ar, const unsigned int version)
 	{
 		ar& id& login& password& fleetsCode& planetsCode&
-		eventList& tutoDisplayed& mainPlanet& score;
+		eventList& tutoDisplayed& mainPlanet;
+		if(version < 1)
+		{
+			size_t old;
+			ar& old;
+			score = old;
+		}
+		else
+			ar& score;
 	}
 
 public:
@@ -171,7 +179,7 @@ public:
 	static size_t const MaxBlocklySize = MaxCodeSize * 8;
 	std::map<std::string, size_t> tutoDisplayed;
 	Coord mainPlanet;
-	size_t score;
+	uint64_t score;
 
 	size_t heap_size() const
 	{
@@ -202,6 +210,8 @@ public:
 		       iter->second;
 	}
 };
+
+BOOST_CLASS_VERSION(Player, 1);
 
 static char const* const CoddingLevelTag = "BlocklyCodding";
 
