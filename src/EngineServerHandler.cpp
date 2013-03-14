@@ -178,7 +178,7 @@ ndw::FleetReport fleetReportToThrift(Report<Fleet> const& fleetReport)
 	result.isDead = fleetReport.isDead;
 	result.hasFight = fleetReport.hasFight;
 	for(intptr_t id: fleetReport.enemySet)
-		result.enemySet.insert(numCast(id));
+		result.enemySet.insert(numeric_cast<int32_t>(id));
 	result.fightInfo.before = fleetToThrift(fleetReport.fightInfo.before);
 	result.fightInfo.after = fleetToThrift(fleetReport.fightInfo.after);
 	return result;
@@ -191,7 +191,7 @@ ndw::PlanetReport planetReportToThrift(Report<Planet> const& planetReport)
 	result.isDead = planetReport.isDead;
 	result.hasFight = planetReport.hasFight;
 	for(intptr_t id: planetReport.enemySet)
-		result.enemySet.insert(numCast(id));
+		result.enemySet.insert(numeric_cast<int32_t>(id));
 	result.fightInfo.before = planetToThrift(planetReport.fightInfo.before);
 	result.fightInfo.after = planetToThrift(planetReport.fightInfo.after);
 	return result;
