@@ -936,7 +936,9 @@ void Simulation::save(std::string const& saveName) const
 	SharedLock lockPlayers(univ_.playersMutex);
 	SharedLock lockAllOthers(univ_.planetsFleetsReportsmutex);
 	std::shared_ptr<Universe const> clone = make_shared<Universe>(univ_);
-	boost::thread savingThread(savingFunc, clone, saveName);
+
+	if(savingThread_.timed_join(boost::posix_time::seconds(0)))
+		savingThread_ = boost::thread(savingFunc, clone, saveName);
 }
 
 

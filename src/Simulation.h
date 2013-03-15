@@ -50,6 +50,7 @@ private:
 	std::set<Player::ID> playerToReload_;
 	boost::chrono::system_clock::time_point roundStart;
 	Universe& univ_;
+	mutable boost::thread savingThread_;
 };
 
 
