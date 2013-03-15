@@ -19,7 +19,7 @@
 
 /**
  * @fileoverview Generating LUA for control blocks.
- * @author Loïc HAMOT
+ * @author LoÃ¯c HAMOT
  * Due to the frequency of long strings, the 80-column wrap rule need not apply
  * to language files.
  */
@@ -72,7 +72,7 @@ Blockly.lua.controls_for = function()
 {
 	// For loop.
 	var variable0 = Blockly.lua.variableDB_.getName(
-	                  this.getInputVariable('VAR'), Blockly.Variables.NAME_TYPE);
+	                  this.getTitleValue('VAR'), Blockly.Variables.NAME_TYPE);
 	var argument0 = Blockly.lua.valueToCode(this, 'FROM',
 	                                        Blockly.lua.ORDER_NONE) || '0';
 	// If starting index is 0, omit it.
@@ -97,8 +97,8 @@ Blockly.lua.controls_for = function()
 Blockly.lua.controls_forEach = function()
 {
 	// For each loop.
-	var variable0 = Blockly.lua.variableDB_.getName(
-	                  this.getInputVariable('VAR'), Blockly.Variables.NAME_TYPE);
+    var variable0 = Blockly.lua.variableDB_.getName(
+                      this.getTitleValue('VAR'), Blockly.Variables.NAME_TYPE);	                  
 	var argument0 = Blockly.lua.valueToCode(this, 'LIST',
 	                                        Blockly.lua.ORDER_RELATIONAL) || '{}';
 	var branch0 = Blockly.lua.statementToCode(this, 'DO') || '';
