@@ -525,7 +525,9 @@ def ScoreView(request):
     for session in sessions:
         session_data = session.get_decoded()
         if session_data.get("last_request", old_time) > limit_time:
-            id_set.add(session_data["PlayerID"])
+            playerID = session_data.get("PlayerID", None);
+            if playerID != None:
+                id_set.add(session_data["PlayerID"])
     
     for player in players:
         player.logged = player.id in id_set 
