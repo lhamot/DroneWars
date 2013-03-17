@@ -73,10 +73,10 @@ h2, h3
 
 .manual
 {
-	//outline: 5px solid #000000;
-	color: #AACCFF;
 	text-shadow: 0px 0px 0px #AACCFF, 0 0 0.05em #AACCFF;
 	color: #E6EBFB;
+	-webkit-box-shadow: 0px 0px 5px 0px rgba(#AADDFF);
+	box-shadow: 0px 0px 5px 0px  rgba(#AADDFF); 	
 }
 
 
