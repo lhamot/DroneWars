@@ -303,6 +303,8 @@ void EngineServerHandler::getPlayerFleets(
 		BOOST_THROW_EXCEPTION(std::runtime_error("Unconsistent index"));
 	if(endIndex > fleetList.size())
 		endIndex = fleetList.size();
+	if(beginIndex > fleetList.size())
+		beginIndex = fleetList.size();
 
 	sortOnType(fleetList, sortType, asc);
 
@@ -344,6 +346,8 @@ void EngineServerHandler::getPlayerPlanets(
 		BOOST_THROW_EXCEPTION(std::runtime_error("Unconsistent index"));
 	if(endIndex > planetList.size())
 		endIndex = planetList.size();
+	if(beginIndex > planetList.size())
+		beginIndex = planetList.size();
 
 	sortOnType(planetList, sortType, asc);
 
