@@ -60,7 +60,7 @@ void Simulation::reloadPlayer(Player::ID pid)
 }
 
 
-luabind::object registerCode(
+PlayerCodes::ObjectMap registerCode(
   Universe& univ_,
   LuaTools::LuaEngine& luaEngine,
   Player::ID const pid,
@@ -73,8 +73,21 @@ try
 	using namespace std;
 
 	luaL_dostring(luaEngine.state(), "AI = nil");
+	luaL_dostring(luaEngine.state(), "AI_action = nil");
+	luaL_dostring(luaEngine.state(), "AI_do_gather = nil");
+	luaL_dostring(luaEngine.state(), "AI_do_fight = nil");
 
-	std::string const codeString = (isFleet ? "class 'AI' " : "") + code.getCode();
+	std::string codeString = code.getCode();
+	auto replace = [&](char const * const str)
+	{
+		size_t pos = codeString.find(str);
+		if(pos != std::string::npos)
+			codeString[pos + 3] = '_';
+	};
+	replace(" AI:action(");
+	replace(" AI:do_gather(");
+	replace(" AI:do_fight(");
+
 	if(luaL_dostring(luaEngine.state(), codeString.c_str()) != 0)
 	{
 		char const* message = lua_tostring(luaEngine.state(), -1);
@@ -82,12 +95,17 @@ try
 		Event event(univ_.nextEventID++, time(0), isFleet ? Event::FleetCodeError : Event::PlanetCodeError, message ? message : "");
 		mapFind(univ_.playerMap, pid)->second.eventList.push_back(event);
 		signals.push_back(Signal(pid, event));
-		return luabind::object();
+		return PlayerCodes::ObjectMap();
 	}
 	else
 	{
 		luabind::object g = luabind::globals(luaEngine.state());
-		return g["AI"];
+		PlayerCodes::ObjectMap result;
+		result["AI"] = g["AI"];
+		result["action"] = g["AI_action"];
+		result["do_gather"] = g["AI_do_gather"];
+		result["do_fight"] = g["AI_do_fight"];
+		return result;
 	}
 }
 catch(luabind::error& ex)
@@ -97,7 +115,7 @@ catch(luabind::error& ex)
 	Event event(univ_.nextEventID++, time(0), isFleet ? Event::FleetCodeError : Event::PlanetCodeError, message);
 	mapFind(univ_.playerMap, pid)->second.eventList.push_back(event);
 	signals.push_back(Signal(pid, event));
-	return luabind::object();
+	return PlayerCodes::ObjectMap();
 }
 catch(luabind::cast_failed& ex)
 {
@@ -106,7 +124,7 @@ catch(luabind::cast_failed& ex)
 	Event event(univ_.nextEventID++, time(0), isFleet ? Event::FleetCodeError : Event::PlanetCodeError, message);
 	mapFind(univ_.playerMap, pid)->second.eventList.push_back(event);
 	signals.push_back(Signal(pid, event));
-	return luabind::object();
+	return PlayerCodes::ObjectMap();
 }
 //Les logic_error ne doivent pas etre catchées
 /*catch(std::exception const& ex)
@@ -123,15 +141,17 @@ catch(luabind::cast_failed& ex)
 void execPlanet(
   Universe& univ_,
   LuaEngine& luaEngine,
-  luabind::object code,
+  PlayerCodes::ObjectMap const& codeMap,
   Planet& planet,
   std::vector<Fleet const*> const& fleetList,
   std::vector<Signal>& signals)
 try
 {
-	if(false == code.is_valid())
-		return;
-	if(luabind::type(code) != LUA_TFUNCTION)
+	luabind::object code;
+	auto codeIter = codeMap.find("AI");
+	if(codeIter != codeMap.end())
+		code = codeIter->second;
+	if(code.is_valid() == false || luabind::type(code) != LUA_TFUNCTION)
 	{
 		//call_function crash quand on lui passe autre chose qu'une fonction
 		UniqueLock lockPlayer(univ_.playersMutex);
@@ -144,6 +164,7 @@ try
 		signals.push_back(Signal(player.id, event));
 		return;
 	}
+
 	lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 
 	if(planet.buildingList.size() != Building::Count)
@@ -217,45 +238,75 @@ catch(luabind::cast_failed& ex)
 	signals.push_back(Signal(planet.playerId, event));
 }*/
 
+
+bool checkLuaMethode(Universe& univ,
+                     Fleet& fleet,
+                     PlayerCodes::ObjectMap const& codeMap,
+                     std::string const& name,
+                     std::vector<Signal>& signals)
+{
+	auto codeIter = codeMap.find(name);
+	if(codeIter != codeMap.end())
+	{
+		luabind::object methode = codeIter->second;
+		if(luabind::type(methode) == LUA_TFUNCTION)
+			return true;
+	}
+
+	UniqueLock lockPlayer(univ.playersMutex);
+	std::string const message =
+	  str(boost::format(BL::gettext("Procedure \"%1%\" not found.")) % name);
+	Player& player = mapFind(univ.playerMap, fleet.playerId)->second;
+	player.fleetsCode.newError(message);
+	Event event(univ.nextEventID++, time(0), Event::FleetCodeError, message);
+	player.eventList.push_back(event);
+	signals.push_back(Signal(player.id, event));
+	return false;
+}
+
 bool execFleet(Universe& univ_,
                LuaEngine& luaEngine,
-               luabind::object code,
+               PlayerCodes::ObjectMap const& codeMap,
                Fleet& fleet,
                FleetCoordMap& fleetMap,
                std::vector<Signal>& signals)
 try
 {
-	if(false == code.is_valid())
-		return true;
-
 	auto localFleetsKV = fleetMap.equal_range(fleet.coord);
 	auto fleetIter = localFleetsKV.first;
-	while(fleetIter != localFleetsKV.second)
+	if(checkLuaMethode(univ_, fleet, codeMap, "do_gather", signals))
 	{
-		Fleet& otherFleet = fleetIter->second;
-		if((otherFleet.id > fleet.id) && (otherFleet.playerId == fleet.playerId))
+		luabind::object do_gather = mapFind(codeMap, "do_gather")->second;
+		while(fleetIter != localFleetsKV.second)
 		{
-			lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
-			bool const wantGather1 = luabind::call_member<bool>(code, "do_gather", boost::cref(fleet), boost::cref(otherFleet));
-			lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
-			bool const wantGather2 = luabind::call_member<bool>(code, "do_gather", boost::cref(otherFleet), boost::cref(fleet));
-			//TODO: Décoreler script et traitement
-			if(wantGather1 && wantGather2)
+			Fleet& otherFleet = fleetIter->second;
+			if((otherFleet.id > fleet.id) && (otherFleet.playerId == fleet.playerId))
 			{
-				gather(fleet, otherFleet);
-				auto condemned = fleetIter;
-				++fleetIter;
-				fleetMap.erase(condemned);
-				Event event(univ_.nextEventID++, time(0), Event::FleetsGather);
-				fleet.eventList.push_back(event);
-				signals.push_back(Signal(fleet.playerId, event));
+				lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
+				bool const wantGather1 = luabind::call_function<bool>(do_gather, boost::cref(fleet), boost::cref(otherFleet));
+				lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
+				bool const wantGather2 = luabind::call_function<bool>(do_gather, boost::cref(otherFleet), boost::cref(fleet));
+				//TODO: Décoreler script et traitement
+				if(wantGather1 && wantGather2)
+				{
+					gather(fleet, otherFleet);
+					auto condemned = fleetIter;
+					++fleetIter;
+					fleetMap.erase(condemned);
+					Event event(univ_.nextEventID++, time(0), Event::FleetsGather);
+					fleet.eventList.push_back(event);
+					signals.push_back(Signal(fleet.playerId, event));
 
-				continue;
+					continue;
+				}
 			}
+			++fleetIter;
 		}
-		++fleetIter;
 	}
 
+	if(checkLuaMethode(univ_, fleet, codeMap, "action", signals) == false)
+		return false;
+	luabind::object actionFunc = mapFind(codeMap, "action")->second;
 	auto planetIter = univ_.planetMap.find(fleet.coord);
 	Planet* planet = nullptr;
 	if(planetIter != univ_.planetMap.end())
@@ -267,11 +318,11 @@ try
 		planet = nullptr;
 	if(planet)
 	{
-		auto result = luabind::call_member<FleetAction>(code, "action", boost::cref(fleet), boost::cref(*planet));
-		action = result.operator FleetAction();
+		auto result = luabind::call_function<FleetAction>(actionFunc, boost::cref(fleet), boost::cref(*planet));
+		action = result;
 	}
 	else
-		action = luabind::call_member<FleetAction>(code, "action", boost::cref(fleet), (Planet*)nullptr);
+		action = luabind::call_function<FleetAction>(actionFunc, boost::cref(fleet), (Planet*)nullptr);
 	switch(action.action)
 	{
 	case FleetAction::Nothing:
@@ -356,9 +407,9 @@ void disableFailingCode(Universe const& univ_, PlayerCodeMap& codesMap)
 	for(Player const & player: univ_.playerMap | boost::adaptors::map_values)
 	{
 		if(player.planetsCode.getFailCount() >= MaxCodeExecTry)
-			codesMap[player.id].planetsCode = luabind::object();
+			codesMap[player.id].planetsCode = PlayerCodes::ObjectMap();
 		if(player.fleetsCode.getFailCount() >= MaxCodeExecTry)
-			codesMap[player.id].fleetsCode = luabind::object();
+			codesMap[player.id].fleetsCode = PlayerCodes::ObjectMap();
 	}
 }
 
@@ -417,7 +468,7 @@ void execPlanets(Universe& univ_,
 		if(planet.playerId != Player::NoId)
 		{
 			if(univ_.playerMap[planet.playerId].planetsCode.getFailCount() > 10)
-				codesMap[planet.playerId].planetsCode = luabind::object();
+				codesMap[planet.playerId].planetsCode = PlayerCodes::ObjectMap();
 			execPlanet(univ_, luaEngine, codesMap[planet.playerId].planetsCode, planet, fleetList, signals);
 		}
 	}
@@ -592,14 +643,14 @@ void execFleets(
 
 		fleetRound(univ_, iter->second, signals, playersPlanetCount);
 
-		if(univ_.playerMap[iter->second.playerId].fleetsCode.getFailCount() > 10)
-			codesMap[iter->second.playerId].fleetsCode = luabind::object();
-		bool keepFleet = execFleet(univ_,
-		                           luaEngine,
-		                           codesMap[iter->second.playerId].fleetsCode,
-		                           iter->second,
-		                           fleetMap,
-		                           signals);
+		bool keepFleet = true;
+		if(univ_.playerMap[iter->second.playerId].fleetsCode.getFailCount() < 10)
+			keepFleet = execFleet(univ_,
+			                      luaEngine,
+			                      codesMap[iter->second.playerId].fleetsCode,
+			                      iter->second,
+			                      fleetMap,
+			                      signals);
 		if(keepFleet == false)
 		{
 			auto condemned = iter;

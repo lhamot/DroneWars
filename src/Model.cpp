@@ -7,10 +7,12 @@
 #include <boost/format.hpp>
 #include <boost/bind.hpp>
 
-
+#pragma warning(push)
+#pragma warning(disable: 4310)
 #include <boost/archive/binary_iarchive.hpp>
 #include "portable_binary_oarchive.hpp"
 #include "portable_binary_iarchive.hpp"
+#pragma warning(pop)
 #include <boost/iostreams/filtering_streambuf.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
 

@@ -13,8 +13,9 @@ class LuaEngine;
 
 struct PlayerCodes
 {
-	luabind::object fleetsCode;
-	luabind::object planetsCode;
+	typedef std::map<std::string, luabind::object> ObjectMap;
+	ObjectMap fleetsCode;
+	ObjectMap planetsCode;
 };
 typedef std::unordered_map<Player::ID, PlayerCodes> PlayerCodeMap;
 typedef std::unordered_multimap<Coord, Fleet> FleetCoordMap;
