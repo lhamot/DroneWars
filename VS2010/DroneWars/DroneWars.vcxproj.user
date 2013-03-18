@@ -4,23 +4,27 @@
     <LocalDebuggerCommandArguments>--docroot="I:\C\bit_them_all" --http-address=localhost --http-port=81 --config="I:\C\bit_them_all\wt_config.xml"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>I:\C\Bit_them_all</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerEnvironment>PATH=I:\C_libs\log4cplus-1.1.0_VS2012_$(Platform)\src\$(Configuration);%PATH%</LocalDebuggerEnvironment>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerCommandArguments>--docroot="I:\C\bit_them_all" --http-address=localhost --http-port=81 --config="I:\C\bit_them_all\wt_config.xml"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>I:\C\Bit_them_all</LocalDebuggerWorkingDirectory>
-    <LocalDebuggerDebuggerType>NativeOnly</LocalDebuggerDebuggerType>
+    <LocalDebuggerDebuggerType>Auto</LocalDebuggerDebuggerType>
+    <LocalDebuggerEnvironment>PATH=I:\C_libs\log4cplus-1.1.0_VS2012_$(Platform)\src\$(Configuration);%PATH%</LocalDebuggerEnvironment>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerCommandArguments>--docroot="I:\C\bit_them_all" --http-address=localhost --http-port=81 --config="I:\C\bit_them_all\wt_config.xml"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>I:\C\Bit_them_all</LocalDebuggerWorkingDirectory>
-    <LocalDebuggerDebuggerType>NativeOnly</LocalDebuggerDebuggerType>
+    <LocalDebuggerDebuggerType>Auto</LocalDebuggerDebuggerType>
+    <LocalDebuggerEnvironment>PATH=I:\C_libs\log4cplus-1.1.0_VS2012_$(Platform)\src\$(Configuration);%PATH%</LocalDebuggerEnvironment>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerCommandArguments>--docroot="I:\C\bit_them_all" --http-address=localhost --http-port=81 --config="I:\C\bit_them_all\wt_config.xml"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>I:\C\Bit_them_all</LocalDebuggerWorkingDirectory>
-    <LocalDebuggerDebuggerType>NativeOnly</LocalDebuggerDebuggerType>
+    <LocalDebuggerDebuggerType>Auto</LocalDebuggerDebuggerType>
+    <LocalDebuggerEnvironment>PATH=I:\C_libs\log4cplus-1.1.0_VS2012_$(Platform)\src\$(Configuration);%PATH%</LocalDebuggerEnvironment>
   </PropertyGroup>
 </Project>

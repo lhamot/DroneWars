@@ -69,9 +69,6 @@
     <ClCompile Include="..\..\src\portable_binary_oarchive.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Logger.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Engine.h">
@@ -137,6 +134,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\src\thrift.def">
+      <Filter>autre</Filter>
+    </None>
+    <None Include="..\..\DroneWarsLog.properties">
       <Filter>autre</Filter>
     </None>
   </ItemGroup>

@@ -6,8 +6,6 @@
 #include "serialize_unordered_map.h"
 #include "Player.h"
 #include "Tools.h"
-#include "Logger.h"
-
 
 
 namespace std
@@ -221,7 +219,9 @@ struct Planet
 		{
 			if(playerId >= 100000 && playerId != Player::NoId)
 			{
-				LOG_VAR(playerId);
+				using namespace log4cplus;
+				Logger logger = Logger::getInstance(LOG4CPLUS_TEXT("Planet.serialize"));
+				LOG4CPLUS_ERROR(logger, "playerId : " << playerId);
 				BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 			}
 			if(playerId == Player::NoId && taskQueue.empty() == false)

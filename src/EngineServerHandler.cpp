@@ -4,6 +4,10 @@
 
 using namespace boost;
 
+using namespace log4cplus;
+static Logger logger = Logger::getInstance(LOG4CPLUS_TEXT("EngineServerHandler"));
+
+
 bool ndw::Coord::operator < (const ndw::Coord& b) const
 {
 	if(X < b.X)
@@ -16,6 +20,12 @@ bool ndw::Coord::operator < (const ndw::Coord& b) const
 		return false;
 	else
 		return Z < b.Z;
+}
+
+std::ostream& operator << (std::ostream& os, ndw::Coord const& coord)
+{
+	os << "(" << coord.X << "," << coord.Y << "," << coord.Z << ")";
+	return os;
 }
 
 
@@ -233,6 +243,7 @@ void EngineServerHandler::stop()
 
 bool EngineServerHandler::addPlayer(const std::string& login, const std::string& password)
 {
+	LOG4CPLUS_TRACE(logger, "login: " << login);
 	return engine_.addPlayer(login, password);
 }
 
@@ -296,6 +307,11 @@ void EngineServerHandler::getPlayerFleets(
   const ndw::Sort_Type::type sortType,
   const bool asc)
 {
+	LOG4CPLUS_TRACE(logger, "pid : " << pid <<
+	                " beginIndexC : " << beginIndexC <<
+	                " endIndexC : " << endIndexC <<
+	                " sortType : " << sortType <<
+	                " asc : " << asc);
 	size_t beginIndex = beginIndexC;
 	size_t endIndex = endIndexC;
 	auto fleetList = engine_.getPlayerFleets(pid);
@@ -328,6 +344,7 @@ void EngineServerHandler::getPlayerFleets(
 		_return.planetList.push_back(planetToThrift(planet));
 
 	_return.fleetCount = numCast(fleetList.size());
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 
@@ -339,6 +356,11 @@ void EngineServerHandler::getPlayerPlanets(
   const  ndw::Sort_Type::type sortType,
   const bool asc)
 {
+	LOG4CPLUS_TRACE(logger, "pid : " << pid <<
+	                " beginIndexC : " << beginIndexC <<
+	                " endIndexC : " << endIndexC <<
+	                " sortType : " << sortType <<
+	                " asc : " << asc);
 	size_t beginIndex = beginIndexC;
 	size_t endIndex = endIndexC;
 	auto planetList = engine_.getPlayerPlanets(pid);
@@ -362,97 +384,131 @@ void EngineServerHandler::getPlayerPlanets(
 	for(Planet const & planet: pageRange)
 		_return.planetList.push_back(planetToThrift(planet));
 	_return.planetCount = numCast(planetList.size());
+	LOG4CPLUS_TRACE(logger, "enter");
 }
 
 void EngineServerHandler::setPlayerFleetCode(const ndw::Player_ID pid, const std::string& code)
 {
+	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
 	engine_.setPlayerFleetCode(pid, code);
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 void EngineServerHandler::setPlayerPlanetCode(const ndw::Player_ID pid, const std::string& code)
 {
+	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
 	engine_.setPlayerPlanetCode(pid, code);
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 void EngineServerHandler::setPlayerFleetBlocklyCode(const ndw::Player_ID pid, const std::string& code)
 {
+	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
 	engine_.setPlayerFleetBlocklyCode(pid, code);
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 void EngineServerHandler::setPlayerPlanetBlocklyCode(const ndw::Player_ID pid, const std::string& code)
 {
+	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
 	engine_.setPlayerPlanetBlocklyCode(pid, code);
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 void EngineServerHandler::getPlayerFleetCode(ndw::CodeData& _return, const ndw::Player_ID pid)
 {
+	LOG4CPLUS_TRACE(logger, "pid : " << pid);
 	codeDataCppToThrift(engine_.getPlayerFleetCode(pid), _return);
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 void EngineServerHandler::getPlayerPlanetCode(ndw::CodeData& _return, const ndw::Player_ID pid)
 {
+	LOG4CPLUS_TRACE(logger, "pid : " << pid);
 	codeDataCppToThrift(engine_.getPlayerPlanetCode(pid), _return);
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 void EngineServerHandler::getPlayers(std::vector<ndw::Player>& _return)
 {
+	LOG4CPLUS_TRACE(logger, "enter");
 	std::vector<Player> players = engine_.getPlayers();
 	_return.reserve(players.size());
 	transform(players, back_inserter(_return), playerToThrift);
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 void EngineServerHandler::getPlayer(ndw::Player& _return, const ndw::Player_ID pid)
 {
+	LOG4CPLUS_TRACE(logger, "pid : " << pid);
 	_return = playerToThrift(engine_.getPlayer(pid));
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 void EngineServerHandler::getPlanet(std::vector<ndw::Planet>& _return, const ndw::Coord& coord)
 {
+	LOG4CPLUS_TRACE(logger, "coord : " << coord);
 	optional<Planet> planet =
 	  engine_.getPlanet(Coord(coord.X, coord.Y, coord.Z));
 	if(planet.is_initialized())
 		_return.push_back(planetToThrift(*planet));
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 void EngineServerHandler::getFleet(ndw::Fleet& _return, const ndw::Fleet_ID fid)
 {
+	LOG4CPLUS_TRACE(logger, "fid : " << fid);
 	_return = fleetToThrift(engine_.getFleet(fid));
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 void EngineServerHandler::logPlayer(ndw::OptionalPlayer& _return, const std::string& login, const std::string& password)
 {
+	LOG4CPLUS_TRACE(logger, "login : " << login << " password : " << password);
 	optional<Player> optPlayer = engine_.getPlayer(login, password);
 	if(optPlayer)
 		_return.__set_player(playerToThrift(optPlayer.get()));
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 void EngineServerHandler::incrementTutoDisplayed(ndw::Player_ID pid, std::string const& tutoName)
 {
+	LOG4CPLUS_TRACE(logger, "pid : " << pid << " tutoName : " << tutoName);
 	engine_.incrementTutoDisplayed(pid, tutoName);
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 
 void EngineServerHandler::getFightReport(ndw::FightReport& _return, const int32_t id)
 {
+	LOG4CPLUS_TRACE(logger, "id : " << id);
 	FightReport fr = engine_.getFightReport(id);
 	_return = fightReportToThrift(fr);
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 void EngineServerHandler::getTimeInfo(ndw::TimeInfo& _return)
 {
+	LOG4CPLUS_TRACE(logger, "enter");
 	TimeInfo info = engine_.getTimeInfo();
 	_return.roundDuration = info.roundDuration;
 	_return.univTime = info.univTime;
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 bool EngineServerHandler::eraseAccount(const int32_t pid, const std::string& password)
 {
+	LOG4CPLUS_TRACE(logger, "password : " << password);
 	Player player = engine_.getPlayer(pid);
 	if(player.password == password)
 	{
 		engine_.eraseAccount(pid);
+		LOG4CPLUS_TRACE(logger, "true");
 		return true;
 	}
 	else
+	{
+		LOG4CPLUS_TRACE(logger, "false");
 		return false;
+	}
 }

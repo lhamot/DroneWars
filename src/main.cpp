@@ -16,15 +16,20 @@
 #include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TBufferTransports.h>
 #pragma warning(pop)
+
+#include <log4cplus/configurator.h>
+
 #include "Engine.h"
 
 
 using namespace std;
+using namespace log4cplus;
+static Logger logger = Logger::getInstance(LOG4CPLUS_TEXT("main"));
 
 
 int main()//(int argc, char** argv)
 {
-	Logger::SetFile("save/errors.txt");
+	log4cplus::PropertyConfigurator::doConfigure("DroneWarsLog.properties");
 
 	srand(static_cast<unsigned int>(time(NULL)));
 
@@ -61,11 +66,11 @@ int main()//(int argc, char** argv)
 	try
 	{
 		server.serve();
-		LOG_ERROR << "Unexpected server stop";
+		LOG4CPLUS_ERROR(logger, "Unexpected server stop");
 	}
 	catch(std::exception const& ex)
 	{
-		LOG_ERROR << boost::diagnostic_information(ex);
+		LOG4CPLUS_ERROR(logger, boost::diagnostic_information(ex));
 		return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;

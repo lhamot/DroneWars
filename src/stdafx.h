@@ -14,6 +14,8 @@
 #include <utility>
 #include <unordered_map>
 
+#include <log4cplus/logger.h>
+#include <log4cplus/loggingmacros.h>
 
 #pragma warning(push)
 #pragma warning(disable:4244 4310 4100 4512 4127 4706 4702)

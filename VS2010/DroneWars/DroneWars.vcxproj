@@ -55,7 +55,6 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level3</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level3</WarningLevel>
     </ClCompile>
-    <ClCompile Include="..\..\src\Logger.cpp" />
     <ClCompile Include="..\..\src\LuaTools.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
@@ -131,6 +130,7 @@
     <ClInclude Include="..\..\src\Tools.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\DroneWarsLog.properties" />
     <None Include="..\..\src\thrift.def" />
   </ItemGroup>
   <ItemGroup>
@@ -146,27 +146,27 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>false</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>false</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -212,15 +212,15 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>NOMINMAX;WIN32;LIBINTL_STATIC;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;I:\C_libs\thrift\lib\cpp\src;I:\C_libs\thrift\lib\cpp\src\thrift;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4996;4505;4251</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;I:\C_libs\thrift\lib\cpp\src;I:\C_libs\log4cplus-1.1.0\include;I:\C_libs\thrift\lib\cpp\src\thrift;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996;4505;4251;4127</DisableSpecificWarnings>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>I:\C_libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories);I:\C_libs\thrift\lib\cpp\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libthrift.lib;lua.lib;luabind.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>I:\C_libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories);I:\C_libs\thrift\lib\cpp\$(Platform)\$(Configuration);I:\C_libs\log4cplus-1.1.0_VS2012_$(Platform)\src\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>log4cplus.lib;libthrift.lib;lua.lib;luabind.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -230,15 +230,15 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>NOMINMAX;WIN32;LIBINTL_STATIC;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;I:\C_libs\thrift\lib\cpp\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4996;4505;4251</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;I:\C_libs\thrift\lib\cpp\src;I:\C_libs\log4cplus-1.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996;4505;4251;4127</DisableSpecificWarnings>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>I:\C_libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories);I:\C_libs\thrift\lib\cpp\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libthrift.lib;lua.lib;luabind.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>I:\C_libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories);I:\C_libs\thrift\lib\cpp\$(Platform)\$(Configuration);I:\C_libs\log4cplus-1.1.0_VS2012_$(Platform)\src\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>log4cplus.lib;libthrift.lib;lua.lib;luabind.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -250,8 +250,8 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NOMINMAX;WIN32;LIBINTL_STATIC;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;I:\C_libs\thrift\lib\cpp\src;I:\C_libs\thrift\lib\cpp\src\thrift;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4996;4505;4251</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;I:\C_libs\thrift\lib\cpp\src;I:\C_libs\log4cplus-1.1.0\include;I:\C_libs\thrift\lib\cpp\src\thrift;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996;4505;4251;4127</DisableSpecificWarnings>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -259,8 +259,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>I:\C_libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories);I:\C_libs\thrift\lib\cpp\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libthrift.lib;lua.lib;luabind.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>I:\C_libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories);I:\C_libs\thrift\lib\cpp\$(Platform)\$(Configuration);I:\C_libs\log4cplus-1.1.0_VS2012_$(Platform)\src\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>log4cplus.lib;libthrift.lib;lua.lib;luabind.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -271,8 +271,8 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NOMINMAX;WIN32;LIBINTL_STATIC;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;I:\C_libs\thrift\lib\cpp\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4996;4505;4251</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;I:\C_libs\thrift\lib\cpp\src;I:\C_libs\log4cplus-1.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996;4505;4251;4127</DisableSpecificWarnings>
       <AdditionalOptions>-Zm124 %(AdditionalOptions)</AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
@@ -281,8 +281,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>I:\C_libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories);I:\C_libs\thrift\lib\cpp\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libthrift.lib;lua.lib;luabind.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>I:\C_libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories);I:\C_libs\thrift\lib\cpp\$(Platform)\$(Configuration);I:\C_libs\log4cplus-1.1.0_VS2012_$(Platform)\src\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>log4cplus.lib;libthrift.lib;lua.lib;luabind.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/LTCG %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>

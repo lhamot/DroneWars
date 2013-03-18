@@ -32,6 +32,10 @@ using namespace LuaTools;
 using namespace std;
 namespace BL = boost::locale;
 
+using namespace log4cplus;
+static Logger logger = Logger::getInstance(LOG4CPLUS_TEXT("Simulation"));
+
+
 static size_t const LuaMaxInstruction = 20000;
 static size_t const MaxCodeExecTry = 10;
 
@@ -402,6 +406,8 @@ catch(luabind::cast_failed& ex)
 //! Ne modifie que codesMap
 void disableFailingCode(Universe const& univ_, PlayerCodeMap& codesMap)
 {
+	LOG4CPLUS_TRACE(logger, "enter");
+
 	SharedLock lockPlayer(univ_.playersMutex);
 
 	for(Player const & player: univ_.playerMap | boost::adaptors::map_values)
@@ -411,6 +417,7 @@ void disableFailingCode(Universe const& univ_, PlayerCodeMap& codesMap)
 		if(player.fleetsCode.getFailCount() >= MaxCodeExecTry)
 			codesMap[player.id].fleetsCode = PlayerCodes::ObjectMap();
 	}
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 
@@ -420,6 +427,8 @@ void Simulation::updatePlayersCode(LuaTools::LuaEngine& luaEngine,
                                    PlayerCodeMap& codesMap,
                                    std::vector<Signal>& signals)
 {
+	LOG4CPLUS_TRACE(logger, "enter");
+
 	UniqueLock lockReload(reloadPlayerMutex_);
 	for(Player::ID pid: playerToReload_)
 	{
@@ -433,6 +442,7 @@ void Simulation::updatePlayersCode(LuaTools::LuaEngine& luaEngine,
 		codesMap[player.id] = newCodes;
 	}
 	playerToReload_.clear();
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 
@@ -441,6 +451,8 @@ void execPlanets(Universe& univ_,
                  PlayerCodeMap& codesMap,
                  std::vector<Signal>& signals)
 {
+	LOG4CPLUS_TRACE(logger, "enter");
+
 	UpgradeLock lockPlanet(univ_.planetsFleetsReportsmutex);
 	FleetCoordMap fleetMap;
 	for(Fleet const & fleet: univ_.fleetMap | boost::adaptors::map_values)
@@ -467,16 +479,18 @@ void execPlanets(Universe& univ_,
 		planetRound(univ_, planet, signals);
 		if(planet.playerId != Player::NoId)
 		{
-			if(univ_.playerMap[planet.playerId].planetsCode.getFailCount() > 10)
-				codesMap[planet.playerId].planetsCode = PlayerCodes::ObjectMap();
-			execPlanet(univ_, luaEngine, codesMap[planet.playerId].planetsCode, planet, fleetList, signals);
+			if(univ_.playerMap[planet.playerId].planetsCode.getFailCount() < 10)
+				execPlanet(univ_, luaEngine, codesMap[planet.playerId].planetsCode, planet, fleetList, signals);
 		}
 	}
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 //! Les combats
 void execFights(Universe& univ_, std::vector<Signal>& signals)
 {
+	LOG4CPLUS_TRACE(logger, "enter");
+
 	UpgradeLock lockFleets(univ_.planetsFleetsReportsmutex);
 	if(univ_.fleetMap.empty()) //si il y as des flottes
 		return;
@@ -614,6 +628,8 @@ void execFights(Universe& univ_, std::vector<Signal>& signals)
 	//! Suppression de toute les flottes mortes
 	for(Fleet::ID fleetID: deadFleets)
 		univ_.fleetMap.erase(fleetID);
+
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 //! Excecutes les code des flottes
@@ -623,6 +639,8 @@ void execFleets(
   PlayerCodeMap& codesMap,
   std::vector<Signal>& signals)
 {
+	LOG4CPLUS_TRACE(logger, "enter");
+
 	UpgradeLock lockFleets(univ_.planetsFleetsReportsmutex);
 
 	FleetCoordMap fleetMap;
@@ -675,12 +693,15 @@ void execFleets(
 		if(fleet.eventList.size() > 10)
 			fleet.eventList.erase(fleet.eventList.begin(), fleet.eventList.end() - 10);
 	}
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 
 //! Supprime les evenement trop vieux, et les rapport plus réfférencés
 void removeOldEvents(Universe& univ_)
 {
+	LOG4CPLUS_TRACE(logger, "enter");
+
 	set<size_t> usedReport;
 	for(Player & player: univ_.playerMap | boost::adaptors::map_values)
 	{
@@ -727,6 +748,7 @@ void removeOldEvents(Universe& univ_)
 	});
 
 	//TODO: Le faire sur les planètes
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 void Simulation::round(LuaTools::LuaEngine& luaEngine,
@@ -734,6 +756,8 @@ void Simulation::round(LuaTools::LuaEngine& luaEngine,
                        std::vector<Signal>& signals)
 try
 {
+	LOG4CPLUS_TRACE(logger, "enter");
+
 	std::cout << time(0) << " ";
 
 	univ_.roundCount += 1; //1 round
@@ -762,10 +786,13 @@ try
 	}
 
 	//! Met a jour les score des joueurs (modifie les joueurs)
+	LOG4CPLUS_TRACE(logger, "updateScore start");
 	updateScore(univ_);
 
 	//! CheckTutos
+	LOG4CPLUS_TRACE(logger, "checkTutos start");
 	checkTutos(univ_, signals);
+	LOG4CPLUS_TRACE(logger, "checkTutos end");
 
 
 	//std::cout << lexical_cast<std::string>(time(0)) + "_save.bta ";
@@ -805,7 +832,7 @@ try
 
 	std::cout << time(0) << std::endl;
 }
-CATCH_LOG_EXCEPTION
+CATCH_LOG_EXCEPTION(logger)
 
 static const luaL_Reg loadedlibs[] =
 {
@@ -937,12 +964,12 @@ try
 					std::cout << " -> " << lua_gc(luaEngine.state(), LUA_GCCOUNT, 0) << std::endl;
 				}
 			}
-		CATCH_LOG_RETHROW
+		CATCH_LOG_RETHROW(logger)
 		else if(noWait == false)
 			boost::this_thread::sleep(boost::posix_time::milliseconds(100));
 	}
 }
-CATCH_LOG_RETHROW
+CATCH_LOG_RETHROW(logger)
 
 
 double Simulation::getUnivTime()
@@ -955,6 +982,7 @@ double Simulation::getUnivTime()
 	return univ_.roundCount + roundProgress;
 }
 
+Logger saveLogger = Logger::getInstance(LOG4CPLUS_TEXT("Save"));
 
 void Simulation::save(std::string const& saveName) const
 {
@@ -962,6 +990,7 @@ void Simulation::save(std::string const& saveName) const
 	{
 		try
 		{
+			LOG4CPLUS_TRACE(saveLogger, "saveToStream");
 			using namespace std;
 			std::string const newSaveName = saveName + ".new";
 			{
@@ -970,6 +999,7 @@ void Simulation::save(std::string const& saveName) const
 					BOOST_THROW_EXCEPTION(std::ios::failure("Can't save in " + newSaveName));
 				saveToStream(*clone, saveFile);
 			}
+			LOG4CPLUS_TRACE(saveLogger, "remove/rename");
 			std::string const ansSaveName = saveName + ".ans";
 			remove(ansSaveName.c_str());
 			struct stat buf;
@@ -977,19 +1007,24 @@ void Simulation::save(std::string const& saveName) const
 				rename(saveName.c_str(), ansSaveName.c_str());
 			rename(newSaveName.c_str(), saveName.c_str());
 
+			LOG4CPLUS_TRACE(saveLogger, "copy");
 			std::ifstream in(saveName, ios::binary | ios::in);
 			std::ofstream out("save/last_save.bta2", ios::binary | ios::out);
 			boost::iostreams::copy(in, out);
 		}
-		CATCH_LOG_RETHROW
+		CATCH_LOG_RETHROW(saveLogger)
 	};
 
-	SharedLock lockPlayers(univ_.playersMutex);
-	SharedLock lockAllOthers(univ_.planetsFleetsReportsmutex);
-	std::shared_ptr<Universe const> clone = make_shared<Universe>(univ_);
 
 	if(savingThread_.timed_join(boost::posix_time::seconds(0)))
+	{
+		LOG4CPLUS_TRACE(logger, "copy universe to save");
+		SharedLock lockPlayers(univ_.playersMutex);
+		SharedLock lockAllOthers(univ_.planetsFleetsReportsmutex);
+		std::shared_ptr<Universe const> clone = make_shared<Universe>(univ_);
+		LOG4CPLUS_TRACE(logger, "lauch save");
 		savingThread_ = boost::thread(savingFunc, clone, saveName);
+	}
 }
 
 

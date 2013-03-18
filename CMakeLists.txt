@@ -18,10 +18,15 @@ find_path(THRIFT_INCLUDE_DIR thrift
    PATH_SUFFIXES thrift
    DOC "Include directory for thrift"
    )
+find_path(LOG4CPLUS_INCLUDE_DIR log4cplus
+   PATH_SUFFIXES log4cplus
+   DOC "Include directory for log4cplus"
+   )
 include_directories(${BOOST_INCLUDE_DIR})
 include_directories(${LUABIND_INCLUDE_DIR})
 include_directories(${LUA_INCLUDE_DIR})
 include_directories(${THRIFT_INCLUDE_DIR})
+include_directories(${LOG4CPLUS_INCLUDE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/luabind)
 
 find_path(BOOST_LIBRARY NAMES boost
@@ -30,48 +35,42 @@ find_path(BOOST_LIBRARY NAMES boost
 find_path(LUABIND_LIBRARY NAMES luabind
           DOC "The luabind libraries path"
 )
-find_path(LUA_LIBRARY NAMES luabind
+find_path(LUA_LIBRARY NAMES lua
           DOC "The lua libraries path"
 )
-find_path(THRIFT_LIBRARY NAMES THRIFT
+find_path(THRIFT_LIBRARY NAMES thrift
           DOC "The thrift libraries path"
+)
+find_path(LOG4CPLUS_LIBRARY NAMES log4cplus
+          DOC "The log4cplus libraries path"
 )
 
 link_directories(${BOOST_LIBRARY})
 link_directories(${LUABIND_LIBRARY})
 link_directories(${LUA_LIBRARY})
 link_directories(${THRIFT_LIBRARY})
+link_directories(${LOG4CPLUS_LIBRARY})
 
 # Déclaration de l'exécutable
 add_executable(
     DroneWars
-    #src/bit_them_allWT.cpp
-    #src/Editor.cpp
     src/Engine.cpp       
     src/EngineServerHandler.cpp       
     src/fighting.cpp
-    #src/FleetsView.cpp
-    #src/FleetViewWT.cpp
     src/LuaTools.cpp
     src/LuaUniverse.cpp
     src/main.cpp
-    #src/MessageView.cpp
     src/Model.cpp
     src/NameGen.cpp
-    #src/OutPage.cpp
-    #src/PlanetsView.cpp
-    #src/PlanetViewWT.cpp
     src/Simulation.cpp
     src/stdafx.cpp
     src/stl_container_adapter.cpp
-    #src/TranslationTools.cpp
     src/Rules.cpp
     src/gen-cpp/EngineServer.cpp
     src/gen-cpp/thrift_constants.cpp
     src/gen-cpp/thrift_types.cpp
     src/portable_binary_iarchive.cpp
     src/portable_binary_oarchive.cpp
-    src/Logger.cpp
 )
 
 target_link_libraries( DroneWars debug luabindd )
@@ -82,6 +81,9 @@ target_link_libraries( DroneWars optimized lua )
 
 target_link_libraries( DroneWars debug thriftd )
 target_link_libraries( DroneWars optimized thrift )
+
+target_link_libraries( DroneWars debug log4cplusd )
+target_link_libraries( DroneWars optimized log4cplus )
 
 if(CMAKE_COMPILER_IS_GNUCXX)
     target_link_libraries( DroneWars debug boost_threadd )

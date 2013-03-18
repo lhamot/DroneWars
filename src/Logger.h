@@ -3,47 +3,31 @@
 
 #include <iosfwd>
 #include <string>
+#include <log4cplus/logger.h>
+#include <log4cplus/loggingmacros.h>
 
-#define LOG_ERROR Logger().getStream() << __FILE__ << " " << __LINE__ << std::endl
-#define LOG_VAR(varName) LOG_ERROR << #varName << " : " << varName
 
-#define CATCH_LOG_RETHROW \
+#define CATCH_LOG_RETHROW(LOGGER) \
 	catch(std::exception &ex) \
 	{ \
-		LOG_ERROR << boost::diagnostic_information(ex); \
+		LOG4CPLUS_ERROR(LOGGER, boost::diagnostic_information(ex)); \
 		throw; \
 	} \
 	catch(...) \
 	{ \
-		LOG_ERROR << boost::current_exception_diagnostic_information(); \
+		LOG4CPLUS_ERROR(LOGGER, boost::current_exception_diagnostic_information()); \
 		throw; \
 	}
 
-#define CATCH_LOG_EXCEPTION \
+#define CATCH_LOG_EXCEPTION(LOGGER) \
 	catch(std::exception &ex) \
 	{ \
-		LOG_ERROR << boost::diagnostic_information(ex); \
+		LOG4CPLUS_ERROR(LOGGER, boost::diagnostic_information(ex)); \
 	} \
 	catch(...) \
 	{ \
-		LOG_ERROR << boost::current_exception_diagnostic_information(); \
+		LOG4CPLUS_ERROR(LOGGER, boost::current_exception_diagnostic_information()); \
 	}
-
-
-class Logger
-{
-	std::ofstream file_;
-	static std::string fileName_;
-
-public:
-
-	Logger();
-	~Logger();
-
-	static void SetFile(const char* fileName);
-
-	std::ostream& getStream();
-};
 
 
 #endif //__DRONEWARS_LOGGER__
