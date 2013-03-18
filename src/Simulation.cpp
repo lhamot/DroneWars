@@ -309,7 +309,7 @@ try
 	}
 
 	if(checkLuaMethode(univ_, fleet, codeMap, "action", signals) == false)
-		return false;
+		return true;
 	luabind::object actionFunc = mapFind(codeMap, "action")->second;
 	auto planetIter = univ_.planetMap.find(fleet.coord);
 	Planet* planet = nullptr;
