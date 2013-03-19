@@ -13,6 +13,8 @@ class LuaEngine;
 
 struct PlayerCodes
 {
+	//Si une clef n'est pas trouvé dans une ObjectMap, ca veut dire que le code
+	// à été invalidé
 	typedef std::map<std::string, luabind::object> ObjectMap;
 	ObjectMap fleetsCode;
 	ObjectMap planetsCode;
