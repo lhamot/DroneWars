@@ -36,6 +36,38 @@ inline bool operator != (Coord const& a, Coord const& b)
 	return (a == b) == false;
 }
 
+struct Direction
+{
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int)
+	{
+		ar& X& Y& Z;
+	}
+
+	typedef long Value;
+	Value X;
+	Value Y;
+	Value Z;
+
+	Direction(): X(0), Y(0), Z(0) {}
+
+	Direction(Value x, Value y, Value z):
+		X(x),
+		Y(y),
+		Z(z)
+	{
+	}
+};
+
+inline bool operator == (Direction const& a, Direction const& b)
+{
+	return (a.X == b.X) && (a.Y == b.Y) && (a.Z == b.Z);
+}
+
+inline bool operator != (Direction const& a, Direction const& b)
+{
+	return (a == b) == false;
+}
 
 struct Event
 {

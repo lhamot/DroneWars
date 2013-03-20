@@ -15,8 +15,8 @@ init:
 		this.setInputsInline(true);
 		this.appendDummyInput().appendTitle(Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_1);
 		this.appendDummyInput().appendTitle(getFleetActionDropdown(), 'ACTION');
-	  this.appendValueInput('COORD')
-      .setCheck('Coord')
+	  this.appendValueInput('DIREC')
+      .setCheck('Direction')
       .appendTitle(Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_2);
 		this.setOutput(true, 'FleetAction');
 	}
@@ -25,7 +25,7 @@ init:
 Blockly.lua.dronewars_fleetaction = function()
 {
 	var coord = Blockly.lua.valueToCode(
-	              this, 'COORD', Blockly.lua.ORDER_NONE) || 'Coord()';
+	              this, 'DIREC', Blockly.lua.ORDER_NONE) || 'Direction()';
 	return ['FleetAction(FleetAction.' + this.getTitleValue('ACTION') + ',' +
 	        coord + ')',
 	        Blockly.lua.ORDER_FUNCTION_CALL
@@ -67,8 +67,8 @@ init:
         this.setColour(230);
         this.setInputsInline(true);
         this.appendDummyInput().appendTitle(Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_MOVE);
-        this.appendValueInput('COORD')
-            .setCheck('Coord')
+        this.appendValueInput('DIREC')
+            .setCheck('Direction')
         this.setOutput(true, 'FleetAction');
     }
 };
@@ -76,7 +76,7 @@ init:
 Blockly.lua.dronewars_fleetMove = function()
 {
     var coord = Blockly.lua.valueToCode(
-                  this, 'COORD', Blockly.lua.ORDER_NONE) || 'Coord()';
+                  this, 'DIREC', Blockly.lua.ORDER_NONE) || 'Direction()';
     return ['FleetAction(FleetAction.Move,' + coord + ')',
             Blockly.lua.ORDER_FUNCTION_CALL
            ];

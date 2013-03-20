@@ -38,7 +38,7 @@ init:
 	{
 		this.setColour(230);
 		this.appendDummyInput().appendTitle(Blockly.LANG_DRONEWARS_RANDDIR);
-		this.setOutput(true, 'Coord');
+		this.setOutput(true, 'Direction');
 	}
 };
 
@@ -65,7 +65,7 @@ init:
 	  this.appendValueInput('TO')
       .setCheck('Coord')
       .appendTitle(Blockly.LANG_DRONEWARS_DIR_FROM_TO_2);
-		this.setOutput(true, 'Coord');
+		this.setOutput(true, 'Direction');
 	}
 };
 

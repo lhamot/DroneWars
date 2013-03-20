@@ -108,7 +108,7 @@ Blockly.LANG_CONTROLS_FOREACH_INPUT_INLIST = 'dans la liste';
 Blockly.LANG_CONTROLS_FOREACH_INPUT_DO = 'fait';
 Blockly.LANG_CONTROLS_FOREACH_TOOLTIP =
   "Pour chaque élément dans la liste, positionne la variable '%1' sur l'élément,\n" +//'For each item in a list, set the item to\n' +
-  "et excecute certaines instructions.";//'variable "%1", and then do some statements.';
+  "et exécute certaines instructions.";//'variable "%1", and then do some statements.';
 
 Blockly.LANG_CONTROLS_FLOW_STATEMENTS_HELPURL = 'http://en.wikipedia.org/wiki/Control_flow';
 Blockly.LANG_CONTROLS_FLOW_STATEMENTS_INPUT_OFLOOP = 'la boucle';

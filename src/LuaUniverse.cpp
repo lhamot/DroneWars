@@ -17,9 +17,9 @@ size_t getRessource(RessourceSet const& ress, size_t i)
 	return ress.tab.at(i);
 }
 
-Coord directionRandom()
+Direction directionRandom()
 {
-	Coord target;
+	Direction target;
 	target.X += (rand() % 3) - 1;
 	target.Y += (rand() % 3) - 1;
 	target.Z += (rand() % 3) - 1;
@@ -36,9 +36,9 @@ Coord::Value toOne(Coord::Value val)
 		return 0;
 }
 
-Coord directionFromTo(Coord const& ori, Coord const& targ)
+Direction directionFromTo(Coord const& ori, Coord const& targ)
 {
-	Coord target;
+	Direction target;
 	target.X += toOne(targ.X - ori.X);
 	target.Y += toOne(targ.Y - ori.Y);
 	target.Z += toOne(targ.Z - ori.Z);
@@ -112,6 +112,13 @@ extern "C" int initDroneWars(lua_State* L)
 	  .def_readonly("X", &Coord::X)
 	  .def_readonly("Y", &Coord::Y)
 	  .def_readonly("Z", &Coord::Z),
+	  class_<Direction>("Direction")
+	  .def(constructor<>())
+	  .def(constructor<Direction::Value, Direction::Value, Direction::Value>())
+	  .def(const_self == other<Direction>())
+	  .def_readonly("X", &Direction::X)
+	  .def_readonly("Y", &Direction::Y)
+	  .def_readonly("Z", &Direction::Z),
 	  class_<Building>("Building")
 	  .enum_("Type")
 	  [
@@ -164,7 +171,8 @@ extern "C" int initDroneWars(lua_State* L)
 	    value("Cannon",   PlanetAction::Cannon)
 	  ],
 	  class_<FleetAction>("FleetAction")
-	  .def(constructor<FleetAction::Type, Coord>())
+	  .def(constructor<FleetAction::Type, Coord>()) //TODO: A virer quand plus persone ne l'utilisera
+	  .def(constructor<FleetAction::Type, Direction>())
 	  .def(constructor<FleetAction::Type>())
 	  .def_readonly("action", &FleetAction::action)
 	  .def_readonly("target", &FleetAction::target)

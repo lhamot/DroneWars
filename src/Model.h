@@ -398,14 +398,17 @@ struct FleetAction
 	};
 
 	Type action;
-	Coord target;
+	Direction target;
 
 	bool operator==(FleetAction const& other)
 	{
 		return action == other.action && target == other.target;
 	}
 
-	FleetAction(Type a, Coord t = Coord()): action(a), target(t) {}
+	FleetAction(Type a, Direction t = Direction()): action(a), target(t) {}
+
+	//TODO: A virer quand plus persone ne l'utilisera
+	FleetAction(Type a, Coord t): action(a), target(t.X, t.Y, t.Z) {}
 };
 typedef std::vector<FleetAction> FleetActionList;
 
