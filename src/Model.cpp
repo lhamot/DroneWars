@@ -67,9 +67,9 @@ static_assert(sizeof(Cannon::List) == (sizeof(Cannon) * Cannon::Count), "Cannon 
 
 RessourceSet getBuilingPrice(Building::Enum id, size_t level)
 {
-	Building const& buildind = Building::List[id];
-	double const coef = std::pow(buildind.coef, level - 1.);
-	RessourceSet result = buildind.price;
+	Building const& building = Building::List[id];
+	double const coef = std::pow(building.coef, level - 1.);
+	RessourceSet result = building.price;
 	boost::geometry::multiply_value(result.tab, size_t(coef * 1000.));
 	boost::geometry::divide_value(result.tab, 1000);
 	return result;

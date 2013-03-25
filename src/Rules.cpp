@@ -243,11 +243,11 @@ bool fleetCanSeePlanet(Fleet const& fleet, Planet const& planet, Universe const&
 
 void updateScore(Universe& univ)
 {
-	std::map<Player::ID, size_t> playerScore;
+	std::map<Player::ID, uint64_t> playerScore;
 
 	for(Planet const & planet: univ.planetMap | boost::adaptors::map_values)
 	{
-		size_t score = 0;
+		uint64_t score = 0;
 		for(size_t type = 0; type < Building::Count; ++type)
 			score += Building::List[type].price.tab[0] * planet.buildingList[type];
 		for(size_t type = 0; type < Cannon::Count; ++type)
@@ -258,7 +258,7 @@ void updateScore(Universe& univ)
 
 	for(Fleet const & fleet: univ.fleetMap | boost::adaptors::map_values)
 	{
-		size_t score = 0;
+		uint64_t score = 0;
 		for(size_t type = 0; type < Ship::Count; ++type)
 			score += Ship::List[type].price.tab[0] * fleet.shipList[type];
 

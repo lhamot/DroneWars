@@ -158,7 +158,7 @@ struct Building
 	RessourceSet price;
 	double coef;
 
-	static Building const List[];
+	static Building const List[Count];
 };
 
 
@@ -184,7 +184,7 @@ struct Ship
 	size_t power;
 
 
-	static Ship const List[];
+	static Ship const List[Count];
 };
 
 
@@ -206,7 +206,7 @@ struct Cannon
 	size_t life;
 	size_t power;
 
-	static Cannon const List[];
+	static Cannon const List[Count];
 };
 
 
@@ -613,6 +613,8 @@ struct Signal
 
 void construct(Universe& univ);
 
+RessourceSet getBuilingPrice(Building::Enum id, size_t level);
+
 Player::ID createPlayer(Universe& univ, std::string const& login, std::string const& password);
 
 void saveToStream(Universe const& univ, std::ostream& out);
@@ -665,5 +667,7 @@ bool canDrop(Fleet const& fleet, Planet const& planet);
 void drop(Fleet& fleet, Planet& planet);
 
 void eraseAccount(Universe& univ, Player::ID pid);
+
+bool canPay(RessourceSet const& stock, RessourceSet const& price);
 
 #endif //_BTA_MODEL_

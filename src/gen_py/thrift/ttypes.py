@@ -969,6 +969,384 @@ class PlanetTask:
   def __ne__(self, other):
     return not (self == other)
 
+class Building:
+  """
+  Attributes:
+   - index
+   - price
+   - coef
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'index', None, None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.STRUCT, 'price', (RessourceSet, RessourceSet.thrift_spec), None, ), # 20
+    None, # 21
+    None, # 22
+    None, # 23
+    None, # 24
+    None, # 25
+    None, # 26
+    None, # 27
+    None, # 28
+    None, # 29
+    (30, TType.DOUBLE, 'coef', None, None, ), # 30
+  )
+
+  def __init__(self, index=None, price=None, coef=None,):
+    self.index = index
+    self.price = price
+    self.coef = coef
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.I32:
+          self.index = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 20:
+        if ftype == TType.STRUCT:
+          self.price = RessourceSet()
+          self.price.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 30:
+        if ftype == TType.DOUBLE:
+          self.coef = iprot.readDouble();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('Building')
+    if self.index is not None:
+      oprot.writeFieldBegin('index', TType.I32, 10)
+      oprot.writeI32(self.index)
+      oprot.writeFieldEnd()
+    if self.price is not None:
+      oprot.writeFieldBegin('price', TType.STRUCT, 20)
+      self.price.write(oprot)
+      oprot.writeFieldEnd()
+    if self.coef is not None:
+      oprot.writeFieldBegin('coef', TType.DOUBLE, 30)
+      oprot.writeDouble(self.coef)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class Ship:
+  """
+  Attributes:
+   - index
+   - price
+   - life
+   - power
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'index', None, None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.STRUCT, 'price', (RessourceSet, RessourceSet.thrift_spec), None, ), # 20
+    None, # 21
+    None, # 22
+    None, # 23
+    None, # 24
+    None, # 25
+    None, # 26
+    None, # 27
+    None, # 28
+    None, # 29
+    (30, TType.I32, 'life', None, None, ), # 30
+    None, # 31
+    None, # 32
+    None, # 33
+    None, # 34
+    None, # 35
+    None, # 36
+    None, # 37
+    None, # 38
+    None, # 39
+    (40, TType.I32, 'power', None, None, ), # 40
+  )
+
+  def __init__(self, index=None, price=None, life=None, power=None,):
+    self.index = index
+    self.price = price
+    self.life = life
+    self.power = power
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.I32:
+          self.index = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 20:
+        if ftype == TType.STRUCT:
+          self.price = RessourceSet()
+          self.price.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 30:
+        if ftype == TType.I32:
+          self.life = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 40:
+        if ftype == TType.I32:
+          self.power = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('Ship')
+    if self.index is not None:
+      oprot.writeFieldBegin('index', TType.I32, 10)
+      oprot.writeI32(self.index)
+      oprot.writeFieldEnd()
+    if self.price is not None:
+      oprot.writeFieldBegin('price', TType.STRUCT, 20)
+      self.price.write(oprot)
+      oprot.writeFieldEnd()
+    if self.life is not None:
+      oprot.writeFieldBegin('life', TType.I32, 30)
+      oprot.writeI32(self.life)
+      oprot.writeFieldEnd()
+    if self.power is not None:
+      oprot.writeFieldBegin('power', TType.I32, 40)
+      oprot.writeI32(self.power)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class Cannon:
+  """
+  Attributes:
+   - index
+   - price
+   - life
+   - power
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'index', None, None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.STRUCT, 'price', (RessourceSet, RessourceSet.thrift_spec), None, ), # 20
+    None, # 21
+    None, # 22
+    None, # 23
+    None, # 24
+    None, # 25
+    None, # 26
+    None, # 27
+    None, # 28
+    None, # 29
+    (30, TType.I32, 'life', None, None, ), # 30
+    None, # 31
+    None, # 32
+    None, # 33
+    None, # 34
+    None, # 35
+    None, # 36
+    None, # 37
+    None, # 38
+    None, # 39
+    (40, TType.I32, 'power', None, None, ), # 40
+  )
+
+  def __init__(self, index=None, price=None, life=None, power=None,):
+    self.index = index
+    self.price = price
+    self.life = life
+    self.power = power
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.I32:
+          self.index = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 20:
+        if ftype == TType.STRUCT:
+          self.price = RessourceSet()
+          self.price.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 30:
+        if ftype == TType.I32:
+          self.life = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 40:
+        if ftype == TType.I32:
+          self.power = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('Cannon')
+    if self.index is not None:
+      oprot.writeFieldBegin('index', TType.I32, 10)
+      oprot.writeI32(self.index)
+      oprot.writeFieldEnd()
+    if self.price is not None:
+      oprot.writeFieldBegin('price', TType.STRUCT, 20)
+      self.price.write(oprot)
+      oprot.writeFieldEnd()
+    if self.life is not None:
+      oprot.writeFieldBegin('life', TType.I32, 30)
+      oprot.writeI32(self.life)
+      oprot.writeFieldEnd()
+    if self.power is not None:
+      oprot.writeFieldBegin('power', TType.I32, 40)
+      oprot.writeI32(self.power)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
 class FleetTask:
   """
   Attributes:

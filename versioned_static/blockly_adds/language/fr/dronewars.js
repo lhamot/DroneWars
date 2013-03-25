@@ -21,8 +21,12 @@ Blockly.LANG_DRONEWARS_PLANET_PLAYERID = "id du propriétaire de la planète";
 Blockly.LANG_DRONEWARS_PLANET_BUILDINGLIST = 'batiments de la planète';
 Blockly.LANG_DRONEWARS_PLANET_CANNONLIST = 'canons de la planète';
 Blockly.LANG_DRONEWARS_PLANET_RESSOURCESET = 'resources de la planète';
+Blockly.LANG_DRONEWARS_PLANET_CAN_PAY_1 = 'la planète'
+Blockly.LANG_DRONEWARS_PLANET_CAN_PAY_2 = 'peut payer' 
 Blockly.LANG_DRONEWARS_RESSOURCESET = 'resources';
 Blockly.LANG_DRONEWARS_RESSOURCESET_AT = ' présent dans les ressources';
+Blockly.LANG_DRONEWARS_CONTAINS_1 = 'les ressources' 
+Blockly.LANG_DRONEWARS_CONTAINS_2 = 'contiennent'
 Blockly.LANG_DRONEWARS_BUILDING_IN_PLANET = ' présent sur la planète ';
 Blockly.LANG_DRONEWARS_CANNON_IN_PLANET = ' présent sur la planète ';
 Blockly.LANG_DRONEWARS_SHIP_IN_FLEET = ' présent dans la flotte ';
@@ -50,6 +54,7 @@ Blockly.LANG_DRONEWARS_SHIP6 = 'Azathoth';
 Blockly.LANG_DRONEWARS_SHIP7 = 'Queen';
 Blockly.LANG_DRONEWARS_SHIP8 = 'Cargo';
 Blockly.LANG_DRONEWARS_SHIP9 = 'Grand cargo';
+Blockly.LANG_DRONEWARS_SHIP_PRICE = 'prix du vaisseau';
 
 Blockly.LANG_DRONEWARS_CANNON1 = 'Canon1';
 Blockly.LANG_DRONEWARS_CANNON2 = 'Canon2';
@@ -57,6 +62,7 @@ Blockly.LANG_DRONEWARS_CANNON3 = 'Canon3';
 Blockly.LANG_DRONEWARS_CANNON4 = 'Canon4';
 Blockly.LANG_DRONEWARS_CANNON5 = 'Canon5';
 Blockly.LANG_DRONEWARS_CANNON6 = 'Canon6';
+Blockly.LANG_DRONEWARS_CANNON_PRICE = 'prix du canon';
 
 Blockly.LANG_DRONEWARS_FLEETACTION1 = 'ne rien faire';
 Blockly.LANG_DRONEWARS_FLEETACTION2 = 'voyager';
@@ -79,6 +85,8 @@ Blockly.LANG_DRONEWARS_BUILDING6 = 'Laboratoire';
 Blockly.LANG_DRONEWARS_BUILDING7 = 'Centrale carbonique';
 Blockly.LANG_DRONEWARS_BUILDING8 = 'Central solaire';
 Blockly.LANG_DRONEWARS_BUILDING9 = 'Central géothermique';
+Blockly.LANG_DRONEWARS_BUILDING_PRICE = 'prix du batiment';
+Blockly.LANG_DRONEWARS_BUILDING_PRICE2 = 'au niveau';
 
 Blockly.LANG_DRONEWARS_RESSOURCE1 = "Métal";
 Blockly.LANG_DRONEWARS_RESSOURCE2 = "Carbone";

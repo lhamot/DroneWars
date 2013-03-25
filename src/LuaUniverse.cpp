@@ -8,7 +8,10 @@
 #include <luabind/operator.hpp>
 #include <luabind/stl_container_converter.hpp>
 #pragma warning(pop)
+#include <boost/format.hpp>
 
+namespace BL = boost::locale;
+using namespace boost;
 
 void PlanetActionListPushBack(PlanetActionList& list, PlanetAction const& pa) {list.push_back(pa);}
 
@@ -72,6 +75,40 @@ PlanetAction noPlanetAction()
 	return PlanetAction();
 }
 
+RessourceSet shipPrice(Ship::Enum ship)
+{
+	if(ship < 1 || ship > Ship::Count)
+		BOOST_THROW_EXCEPTION(std::runtime_error(str(format(BL::gettext(
+		                        "%1% expect a number in the range [1: %2%]")) %
+		                      "shipPrice" %
+		                      Ship::Count)));
+	return Ship::List[ship - 1].price;
+}
+
+RessourceSet cannonPrice(Cannon::Enum cannon)
+{
+	if(cannon < 1 || cannon > Cannon::Count)
+		BOOST_THROW_EXCEPTION(std::runtime_error(str(format(BL::gettext(
+		                        "%1% expect a number in the range [1: %2%]")) %
+		                      "cannonPrice" %
+		                      Cannon::Count)));
+	return Cannon::List[cannon - 1].price;
+}
+
+RessourceSet buildingPrice(Building::Enum building, size_t level)
+{
+	if(building < 1 || building > Building::Count)
+		BOOST_THROW_EXCEPTION(std::runtime_error(str(format(BL::gettext(
+		                        "%1% expect a building number in the range [1: %2%]")) %
+		                      "buildingPrice" %
+		                      Building::Count)));
+	if(level < 1)
+		BOOST_THROW_EXCEPTION(std::runtime_error(
+		                        "buildingPrice expect a level greater than 1"));
+	return getBuilingPrice(Building::Enum(building - 1), level);
+}
+
+
 extern "C" int initDroneWars(lua_State* L)
 {
 	using namespace luabind;
@@ -80,6 +117,10 @@ extern "C" int initDroneWars(lua_State* L)
 
 	module(L)
 	[
+	  def("shipPrice", shipPrice),
+	  def("cannonPrice", cannonPrice),
+	  def("buildingPrice", buildingPrice),
+
 	  def("directionRandom", directionRandom),
 	  def("directionFromTo", directionFromTo),
 	  def("makeBuilding", makeBuilding),
@@ -104,6 +145,7 @@ extern "C" int initDroneWars(lua_State* L)
 	  .def(constructor<size_t, size_t, size_t>())
 	  .def(constructor<>())
 	  .def(const_self == other<RessourceSet>())
+	  .def("contains", canPay)
 	  .def("at", getRessource),
 	  class_<Coord>("Coord")
 	  .def(constructor<>())

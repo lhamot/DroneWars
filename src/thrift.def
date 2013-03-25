@@ -118,6 +118,12 @@ enum Building_Enum
 	Count
 }
 
+struct Building
+{
+	10: i32 index
+	20: RessourceSet price
+	30: double coef
+}
 
 enum Ship_Enum
 {
@@ -133,6 +139,15 @@ enum Ship_Enum
 	Count
 }
 
+
+struct Ship
+{
+	10: i32 index
+	20: RessourceSet price
+	30: i32 life
+	40: i32 power
+}
+
 enum Cannon_Enum
 {
 	Cannon1 = 0
@@ -144,6 +159,14 @@ enum Cannon_Enum
 	Count
 }
 
+
+struct Cannon
+{
+	10: i32 index
+	20: RessourceSet price
+	30: i32 life
+	40: i32 power
+}
 
 
 enum FleetTask_Enum
@@ -333,4 +356,8 @@ service EngineServer
 	FightReport getFightReport(10: i32 id),
 	TimeInfo getTimeInfo(),
 	bool eraseAccount(10: i32 pid, 20: string password),
+
+	list<Building> getBuildingsInfo();
+	list<Cannon> getCannonsInfo();
+	list<Ship> getShipsInfo();
 }

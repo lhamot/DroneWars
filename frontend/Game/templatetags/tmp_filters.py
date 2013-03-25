@@ -1,4 +1,5 @@
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as N_
 from django import template
 from gen_py.thrift.ttypes import *
 import datetime
@@ -10,6 +11,11 @@ register = template.Library()
 @register.filter
 def shipname(value):
     return  _(Ship_Enum._VALUES_TO_NAMES[value])
+
+
+@register.filter
+def shipbrief(value):
+    return  N_("SHIP_BRIEF_%i" % (value))
 
 
 @register.filter
@@ -35,11 +41,17 @@ def eventvalue(event):
 def buildingname(value):
     return  _(Building_Enum._VALUES_TO_NAMES[value])
 
+@register.filter
+def buildingbrief(value):
+    return  N_("BUILDING_BRIEF_%i" % (value))
 
 @register.filter
 def cannonname(value):
     return  _(Cannon_Enum._VALUES_TO_NAMES[value])
 
+@register.filter
+def cannonbrief(value):
+    return  N_("CANNON_BRIEF_%i" % (value))
 
 @register.filter
 def planettaskname(value):

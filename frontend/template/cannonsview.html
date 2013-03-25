@@ -1,0 +1,36 @@
+{% extends "ingame_base.html" %}
+
+{% load i18n %}
+
+{% load tmp_filters %}
+
+{% block buildingsview_class %}active{% endblock %}
+
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="span10 offset1">
+			<table class="table">
+			<tr>
+				<th width="1">{% trans "View" %}</th>
+				<th width="1" >{% trans "Name" %}</th>
+				<th>{% trans "Brief" %}</th>
+				<th width="1">{% trans "RESOURCE_0" %}</a></th>
+				<th width="1">{% trans "RESOURCE_1" %}</a></th>
+				<th width="1">{% trans "RESOURCE_2" %}</a></th>
+			</tr>
+			{% for cannon in cannons %}
+			<tr>
+				<td><img src="{{ STATIC_URL }}img/cannons/{{cannon.index}}.jpg" width="80"/></td>
+				<td style="white-space: nowrap">{{cannon.index|cannonname}}</td>
+				<td>{{cannon.index|cannonbrief}}</td>
+				<td width="1">{{cannon.price.tab.0}}</td>
+				<td width="1">{{cannon.price.tab.1}}</td>
+				<td width="1">{{cannon.price.tab.2}}</td>
+			</tr>
+			{% endfor %}
+			</table>
+		</div>
+	</div>
+</div>
+{% endblock %}

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-17 12:34+0100\n"
-"PO-Revision-Date: 2013-03-17 12:35+0100\n"
+"POT-Creation-Date: 2013-03-23 16:53+0100\n"
+"PO-Revision-Date: 2013-03-23 16:52+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "MIME-Version: 1.0\n"
@@ -26,249 +26,348 @@ msgid "CommandCenter"
 msgstr "Centre de commande"
 
 #: .\Game\TranslationTools.py:4
+msgid "BUILDING_BRIEF_0"
+msgstr ""
+
+#: .\Game\TranslationTools.py:5
 msgid "MetalMine"
 msgstr "Mine de métal"
 
-#: .\Game\TranslationTools.py:5
+#: .\Game\TranslationTools.py:6
+msgid "BUILDING_BRIEF_1"
+msgstr ""
+
+#: .\Game\TranslationTools.py:7
 msgid "CarbonMine"
 msgstr "Mine de carbone"
 
-#: .\Game\TranslationTools.py:6
+#: .\Game\TranslationTools.py:8
+msgid "BUILDING_BRIEF_2"
+msgstr ""
+
+#: .\Game\TranslationTools.py:9
 msgid "LoiciumFilter"
 msgstr "Filtre a Loïcium"
 
-#: .\Game\TranslationTools.py:7
+#: .\Game\TranslationTools.py:10
+msgid "BUILDING_BRIEF_3"
+msgstr ""
+
+#: .\Game\TranslationTools.py:11
 msgid "Factory"
 msgstr "Fabrique"
 
-#: .\Game\TranslationTools.py:8
+#: .\Game\TranslationTools.py:12
+msgid "BUILDING_BRIEF_4"
+msgstr ""
+
+#: .\Game\TranslationTools.py:13
 msgid "Laboratory"
 msgstr "Laboratoire"
 
-#: .\Game\TranslationTools.py:9
+#: .\Game\TranslationTools.py:14
+msgid "BUILDING_BRIEF_5"
+msgstr ""
+
+#: .\Game\TranslationTools.py:15
 msgid "CarbonicCentral"
 msgstr "Centrale carbonique"
 
-#: .\Game\TranslationTools.py:10
+#: .\Game\TranslationTools.py:16
+msgid "BUILDING_BRIEF_6"
+msgstr ""
+
+#: .\Game\TranslationTools.py:17
 msgid "SolarCentral"
 msgstr "Centrale solaire"
 
-#: .\Game\TranslationTools.py:11
+#: .\Game\TranslationTools.py:18
+msgid "BUILDING_BRIEF_7"
+msgstr ""
+
+#: .\Game\TranslationTools.py:19
 msgid "GeothermicCentral"
 msgstr "Centrale géothermique"
 
-#: .\Game\TranslationTools.py:13
+#: .\Game\TranslationTools.py:20
+msgid "BUILDING_BRIEF_8"
+msgstr ""
+
+#: .\Game\TranslationTools.py:22
 msgid "UpgradeBuilding"
 msgstr "Amélioration du bâtiment"
 
-#: .\Game\TranslationTools.py:14
+#: .\Game\TranslationTools.py:23
 msgid "MakeShip"
 msgstr "Fabrique un vaisseau"
 
-#: .\Game\TranslationTools.py:15
+#: .\Game\TranslationTools.py:24
 msgid "MakeCannon"
 msgstr "Fabrication d'un canon"
 
-#: .\Game\TranslationTools.py:18
+#: .\Game\TranslationTools.py:27
 msgid "Move"
 msgstr "Déplacement"
 
-#: .\Game\TranslationTools.py:19
+#: .\Game\TranslationTools.py:28
 msgid "Harvest"
 msgstr "Récolte"
 
-#: .\Game\TranslationTools.py:20
+#: .\Game\TranslationTools.py:29
 msgid "Colonize"
 msgstr "Colonise"
 
-#: .\Game\TranslationTools.py:23
+#: .\Game\TranslationTools.py:32
 msgid "Mosquito"
 msgstr "Mosquito"
 
-#: .\Game\TranslationTools.py:24
+#: .\Game\TranslationTools.py:33
+msgid "SHIP_BRIEF_0"
+msgstr ""
+
+#: .\Game\TranslationTools.py:34
 msgid "Hornet"
 msgstr "Hornet"
 
-#: .\Game\TranslationTools.py:25
+#: .\Game\TranslationTools.py:35
+msgid "SHIP_BRIEF_1"
+msgstr ""
+
+#: .\Game\TranslationTools.py:36
 msgid "Vulture"
 msgstr "Vulture"
 
-#: .\Game\TranslationTools.py:26
+#: .\Game\TranslationTools.py:37
+msgid "SHIP_BRIEF_2"
+msgstr ""
+
+#: .\Game\TranslationTools.py:38
 msgid "Dragon"
 msgstr "Dragon"
 
-#: .\Game\TranslationTools.py:27
+#: .\Game\TranslationTools.py:39
+msgid "SHIP_BRIEF_3"
+msgstr ""
+
+#: .\Game\TranslationTools.py:40
 msgid "Behemoth"
 msgstr "Béhémoth"
 
-#: .\Game\TranslationTools.py:28
+#: .\Game\TranslationTools.py:41
+msgid "SHIP_BRIEF_4"
+msgstr ""
+
+#: .\Game\TranslationTools.py:42
 msgid "Azathoth"
 msgstr "Azathoth"
 
-#: .\Game\TranslationTools.py:29
+#: .\Game\TranslationTools.py:43
+msgid "SHIP_BRIEF_5"
+msgstr ""
+
+#: .\Game\TranslationTools.py:44
 msgid "Queen"
 msgstr "Queen"
 
-#: .\Game\TranslationTools.py:30
+#: .\Game\TranslationTools.py:45
+msgid "SHIP_BRIEF_6"
+msgstr ""
+
+#: .\Game\TranslationTools.py:46
 msgid "Cargo"
 msgstr "Cargo"
 
-#: .\Game\TranslationTools.py:31
+#: .\Game\TranslationTools.py:47
+msgid "SHIP_BRIEF_7"
+msgstr ""
+
+#: .\Game\TranslationTools.py:48
 msgid "LargeCargo"
 msgstr "Grand cargo"
 
-#: .\Game\TranslationTools.py:33 .\template\fleetsview.html.py:52
+#: .\Game\TranslationTools.py:49
+msgid "SHIP_BRIEF_8"
+msgstr ""
+
+#: .\Game\TranslationTools.py:52 .\template\buildingsview.html.py:24
+#: .\template\cannonsview.html.py:18 .\template\fleetsview.html.py:52
 #: .\template\fleetview.html.py:43 .\template\planetsview.html.py:55
-#: .\template\planetview.html.py:21
+#: .\template\planetview.html.py:21 .\template\shipsview.html.py:18
 msgid "RESOURCE_0"
 msgstr "Métal"
 
-#: .\Game\TranslationTools.py:34 .\template\fleetsview.html.py:53
+#: .\Game\TranslationTools.py:53 .\template\buildingsview.html.py:25
+#: .\template\cannonsview.html.py:19 .\template\fleetsview.html.py:53
 #: .\template\fleetview.html.py:44 .\template\planetsview.html.py:56
-#: .\template\planetview.html.py:22
+#: .\template\planetview.html.py:22 .\template\shipsview.html.py:19
 msgid "RESOURCE_1"
 msgstr "Carbone"
 
-#: .\Game\TranslationTools.py:35 .\template\fleetsview.html.py:54
+#: .\Game\TranslationTools.py:54 .\template\buildingsview.html.py:26
+#: .\template\cannonsview.html.py:20 .\template\fleetsview.html.py:54
 #: .\template\fleetview.html.py:45 .\template\planetsview.html.py:57
-#: .\template\planetview.html.py:23
+#: .\template\planetview.html.py:23 .\template\shipsview.html.py:20
 msgid "RESOURCE_2"
 msgstr "Loïcium"
 
-#: .\Game\TranslationTools.py:37
+#: .\Game\TranslationTools.py:56
 msgid "FleetCodeError"
 msgstr "Erreur du code de flotte"
 
-#: .\Game\TranslationTools.py:38
+#: .\Game\TranslationTools.py:57
 msgid "FleetCodeExecError"
 msgstr "Erreur d'exécution des flottes"
 
-#: .\Game\TranslationTools.py:39
+#: .\Game\TranslationTools.py:58
 msgid "PlanetCodeError"
 msgstr "Erreur de code de planète"
 
-#: .\Game\TranslationTools.py:40
+#: .\Game\TranslationTools.py:59
 msgid "PlanetCodeExecError"
 msgstr "Erreur d'exécution des planètes"
 
-#: .\Game\TranslationTools.py:41
+#: .\Game\TranslationTools.py:60
 msgid "Upgraded"
 msgstr "Amélioré"
 
-#: .\Game\TranslationTools.py:42
+#: .\Game\TranslationTools.py:61
 msgid "ShipMade"
 msgstr "Vaisseau fabriqué"
 
-#: .\Game\TranslationTools.py:43
+#: .\Game\TranslationTools.py:62
 msgid "PlanetHarvested"
 msgstr "Planète récoltée"
 
-#: .\Game\TranslationTools.py:44
+#: .\Game\TranslationTools.py:63
 msgid "FleetWin"
 msgstr "Victoire d'une flotte"
 
-#: .\Game\TranslationTools.py:45
+#: .\Game\TranslationTools.py:64
 msgid "FleetDraw"
 msgstr "Egalité des flottes"
 
-#: .\Game\TranslationTools.py:46
+#: .\Game\TranslationTools.py:65
 msgid "FleetsGather"
 msgstr "Flottes rassemblées"
 
-#: .\Game\TranslationTools.py:47
+#: .\Game\TranslationTools.py:66
 msgid "PlanetColonized"
 msgstr "Planète colonisée"
 
-#: .\Game\TranslationTools.py:48
+#: .\Game\TranslationTools.py:67
 msgid "FleetLose"
 msgstr "Perte d'une flotte"
 
-#: .\Game\TranslationTools.py:49
+#: .\Game\TranslationTools.py:68
 msgid "FleetDrop"
 msgstr "Déchargement effectué"
 
-#: .\Game\TranslationTools.py:50
+#: .\Game\TranslationTools.py:69
 msgid "PlanetLose"
 msgstr "Planète perdue"
 
-#: .\Game\TranslationTools.py:51
+#: .\Game\TranslationTools.py:70
 msgid "PlanetWin"
 msgstr "Victoire d'une planète"
 
-#: .\Game\TranslationTools.py:52
+#: .\Game\TranslationTools.py:71
 msgid "CannonMade"
 msgstr "Canon fabriqué"
 
-#: .\Game\TranslationTools.py:54
+#: .\Game\TranslationTools.py:73
 msgid "Cannon1"
-msgstr "Canon1"
+msgstr "Laser leger"
 
-#: .\Game\TranslationTools.py:55
+#: .\Game\TranslationTools.py:74
+msgid "CANNON_BRIEF_0"
+msgstr ""
+
+#: .\Game\TranslationTools.py:75
 msgid "Cannon2"
-msgstr "Canon2"
+msgstr "Lance missile"
 
-#: .\Game\TranslationTools.py:56
+#: .\Game\TranslationTools.py:76
+msgid "CANNON_BRIEF_1"
+msgstr ""
+
+#: .\Game\TranslationTools.py:77
 msgid "Cannon3"
-msgstr "Canon3"
+msgstr "Laser lourd"
 
-#: .\Game\TranslationTools.py:57
+#: .\Game\TranslationTools.py:78
+msgid "CANNON_BRIEF_2"
+msgstr ""
+
+#: .\Game\TranslationTools.py:79
 msgid "Cannon4"
-msgstr "Canon4"
+msgstr "Nucléaire leger"
 
-#: .\Game\TranslationTools.py:58
+#: .\Game\TranslationTools.py:80
+msgid "CANNON_BRIEF_3"
+msgstr ""
+
+#: .\Game\TranslationTools.py:81
 msgid "Cannon5"
-msgstr "Canon5"
+msgstr "Cannon SST"
 
-#: .\Game\TranslationTools.py:59
+#: .\Game\TranslationTools.py:82
+msgid "CANNON_BRIEF_4"
+msgstr ""
+
+#: .\Game\TranslationTools.py:83
 msgid "Cannon6"
-msgstr "Canon6"
+msgstr "Nucleaire lourd"
 
-#: .\Game\TranslationTools.py:61
+#: .\Game\TranslationTools.py:84
+msgid "CANNON_BRIEF_5"
+msgstr ""
+
+#: .\Game\TranslationTools.py:86
 msgid "BLOCKLY_TUTO_0"
 msgstr ""
 "Ceci est la première étape du tutoriel:<br/>\n"
 "Demandez à votre planète de créer un batiment \"<strong>Mine de métal</"
 "strong>\" à chaque tour (en envoyant le bon ordre)."
 
-#: .\Game\TranslationTools.py:62
+#: .\Game\TranslationTools.py:87
 msgid "BLOCKLY_TUTO_1"
 msgstr ""
 "Ceci est la deuxième étape du tutoriel :<br/>\n"
 "Essayez de créer une fabrique une fois que votre mine de métal a atteint le "
 "niveau 4."
 
-#: .\Game\TranslationTools.py:63
+#: .\Game\TranslationTools.py:88
 msgid "BLOCKLY_TUTO_2"
 msgstr ""
 "Ceci est la troisième étape du tutoriel : <br/>\n"
 "Pour continuer, vous aurez besoin de vaisseaux. Fabriquez des Mosquito."
 
-#: .\Game\TranslationTools.py:64
+#: .\Game\TranslationTools.py:89
 msgid "BLOCKLY_TUTO_3"
 msgstr "Etape 4 : Créez au moins 3 flottes."
 
-#: .\Game\TranslationTools.py:65
+#: .\Game\TranslationTools.py:90
 msgid "BLOCKLY_TUTO_4"
 msgstr ""
 "Etape 5 : Créez au moins 3 flottes composées de 5 mosquitos exactement."
 
-#: .\Game\TranslationTools.py:66
+#: .\Game\TranslationTools.py:91
 msgid "BLOCKLY_TUTO_5"
 msgstr "Etape 6 : Envoyez 6 flottes dans 6 endroits différents."
 
-#: .\Game\TranslationTools.py:67
+#: .\Game\TranslationTools.py:92
 msgid "BLOCKLY_TUTO_6"
 msgstr ""
 "Pour réussir la septième étape du tutoriel, récoltez un maximum de "
 "ressources sur les planètes inhabitées."
 
-#: .\Game\TranslationTools.py:68
+#: .\Game\TranslationTools.py:93
 msgid "BLOCKLY_TUTO_7"
 msgstr ""
 "Votre prochain objectif est de rapporter des ressources récoltées sur votre "
 "planète mère."
 
-#: .\Game\TranslationTools.py:69
+#: .\Game\TranslationTools.py:94
 msgid "BLOCKLY_TUTO_8"
 msgstr "Votre prochain objectif est de coloniser d'autres planètes."
 
@@ -303,11 +402,11 @@ msgid "Close"
 msgstr "Fermé"
 
 #. Translators: Ticket poster
-#: .\Game\models.py:25 .\template\Game\ticket_list.html.py:14
+#: .\Game\models.py:25
 msgid "Origin"
 msgstr "Origine"
 
-#: .\Game\models.py:27 .\template\Game\ticket_list.html.py:15
+#: .\Game\models.py:27
 msgid "Title"
 msgstr "Titre"
 
@@ -319,11 +418,11 @@ msgstr "Localisation"
 msgid "Description"
 msgstr "Description"
 
-#: .\Game\models.py:30 .\template\Game\ticket_list.html.py:16
+#: .\Game\models.py:30
 msgid "Severity"
 msgstr "Criticité"
 
-#: .\Game\models.py:31 .\template\Game\ticket_list.html.py:17
+#: .\Game\models.py:31
 msgid "Status"
 msgstr "Status"
 
@@ -393,13 +492,13 @@ msgstr ""
 "gouverneurs(planètes). Allez dans l'onglet \"Planètes : Blocks\" pour "
 "commencer le tutoriel."
 
-#: .\Game\templatetags\tmp_filters.py:93
+#: .\Game\templatetags\tmp_filters.py:105
 #, python-format
 msgid "(%i;%i;%i)"
 msgstr "(%i; %i; %i)"
 
-#: .\Game\templatetags\tmp_filters.py:105
-#: .\Game\templatetags\tmp_filters.py:116
+#: .\Game\templatetags\tmp_filters.py:117
+#: .\Game\templatetags\tmp_filters.py:128
 #, python-format
 msgid "%s:%s;"
 msgstr "%s : %s;"
@@ -416,8 +515,29 @@ msgstr "Votre mot de passe"
 msgid "Erase my account!"
 msgstr "Supprimez mon compte!"
 
+#: .\template\buildingsview.html.py:23 .\template\planetview.html.py:52
+msgid "Level"
+msgstr "Niveau"
+
+#: .\template\buildingsview.html.py:46 .\template\cannonsview.html.py:15
+#: .\template\planetsview.html.py:50 .\template\shipsview.html.py:15
+msgid "View"
+msgstr "Visuel"
+
+#: .\template\buildingsview.html.py:47 .\template\cannonsview.html.py:16
+#: .\template\fleetview.html.py:34 .\template\planetsview.html.py:51
+#: .\template\planetview.html.py:52 .\template\planetview.html.py:59
+#: .\template\scoreview.html.py:17 .\template\shipsview.html.py:16
+msgid "Name"
+msgstr "Nom"
+
+#: .\template\buildingsview.html.py:48 .\template\cannonsview.html.py:17
+#: .\template\shipsview.html.py:17
+msgid "Brief"
+msgstr "Résumé"
+
 #: .\template\codesview.html.py:16 .\template\codesview.html.py:21
-#: .\template\ingame_base.html.py:17
+#: .\template\ingame_base.html.py:18
 msgid "Planets"
 msgstr "Planètes"
 
@@ -430,11 +550,12 @@ msgid "Script"
 msgstr "Textuel"
 
 #: .\template\codesview.html.py:28 .\template\codesview.html.py:33
-#: .\template\ingame_base.html.py:18
+#: .\template\ingame_base.html.py:19
 msgid "Fleets"
 msgstr "Flottes"
 
 #: .\template\codesview.html.py:79 .\template\codesview.html.py:82
+#: .\template\ingame_base.html.py:24
 msgid "Informations"
 msgstr "Informations"
 
@@ -670,21 +791,15 @@ msgstr "Temps restant"
 msgid "Where"
 msgstr "Où"
 
-#: .\template\fleetview.html.py:33
+#: .\template\fleetview.html.py:33 .\template\ingame_base.html.py:28
 msgid "Ships"
 msgstr "Vaisseaux"
-
-#: .\template\fleetview.html.py:34 .\template\planetsview.html.py:51
-#: .\template\planetview.html.py:52 .\template\planetview.html.py:59
-#: .\template\scoreview.html.py:17
-msgid "Name"
-msgstr "Nom"
 
 #: .\template\fleetview.html.py:34 .\template\planetview.html.py:59
 msgid "Count"
 msgstr "Quantité"
 
-#: .\template\fleetview.html.py:56 .\template\ingame_base.html.py:19
+#: .\template\fleetview.html.py:56 .\template\ingame_base.html.py:20
 #: .\template\planetview.html.py:67
 msgid "Reports"
 msgstr "Rapports"
@@ -746,45 +861,37 @@ msgstr ""
 "déplacer ou conquérir une planète libre).<br/></li>\n"
 "</ol>"
 
-#: .\template\ingame_base.html.py:16
+#: .\template\ingame_base.html.py:17
 msgid "Command"
 msgstr "Commandement"
 
-#: .\template\ingame_base.html.py:20 .\template\scoreview.html.py:18
+#: .\template\ingame_base.html.py:21 .\template\scoreview.html.py:18
 msgid "Score"
 msgstr "Score"
 
-#: .\template\ingame_base.html.py:21
+#: .\template\ingame_base.html.py:22
 msgid "Account"
 msgstr "Compte"
 
-#: .\template\ingame_base.html.py:23
+#: .\template\ingame_base.html.py:26 .\template\planetview.html.py:51
+msgid "Buildings"
+msgstr "Bâtiments"
+
+#: .\template\ingame_base.html.py:27 .\template\planetview.html.py:58
+msgid "Cannons"
+msgstr "Canons"
+
+#: .\template\ingame_base.html.py:32
 msgid "Log out"
 msgstr "Déconnexion"
 
-#: .\template\ingame_base.html.py:25
+#: .\template\ingame_base.html.py:34
 msgid "Next round :"
 msgstr "Tour suivant :"
-
-#: .\template\planetsview.html.py:50
-msgid "View"
-msgstr "Visuel"
 
 #: .\template\planetview.html.py:35
 msgid "What"
 msgstr "Quoi"
-
-#: .\template\planetview.html.py:51
-msgid "Buildings"
-msgstr "Bâtiments"
-
-#: .\template\planetview.html.py:52
-msgid "Level"
-msgstr "Niveau"
-
-#: .\template\planetview.html.py:58
-msgid "Cannons"
-msgstr "Canons"
 
 #: .\template\planetview.html.py:71
 msgid "Object"
@@ -843,10 +950,6 @@ msgstr "Etat"
 #: .\template\scoreview.html.py:28
 msgid "Logged"
 msgstr "Connecté"
-
-#: .\template\Game\ticket_list.html.py:29
-msgid "Add"
-msgstr "Ajouter"
 
 #: .\template\codesview\blockly.html.py:59
 msgid "Import"
@@ -963,6 +1066,9 @@ msgstr "Texte"
 #: .\template\codesview\blockly_planet.html.py:174
 msgid "Lists"
 msgstr "Listes"
+
+#~ msgid "Add"
+#~ msgstr "Ajouter"
 
 #~ msgid "Tickets"
 #~ msgstr "Tickets"

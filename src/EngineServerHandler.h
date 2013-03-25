@@ -64,4 +64,10 @@ public:
 	void getTimeInfo(ndw::TimeInfo& _return);
 
 	bool eraseAccount(const int32_t pid, const std::string& password);
+
+	void getBuildingsInfo(std::vector<ndw::Building>& _return);
+
+	void getCannonsInfo(std::vector<ndw::Cannon>& _return);
+
+	void getShipsInfo(std::vector<ndw::Ship>& _return);
 };

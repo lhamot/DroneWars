@@ -25,10 +25,10 @@
 		<script type="text/javascript" src="http://sprintf.googlecode.com/files/sprintf-0.7-beta1.js"></script>
 		
 		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
-		<link rel="shortcut icon" href="/static/favicon.ico" />
+		<link rel="shortcut icon" href="{{ STATIC_URL }}favicon.ico" />
 		{% block header_adds %}{% endblock %}
 		<link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet" media="screen">
-		<link rel="stylesheet" type="text/css" href="/static/format.css">
+		<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}format.css">
 	</head>
 
 	<body>
@@ -47,15 +47,15 @@
 	
 	            var images = [
 	                // some color wallpapers
-	                ["/static/img/N1-1600.jpg", null],
-	                ["/static/img/N2-1600.jpg", null],
-	                ["/static/img/N3-1600.jpg", null],
-	                ["/static/img/N4-1600.jpg", null],
-	                ["/static/img/N5-1600.jpg", null],
-	                ["/static/img/N6-1600.jpg", null],
-	                ["/static/img/N7-1600.jpg", null],
-	                ["/static/img/N8-1600.jpg", null],
-	                ["/static/img/N9-1600.jpg", null]
+	                ["{{ STATIC_URL }}img/N1-1600.jpg", null],
+	                ["{{ STATIC_URL }}img/N2-1600.jpg", null],
+	                ["{{ STATIC_URL }}img/N3-1600.jpg", null],
+	                ["{{ STATIC_URL }}img/N4-1600.jpg", null],
+	                ["{{ STATIC_URL }}img/N5-1600.jpg", null],
+	                ["{{ STATIC_URL }}img/N6-1600.jpg", null],
+	                ["{{ STATIC_URL }}img/N7-1600.jpg", null],
+	                ["{{ STATIC_URL }}img/N8-1600.jpg", null],
+	                ["{{ STATIC_URL }}img/N9-1600.jpg", null]
 	            ];
 	
 	

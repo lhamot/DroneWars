@@ -72,3 +72,26 @@ Blockly.lua.dronewars_ressource_in_fleet = function () {
   ];
 };
 
+
+//ShipPrice
+Blockly.Language.dronewars_ship_price =
+{
+category:
+    Blockly.LANG_CATEGORY_DRONEWARS_FLEET,
+init:
+    function()
+    {
+      this.setColour(230);
+      this.appendDummyInput()
+      .appendTitle(Blockly.LANG_DRONEWARS_SHIP_PRICE)
+      .appendTitle(getShipDropDown(), 'SHIP');
+      this.setOutput(true, 'RessourceSet');
+    }
+};
+
+Blockly.lua.dronewars_ship_price = function()
+{
+    return ['shipPrice(Ship.' + this.getTitleValue('SHIP') + ')',
+            Blockly.lua.ORDER_FUNCTION_CALL
+           ];
+};

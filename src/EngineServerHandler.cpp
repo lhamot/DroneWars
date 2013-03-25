@@ -512,3 +512,48 @@ bool EngineServerHandler::eraseAccount(const int32_t pid, const std::string& pas
 		return false;
 	}
 }
+
+
+void EngineServerHandler::getBuildingsInfo(std::vector<ndw::Building>& _return)
+{
+	_return.reserve(Building::Count);
+	int32_t index = 0;
+	for(Building const & b: Building::List)
+	{
+		ndw::Building newBu;
+		newBu.index = index++;
+		newBu.price = ressourceToThrift(b.price);
+		newBu.coef = b.coef;
+		_return.push_back(newBu);
+	}
+}
+
+void EngineServerHandler::getCannonsInfo(std::vector<ndw::Cannon>& _return)
+{
+	_return.reserve(Cannon::Count);
+	int32_t index = 0;
+	for(Cannon const & c: Cannon::List)
+	{
+		ndw::Cannon newCa;
+		newCa.index = index++;
+		newCa.price = ressourceToThrift(c.price);
+		newCa.life = numCast(c.life);
+		newCa.power = numCast(c.power);
+		_return.push_back(newCa);
+	}
+}
+
+void EngineServerHandler::getShipsInfo(std::vector<ndw::Ship>& _return)
+{
+	_return.reserve(Ship::Count);
+	int32_t index = 0;
+	for(Ship const & s: Ship::List)
+	{
+		ndw::Ship newSh;
+		newSh.index = index++;
+		newSh.price = ressourceToThrift(s.price);
+		newSh.life = numCast(s.life);
+		newSh.power = numCast(s.power);
+		_return.push_back(newSh);
+	}
+}

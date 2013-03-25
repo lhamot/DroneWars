@@ -58,3 +58,32 @@ Blockly.lua.dronewars_ressourceSet_at = function()
 };
 
 
+//RessourceSet contain
+Blockly.Language.dronewars_ressourceSet_contains =
+{
+category:
+    Blockly.LANG_CATEGORY_DRONEWARS_RESSOURCESET,
+init:
+    function()
+    {
+      this.setColour(230);
+      this.setInputsInline(true);
+      this.appendValueInput('OUT')
+      .setCheck('RessourceSet')
+      .appendTitle(Blockly.LANG_DRONEWARS_CONTAINS_1);
+      this.appendValueInput('IN')
+      .setCheck('RessourceSet')
+      .appendTitle(Blockly.LANG_DRONEWARS_CONTAINS_2);
+        this.setOutput(true, Boolean);
+    }
+};
+
+Blockly.lua.dronewars_ressourceSet_contains = function()
+{
+    var out = Blockly.lua.valueToCode(this, 'OUT', Blockly.lua.ORDER_NONE) || 'RessourceSet()';
+    var inner = Blockly.lua.valueToCode(this, 'IN', Blockly.lua.ORDER_NONE) || 'RessourceSet()';
+
+    return [out + ':contains(' + inner + ')',
+            Blockly.lua.ORDER_FUNCTION_CALL
+           ];
+};

@@ -1083,6 +1083,341 @@ void swap(PlanetTask& a, PlanetTask& b)
 	swap(a.__isset, b.__isset);
 }
 
+const char* Building::ascii_fingerprint = "FD09D2C02D33B253CB5884E10282D019";
+const uint8_t Building::binary_fingerprint[16] = {0xFD, 0x09, 0xD2, 0xC0, 0x2D, 0x33, 0xB2, 0x53, 0xCB, 0x58, 0x84, 0xE1, 0x02, 0x82, 0xD0, 0x19};
+
+uint32_t Building::read(::apache::thrift::protocol::TProtocol* iprot)
+{
+
+	uint32_t xfer = 0;
+	std::string fname;
+	::apache::thrift::protocol::TType ftype;
+	int16_t fid;
+
+	xfer += iprot->readStructBegin(fname);
+
+	using ::apache::thrift::protocol::TProtocolException;
+
+
+	while(true)
+	{
+		xfer += iprot->readFieldBegin(fname, ftype, fid);
+		if(ftype == ::apache::thrift::protocol::T_STOP)
+		{
+			break;
+		}
+		switch(fid)
+		{
+		case 10:
+			if(ftype == ::apache::thrift::protocol::T_I32)
+			{
+				xfer += iprot->readI32(this->index);
+				this->__isset.index = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		case 20:
+			if(ftype == ::apache::thrift::protocol::T_STRUCT)
+			{
+				xfer += this->price.read(iprot);
+				this->__isset.price = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		case 30:
+			if(ftype == ::apache::thrift::protocol::T_DOUBLE)
+			{
+				xfer += iprot->readDouble(this->coef);
+				this->__isset.coef = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		default:
+			xfer += iprot->skip(ftype);
+			break;
+		}
+		xfer += iprot->readFieldEnd();
+	}
+
+	xfer += iprot->readStructEnd();
+
+	return xfer;
+}
+
+uint32_t Building::write(::apache::thrift::protocol::TProtocol* oprot) const
+{
+	uint32_t xfer = 0;
+	xfer += oprot->writeStructBegin("Building");
+
+	xfer += oprot->writeFieldBegin("index", ::apache::thrift::protocol::T_I32, 10);
+	xfer += oprot->writeI32(this->index);
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldBegin("price", ::apache::thrift::protocol::T_STRUCT, 20);
+	xfer += this->price.write(oprot);
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldBegin("coef", ::apache::thrift::protocol::T_DOUBLE, 30);
+	xfer += oprot->writeDouble(this->coef);
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldStop();
+	xfer += oprot->writeStructEnd();
+	return xfer;
+}
+
+void swap(Building& a, Building& b)
+{
+	using ::std::swap;
+	swap(a.index, b.index);
+	swap(a.price, b.price);
+	swap(a.coef, b.coef);
+	swap(a.__isset, b.__isset);
+}
+
+const char* Ship::ascii_fingerprint = "947CF187B243FAE37B6AB77F54D6D8FA";
+const uint8_t Ship::binary_fingerprint[16] = {0x94, 0x7C, 0xF1, 0x87, 0xB2, 0x43, 0xFA, 0xE3, 0x7B, 0x6A, 0xB7, 0x7F, 0x54, 0xD6, 0xD8, 0xFA};
+
+uint32_t Ship::read(::apache::thrift::protocol::TProtocol* iprot)
+{
+
+	uint32_t xfer = 0;
+	std::string fname;
+	::apache::thrift::protocol::TType ftype;
+	int16_t fid;
+
+	xfer += iprot->readStructBegin(fname);
+
+	using ::apache::thrift::protocol::TProtocolException;
+
+
+	while(true)
+	{
+		xfer += iprot->readFieldBegin(fname, ftype, fid);
+		if(ftype == ::apache::thrift::protocol::T_STOP)
+		{
+			break;
+		}
+		switch(fid)
+		{
+		case 10:
+			if(ftype == ::apache::thrift::protocol::T_I32)
+			{
+				xfer += iprot->readI32(this->index);
+				this->__isset.index = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		case 20:
+			if(ftype == ::apache::thrift::protocol::T_STRUCT)
+			{
+				xfer += this->price.read(iprot);
+				this->__isset.price = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		case 30:
+			if(ftype == ::apache::thrift::protocol::T_I32)
+			{
+				xfer += iprot->readI32(this->life);
+				this->__isset.life = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		case 40:
+			if(ftype == ::apache::thrift::protocol::T_I32)
+			{
+				xfer += iprot->readI32(this->power);
+				this->__isset.power = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		default:
+			xfer += iprot->skip(ftype);
+			break;
+		}
+		xfer += iprot->readFieldEnd();
+	}
+
+	xfer += iprot->readStructEnd();
+
+	return xfer;
+}
+
+uint32_t Ship::write(::apache::thrift::protocol::TProtocol* oprot) const
+{
+	uint32_t xfer = 0;
+	xfer += oprot->writeStructBegin("Ship");
+
+	xfer += oprot->writeFieldBegin("index", ::apache::thrift::protocol::T_I32, 10);
+	xfer += oprot->writeI32(this->index);
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldBegin("price", ::apache::thrift::protocol::T_STRUCT, 20);
+	xfer += this->price.write(oprot);
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldBegin("life", ::apache::thrift::protocol::T_I32, 30);
+	xfer += oprot->writeI32(this->life);
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldBegin("power", ::apache::thrift::protocol::T_I32, 40);
+	xfer += oprot->writeI32(this->power);
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldStop();
+	xfer += oprot->writeStructEnd();
+	return xfer;
+}
+
+void swap(Ship& a, Ship& b)
+{
+	using ::std::swap;
+	swap(a.index, b.index);
+	swap(a.price, b.price);
+	swap(a.life, b.life);
+	swap(a.power, b.power);
+	swap(a.__isset, b.__isset);
+}
+
+const char* Cannon::ascii_fingerprint = "947CF187B243FAE37B6AB77F54D6D8FA";
+const uint8_t Cannon::binary_fingerprint[16] = {0x94, 0x7C, 0xF1, 0x87, 0xB2, 0x43, 0xFA, 0xE3, 0x7B, 0x6A, 0xB7, 0x7F, 0x54, 0xD6, 0xD8, 0xFA};
+
+uint32_t Cannon::read(::apache::thrift::protocol::TProtocol* iprot)
+{
+
+	uint32_t xfer = 0;
+	std::string fname;
+	::apache::thrift::protocol::TType ftype;
+	int16_t fid;
+
+	xfer += iprot->readStructBegin(fname);
+
+	using ::apache::thrift::protocol::TProtocolException;
+
+
+	while(true)
+	{
+		xfer += iprot->readFieldBegin(fname, ftype, fid);
+		if(ftype == ::apache::thrift::protocol::T_STOP)
+		{
+			break;
+		}
+		switch(fid)
+		{
+		case 10:
+			if(ftype == ::apache::thrift::protocol::T_I32)
+			{
+				xfer += iprot->readI32(this->index);
+				this->__isset.index = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		case 20:
+			if(ftype == ::apache::thrift::protocol::T_STRUCT)
+			{
+				xfer += this->price.read(iprot);
+				this->__isset.price = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		case 30:
+			if(ftype == ::apache::thrift::protocol::T_I32)
+			{
+				xfer += iprot->readI32(this->life);
+				this->__isset.life = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		case 40:
+			if(ftype == ::apache::thrift::protocol::T_I32)
+			{
+				xfer += iprot->readI32(this->power);
+				this->__isset.power = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		default:
+			xfer += iprot->skip(ftype);
+			break;
+		}
+		xfer += iprot->readFieldEnd();
+	}
+
+	xfer += iprot->readStructEnd();
+
+	return xfer;
+}
+
+uint32_t Cannon::write(::apache::thrift::protocol::TProtocol* oprot) const
+{
+	uint32_t xfer = 0;
+	xfer += oprot->writeStructBegin("Cannon");
+
+	xfer += oprot->writeFieldBegin("index", ::apache::thrift::protocol::T_I32, 10);
+	xfer += oprot->writeI32(this->index);
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldBegin("price", ::apache::thrift::protocol::T_STRUCT, 20);
+	xfer += this->price.write(oprot);
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldBegin("life", ::apache::thrift::protocol::T_I32, 30);
+	xfer += oprot->writeI32(this->life);
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldBegin("power", ::apache::thrift::protocol::T_I32, 40);
+	xfer += oprot->writeI32(this->power);
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldStop();
+	xfer += oprot->writeStructEnd();
+	return xfer;
+}
+
+void swap(Cannon& a, Cannon& b)
+{
+	using ::std::swap;
+	swap(a.index, b.index);
+	swap(a.price, b.price);
+	swap(a.life, b.life);
+	swap(a.power, b.power);
+	swap(a.__isset, b.__isset);
+}
+
 const char* FleetTask::ascii_fingerprint = "0A2DD41FFDA24B0F547E4AACEDE12092";
 const uint8_t FleetTask::binary_fingerprint[16] = {0x0A, 0x2D, 0xD4, 0x1F, 0xFD, 0xA2, 0x4B, 0x0F, 0x54, 0x7E, 0x4A, 0xAC, 0xED, 0xE1, 0x20, 0x92};
 

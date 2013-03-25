@@ -37,6 +37,9 @@ public:
 	virtual void getFightReport(FightReport& _return, const int32_t id) = 0;
 	virtual void getTimeInfo(TimeInfo& _return) = 0;
 	virtual bool eraseAccount(const int32_t pid, const std::string& password) = 0;
+	virtual void getBuildingsInfo(std::vector<Building>& _return) = 0;
+	virtual void getCannonsInfo(std::vector<Cannon>& _return) = 0;
+	virtual void getShipsInfo(std::vector<Ship>& _return) = 0;
 };
 
 class EngineServerIfFactory
@@ -151,6 +154,18 @@ public:
 	{
 		bool _return = false;
 		return _return;
+	}
+	void getBuildingsInfo(std::vector<Building>& /* _return */)
+	{
+		return;
+	}
+	void getCannonsInfo(std::vector<Cannon>& /* _return */)
+	{
+		return;
+	}
+	void getShipsInfo(std::vector<Ship>& /* _return */)
+	{
+		return;
 	}
 };
 
@@ -2509,6 +2524,321 @@ public:
 
 };
 
+
+class EngineServer_getBuildingsInfo_args
+{
+public:
+
+	EngineServer_getBuildingsInfo_args()
+	{
+	}
+
+	virtual ~EngineServer_getBuildingsInfo_args() throw() {}
+
+
+	bool operator == (const EngineServer_getBuildingsInfo_args& /* rhs */) const
+	{
+		return true;
+	}
+	bool operator != (const EngineServer_getBuildingsInfo_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_getBuildingsInfo_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_getBuildingsInfo_pargs
+{
+public:
+
+
+	virtual ~EngineServer_getBuildingsInfo_pargs() throw() {}
+
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_getBuildingsInfo_result__isset
+{
+	_EngineServer_getBuildingsInfo_result__isset() : success(false) {}
+	bool success;
+} _EngineServer_getBuildingsInfo_result__isset;
+
+class EngineServer_getBuildingsInfo_result
+{
+public:
+
+	EngineServer_getBuildingsInfo_result()
+	{
+	}
+
+	virtual ~EngineServer_getBuildingsInfo_result() throw() {}
+
+	std::vector<Building>  success;
+
+	_EngineServer_getBuildingsInfo_result__isset __isset;
+
+	void __set_success(const std::vector<Building>& val)
+	{
+		success = val;
+	}
+
+	bool operator == (const EngineServer_getBuildingsInfo_result& rhs) const
+	{
+		if(!(success == rhs.success))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_getBuildingsInfo_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_getBuildingsInfo_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_getBuildingsInfo_presult__isset
+{
+	_EngineServer_getBuildingsInfo_presult__isset() : success(false) {}
+	bool success;
+} _EngineServer_getBuildingsInfo_presult__isset;
+
+class EngineServer_getBuildingsInfo_presult
+{
+public:
+
+
+	virtual ~EngineServer_getBuildingsInfo_presult() throw() {}
+
+	std::vector<Building>* success;
+
+	_EngineServer_getBuildingsInfo_presult__isset __isset;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+
+class EngineServer_getCannonsInfo_args
+{
+public:
+
+	EngineServer_getCannonsInfo_args()
+	{
+	}
+
+	virtual ~EngineServer_getCannonsInfo_args() throw() {}
+
+
+	bool operator == (const EngineServer_getCannonsInfo_args& /* rhs */) const
+	{
+		return true;
+	}
+	bool operator != (const EngineServer_getCannonsInfo_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_getCannonsInfo_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_getCannonsInfo_pargs
+{
+public:
+
+
+	virtual ~EngineServer_getCannonsInfo_pargs() throw() {}
+
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_getCannonsInfo_result__isset
+{
+	_EngineServer_getCannonsInfo_result__isset() : success(false) {}
+	bool success;
+} _EngineServer_getCannonsInfo_result__isset;
+
+class EngineServer_getCannonsInfo_result
+{
+public:
+
+	EngineServer_getCannonsInfo_result()
+	{
+	}
+
+	virtual ~EngineServer_getCannonsInfo_result() throw() {}
+
+	std::vector<Cannon>  success;
+
+	_EngineServer_getCannonsInfo_result__isset __isset;
+
+	void __set_success(const std::vector<Cannon>& val)
+	{
+		success = val;
+	}
+
+	bool operator == (const EngineServer_getCannonsInfo_result& rhs) const
+	{
+		if(!(success == rhs.success))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_getCannonsInfo_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_getCannonsInfo_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_getCannonsInfo_presult__isset
+{
+	_EngineServer_getCannonsInfo_presult__isset() : success(false) {}
+	bool success;
+} _EngineServer_getCannonsInfo_presult__isset;
+
+class EngineServer_getCannonsInfo_presult
+{
+public:
+
+
+	virtual ~EngineServer_getCannonsInfo_presult() throw() {}
+
+	std::vector<Cannon>* success;
+
+	_EngineServer_getCannonsInfo_presult__isset __isset;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+
+class EngineServer_getShipsInfo_args
+{
+public:
+
+	EngineServer_getShipsInfo_args()
+	{
+	}
+
+	virtual ~EngineServer_getShipsInfo_args() throw() {}
+
+
+	bool operator == (const EngineServer_getShipsInfo_args& /* rhs */) const
+	{
+		return true;
+	}
+	bool operator != (const EngineServer_getShipsInfo_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_getShipsInfo_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_getShipsInfo_pargs
+{
+public:
+
+
+	virtual ~EngineServer_getShipsInfo_pargs() throw() {}
+
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_getShipsInfo_result__isset
+{
+	_EngineServer_getShipsInfo_result__isset() : success(false) {}
+	bool success;
+} _EngineServer_getShipsInfo_result__isset;
+
+class EngineServer_getShipsInfo_result
+{
+public:
+
+	EngineServer_getShipsInfo_result()
+	{
+	}
+
+	virtual ~EngineServer_getShipsInfo_result() throw() {}
+
+	std::vector<Ship>  success;
+
+	_EngineServer_getShipsInfo_result__isset __isset;
+
+	void __set_success(const std::vector<Ship>& val)
+	{
+		success = val;
+	}
+
+	bool operator == (const EngineServer_getShipsInfo_result& rhs) const
+	{
+		if(!(success == rhs.success))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_getShipsInfo_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_getShipsInfo_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_getShipsInfo_presult__isset
+{
+	_EngineServer_getShipsInfo_presult__isset() : success(false) {}
+	bool success;
+} _EngineServer_getShipsInfo_presult__isset;
+
+class EngineServer_getShipsInfo_presult
+{
+public:
+
+
+	virtual ~EngineServer_getShipsInfo_presult() throw() {}
+
+	std::vector<Ship>* success;
+
+	_EngineServer_getShipsInfo_presult__isset __isset;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
 class EngineServerClient : virtual public EngineServerIf
 {
 public:
@@ -2594,6 +2924,15 @@ public:
 	bool eraseAccount(const int32_t pid, const std::string& password);
 	void send_eraseAccount(const int32_t pid, const std::string& password);
 	bool recv_eraseAccount();
+	void getBuildingsInfo(std::vector<Building>& _return);
+	void send_getBuildingsInfo();
+	void recv_getBuildingsInfo(std::vector<Building>& _return);
+	void getCannonsInfo(std::vector<Cannon>& _return);
+	void send_getCannonsInfo();
+	void recv_getCannonsInfo(std::vector<Cannon>& _return);
+	void getShipsInfo(std::vector<Ship>& _return);
+	void send_getShipsInfo();
+	void recv_getShipsInfo(std::vector<Ship>& _return);
 protected:
 	boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
 	boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -2630,6 +2969,9 @@ private:
 	void process_getFightReport(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_getTimeInfo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_eraseAccount(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_getBuildingsInfo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_getCannonsInfo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_getShipsInfo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 public:
 	EngineServerProcessor(boost::shared_ptr<EngineServerIf> iface) :
 		iface_(iface)
@@ -2654,6 +2996,9 @@ public:
 		processMap_["getFightReport"] = &EngineServerProcessor::process_getFightReport;
 		processMap_["getTimeInfo"] = &EngineServerProcessor::process_getTimeInfo;
 		processMap_["eraseAccount"] = &EngineServerProcessor::process_eraseAccount;
+		processMap_["getBuildingsInfo"] = &EngineServerProcessor::process_getBuildingsInfo;
+		processMap_["getCannonsInfo"] = &EngineServerProcessor::process_getCannonsInfo;
+		processMap_["getShipsInfo"] = &EngineServerProcessor::process_getShipsInfo;
 	}
 
 	virtual ~EngineServerProcessor() {}
@@ -2915,6 +3260,42 @@ public:
 			ifaces_[i]->eraseAccount(pid, password);
 		}
 		return ifaces_[i]->eraseAccount(pid, password);
+	}
+
+	void getBuildingsInfo(std::vector<Building>& _return)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->getBuildingsInfo(_return);
+		}
+		ifaces_[i]->getBuildingsInfo(_return);
+		return;
+	}
+
+	void getCannonsInfo(std::vector<Cannon>& _return)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->getCannonsInfo(_return);
+		}
+		ifaces_[i]->getCannonsInfo(_return);
+		return;
+	}
+
+	void getShipsInfo(std::vector<Ship>& _return)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->getShipsInfo(_return);
+		}
+		ifaces_[i]->getShipsInfo(_return);
+		return;
 	}
 
 };

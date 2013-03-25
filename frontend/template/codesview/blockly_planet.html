@@ -95,6 +95,9 @@
 		<block type="dronewars_Planet_playerId"></block>
 		<block type="dronewars_Planet_buildingList"></block>
 		<block type="dronewars_Planet_cannonTab"></block>
+		<block type="dronewars_building_price"></block>
+		<block type="dronewars_cannon_price"></block>
+		<block type="dronewars_planet_can_play"></block>
 		{% if level < 9  %}<block type="dronewars_Planet_ressourceSet"></block>{% endif %}
 	</category>
 	<category name="{% trans "DroneWars: Fleet" %}">
@@ -107,10 +110,12 @@
 		{% if level < 9  %}<block type="dronewars_Fleet_ressourceSet"></block>{% endif %}
 		<block type="dronewars_ship_in_fleet"></block>
 		<block type="dronewars_ressource_in_fleet"></block>
+		<block type="dronewars_ship_price"></block>
 	</category>
 	<category name="{% trans "DroneWars: Resources" %}">
 		<block type="dronewars_ressourceSet"></block>
 		<block type="dronewars_ressourceSet_at"></block>
+		<block type="dronewars_ressourceSet_contains"></block>
 	</category>
 	<category name="{% trans "DroneWars: Coordinates" %}">
 		<block type="dronewars_coord"></block>

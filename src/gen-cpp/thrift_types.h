@@ -691,6 +691,222 @@ public:
 
 void swap(PlanetTask& a, PlanetTask& b);
 
+typedef struct _Building__isset
+{
+	_Building__isset() : index(false), price(false), coef(false) {}
+	bool index;
+	bool price;
+	bool coef;
+} _Building__isset;
+
+class Building
+{
+public:
+
+	static const char* ascii_fingerprint; // = "FD09D2C02D33B253CB5884E10282D019";
+	static const uint8_t binary_fingerprint[16]; // = {0xFD,0x09,0xD2,0xC0,0x2D,0x33,0xB2,0x53,0xCB,0x58,0x84,0xE1,0x02,0x82,0xD0,0x19};
+
+	Building() : index(0), coef(0)
+	{
+	}
+
+	virtual ~Building() throw() {}
+
+	int32_t index;
+	RessourceSet price;
+	double coef;
+
+	_Building__isset __isset;
+
+	void __set_index(const int32_t val)
+	{
+		index = val;
+	}
+
+	void __set_price(const RessourceSet& val)
+	{
+		price = val;
+	}
+
+	void __set_coef(const double val)
+	{
+		coef = val;
+	}
+
+	bool operator == (const Building& rhs) const
+	{
+		if(!(index == rhs.index))
+			return false;
+		if(!(price == rhs.price))
+			return false;
+		if(!(coef == rhs.coef))
+			return false;
+		return true;
+	}
+	bool operator != (const Building& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const Building&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+void swap(Building& a, Building& b);
+
+typedef struct _Ship__isset
+{
+	_Ship__isset() : index(false), price(false), life(false), power(false) {}
+	bool index;
+	bool price;
+	bool life;
+	bool power;
+} _Ship__isset;
+
+class Ship
+{
+public:
+
+	static const char* ascii_fingerprint; // = "947CF187B243FAE37B6AB77F54D6D8FA";
+	static const uint8_t binary_fingerprint[16]; // = {0x94,0x7C,0xF1,0x87,0xB2,0x43,0xFA,0xE3,0x7B,0x6A,0xB7,0x7F,0x54,0xD6,0xD8,0xFA};
+
+	Ship() : index(0), life(0), power(0)
+	{
+	}
+
+	virtual ~Ship() throw() {}
+
+	int32_t index;
+	RessourceSet price;
+	int32_t life;
+	int32_t power;
+
+	_Ship__isset __isset;
+
+	void __set_index(const int32_t val)
+	{
+		index = val;
+	}
+
+	void __set_price(const RessourceSet& val)
+	{
+		price = val;
+	}
+
+	void __set_life(const int32_t val)
+	{
+		life = val;
+	}
+
+	void __set_power(const int32_t val)
+	{
+		power = val;
+	}
+
+	bool operator == (const Ship& rhs) const
+	{
+		if(!(index == rhs.index))
+			return false;
+		if(!(price == rhs.price))
+			return false;
+		if(!(life == rhs.life))
+			return false;
+		if(!(power == rhs.power))
+			return false;
+		return true;
+	}
+	bool operator != (const Ship& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const Ship&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+void swap(Ship& a, Ship& b);
+
+typedef struct _Cannon__isset
+{
+	_Cannon__isset() : index(false), price(false), life(false), power(false) {}
+	bool index;
+	bool price;
+	bool life;
+	bool power;
+} _Cannon__isset;
+
+class Cannon
+{
+public:
+
+	static const char* ascii_fingerprint; // = "947CF187B243FAE37B6AB77F54D6D8FA";
+	static const uint8_t binary_fingerprint[16]; // = {0x94,0x7C,0xF1,0x87,0xB2,0x43,0xFA,0xE3,0x7B,0x6A,0xB7,0x7F,0x54,0xD6,0xD8,0xFA};
+
+	Cannon() : index(0), life(0), power(0)
+	{
+	}
+
+	virtual ~Cannon() throw() {}
+
+	int32_t index;
+	RessourceSet price;
+	int32_t life;
+	int32_t power;
+
+	_Cannon__isset __isset;
+
+	void __set_index(const int32_t val)
+	{
+		index = val;
+	}
+
+	void __set_price(const RessourceSet& val)
+	{
+		price = val;
+	}
+
+	void __set_life(const int32_t val)
+	{
+		life = val;
+	}
+
+	void __set_power(const int32_t val)
+	{
+		power = val;
+	}
+
+	bool operator == (const Cannon& rhs) const
+	{
+		if(!(index == rhs.index))
+			return false;
+		if(!(price == rhs.price))
+			return false;
+		if(!(life == rhs.life))
+			return false;
+		if(!(power == rhs.power))
+			return false;
+		return true;
+	}
+	bool operator != (const Cannon& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const Cannon&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+void swap(Cannon& a, Cannon& b);
+
 typedef struct _FleetTask__isset
 {
 	_FleetTask__isset() : type(false), lauchTime(false), duration(false), position(false), expired(false) {}

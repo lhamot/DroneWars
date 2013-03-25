@@ -43,6 +43,9 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  FightReport getFightReport(i32 id)'
   print '  TimeInfo getTimeInfo()'
   print '  bool eraseAccount(i32 pid, string password)'
+  print '   getBuildingsInfo()'
+  print '   getCannonsInfo()'
+  print '   getShipsInfo()'
   print ''
   sys.exit(0)
 
@@ -213,6 +216,24 @@ elif cmd == 'eraseAccount':
     print 'eraseAccount requires 2 args'
     sys.exit(1)
   pp.pprint(client.eraseAccount(eval(args[0]),args[1],))
+
+elif cmd == 'getBuildingsInfo':
+  if len(args) != 0:
+    print 'getBuildingsInfo requires 0 args'
+    sys.exit(1)
+  pp.pprint(client.getBuildingsInfo())
+
+elif cmd == 'getCannonsInfo':
+  if len(args) != 0:
+    print 'getCannonsInfo requires 0 args'
+    sys.exit(1)
+  pp.pprint(client.getCannonsInfo())
+
+elif cmd == 'getShipsInfo':
+  if len(args) != 0:
+    print 'getShipsInfo requires 0 args'
+    sys.exit(1)
+  pp.pprint(client.getShipsInfo())
 
 else:
   print 'Unrecognized method %s' % cmd
