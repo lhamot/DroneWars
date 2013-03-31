@@ -230,7 +230,14 @@ struct Planet
 				BOOST_THROW_EXCEPTION(std::logic_error("buildingList.size() != Building::Count"));
 		});
 
-		ar& name& coord& playerId& buildingList& taskQueue& ressourceSet& eventList& cannonTab;
+		ar& name;
+		ar& coord;
+		ar& playerId;
+		ar& buildingList;
+		ar& taskQueue;
+		ar& ressourceSet;
+		//ar& eventList;
+		ar& cannonTab;
 		if(playerId >= 100000 && playerId != Player::NoId)
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 		if(playerId == Player::NoId && taskQueue.empty() == false)
@@ -248,7 +255,7 @@ struct Planet
 	std::vector<PlanetTask> taskQueue;
 	RessourceSet ressourceSet;
 	typedef boost::array<size_t, Cannon::Count> CannonTab;
-	std::vector<Event> eventList;
+	//std::vector<Event> eventList;
 	CannonTab cannonTab;
 	Coord parentCoord;
 
@@ -257,10 +264,10 @@ struct Planet
 		size_t res =
 		  name.capacity() +
 		  buildingList.capacity() * sizeof(size_t) +
-		  taskQueue.capacity() * sizeof(PlanetTask) +
-		  eventList.capacity() * sizeof(Event);
-		for(Event const & ev: eventList)
-			res += ev.heap_size();
+		  taskQueue.capacity() * sizeof(PlanetTask);
+		//eventList.capacity() * sizeof(Event);
+		//for(Event const & ev: eventList)
+		//	res += ev.heap_size();
 		return res;
 	}
 
@@ -337,12 +344,20 @@ struct Fleet
 		}
 		else
 			ar& id;
-		ar& playerId& coord& origin& name& shipList& ressourceSet& taskQueue& eventList;
+		ar& playerId;
+		ar& coord;
+		ar& origin;
+		ar& name;
+		ar& shipList;
+		ar& ressourceSet;
+		ar& taskQueue;
+		//ar& eventList;
 		if(playerId >= 100000)
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 	}
 
 	typedef uint64_t ID;
+	static const ID NoId = 0;
 	ID id;
 	Player::ID playerId;
 	Coord coord;
@@ -352,7 +367,7 @@ struct Fleet
 	ShipTab shipList;
 	RessourceSet ressourceSet;
 	std::vector<FleetTask> taskQueue;
-	std::vector<Event> eventList;
+	//std::vector<Event> eventList;
 
 
 	size_t heap_size() const
@@ -360,10 +375,10 @@ struct Fleet
 		size_t res =
 		  name.capacity() +
 		  shipList.capacity() * sizeof(size_t) +
-		  taskQueue.capacity() * sizeof(FleetTask) +
-		  eventList.capacity() * sizeof(Event);
-		for(Event const & ev: eventList)
-			res += ev.heap_size();
+		  taskQueue.capacity() * sizeof(FleetTask);
+		//eventList.capacity() * sizeof(Event);
+		//for(Event const & ev: eventList)
+		//	res += ev.heap_size();
 		return res;
 	}
 
@@ -448,7 +463,6 @@ struct Report
 
 	static FightInfo makeFightInfo(T fighter)
 	{
-		fighter.eventList.clear();
 		return FightInfo(fighter, fighter);
 	}
 
@@ -492,6 +506,94 @@ struct FightReport
 };
 
 
+struct Event
+{
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int)
+	{
+		ar& id& time& type& comment& value;
+	}
+
+	enum Type
+	{
+	  FleetCodeError,
+	  FleetCodeExecError,
+	  PlanetCodeError,
+	  PlanetCodeExecError,
+	  Upgraded,
+	  ShipMade,
+	  PlanetHarvested,
+	  FleetWin,
+	  FleetDraw,
+	  FleetsGather,
+	  PlanetColonized,
+	  FleetLose,
+	  FleetDrop,
+	  PlanetLose,
+	  PlanetWin,
+	  CannonMade,
+	  Count
+	};
+
+	typedef size_t ID;
+	ID id;
+	time_t time;
+	Type type;
+	std::string comment;
+	intptr_t value;
+	bool viewed;
+	Player::ID playerID;
+	Fleet::ID fleetID;
+	Coord planetCoord;
+
+
+	size_t heap_size() const
+	{
+		return comment.capacity();
+	}
+
+	Event() {}
+
+	Event(Player::ID pid, time_t ti, Type ty):
+		id(0), time(ti), type(ty), value(-1), viewed(false),
+		playerID(pid), fleetID(Fleet::NoId)
+	{
+	}
+
+	Event& setValue(intptr_t val)       {value = val; return *this;}
+	Event& setComment(std::string const& comm)    {comment = comm; return *this;}
+	Event& setFleetID(Fleet::ID fid)    {fleetID = fid; return *this;}
+	Event& setPlanetCoord(Coord pcoord) {planetCoord = pcoord; return *this;}
+
+	/*Event(Player::ID pid, time_t ti, Type ty, intptr_t val = -1):
+		id(0), time(ti), type(ty), value(val), viewed(false),
+		playerID(pid), fleetID(Fleet::NoId)
+	{
+	}
+	Event(Player::ID pid, time_t ti, Type ty, std::string const& comm):
+		id(0), time(ti), type(ty), comment(comm), value(-1), viewed(false),
+		playerID(pid), fleetID(Fleet::NoId)
+	{
+	}*/
+};
+
+struct Signal
+{
+	Player::ID playerID;
+	//Coord planetCoord;
+	Event event;
+
+	Signal(Player::ID player,
+	       //Coord planet,
+	       Event const& event_):
+		playerID(player),
+		//planetCoord(planet),
+		event(event_)
+	{
+	}
+};
+
+
 struct Universe
 {
 	template<class Archive>
@@ -501,9 +603,9 @@ struct Universe
 		ar& planetMap;
 		ar& fleetMap;
 		ar& reportMap;
-		ar& nextPlayerID;
+		//ar& nextPlayerID;
 		ar& nextFleetID;
-		ar& nextEventID;
+		//ar& nextEventID;
 		ar& nextFightID;
 		ar& roundCount;
 		ar& roundDuration;
@@ -523,9 +625,9 @@ struct Universe
 	FleetMap fleetMap;
 	typedef std::map<size_t, FightReport> ReportMap;
 	ReportMap reportMap;
-	Player::ID nextPlayerID;
+	//Player::ID nextPlayerID;
 	Fleet::ID nextFleetID;
-	Event::ID nextEventID;
+	//Event::ID nextEventID;
 	size_t nextFightID;
 	size_t roundCount;
 	double roundDuration;
@@ -548,10 +650,10 @@ struct Universe
 	mutable Mutex playersMutex;
 
 	Universe():
-		nextPlayerID(0),
-		nextFleetID(0),
-		nextEventID(0),
-		nextFightID(0),
+		//nextPlayerID(1),
+		nextFleetID(1),
+		//nextEventID(1),
+		nextFightID(1),
 		roundCount(0),
 		roundDuration(0.)
 	{
@@ -562,9 +664,9 @@ struct Universe
 		planetMap(other.planetMap),
 		fleetMap(other.fleetMap),
 		reportMap(other.reportMap),
-		nextPlayerID(other.nextPlayerID),
+		//nextPlayerID(other.nextPlayerID),
 		nextFleetID(other.nextFleetID),
-		nextEventID(other.nextEventID),
+		//nextEventID(other.nextEventID),
 		nextFightID(other.nextFightID),
 		roundCount(other.roundCount),
 		roundDuration(other.roundDuration)
@@ -583,39 +685,25 @@ struct Universe
 		planetMap.swap(other.planetMap);
 		fleetMap.swap(other.fleetMap);
 		reportMap.swap(other.reportMap);
-		std::swap(nextPlayerID, other.nextPlayerID);
+		//std::swap(nextPlayerID, other.nextPlayerID);
 		std::swap(nextFleetID, other.nextFleetID);
-		std::swap(nextEventID, other.nextEventID);
+		//std::swap(nextEventID, other.nextEventID);
 		std::swap(nextFightID, other.nextFightID);
 		std::swap(roundCount, other.roundCount);
 		std::swap(roundDuration, other.roundDuration);
 	}
 };
 
+class DataBase;
 
-struct Signal
-{
-	Player::ID playerID;
-	//Coord planetCoord;
-	Event event;
-
-	Signal(Player::ID player,
-	       //Coord planet,
-	       Event const& event_):
-		playerID(player),
-		//planetCoord(planet),
-		event(event_)
-	{
-	}
-};
-
-
-
-void construct(Universe& univ);
+void construct(Universe& univ, DataBase& database);
 
 RessourceSet getBuilingPrice(Building::Enum id, size_t level);
 
-Player::ID createPlayer(Universe& univ, std::string const& login, std::string const& password);
+Player::ID createPlayer(Universe& univ,
+                        DataBase& database,
+                        std::string const& login,
+                        std::string const& password);
 
 void saveToStream(Universe const& univ, std::ostream& out);
 void loadFromStream_v1(std::istream& in, Universe& univ);
@@ -639,13 +727,17 @@ void stopTask(Planet& planet, PlanetTask::Enum tasktype, Building::Enum building
 
 //! Gere l'écoulement du temps sur la planète.
 //! Peut modifier la liste dse flotte et des planètes
-void planetRound(Universe& univ, Planet& planet, std::vector<Signal>& signals);
+void planetRound(Universe& univ,
+                 Planet& planet,
+                 std::vector<Signal>& signals,
+                 std::vector<Event>& events);
 
 //! Gere l'écoulement du temps sur la flotte.
 //! Peut modifier la liste des flottes et des planètes
 void fleetRound(Universe& univ,
                 Fleet& fleet,
                 std::vector<Signal>& signals,
+                std::vector<Event>& events,
                 std::map<Player::ID, size_t> const& playersPlanetCount);
 
 void gather(Fleet& fleet, Fleet const& otherFleet);
@@ -669,5 +761,7 @@ void drop(Fleet& fleet, Planet& planet);
 void eraseAccount(Universe& univ, Player::ID pid);
 
 bool canPay(RessourceSet const& stock, RessourceSet const& price);
+
+
 
 #endif //_BTA_MODEL_

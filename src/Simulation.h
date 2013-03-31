@@ -28,7 +28,7 @@ class Simulation
 	Simulation(Simulation const&);
 	Simulation& operator = (Simulation const&);
 public:
-	Simulation(Universe& univ);
+	Simulation(Universe& univ, DataBase& database);
 
 	void reloadPlayer(Player::ID pid);
 
@@ -39,13 +39,15 @@ public:
 private:
 	void round(LuaTools::LuaEngine&,
 	           PlayerCodeMap& codesMap,
-	           std::vector<Signal>& signals);
+	           std::vector<Signal>& signals,
+	           std::vector<Event>& events);
 	//luabind::object registerCode(
 	//  LuaTools::LuaEngine& luaEngine,
 	//  Player::ID const pid, CodeData& code, time_t time, bool isFleet);
 	void updatePlayersCode(LuaTools::LuaEngine& luaEngine,
 	                       PlayerCodeMap& codesMap,
-	                       std::vector<Signal>& signals);
+	                       std::vector<Signal>& signals,
+	                       std::vector<Event>& events);
 	void save(std::string const& univName) const;
 	void removeOldSaves() const;
 
@@ -53,6 +55,7 @@ private:
 	std::set<Player::ID> playerToReload_;
 	boost::chrono::system_clock::time_point roundStart;
 	Universe& univ_;
+	DataBase& database_;
 	mutable boost::thread savingThread_;
 };
 

@@ -11,7 +11,7 @@ typedef boost::unique_lock<Universe::Mutex> UniqueLock;
 typedef boost::shared_lock<Universe::Mutex> SharedLock;
 
 Engine::Engine():
-	simulation_(new Simulation(univ_))
+	simulation_(new Simulation(univ_, database_))
 {
 	boost::filesystem::directory_iterator dir("save/"), end;
 
@@ -39,7 +39,7 @@ Engine::Engine():
 		load(ss.str(), version);
 	}
 	else
-		construct(univ_);
+		construct(univ_, database_);
 	start();
 }
 
@@ -106,7 +106,7 @@ bool Engine::addPlayer(std::string const& login, std::string const& password)
 	if(iter != univ_.playerMap.end())
 		return false;
 
-	Player::ID const pid = createPlayer(univ_, login, password); //Modifie le joueur ET une planete
+	Player::ID const pid = createPlayer(univ_, database_, login, password); //Modifie le joueur ET une planete
 	simulation_->reloadPlayer(pid);
 	return true;
 }

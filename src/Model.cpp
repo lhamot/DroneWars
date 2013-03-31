@@ -16,6 +16,8 @@
 #include <boost/iostreams/filtering_streambuf.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
 
+#include "DataBase.h"
+
 
 BOOST_GEOMETRY_REGISTER_BOOST_ARRAY_CS(cs::cartesian)
 
@@ -75,12 +77,12 @@ RessourceSet getBuilingPrice(Building::Enum id, size_t level)
 	return result;
 }
 
-Player::ID createPlayer(Universe& univ, std::string const& login, std::string const& password)
+Player::ID createPlayer(Universe& univ,
+                        DataBase& database,
+                        std::string const& login,
+                        std::string const& password)
 {
-	Player::ID newPlayerID = univ.nextPlayerID;
-	univ.nextPlayerID += 1;
-
-	Player player(newPlayerID, login, password);
+	Player player = database.addPlayer(login, password);
 	{
 		std::stringstream blocklyFleetDefaultCode;
 		{
@@ -133,7 +135,7 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 	}
 	Universe::PlayerMap::iterator playerIter;
 	bool added = false;
-	tie(playerIter, added) = univ.playerMap.insert(make_pair(newPlayerID, player));
+	tie(playerIter, added) = univ.playerMap.insert(make_pair(player.id, player));
 
 	bool done = false;
 
@@ -145,7 +147,7 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 		Planet& planet = planetIter->second;
 		if(planet.playerId == Player::NoId)
 		{
-			planet.playerId = newPlayerID;
+			planet.playerId = player.id;
 			if(planet.playerId > 100000)
 				BOOST_THROW_EXCEPTION(std::logic_error("planet.playerId > 100000"));
 
@@ -160,10 +162,10 @@ Player::ID createPlayer(Universe& univ, std::string const& login, std::string co
 	}
 	while(done == false);
 
-	return newPlayerID;
+	return player.id;
 }
 
-void construct(Universe& univ)
+void construct(Universe& univ, DataBase& database)
 {
 	//univ.zoneMap.resize(
 	//	boost::extents[Universe::MapSizeX][Universe::MapSizeY][Universe::MapSizeZ]);
@@ -193,7 +195,7 @@ void construct(Universe& univ)
 	std::string const& password = "test";
 	for(int i = 0; i < 100; ++i)
 	{
-		Player::ID pid = createPlayer(univ, nameGen(), password);
+		Player::ID pid = createPlayer(univ, database, nameGen(), password);
 		Player& player = mapFind(univ.playerMap, pid)->second;
 		player.planetsCode.setCode(
 		  "function AI(planet, fleets)\n"
@@ -476,7 +478,8 @@ void stopTask(Planet& planet, PlanetTask::Enum tasktype, Building::Enum building
 void execTask(Universe& univ,
               Planet& planet,
               PlanetTask& task,
-              std::vector<Signal>& signals)
+              std::vector<Signal>& signals,
+              std::vector<Event>& events)
 {
 	if((task.lauchTime + task.duration) <= univ.roundCount)
 	{
@@ -488,8 +491,9 @@ void execTask(Universe& univ,
 			else
 			{
 				planet.buildingList[task.value] += 1;
-				Event event(univ.nextEventID++, time(0), Event::Upgraded, intptr_t(task.value));
-				planet.eventList.push_back(event);
+				Event event(planet.playerId, time(0), Event::Upgraded);
+				event.setValue(intptr_t(task.value)).setPlanetCoord(planet.coord);
+				events.push_back(event);
 				signals.push_back(Signal(planet.playerId, event));
 			}
 			break;
@@ -498,7 +502,9 @@ void execTask(Universe& univ,
 			Fleet newFleet(univ.nextFleetID++, planet.playerId, planet.coord);
 			newFleet.shipList[task.value] += task.value2;
 			univ.fleetMap.insert(make_pair(newFleet.id, newFleet));
-			Event event(univ.nextEventID++, time(0), Event::ShipMade, intptr_t(task.value));
+			Event event(planet.playerId, time(0), Event::ShipMade);
+			event.setValue(intptr_t(task.value)).setPlanetCoord(planet.coord);
+			events.push_back(event);
 			signals.push_back(Signal(planet.playerId, event));
 		}
 		break;
@@ -507,8 +513,9 @@ void execTask(Universe& univ,
 			{
 				//BOOST_THROW_EXCEPTION(std::logic_error("Unconsistent cannon type"));
 				planet.cannonTab[task.value] += 1;
-				Event event(univ.nextEventID++, time(0), Event::CannonMade, intptr_t(task.value));
-				planet.eventList.push_back(event);
+				Event event(planet.playerId, time(0), Event::CannonMade);
+				event.setValue(intptr_t(task.value)).setPlanetCoord(planet.coord);
+				events.push_back(event);
 				signals.push_back(Signal(planet.playerId, event));
 			}
 			break;
@@ -524,6 +531,7 @@ void execTask(Universe& univ,
               Fleet& fleet,
               FleetTask& task,
               std::vector<Signal>& signals,
+              std::vector<Event>& events,
               std::map<Player::ID, size_t> const& playersPlanetCount)
 {
 	if((task.lauchTime + task.duration) <= univ.roundCount)
@@ -540,8 +548,9 @@ void execTask(Universe& univ,
 			{
 				boost::geometry::add_point(fleet.ressourceSet.tab, planet.ressourceSet.tab);
 				boost::geometry::assign_value(planet.ressourceSet.tab, 0);
-				Event event(univ.nextEventID++, time(0), Event::PlanetHarvested);
-				fleet.eventList.push_back(event);
+				Event event(fleet.playerId, time(0), Event::PlanetHarvested);
+				event.setFleetID(fleet.id);
+				events.push_back(event);
 				signals.push_back(Signal(fleet.playerId, event));
 			}
 		}
@@ -555,8 +564,9 @@ void execTask(Universe& univ,
 				size_t const planetCount = mapFind(playersPlanetCount, fleet.playerId)->second;
 				if(planetCount < 1000)
 				{
-					Event event(univ.nextEventID++, time(0), Event::PlanetColonized);
-					fleet.eventList.push_back(event);
+					Event event(fleet.playerId, time(0), Event::PlanetColonized);
+					event.setFleetID(fleet.id).setPlanetCoord(planet.coord);
+					events.push_back(event);
 					signals.push_back(Signal(fleet.playerId, event));
 					fleet.shipList[Ship::Queen] -= 1;
 
@@ -608,10 +618,13 @@ void execBuilding(Planet& planet, Building::Enum type, size_t level)
 	};
 }
 
-void planetRound(Universe& univ, Planet& planet, std::vector<Signal>& signals)
+void planetRound(Universe& univ,
+                 Planet& planet,
+                 std::vector<Signal>& signals,
+                 std::vector<Event>& events)
 {
 	for(PlanetTask & task: planet.taskQueue)
-		execTask(univ, planet, task, signals);
+		execTask(univ, planet, task, signals, events);
 
 	boost::remove_erase_if(planet.taskQueue, bind(&PlanetTask::expired, placeholders::_1));
 
@@ -635,10 +648,11 @@ void planetRound(Universe& univ, Planet& planet, std::vector<Signal>& signals)
 void fleetRound(Universe& univ,
                 Fleet& fleet,
                 std::vector<Signal>& signals,
+                std::vector<Event>& events,
                 std::map<Player::ID, size_t> const& playersPlanetCount)
 {
 	for(FleetTask & task: fleet.taskQueue)
-		execTask(univ, fleet, task, signals, playersPlanetCount);
+		execTask(univ, fleet, task, signals, events, playersPlanetCount);
 
 	boost::remove_erase_if(fleet.taskQueue, bind(&FleetTask::expired, placeholders::_1));
 

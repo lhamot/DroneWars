@@ -228,9 +228,9 @@ void handleFighterPair(std::vector<Fleet*> const&, //fleetList,
 		break;
 	}
 	report1.fightInfo.after = fighter1;
-	report1.fightInfo.after.eventList.clear();
+	//report1.fightInfo.after.eventList.clear();
 	report2.fightInfo.after = fighter2;
-	report2.fightInfo.after.eventList.clear();
+	//report2.fightInfo.after.eventList.clear();
 }
 
 void fight(Universe const& univ,

@@ -127,9 +127,10 @@ ndw::Fleet fleetToThrift(Fleet const& fleet)
 	for(FleetTask const & task: fleet.taskQueue)
 		result.taskQueue.push_back(fleetTaskToThrift(task));
 
-	result.eventList.reserve(fleet.eventList.size());
-	for(Event const & event: fleet.eventList)
-		result.eventList.push_back(eventToThrift(event));
+	//TODO : recupérer les event dans la base
+	//result.eventList.reserve(fleet.eventList.size());
+	//for(Event const & event: fleet.eventList)
+	//	result.eventList.push_back(eventToThrift(event));
 	return result;
 }
 
@@ -146,8 +147,9 @@ ndw::Planet planetToThrift(Planet const& planet)
 	res.taskQueue.reserve(planet.taskQueue.size());
 	range::transform(planet.taskQueue, back_inserter(res.taskQueue), planetTaskToThrift);
 	res.ressourceSet = ressourceToThrift(planet.ressourceSet);
-	res.eventList.reserve(planet.eventList.size());
-	range::transform(planet.eventList, back_inserter(res.eventList), eventToThrift);
+	//TODO : recupérer les event dans la base
+	//res.eventList.reserve(planet.eventList.size());
+	//range::transform(planet.eventList, back_inserter(res.eventList), eventToThrift);
 	res.cannonTab.reserve(planet.cannonTab.size());
 	for(size_t value: planet.cannonTab)
 		res.cannonTab.push_back(numCast(value));
@@ -171,10 +173,7 @@ ndw::Player playerToThrift(Player const& player)
 	outPlayer.password    = player.password;
 	codeDataCppToThrift(player.fleetsCode, outPlayer.fleetsCode);
 	codeDataCppToThrift(player.planetsCode, outPlayer.planetsCode);
-	outPlayer.eventList.reserve(player.eventList.size());
 	outPlayer.mainPlanet = coordToThrift(player.mainPlanet);
-	for(Event const & ev: player.eventList)
-		outPlayer.eventList.push_back(eventToThrift(ev));
 	for(auto tutoNVP: player.tutoDisplayed)
 		outPlayer.tutoDisplayed[tutoNVP.first] = numCast(tutoNVP.second);
 	outPlayer.score = numCast(player.score);
@@ -384,7 +383,7 @@ void EngineServerHandler::getPlayerPlanets(
 	for(Planet const & planet: pageRange)
 		_return.planetList.push_back(planetToThrift(planet));
 	_return.planetCount = numCast(planetList.size());
-	LOG4CPLUS_TRACE(logger, "enter");
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 void EngineServerHandler::setPlayerFleetCode(const ndw::Player_ID pid, const std::string& code)
@@ -440,18 +439,31 @@ void EngineServerHandler::getPlayers(std::vector<ndw::Player>& _return)
 
 void EngineServerHandler::getPlayer(ndw::Player& _return, const ndw::Player_ID pid)
 {
+	//TODO : Séparer en deux requetes differentes
 	LOG4CPLUS_TRACE(logger, "pid : " << pid);
 	_return = playerToThrift(engine_.getPlayer(pid));
+
+	std::vector<Event> events = database_.getPlayerEvents(pid);
+	_return.eventList.reserve(events.size());
+	for(Event const & ev: events)
+		_return.eventList.push_back(eventToThrift(ev));
+
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
-void EngineServerHandler::getPlanet(std::vector<ndw::Planet>& _return, const ndw::Coord& coord)
+void EngineServerHandler::getPlanet(std::vector<ndw::Planet>& _return, const ndw::Coord& ndwCoord)
 {
-	LOG4CPLUS_TRACE(logger, "coord : " << coord);
-	optional<Planet> planet =
-	  engine_.getPlanet(Coord(coord.X, coord.Y, coord.Z));
+	LOG4CPLUS_TRACE(logger, "ndwCoord : " << ndwCoord);
+	Coord const coord(ndwCoord.X, ndwCoord.Y, ndwCoord.Z);
+	optional<Planet> planet = engine_.getPlanet(coord);
 	if(planet.is_initialized())
+	{
 		_return.push_back(planetToThrift(*planet));
+		std::vector<Event> events = database_.getPlanetEvents(coord);
+		_return.front().eventList.reserve(events.size());
+		for(Event const & ev: events)
+			_return.front().eventList.push_back(eventToThrift(ev));
+	}
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
@@ -459,6 +471,12 @@ void EngineServerHandler::getFleet(ndw::Fleet& _return, const ndw::Fleet_ID fid)
 {
 	LOG4CPLUS_TRACE(logger, "fid : " << fid);
 	_return = fleetToThrift(engine_.getFleet(fid));
+
+	std::vector<Event> events = database_.getFleetEvents(_return.playerId, fid);
+	_return.eventList.reserve(events.size());
+	for(Event const & ev: events)
+		_return.eventList.push_back(eventToThrift(ev));
+
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 

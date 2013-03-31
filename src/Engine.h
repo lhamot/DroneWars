@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "Model.h"
+#include "DataBase.h"
 
 class Simulation;
 
@@ -73,6 +74,7 @@ public:
 
 private:
 	Universe univ_;
+	DataBase database_;
 	std::unique_ptr<Simulation> simulation_;
 	boost::thread simulating_;
 };

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-03-23 16:53+0100\n"
-"PO-Revision-Date: 2013-03-23 16:52+0100\n"
+"PO-Revision-Date: 2013-03-29 18:26+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "MIME-Version: 1.0\n"
@@ -228,7 +228,7 @@ msgstr "Erreur d'exécution des planètes"
 
 #: .\Game\TranslationTools.py:60
 msgid "Upgraded"
-msgstr "Amélioré"
+msgstr "Batiment amélioré"
 
 #: .\Game\TranslationTools.py:61
 msgid "ShipMade"

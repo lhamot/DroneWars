@@ -11,6 +11,7 @@
 class EngineServerHandler : virtual public ndw::EngineServerIf
 {
 	Engine engine_;
+	DataBase database_;
 
 public:
 	EngineServerHandler();

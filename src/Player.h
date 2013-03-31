@@ -11,7 +11,7 @@ struct Coord
 		ar& X& Y& Z;
 	}
 
-	typedef long Value;
+	typedef int32_t Value;
 	Value X;
 	Value Y;
 	Value Z;
@@ -69,58 +69,6 @@ inline bool operator != (Direction const& a, Direction const& b)
 	return (a == b) == false;
 }
 
-struct Event
-{
-	template<class Archive>
-	void serialize(Archive& ar, const unsigned int)
-	{
-		ar& id& time& type& comment& value;
-	}
-
-	enum Type
-	{
-	  FleetCodeError,
-	  FleetCodeExecError,
-	  PlanetCodeError,
-	  PlanetCodeExecError,
-	  Upgraded,
-	  ShipMade,
-	  PlanetHarvested,
-	  FleetWin,
-	  FleetDraw,
-	  FleetsGather,
-	  PlanetColonized,
-	  FleetLose,
-	  FleetDrop,
-	  PlanetLose,
-	  PlanetWin,
-	  CannonMade,
-	  Count
-	};
-
-	typedef size_t ID;
-	ID id;
-	time_t time;
-	Type type;
-	std::string comment;
-	intptr_t value;
-	bool viewed;
-
-	size_t heap_size() const
-	{
-		return comment.capacity();
-	}
-
-	Event() {}
-	Event(ID ident, time_t ti, Type ty, intptr_t val = -1):
-		id(ident), time(ti), type(ty), value(val), viewed(false)
-	{
-	}
-	Event(ID ident, time_t ti, Type ty, std::string const& comm):
-		id(ident), time(ti), type(ty), comment(comm), value(-1), viewed(false)
-	{
-	}
-};
 
 static size_t const MaxStringSize = 256;
 
@@ -184,8 +132,14 @@ private:
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int version)
 	{
-		ar& id& login& password& fleetsCode& planetsCode&
-		eventList& tutoDisplayed& mainPlanet;
+		ar& id;
+		ar& login;
+		ar& password;
+		ar& fleetsCode;
+		ar& planetsCode;
+		//ar& eventList;
+		ar& tutoDisplayed;
+		ar& mainPlanet;
 		if(version < 1)
 		{
 			size_t old;
@@ -199,14 +153,14 @@ private:
 public:
 	Player() {} //pour boost::serialization
 
-	typedef intptr_t ID;
-	static ID const NoId = -1;
+	typedef size_t ID;
+	static ID const NoId = 0;
 	ID id;
 	std::string login;
 	std::string password;
 	CodeData fleetsCode;
 	CodeData planetsCode;
-	std::vector<Event> eventList;
+	//std::vector<Event> eventList;
 	static size_t const MaxCodeSize = 32 * 1024;
 	static size_t const MaxBlocklySize = MaxCodeSize * 8;
 	std::map<std::string, size_t> tutoDisplayed;
@@ -220,9 +174,9 @@ public:
 		  sizeof(password.capacity()) +
 		  fleetsCode.heap_size() +
 		  planetsCode.heap_size();
-		for(Event const & ev: eventList)
-			size += ev.heap_size();
-		size += eventList.capacity() * sizeof(Event);
+		//for(Event const & ev: eventList)
+		//	size += ev.heap_size();
+		//size += eventList.capacity() * sizeof(Event);
 		for(std::pair<std::string, size_t> const & kv: tutoDisplayed)
 			size += sizeof(kv) + kv.first.capacity() + sizeof(size_t) * 2;
 		return size;

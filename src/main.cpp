@@ -54,22 +54,23 @@ int main()//(int argc, char** argv)
 	using namespace ::apache::thrift::transport;
 	using namespace ::apache::thrift::server;
 
-	int port = 9090;
-	boost::shared_ptr<EngineServerHandler> handler(new EngineServerHandler());
-	boost::shared_ptr<TProcessor> processor(new ndw::EngineServerProcessor(handler));
-	boost::shared_ptr<TServerTransport> serverTransport(new TServerSocket(port));
-	boost::shared_ptr<TTransportFactory> transportFactory(new TBufferedTransportFactory());
-	boost::shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());
-
-	TSimpleServer server(processor, serverTransport, transportFactory, protocolFactory);
-
 	try
 	{
+		int port = 9090;
+		boost::shared_ptr<EngineServerHandler> handler(new EngineServerHandler());
+		boost::shared_ptr<TProcessor> processor(new ndw::EngineServerProcessor(handler));
+		boost::shared_ptr<TServerTransport> serverTransport(new TServerSocket(port));
+		boost::shared_ptr<TTransportFactory> transportFactory(new TBufferedTransportFactory());
+		boost::shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());
+
+		TSimpleServer server(processor, serverTransport, transportFactory, protocolFactory);
+
 		server.serve();
 		LOG4CPLUS_ERROR(logger, "Unexpected server stop");
 	}
 	catch(std::exception const& ex)
 	{
+		std::cerr << ex.what() << std::endl;
 		LOG4CPLUS_ERROR(logger, boost::diagnostic_information(ex));
 		return EXIT_FAILURE;
 	}
