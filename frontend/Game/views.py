@@ -138,46 +138,31 @@ def getPageList(current_page, page_count):
 @updateLastRequest
 def PlanetListView(request):
     pid = request.session["PlayerID"]
-    print "pid " + str(pid)
     service = createEngineClient()
-    try:
-        print "service created"
-        player = service.getPlayer(pid)
-        print "player getted"
-        
-        page, sort, asc = getSortInfo(request, Sort_Type.Name)
-        print "getSortInfo OK"
+    player = service.getPlayer(pid)
     
-        playerPlanets = service.getPlayerPlanets(pid, page * 10, (page + 1) * 10, sort, asc)
-        print "playerPlanets OK"
+    page, sort, asc = getSortInfo(request, Sort_Type.Name)
+
+    playerPlanets = service.getPlayerPlanets(pid, page * 10, (page + 1) * 10, sort, asc)
+    
+    PlanetViewTutoTag = "PlanetView"
+    if not PlanetViewTutoTag in player.tutoDisplayed:
+        helpMessage = _("PLANET_TUTOS")
+        service.incrementTutoDisplayed(pid, PlanetViewTutoTag);
+    else:
+        helpMessage = ""
         
-        PlanetViewTutoTag = "PlanetView"
-        if not PlanetViewTutoTag in player.tutoDisplayed:
-            helpMessage = _("PLANET_TUTOS")
-            service.incrementTutoDisplayed(pid, PlanetViewTutoTag);
-        else:
-            helpMessage = ""
-            
-        print "before getTimeInfo"
-        timeInfo = service.getTimeInfo();
-        print "after getTimeInfo"
-    except:
-        service.stop()
-    service.stop()
+    timeInfo = service.getTimeInfo();
     
     pagecount = (playerPlanets.planetCount + 9) / 10
-    print "pagecount : " + str(pagecount)
 
     pageList = getPageList(page, pagecount)
-    print pageList
     
     titleAfter = [""] * 7
     titleAfter[sort] = '<i class="icon-chevron-up"></i>' if asc == True else '<i class="icon-chevron-down"></i>'
     titleOrder = [asc] * 7
     titleOrder[sort] = titleOrder[sort] == False
         
-    print titleAfter
-
     return render(request, 'planetsview.html', {
         'planetList': playerPlanets.planetList,
         'helpMessage': helpMessage,

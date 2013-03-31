@@ -156,8 +156,6 @@ Player::ID createPlayer(Universe& univ,
 			planet.buildingList[Building::CommandCenter] = 1;
 			planet.ressourceSet = RessourceSet(4000, 400, 0);
 			done = true;
-			//planet.buildingSet.push_back(Building(Building::MetalMine));
-			//planet.buildingSet.push_back(Building(Building::CarbonicCentral));
 		}
 	}
 	while(done == false);
@@ -167,8 +165,6 @@ Player::ID createPlayer(Universe& univ,
 
 void construct(Universe& univ, DataBase& database)
 {
-	//univ.zoneMap.resize(
-	//	boost::extents[Universe::MapSizeX][Universe::MapSizeY][Universe::MapSizeZ]);
 	univ.roundCount = 0;
 
 	std::set<Coord, CompCoord> coordSet;
@@ -394,10 +390,9 @@ void addTask(Planet& planet, size_t roundCount, Building::Enum building)
 	if(centerLevel == 0)
 		BOOST_THROW_EXCEPTION(std::logic_error("Can't create Building without CommandCenter"));
 
-	//size_t const duration = static_cast<size_t>((pow(buLevel + 1., 1.5) * mult) + 0.5);
-
-	size_t const duration = static_cast<size_t>(
-	                          ((Building::List[building].price.tab[0] * pow(buNextLevel, 2.)) / (log(centerLevel + 1) * 100)) + 0.5);
+	size_t const duration = static_cast<size_t>((
+	                          (Building::List[building].price.tab[0] * pow(buNextLevel, 2.)) /
+	                          (log(centerLevel + 1) * 100)) + 0.5);
 	PlanetTask task(PlanetTask::UpgradeBuilding, roundCount, duration);
 	task.value = building;
 	RessourceSet const price = getBuilingPrice(building, buNextLevel);
@@ -511,7 +506,6 @@ void execTask(Universe& univ,
 		case PlanetTask::MakeCannon:
 			if(task.value < Cannon::Count)
 			{
-				//BOOST_THROW_EXCEPTION(std::logic_error("Unconsistent cannon type"));
 				planet.cannonTab[task.value] += 1;
 				Event event(planet.playerId, time(0), Event::CannonMade);
 				event.setValue(intptr_t(task.value)).setPlanetCoord(planet.coord);

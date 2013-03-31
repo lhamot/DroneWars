@@ -2,8 +2,6 @@
 #define __BTA_TOOLS__
 
 #include "stdafx.h"
-//#include <iostream>
-//#include <utility>
 #include <string>
 #include <boost/iterator/zip_iterator.hpp>
 #include <boost/range/iterator_range.hpp>

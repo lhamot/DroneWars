@@ -709,9 +709,6 @@ void execFleets(
 	UpToUniqueLock writeLock(lockFleets);
 	newFleetMap.swap(univ_.fleetMap);
 
-	//for(Fleet & fleet: univ_.fleetMap | boost::adaptors::map_values)
-	//	if(fleet.eventList.size() > 10)
-	//		fleet.eventList.erase(fleet.eventList.begin(), fleet.eventList.end() - 10);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
@@ -965,7 +962,7 @@ try
 			std::cout << "OK" << std::endl;
 			newSave += SaveSecond;
 		}
-		bool noWait = true;
+		bool noWait = false;
 		if(noWait || newUpdate <= now)
 			try
 			{

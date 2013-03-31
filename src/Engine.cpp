@@ -80,14 +80,6 @@ void Engine::stop()
 }
 
 
-/*void Engine::construct()
-{
-	UniqueLock lock(mutex_);
-	::construct(univ_);
-}*/
-
-
-
 bool Engine::addPlayer(std::string const& login, std::string const& password)
 {
 	UniqueLock lock(univ_.planetsFleetsReportsmutex);

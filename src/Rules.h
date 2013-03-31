@@ -11,7 +11,6 @@ inline void onPlanetLose(Coord planetCoord, Universe& univ)
 	{
 		planet.playerId = Player::NoId;
 		planet.buildingList.assign(planet.buildingList.size(), 0);
-		//planet.eventList.clear();
 		planet.taskQueue.clear();
 		Coord const coord = planet.coord;
 		Coord const parent = planet.parentCoord;

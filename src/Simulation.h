@@ -41,9 +41,6 @@ private:
 	           PlayerCodeMap& codesMap,
 	           std::vector<Signal>& signals,
 	           std::vector<Event>& events);
-	//luabind::object registerCode(
-	//  LuaTools::LuaEngine& luaEngine,
-	//  Player::ID const pid, CodeData& code, time_t time, bool isFleet);
 	void updatePlayersCode(LuaTools::LuaEngine& luaEngine,
 	                       PlayerCodeMap& codesMap,
 	                       std::vector<Signal>& signals,

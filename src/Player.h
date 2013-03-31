@@ -137,7 +137,6 @@ private:
 		ar& password;
 		ar& fleetsCode;
 		ar& planetsCode;
-		//ar& eventList;
 		ar& tutoDisplayed;
 		ar& mainPlanet;
 		if(version < 1)
@@ -160,7 +159,6 @@ public:
 	std::string password;
 	CodeData fleetsCode;
 	CodeData planetsCode;
-	//std::vector<Event> eventList;
 	static size_t const MaxCodeSize = 32 * 1024;
 	static size_t const MaxBlocklySize = MaxCodeSize * 8;
 	std::map<std::string, size_t> tutoDisplayed;
@@ -174,9 +172,6 @@ public:
 		  sizeof(password.capacity()) +
 		  fleetsCode.heap_size() +
 		  planetsCode.heap_size();
-		//for(Event const & ev: eventList)
-		//	size += ev.heap_size();
-		//size += eventList.capacity() * sizeof(Event);
 		for(std::pair<std::string, size_t> const & kv: tutoDisplayed)
 			size += sizeof(kv) + kv.first.capacity() + sizeof(size_t) * 2;
 		return size;

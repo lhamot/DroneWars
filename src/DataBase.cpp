@@ -9,33 +9,17 @@
 #pragma warning(push)
 #pragma warning(disable: 4512)
 #include <Poco/Data/Session.h>
-//#include <Poco/Data/SQLite/Connector.h>
-//#include <Poco/Data/SQLite/SessionImpl.h>
-//#include <Poco/Data/ODBC/Connector.h>
-//#include <Poco/Data/ODBC/ODBCException.h>
 #include <Poco/Data/MySQL/Connector.h>
 #include <Poco/Tuple.h>
 #include <Poco/Nullable.h>
 #pragma warning(pop)
 
 
-//using namespace Poco::Data::Keywords;
 using namespace Poco::Data;
 using namespace Poco;
 using namespace boost;
 using namespace std;
 
-
-/*class DWSessionImpl : public SQLite::SessionImpl
-{
-public:
-	DWSessionImpl(std::string const& filename):
-		SQLite::SessionImpl(filename)
-	{
-		//setTransactionMode("DEFERRED", true);
-		setMaxRetryAttempts("10");
-	}
-};*/
 
 class Transaction : private boost::noncopyable
 {
@@ -66,52 +50,29 @@ public:
 
 DataBase::DataBase()
 {
-	//Poco::Data::SQLite::Connector::registerConnector();
-	//SQLite::Connector connector;
-	//connector.enableSharedCache(true);
-
-	//Poco::AutoPtr < DWSessionImpl > ptrImpl(new DWSessionImpl("dronewars.sqlite"));
-	//session_.reset(new Session(ptrImpl));
-	//session_.reset(new Session("SQLite", "dronewars.sqlite"));
-	//session_.reset(new Session(connector.createSession("dronewars.sqlite")));
-	//session_->setProperty("transactionMode", std::string("IMMEDIATE"));
-	//session_->setProperty("maxRetryAttempts", 10);
-
-	//Poco::Data::ODBC::Connector::registerConnector();
-	//session_.reset(new Session("ODBC", "Driver={MySQL ODBC 5.2w Driver};"
-	//	"Server=localhost;Port=3306;Database=dronewars;Uid=Blaspheme;Pwd=pdcx3wady6nsMfUm"));
-
 	try
 	{
 		Poco::Data::MySQL::Connector::registerConnector();
 		session_.reset(new Session("MySQL", "host=localhost;port=3306;db=dronewars;user=Blaspheme;password=pdcx3wady6nsMfUm"));
 
-
 		(*session_) <<
-		            //"if not exists (select * from sysobjects where name='Options' and xtype='U') " //SQLServer
 		            "CREATE TABLE "
-		            "if not exists " //SQLite, MySQL
+		            "if not exists "
 		            "Options (name VARCHAR(30), value VARCHAR(30))", now;
 
 		(*session_) <<
-		            //"if not exists (select * from sysobjects where name='Player' and xtype='U') " //SQLServer
 		            "CREATE TABLE "
-		            "if not exists " //SQLite, MySQL
+		            "if not exists "
 		            "Player ("
-		            "id INTEGER PRIMARY KEY AUTO_INCREMENT, " //MySQL
-		            //"id INTEGER PRIMARY KEY AUTOINCREMENT, " //SQLite
-		            //"id INTEGER IDENTITY(1,1) PRIMARY KEY,"    //SQLServer
+		            "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
 		            "login VARCHAR(30) unique, "
 		            "password VARCHAR(30))", now;
 
 		(*session_) <<
-		            //"if not exists (select * from sysobjects where name='Event' and xtype='U') " //SQLServer
 		            "CREATE TABLE "
-		            "if not exists " //SQLite, MySQL
+		            "if not exists "
 		            "Event ("
-		            "id INTEGER PRIMARY KEY AUTO_INCREMENT," //MySQL
-		            //"id INTEGER PRIMARY KEY AUTOINCREMENT," //SQLite
-		            //"id INTEGER IDENTITY(1,1) PRIMARY KEY,"   //SQLServer
+		            "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
 		            "time INTEGER,"
 		            "type INTEGER,"
 		            "comment VARCHAR(500),"
@@ -125,9 +86,8 @@ DataBase::DataBase()
 		            ")", now;
 
 		(*session_) <<
-		            //"if not exists (select * from sysobjects where name='CodeData' and xtype='U') " //SQLServer
 		            "CREATE TABLE "
-		            "if not exists " //SQLite, MySQL
+		            "if not exists "
 		            "CodeData ("
 		            "blocklyCode TEXT,"
 		            "code TEXT,"
@@ -156,13 +116,10 @@ Player DataBase::addPlayer(std::string const& login,
 	{
 		Transaction trans(*session_);
 		std::cout << login << " " << password << std::endl;
-		(*session_) << "INSERT INTO Player (login, password) VALUES(?, ?)", use(login), use(password), now;
+		(*session_) << "INSERT INTO Player (login, password) VALUES(?, ?)",
+		            use(login), use(password), now;
 		size_t id = 0;
-		(*session_) <<
-		            //"SELECT last_insert_rowid()", //SQLite
-		            //"SELECT @@IDENTITY",  //SQLServer
-		            "SELECT LAST_INSERT_ID() ", //MySQL
-		            into(id), now;
+		(*session_) << "SELECT LAST_INSERT_ID() ", into(id), now;
 		trans.commit();
 		player.id = id;
 		player.login = login;
@@ -201,7 +158,8 @@ Player DataBase::getPlayer(Player::ID id) const
 	std::vector<PlayerTmp> playerList;
 	(*session_) <<
 	            "SELECT * FROM Player WHERE id = ?",
-	            into(player.id), into(player.login), into(player.password), use(id), now;
+	            into(player.id), into(player.login), into(player.password),
+	            use(id), now;
 	return player;
 }
 
@@ -210,32 +168,24 @@ void DataBase::addEvents(std::vector<Event> const& events)
 {
 	if(events.empty())
 		return;
-	typedef Poco::Tuple < time_t, int, std::string const&,
-	        intptr_t, int, Player::ID, Fleet::ID, Coord::Value, Coord::Value, Coord::Value >
+	typedef Poco::Tuple < time_t, int, std::string const&, intptr_t, int,
+	        Player::ID, Fleet::ID, Coord::Value, Coord::Value, Coord::Value >
 	        DBEvent;
 	std::vector<DBEvent> dbEvents;
 	dbEvents.reserve(events.size());
 	for(Event const & event: events)
-		dbEvents.push_back(DBEvent(
-		                     event.time, event.type, event.comment,
-		                     event.value, event.viewed, event.playerID, event.fleetID,
-		                     event.planetCoord.X, event.planetCoord.Y, event.planetCoord.Z));
+		dbEvents.push_back(
+		  DBEvent(event.time, event.type, event.comment, event.value,
+		          event.viewed, event.playerID, event.fleetID,
+		          event.planetCoord.X, event.planetCoord.Y,
+		          event.planetCoord.Z));
 
-	//std::cout << "Ajout de " << events.size() << " events ";
-	try
-	{
-		Transaction trans(*session_);
-		(*session_) <<
-		            "INSERT INTO Event "
-		            "(time, type, comment, value, viewed, playerID, fleetID, planetCoordX, planetCoordY, planetCoordZ) "
-		            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", use(dbEvents), now;
-		trans.commit();
-	}
-	catch(Poco::Data::DataException const& ex)
-	{
-		std::cout << ex.displayText() << std::endl;
-		throw;
-	}
+	Transaction trans(*session_);
+	(*session_) <<
+	            "INSERT INTO Event "
+	            "(time, type, comment, value, viewed, playerID, fleetID, planetCoordX, planetCoordY, planetCoordZ) "
+	            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", use(dbEvents), now;
+	trans.commit();
 }
 
 

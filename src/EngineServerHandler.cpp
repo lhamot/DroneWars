@@ -89,7 +89,6 @@ ndw::PlanetTask planetTaskToThrift(PlanetTask const& task)
 	res.value2 = numCast(task.value2);
 	res.lauchTime = numCast(task.lauchTime);
 	res.duration = numCast(task.duration);
-	//res.startCost = task.startCost;
 	res.expired = task.expired;
 	return res;
 }
@@ -113,7 +112,6 @@ ndw::Fleet fleetToThrift(Fleet const& fleet)
 	result.id = numCast(fleet.id);
 	result.playerId = numCast(fleet.playerId);
 	result.coord = coordToThrift(fleet.coord);
-	//std::cout << result.coord.X << " " << result.coord.Y << " " << result.coord.Z << std::endl;
 	result.origin = coordToThrift(fleet.origin);
 	result.name = fleet.name;
 
@@ -127,10 +125,6 @@ ndw::Fleet fleetToThrift(Fleet const& fleet)
 	for(FleetTask const & task: fleet.taskQueue)
 		result.taskQueue.push_back(fleetTaskToThrift(task));
 
-	//TODO : recupérer les event dans la base
-	//result.eventList.reserve(fleet.eventList.size());
-	//for(Event const & event: fleet.eventList)
-	//	result.eventList.push_back(eventToThrift(event));
 	return result;
 }
 
@@ -147,9 +141,6 @@ ndw::Planet planetToThrift(Planet const& planet)
 	res.taskQueue.reserve(planet.taskQueue.size());
 	range::transform(planet.taskQueue, back_inserter(res.taskQueue), planetTaskToThrift);
 	res.ressourceSet = ressourceToThrift(planet.ressourceSet);
-	//TODO : recupérer les event dans la base
-	//res.eventList.reserve(planet.eventList.size());
-	//range::transform(planet.eventList, back_inserter(res.eventList), eventToThrift);
 	res.cannonTab.reserve(planet.cannonTab.size());
 	for(size_t value: planet.cannonTab)
 		res.cannonTab.push_back(numCast(value));
@@ -225,19 +216,14 @@ ndw::FightReport fightReportToThrift(FightReport const& report)
 
 EngineServerHandler::EngineServerHandler()
 {
-	// Your initialization goes here
 }
 
 void EngineServerHandler::start()
 {
-	// Your implementation goes here
-	//printf("start\n");
 }
 
 void EngineServerHandler::stop()
 {
-	// Your implementation goes here
-	//printf("stop\n");
 }
 
 bool EngineServerHandler::addPlayer(const std::string& login, const std::string& password)

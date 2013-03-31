@@ -236,7 +236,6 @@ struct Planet
 		ar& buildingList;
 		ar& taskQueue;
 		ar& ressourceSet;
-		//ar& eventList;
 		ar& cannonTab;
 		if(playerId >= 100000 && playerId != Player::NoId)
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
@@ -255,20 +254,15 @@ struct Planet
 	std::vector<PlanetTask> taskQueue;
 	RessourceSet ressourceSet;
 	typedef boost::array<size_t, Cannon::Count> CannonTab;
-	//std::vector<Event> eventList;
 	CannonTab cannonTab;
 	Coord parentCoord;
 
 	size_t heap_size() const
 	{
-		size_t res =
+		return
 		  name.capacity() +
 		  buildingList.capacity() * sizeof(size_t) +
 		  taskQueue.capacity() * sizeof(PlanetTask);
-		//eventList.capacity() * sizeof(Event);
-		//for(Event const & ev: eventList)
-		//	res += ev.heap_size();
-		return res;
 	}
 
 	Planet(): playerId(1111111111), buildingList(Building::Count) {}
@@ -288,12 +282,6 @@ struct Planet
 
 struct PlanetAction
 {
-	/*template<class Archive>
-	void serialize(Archive& ar, const unsigned int)
-	{
-		ar& action& building& ship;
-	}*/
-
 	enum Type
 	{
 	  Undefined = -1,
@@ -351,7 +339,6 @@ struct Fleet
 		ar& shipList;
 		ar& ressourceSet;
 		ar& taskQueue;
-		//ar& eventList;
 		if(playerId >= 100000)
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 	}
@@ -367,19 +354,14 @@ struct Fleet
 	ShipTab shipList;
 	RessourceSet ressourceSet;
 	std::vector<FleetTask> taskQueue;
-	//std::vector<Event> eventList;
 
 
 	size_t heap_size() const
 	{
-		size_t res =
+		return
 		  name.capacity() +
 		  shipList.capacity() * sizeof(size_t) +
 		  taskQueue.capacity() * sizeof(FleetTask);
-		//eventList.capacity() * sizeof(Event);
-		//for(Event const & ev: eventList)
-		//	res += ev.heap_size();
-		return res;
 	}
 
 
@@ -397,12 +379,6 @@ BOOST_CLASS_VERSION(Fleet, 1);
 
 struct FleetAction
 {
-	/*	template<class Archive>
-		void serialize(Archive& ar, const unsigned int)
-		{
-			ar& action& building& ship;
-		}*/
-
 	enum Type
 	{
 	  Nothing,
@@ -564,30 +540,16 @@ struct Event
 	Event& setComment(std::string const& comm)    {comment = comm; return *this;}
 	Event& setFleetID(Fleet::ID fid)    {fleetID = fid; return *this;}
 	Event& setPlanetCoord(Coord pcoord) {planetCoord = pcoord; return *this;}
-
-	/*Event(Player::ID pid, time_t ti, Type ty, intptr_t val = -1):
-		id(0), time(ti), type(ty), value(val), viewed(false),
-		playerID(pid), fleetID(Fleet::NoId)
-	{
-	}
-	Event(Player::ID pid, time_t ti, Type ty, std::string const& comm):
-		id(0), time(ti), type(ty), comment(comm), value(-1), viewed(false),
-		playerID(pid), fleetID(Fleet::NoId)
-	{
-	}*/
 };
 
 struct Signal
 {
 	Player::ID playerID;
-	//Coord planetCoord;
 	Event event;
 
 	Signal(Player::ID player,
-	       //Coord planet,
 	       Event const& event_):
 		playerID(player),
-		//planetCoord(planet),
 		event(event_)
 	{
 	}
@@ -603,16 +565,12 @@ struct Universe
 		ar& planetMap;
 		ar& fleetMap;
 		ar& reportMap;
-		//ar& nextPlayerID;
 		ar& nextFleetID;
-		//ar& nextEventID;
 		ar& nextFightID;
 		ar& roundCount;
 		ar& roundDuration;
 	}
 
-	//typedef boost::multi_array<Zone, 3> ZoneMap;
-	//ZoneMap zoneMap;
 	static const unsigned short MapSizeX = 100;
 	static const unsigned short MapSizeY = 100;
 	static const unsigned short MapSizeZ = 100;
@@ -625,9 +583,7 @@ struct Universe
 	FleetMap fleetMap;
 	typedef std::map<size_t, FightReport> ReportMap;
 	ReportMap reportMap;
-	//Player::ID nextPlayerID;
 	Fleet::ID nextFleetID;
-	//Event::ID nextEventID;
 	size_t nextFightID;
 	size_t roundCount;
 	double roundDuration;
@@ -650,9 +606,7 @@ struct Universe
 	mutable Mutex playersMutex;
 
 	Universe():
-		//nextPlayerID(1),
 		nextFleetID(1),
-		//nextEventID(1),
 		nextFightID(1),
 		roundCount(0),
 		roundDuration(0.)
@@ -664,9 +618,7 @@ struct Universe
 		planetMap(other.planetMap),
 		fleetMap(other.fleetMap),
 		reportMap(other.reportMap),
-		//nextPlayerID(other.nextPlayerID),
 		nextFleetID(other.nextFleetID),
-		//nextEventID(other.nextEventID),
 		nextFightID(other.nextFightID),
 		roundCount(other.roundCount),
 		roundDuration(other.roundDuration)
@@ -685,9 +637,7 @@ struct Universe
 		planetMap.swap(other.planetMap);
 		fleetMap.swap(other.fleetMap);
 		reportMap.swap(other.reportMap);
-		//std::swap(nextPlayerID, other.nextPlayerID);
 		std::swap(nextFleetID, other.nextFleetID);
-		//std::swap(nextEventID, other.nextEventID);
 		std::swap(nextFightID, other.nextFightID);
 		std::swap(roundCount, other.roundCount);
 		std::swap(roundDuration, other.roundDuration);
