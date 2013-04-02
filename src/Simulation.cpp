@@ -74,7 +74,8 @@ void addErrorMessageImpl(Universe& univ_,
                          std::vector<Event>& events,
                          PlayerCodes::ObjectMap* luaObjectMap)
 {
-	Event event(pid, time(0), isFleet ? Event::FleetCodeError : Event::PlanetCodeError);
+	Event event(pid, time(0),
+	            isFleet ? Event::FleetCodeError : Event::PlanetCodeError);
 	event.setComment(message);
 	Player& player = mapFind(univ_.playerMap, pid)->second;
 	CodeData& codeData = isFleet ?
@@ -203,16 +204,19 @@ try
 	if(code.is_valid() == false || luabind::type(code) != LUA_TFUNCTION)
 	{
 		//call_function crash quand on lui passe autre chose qu'une fonction
-		std::string const message =
-		  str(boost::format(BL::gettext("Procedure \"%1%\" not found.")) % "AI");
-		addErrorMessage(univ_, planet.playerId, false, message, signals, events, codeMap);
+		boost::format trans(BL::gettext("Procedure \"%1%\" not found."));
+		std::string const message = str(trans % "AI");
+		addErrorMessage(
+		  univ_, planet.playerId, false, message, signals, events, codeMap);
 		return;
 	}
 
-	lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
+	lua_sethook(
+	  luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 
 	if(planet.buildingList.size() != Building::Count)
-		BOOST_THROW_EXCEPTION(std::logic_error("planet.buildingList.size() != Building::Count"));
+		BOOST_THROW_EXCEPTION(
+		  std::logic_error("planet.buildingList.size() != Building::Count"));
 
 	PlanetAction action =	luabind::call_function<PlanetAction>(
 	                        code, boost::cref(planet), boost::cref(fleetList));
@@ -503,6 +507,7 @@ void execPlanets(Universe& univ_,
 
 //! Les combats
 void execFights(Universe& univ_,
+                DataBase& database,
                 std::vector<Signal>& signals,
                 std::vector<Event>& events)
 {
@@ -579,9 +584,7 @@ void execFights(Universe& univ_,
 			continue;
 
 		//! - On ajoute le rapport dans la base de donné
-		size_t const reportID = univ_.nextFightID;
-		univ_.nextFightID += 1;
-		univ_.reportMap.insert(make_pair(reportID, fightReport));
+		size_t const reportID = database.addFightReport(fightReport);
 
 		//! - On ajoute les evenement/message dans les flottes/joueur
 		std::set<Player::ID> informedPlayer;
@@ -795,7 +798,7 @@ try
 	execPlanets(univ_, luaEngine, codesMap, signals, events);
 
 	//! Les combats
-	execFights(univ_, signals, events);
+	execFights(univ_, database_, signals, events);
 
 	//! Les flottes
 	execFleets(univ_, luaEngine, codesMap, signals, events);

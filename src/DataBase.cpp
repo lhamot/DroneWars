@@ -2,14 +2,21 @@
 #include "DataBase.h"
 
 #include <iostream>
+#include <sstream>
 #include <iterator>
 
+#pragma warning(push)
+#pragma warning(disable: 4310)
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#pragma warning(pop)
 #include <boost/format.hpp>
 
 #pragma warning(push)
-#pragma warning(disable: 4512)
+#pragma warning(disable: 4512 4244)
 #include <Poco/Data/Session.h>
 #include <Poco/Data/MySQL/Connector.h>
+#include <Poco/Data/BLOB.h>
 #include <Poco/Tuple.h>
 #include <Poco/Nullable.h>
 #pragma warning(pop)
@@ -53,52 +60,76 @@ DataBase::DataBase()
 	try
 	{
 		Poco::Data::MySQL::Connector::registerConnector();
-		session_.reset(new Session("MySQL", "host=localhost;port=3306;db=dronewars;user=Blaspheme;password=pdcx3wady6nsMfUm"));
+		session_.reset(new Session("MySQL",
+		                           "host=localhost;"
+		                           "port=3306;"
+		                           "db=dronewars;"
+		                           "user=Blaspheme;"
+		                           "password=pdcx3wady6nsMfUm"));
 
 		(*session_) <<
 		            "CREATE TABLE "
 		            "if not exists "
-		            "Options (name VARCHAR(30), value VARCHAR(30))", now;
+		            "Options ("
+		            "  name VARCHAR(30) NOT NULL,"
+		            "  value VARCHAR(30) NOT NULL"
+		            ")", now;
 
 		(*session_) <<
 		            "CREATE TABLE "
 		            "if not exists "
 		            "Player ("
-		            "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
-		            "login VARCHAR(30) unique, "
-		            "password VARCHAR(30))", now;
+		            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+		            "  login VARCHAR(30) unique NOT NULL,"
+		            "  password VARCHAR(30) NOT NULL"
+		            ")", now;
 
 		(*session_) <<
 		            "CREATE TABLE "
 		            "if not exists "
 		            "Event ("
-		            "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-		            "time INTEGER,"
-		            "type INTEGER,"
-		            "comment VARCHAR(500),"
-		            "value INTEGER,"
-		            "viewed INTEGER,"
-		            "playerID INTEGER,"
-		            "fleetID INTEGER,"
-		            "planetCoordX INTEGER,"
-		            "planetCoordY INTEGER,"
-		            "planetCoordZ INTEGER"
+		            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+		            "  time INTEGER NOT NULL,"
+		            "  type INTEGER NOT NULL,"
+		            "  comment VARCHAR(500) NOT NULL,"
+		            "  value INTEGER NOT NULL,"
+		            "  viewed INTEGER NOT NULL,"
+		            "  playerID INTEGER NOT NULL,"
+		            "  fleetID INTEGER NOT NULL,"
+		            "  planetCoordX INTEGER NOT NULL,"
+		            "  planetCoordY INTEGER NOT NULL,"
+		            "  planetCoordZ INTEGER NOT NULL,"
+		            "  INDEX (playerID),"
+		            "  INDEX (fleetID),"
+		            "  INDEX Coord (planetCoordX, planetCoordY, planetCoordZ)"
 		            ")", now;
 
 		(*session_) <<
 		            "CREATE TABLE "
 		            "if not exists "
 		            "CodeData ("
-		            "blocklyCode TEXT,"
-		            "code TEXT,"
-		            "failCount INTEGER,"
-		            "lastError TEXT"
+		            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+		            "  playerID INTEGER NOT NULL,"
+		            "  target INTEGER NOT NULL,"
+		            "  time INTEGER NOT NULL,"
+		            "  blocklyCode TEXT NOT NULL,"
+		            "  code TEXT NOT NULL,"
+		            "  failCount INTEGER NOT NULL,"
+		            "  lastError TEXT NOT NULL"
 		            ")", now;
 
+		(*session_) <<
+		            "CREATE TABLE "
+		            "if not exists "
+		            "FightReport ("
+		            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+		            "  time INTEGER NOT NULL,"
+		            "  data BLOB NOT NULL"
+		            ")", now;
 	}
 	catch(Poco::Data::DataException const& ex)
 	{
-		std::cerr << ex.displayText() << std::endl;
+		std::cerr << typeid(ex).name() << " " << ex.displayText() << std::endl;
 		throw;
 	}
 }
@@ -183,7 +214,8 @@ void DataBase::addEvents(std::vector<Event> const& events)
 	Transaction trans(*session_);
 	(*session_) <<
 	            "INSERT INTO Event "
-	            "(time, type, comment, value, viewed, playerID, fleetID, planetCoordX, planetCoordY, planetCoordZ) "
+	            "(time, type, comment, value, viewed, playerID, "
+	            "  fleetID, planetCoordX, planetCoordY, planetCoordZ) "
 	            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", use(dbEvents), now;
 	trans.commit();
 }
@@ -191,69 +223,67 @@ void DataBase::addEvents(std::vector<Event> const& events)
 
 void DataBase::removeOldEvents()
 {
-	return;
 	Transaction trans(*session_);
-
 
 	// Planete
 	// Important
 	(*session_) <<
 	            "DELETE FROM Event WHERE time < ? AND type IN (?, ?, ?)",
 	            use(time(0) - (3600 * 24)),
-	            use(Event::PlanetWin),
-	            use(Event::PlanetColonized),
+	            use((int)Event::PlanetWin),
+	            use((int)Event::PlanetColonized),
+	            use((int)Event::Upgraded),
 	            now;
 	// Pas important
 	(*session_) <<
 	            "DELETE FROM Event WHERE time < ? AND type IN (?, ?, ?)",
-	            use(time(0) - (3600 * 24)),
-	            use(Event::CannonMade),
-	            use(Event::ShipMade),
-	            use(Event::Upgraded),
-	            use(Event::FleetDrop),
+	            use(time(0) - (60 * 10)),
+	            use((int)Event::CannonMade),
+	            use((int)Event::ShipMade),
+	            use((int)Event::FleetDrop),
 	            now;
 	//Flotte
 	// Important
 	(*session_) <<
 	            "DELETE FROM Event WHERE time < ? AND type IN (?, ?, ?)",
 	            use(time(0) - (3600 * 24)),
-	            use(Event::FleetWin),
-	            use(Event::FleetDraw),
-	            use(Event::PlanetColonized),
+	            use((int)Event::FleetWin),
+	            use((int)Event::FleetDraw),
+	            use((int)Event::PlanetColonized),
 	            now;
 	// Pas important
 	(*session_) <<
 	            "DELETE FROM Event WHERE time < ? AND type IN (?, ?, ?)",
-	            use(time(0) - (3600 * 24)),
-	            use(Event::FleetsGather),
-	            use(Event::PlanetHarvested),
-	            use(Event::FleetDrop),
+	            use(time(0) - (60 * 10)),
+	            use((int)Event::FleetsGather),
+	            use((int)Event::PlanetHarvested),
+	            use((int)Event::FleetDrop),
 	            now;
 	//Joueur
 	// Important
 	(*session_) <<
-	            "DELETE FROM Event WHERE time < ? AND type IN (?, ?, ?)",
+	            "DELETE FROM Event WHERE time < ? AND type IN (?, ?, ?, ?, ?, ?)",
 	            use(time(0) - (3600 * 24)),
-	            use(Event::FleetCodeError),
-	            use(Event::FleetCodeExecError),
-	            use(Event::PlanetCodeError),
-	            use(Event::PlanetCodeExecError),
-	            use(Event::FleetLose),
-	            use(Event::PlanetLose),
-	            now;
-	// Pas important
-	(*session_) <<
-	            "DELETE FROM Event WHERE time < ? AND type IN (?, ?, ?)",
-	            use(time(0) - (3600 * 24)),
+	            use((int)Event::FleetCodeError),
+	            use((int)Event::FleetCodeExecError),
+	            use((int)Event::PlanetCodeError),
+	            use((int)Event::PlanetCodeExecError),
+	            use((int)Event::FleetLose),
+	            use((int)Event::PlanetLose),
 	            now;
 
+	//Rappor de combat
+	(*session_) <<
+	            "DELETE FROM FightReport WHERE time < ?",
+	            use(time(0) - (3600 * 24)),
+	            now;
 
 	trans.commit();
 }
 
 
-typedef Poco::Tuple < Event::ID, time_t, size_t, std::string,
-        intptr_t, int, Player::ID, Fleet::ID, Coord::Value, Coord::Value, Coord::Value >
+typedef Poco::Tuple < Event::ID, time_t, size_t, std::string, intptr_t,
+        int, Player::ID, Fleet::ID, Coord::Value, Coord::Value, Coord::Value >
         DBEvent;
 
 
@@ -307,16 +337,18 @@ std::vector<Event> DataBase::getPlayerEvents(Player::ID pid) const
 }
 
 
-std::vector<Event> DataBase::getPlanetEvents(Coord pcoord) const
+std::vector<Event> DataBase::getPlanetEvents(Player::ID pid, Coord pcoord) const
 {
 	std::vector<Event> out;
 
 	std::vector<DBEvent> dbEvents;
 	(*session_) <<
 	            "SELECT * FROM Event "
-	            "WHERE planetCoordX = ? AND planetCoordY = ? AND planetCoordZ = ? "
+	            "WHERE"
+	            "  playerID = ? AND "
+	            "  planetCoordX = ? AND planetCoordY = ? AND planetCoordZ = ? "
 	            "ORDER BY id DESC LIMIT 100 ",
-	            into(dbEvents), use(pcoord.X), use(pcoord.Y), use(pcoord.Z),
+	            into(dbEvents), use(pid), use(pcoord.X), use(pcoord.Y), use(pcoord.Z),
 	            now;
 
 	out.reserve(dbEvents.size());
@@ -325,7 +357,8 @@ std::vector<Event> DataBase::getPlanetEvents(Coord pcoord) const
 }
 
 
-std::vector<Event> DataBase::getFleetEvents(Player::ID pid, Fleet::ID fid) const
+std::vector<Event> DataBase::getFleetEvents(
+  Player::ID pid, Fleet::ID fid) const
 {
 	std::vector<Event> out;
 	std::vector<DBEvent> dbEvents;
@@ -347,6 +380,88 @@ void  DataBase::resetPlanetEvents(Coord pcoord)
 {
 	(*session_) <<
 	            "DELETE FROM Event "
-	            "WHERE planetCoordX = ? AND planetCoordY = ? AND planetCoordZ = ? ",
+	            "WHERE"
+	            "  planetCoordX = ? AND planetCoordY = ? AND planetCoordZ = ?",
 	            use(pcoord.X), use(pcoord.Y), use(pcoord.Z), now;
 }
+
+
+size_t DataBase::addFightReport(FightReport const& report)
+{
+	using namespace boost::archive;
+	Transaction trans(*session_);
+	std::string data;
+	stringstream ss(ios::binary | ios::in | ios::out);
+	boost::archive::text_oarchive oa(ss);
+	oa& report;
+	data = ss.str();
+	(*session_) << "INSERT INTO FightReport (time, data) VALUES(?, ?)",
+	            use(time(0)), use(data), now;
+	size_t id = 0;
+	(*session_) << "SELECT LAST_INSERT_ID() ", into(id), now;
+	trans.commit();
+	return id;
+}
+
+void DataBase::addFightReports(std::vector<FightReport> const& reports)
+{
+	using namespace boost::archive;
+	Transaction trans(*session_);
+	std::string data;
+	time_t now = 0;
+	Statement stmt =
+	  ((*session_) << "INSERT INTO FightReport (time, data) VALUES(?, ?)",
+	   use(now), use(data));
+
+	for(FightReport const & report: reports)
+	{
+		stringstream ss(ios::binary | ios::in | ios::out);
+		boost::archive::text_oarchive oa(ss);
+		oa& report;
+		data = ss.str();
+		now = time(0);
+		stmt.execute();
+	}
+	trans.commit();
+}
+
+FightReport DataBase::getFightReport(size_t reportID)
+{
+	FightReport report;
+	try
+	{
+		//std::string data;
+		Poco::Data::BLOB data;
+		(*session_) << "SELECT data FROM FightReport WHERE id = ?",
+		            use(reportID), into(data), now;
+
+		using namespace boost::archive;
+		stringstream ss(ios::binary | ios::in | ios::out);
+		ss.rdbuf()->sputn(data.rawContent(), data.size());
+		boost::archive::text_iarchive ia(ss);
+		ia& report;
+	}
+	catch(Poco::Data::DataException const& ex)
+	{
+		std::cout << ex.displayText() << std::endl;
+	}
+	return report;
+}
+
+/*void DataBase::addCodeData(Player::ID pid, CodeData::Target target, CodeData const& codeData)
+{
+//					"  playerID INTEGER NOT NULL,"
+//					"  target INTEGER NOT NULL,"
+//					"  time INTEGER NOT NULL,"
+//		            "  blocklyCode TEXT NOT NULL,"
+//		            "  code TEXT NOT NULL,"
+//		            "  failCount INTEGER NOT NULL,"
+//		            "  lastError TEXT NOT NULL"
+
+	(*session_) <<
+	            "INSERT INTO CodeData "
+	            "(time, type, comment, value, viewed, playerID, "
+	            "  fleetID, planetCoordX, planetCoordY, planetCoordZ) "
+	            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", use(dbEvents), now;
+}
+*/

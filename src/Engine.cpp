@@ -248,11 +248,6 @@ boost::optional<Player> Engine::getPlayer(
 		return iter->second;
 }
 
-FightReport Engine::getFightReport(size_t id) const
-{
-	SharedLock lock(univ_.planetsFleetsReportsmutex);
-	return mapFind(univ_.reportMap, id)->second;
-}
 
 void Engine::incrementTutoDisplayed(Player::ID pid, std::string const& tutoName)
 {

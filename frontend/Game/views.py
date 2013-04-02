@@ -180,12 +180,12 @@ def PlanetListView(request):
     })
 
 
-def getEventAndFightReport(request, service, container_entity):
+def getEventAndFightReport(request, service, eventList):
     target_event = None
     fight_report = None
     if "event_id" in request.GET:
         event_id = int(request.GET["event_id"])
-        for event in container_entity.eventList:
+        for event in eventList:
             if event_id == int(event.id):
                 target_event = event
         if target_event and target_event.type in {Event_Type.FleetLose, Event_Type.FleetWin, 
@@ -210,7 +210,7 @@ def PlanetView(request):
         
     timeInfo = service.getTimeInfo();
     
-    (target_event, fight_report) = getEventAndFightReport(request, service, target) 
+    (target_event, fight_report) = getEventAndFightReport(request, service, target.eventList) 
     
     player = {"id": pid}; #Pour éviter une requete au serveur(Les raport de combat ont besoin de l'id)
     
@@ -296,7 +296,7 @@ def FleetView(request):
         
     timeInfo = service.getTimeInfo();
     
-    (target_event, fight_report) = getEventAndFightReport(request, service, fleet) 
+    (target_event, fight_report) = getEventAndFightReport(request, service, fleet.eventList) 
 
     player = {"id": pid}; #Pour éviter une requete au serveur(Les raport de combat ont besoin de l'id)
     
@@ -338,8 +338,9 @@ def ReportsView(request):
     pid = request.session["PlayerID"]
     service = createEngineClient()
     player = service.getPlayer(pid)
+    eventList = service.getPlayerEvents(player.id)
     
-    (target, fight_report) = getEventAndFightReport(request, service, player) 
+    (target, fight_report) = getEventAndFightReport(request, service, eventList) 
 
     ReportViewTutoTag = "ReportView"
     if not ReportViewTutoTag in player.tutoDisplayed:
@@ -351,7 +352,8 @@ def ReportsView(request):
     timeInfo = service.getTimeInfo()
 
     return render(request, 'reportsview.html', {
-        'player': player,
+        'player': player,                                                    
+        'eventList': eventList,
         'helpMessage': helpMessage,
         'target_event': target,
         'Event_Type': Event_Type,

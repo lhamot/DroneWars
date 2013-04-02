@@ -65,7 +65,6 @@ struct Player
 	3: string password
 	4: CodeData fleetsCode
 	5: CodeData planetsCode
-	6: list<Event> eventList
 	7: map<string, i32> tutoDisplayed
 	8: Coord mainPlanet
 	9: i64 score = 0
@@ -356,6 +355,7 @@ service EngineServer
 	FightReport getFightReport(10: i32 id),
 	TimeInfo getTimeInfo(),
 	bool eraseAccount(10: i32 pid, 20: string password),
+	list<Event> getPlayerEvents(10: i32 pid);
 
 	list<Building> getBuildingsInfo();
 	list<Cannon> getCannonsInfo();

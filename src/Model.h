@@ -564,9 +564,7 @@ struct Universe
 		ar& playerMap;
 		ar& planetMap;
 		ar& fleetMap;
-		ar& reportMap;
 		ar& nextFleetID;
-		ar& nextFightID;
 		ar& roundCount;
 		ar& roundDuration;
 	}
@@ -581,10 +579,7 @@ struct Universe
 	PlanetMap planetMap;
 	typedef std::map<Fleet::ID, Fleet> FleetMap;
 	FleetMap fleetMap;
-	typedef std::map<size_t, FightReport> ReportMap;
-	ReportMap reportMap;
 	Fleet::ID nextFleetID;
-	size_t nextFightID;
 	size_t roundCount;
 	double roundDuration;
 
@@ -597,8 +592,6 @@ struct Universe
 			res += sizeof(planetKV) + planetKV.second.heap_size() + 2 * sizeof(size_t);
 		for(auto const & fleetKV: fleetMap)
 			res += sizeof(fleetKV) + fleetKV.second.heap_size() + 2 * sizeof(size_t);
-		for(auto const & reportKV: reportMap)
-			res += sizeof(reportKV) + reportKV.second.heap_size() + 2 * sizeof(size_t);
 	}
 
 	typedef boost::shared_mutex Mutex;
@@ -607,7 +600,6 @@ struct Universe
 
 	Universe():
 		nextFleetID(1),
-		nextFightID(1),
 		roundCount(0),
 		roundDuration(0.)
 	{
@@ -617,9 +609,7 @@ struct Universe
 		playerMap(other.playerMap),
 		planetMap(other.planetMap),
 		fleetMap(other.fleetMap),
-		reportMap(other.reportMap),
 		nextFleetID(other.nextFleetID),
-		nextFightID(other.nextFightID),
 		roundCount(other.roundCount),
 		roundDuration(other.roundDuration)
 	{
@@ -636,9 +626,7 @@ struct Universe
 		playerMap.swap(other.playerMap);
 		planetMap.swap(other.planetMap);
 		fleetMap.swap(other.fleetMap);
-		reportMap.swap(other.reportMap);
 		std::swap(nextFleetID, other.nextFleetID);
-		std::swap(nextFightID, other.nextFightID);
 		std::swap(roundCount, other.roundCount);
 		std::swap(roundDuration, other.roundDuration);
 	}

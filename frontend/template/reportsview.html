@@ -14,7 +14,7 @@
 			<tr>
 				<th>Time</th><th>Type</th><th>Message</th>
 			</tr>
-			{% for event in player.eventList %}
+			{% for event in eventList %}
 			<tr onclick="document.location.href='?event_id={{event.id}}'">
 				<td>{{event.time|int2datetime|date:"DATETIME_FORMAT"}}</td><td>{{event.type|eventname}}</td><td>{{event.comment}}</td>
 			</tr>

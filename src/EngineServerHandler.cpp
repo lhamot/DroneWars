@@ -428,12 +428,6 @@ void EngineServerHandler::getPlayer(ndw::Player& _return, const ndw::Player_ID p
 	//TODO : Séparer en deux requetes differentes
 	LOG4CPLUS_TRACE(logger, "pid : " << pid);
 	_return = playerToThrift(engine_.getPlayer(pid));
-
-	std::vector<Event> events = database_.getPlayerEvents(pid);
-	_return.eventList.reserve(events.size());
-	for(Event const & ev: events)
-		_return.eventList.push_back(eventToThrift(ev));
-
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
@@ -445,7 +439,8 @@ void EngineServerHandler::getPlanet(std::vector<ndw::Planet>& _return, const ndw
 	if(planet.is_initialized())
 	{
 		_return.push_back(planetToThrift(*planet));
-		std::vector<Event> events = database_.getPlanetEvents(coord);
+		std::vector<Event> events =
+		  database_.getPlanetEvents(planet->playerId, coord);
 		_return.front().eventList.reserve(events.size());
 		for(Event const & ev: events)
 			_return.front().eventList.push_back(eventToThrift(ev));
@@ -486,7 +481,7 @@ void EngineServerHandler::incrementTutoDisplayed(ndw::Player_ID pid, std::string
 void EngineServerHandler::getFightReport(ndw::FightReport& _return, const int32_t id)
 {
 	LOG4CPLUS_TRACE(logger, "id : " << id);
-	FightReport fr = engine_.getFightReport(id);
+	FightReport fr = database_.getFightReport(id);
 	_return = fightReportToThrift(fr);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
@@ -518,8 +513,20 @@ bool EngineServerHandler::eraseAccount(const int32_t pid, const std::string& pas
 }
 
 
+void EngineServerHandler::getPlayerEvents(
+  std::vector<ndw::Event>& _return, const int32_t pid)
+{
+	LOG4CPLUS_TRACE(logger, "pid : " << pid);
+	std::vector<Event> events = database_.getPlayerEvents(pid);
+	_return.reserve(events.size());
+	boost::transform(events, back_inserter(_return), eventToThrift);
+	LOG4CPLUS_TRACE(logger, "exit");
+}
+
+
 void EngineServerHandler::getBuildingsInfo(std::vector<ndw::Building>& _return)
 {
+	LOG4CPLUS_TRACE(logger, "enter");
 	_return.reserve(Building::Count);
 	int32_t index = 0;
 	for(Building const & b: Building::List)
@@ -530,10 +537,12 @@ void EngineServerHandler::getBuildingsInfo(std::vector<ndw::Building>& _return)
 		newBu.coef = b.coef;
 		_return.push_back(newBu);
 	}
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 void EngineServerHandler::getCannonsInfo(std::vector<ndw::Cannon>& _return)
 {
+	LOG4CPLUS_TRACE(logger, "enter");
 	_return.reserve(Cannon::Count);
 	int32_t index = 0;
 	for(Cannon const & c: Cannon::List)
@@ -545,10 +554,12 @@ void EngineServerHandler::getCannonsInfo(std::vector<ndw::Cannon>& _return)
 		newCa.power = numCast(c.power);
 		_return.push_back(newCa);
 	}
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 void EngineServerHandler::getShipsInfo(std::vector<ndw::Ship>& _return)
 {
+	LOG4CPLUS_TRACE(logger, "enter");
 	_return.reserve(Ship::Count);
 	int32_t index = 0;
 	for(Ship const & s: Ship::List)
@@ -560,4 +571,5 @@ void EngineServerHandler::getShipsInfo(std::vector<ndw::Ship>& _return)
 		newSh.power = numCast(s.power);
 		_return.push_back(newSh);
 	}
+	LOG4CPLUS_TRACE(logger, "exit");
 }

@@ -37,6 +37,7 @@ public:
 	virtual void getFightReport(FightReport& _return, const int32_t id) = 0;
 	virtual void getTimeInfo(TimeInfo& _return) = 0;
 	virtual bool eraseAccount(const int32_t pid, const std::string& password) = 0;
+	virtual void getPlayerEvents(std::vector<Event>& _return, const int32_t pid) = 0;
 	virtual void getBuildingsInfo(std::vector<Building>& _return) = 0;
 	virtual void getCannonsInfo(std::vector<Cannon>& _return) = 0;
 	virtual void getShipsInfo(std::vector<Ship>& _return) = 0;
@@ -154,6 +155,10 @@ public:
 	{
 		bool _return = false;
 		return _return;
+	}
+	void getPlayerEvents(std::vector<Event>& /* _return */, const int32_t /* pid */)
+	{
+		return;
 	}
 	void getBuildingsInfo(std::vector<Building>& /* _return */)
 	{
@@ -2524,6 +2529,127 @@ public:
 
 };
 
+typedef struct _EngineServer_getPlayerEvents_args__isset
+{
+	_EngineServer_getPlayerEvents_args__isset() : pid(false) {}
+	bool pid;
+} _EngineServer_getPlayerEvents_args__isset;
+
+class EngineServer_getPlayerEvents_args
+{
+public:
+
+	EngineServer_getPlayerEvents_args() : pid(0)
+	{
+	}
+
+	virtual ~EngineServer_getPlayerEvents_args() throw() {}
+
+	int32_t pid;
+
+	_EngineServer_getPlayerEvents_args__isset __isset;
+
+	void __set_pid(const int32_t val)
+	{
+		pid = val;
+	}
+
+	bool operator == (const EngineServer_getPlayerEvents_args& rhs) const
+	{
+		if(!(pid == rhs.pid))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_getPlayerEvents_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_getPlayerEvents_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_getPlayerEvents_pargs
+{
+public:
+
+
+	virtual ~EngineServer_getPlayerEvents_pargs() throw() {}
+
+	const int32_t* pid;
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_getPlayerEvents_result__isset
+{
+	_EngineServer_getPlayerEvents_result__isset() : success(false) {}
+	bool success;
+} _EngineServer_getPlayerEvents_result__isset;
+
+class EngineServer_getPlayerEvents_result
+{
+public:
+
+	EngineServer_getPlayerEvents_result()
+	{
+	}
+
+	virtual ~EngineServer_getPlayerEvents_result() throw() {}
+
+	std::vector<Event>  success;
+
+	_EngineServer_getPlayerEvents_result__isset __isset;
+
+	void __set_success(const std::vector<Event>& val)
+	{
+		success = val;
+	}
+
+	bool operator == (const EngineServer_getPlayerEvents_result& rhs) const
+	{
+		if(!(success == rhs.success))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_getPlayerEvents_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_getPlayerEvents_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_getPlayerEvents_presult__isset
+{
+	_EngineServer_getPlayerEvents_presult__isset() : success(false) {}
+	bool success;
+} _EngineServer_getPlayerEvents_presult__isset;
+
+class EngineServer_getPlayerEvents_presult
+{
+public:
+
+
+	virtual ~EngineServer_getPlayerEvents_presult() throw() {}
+
+	std::vector<Event>* success;
+
+	_EngineServer_getPlayerEvents_presult__isset __isset;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
 
 class EngineServer_getBuildingsInfo_args
 {
@@ -2924,6 +3050,9 @@ public:
 	bool eraseAccount(const int32_t pid, const std::string& password);
 	void send_eraseAccount(const int32_t pid, const std::string& password);
 	bool recv_eraseAccount();
+	void getPlayerEvents(std::vector<Event>& _return, const int32_t pid);
+	void send_getPlayerEvents(const int32_t pid);
+	void recv_getPlayerEvents(std::vector<Event>& _return);
 	void getBuildingsInfo(std::vector<Building>& _return);
 	void send_getBuildingsInfo();
 	void recv_getBuildingsInfo(std::vector<Building>& _return);
@@ -2969,6 +3098,7 @@ private:
 	void process_getFightReport(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_getTimeInfo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_eraseAccount(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_getPlayerEvents(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_getBuildingsInfo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_getCannonsInfo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_getShipsInfo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
@@ -2996,6 +3126,7 @@ public:
 		processMap_["getFightReport"] = &EngineServerProcessor::process_getFightReport;
 		processMap_["getTimeInfo"] = &EngineServerProcessor::process_getTimeInfo;
 		processMap_["eraseAccount"] = &EngineServerProcessor::process_eraseAccount;
+		processMap_["getPlayerEvents"] = &EngineServerProcessor::process_getPlayerEvents;
 		processMap_["getBuildingsInfo"] = &EngineServerProcessor::process_getBuildingsInfo;
 		processMap_["getCannonsInfo"] = &EngineServerProcessor::process_getCannonsInfo;
 		processMap_["getShipsInfo"] = &EngineServerProcessor::process_getShipsInfo;
@@ -3260,6 +3391,18 @@ public:
 			ifaces_[i]->eraseAccount(pid, password);
 		}
 		return ifaces_[i]->eraseAccount(pid, password);
+	}
+
+	void getPlayerEvents(std::vector<Event>& _return, const int32_t pid)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->getPlayerEvents(_return, pid);
+		}
+		ifaces_[i]->getPlayerEvents(_return, pid);
+		return;
 	}
 
 	void getBuildingsInfo(std::vector<Building>& _return)

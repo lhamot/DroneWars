@@ -66,6 +66,8 @@ public:
 
 	bool eraseAccount(const int32_t pid, const std::string& password);
 
+	void getPlayerEvents(std::vector<ndw::Event>& _return, const int32_t pid);
+
 	void getBuildingsInfo(std::vector<ndw::Building>& _return);
 
 	void getCannonsInfo(std::vector<ndw::Cannon>& _return);

@@ -75,7 +75,7 @@
 			<a href="planet.html?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}">
 				<img class="ally" src="{{ STATIC_URL }}{{planet|img_path:'pl'}}"/>
 			</a>
-			{% elif planet.playerId != -1 %}
+			{% elif planet.playerId != 0 %}
 			<img class="enemy" src="{{ STATIC_URL }}{{planet|img_path:'pl'}}"/>
 			{% else %}
 			<img class="neutral" src="{{ STATIC_URL }}{{planet|img_path:'pl'}}"/>

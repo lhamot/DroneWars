@@ -43,6 +43,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  FightReport getFightReport(i32 id)'
   print '  TimeInfo getTimeInfo()'
   print '  bool eraseAccount(i32 pid, string password)'
+  print '   getPlayerEvents(i32 pid)'
   print '   getBuildingsInfo()'
   print '   getCannonsInfo()'
   print '   getShipsInfo()'
@@ -216,6 +217,12 @@ elif cmd == 'eraseAccount':
     print 'eraseAccount requires 2 args'
     sys.exit(1)
   pp.pprint(client.eraseAccount(eval(args[0]),args[1],))
+
+elif cmd == 'getPlayerEvents':
+  if len(args) != 1:
+    print 'getPlayerEvents requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.getPlayerEvents(eval(args[0]),))
 
 elif cmd == 'getBuildingsInfo':
   if len(args) != 0:

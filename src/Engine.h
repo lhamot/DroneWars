@@ -53,8 +53,6 @@ public:
 
 	boost::optional<Player> getPlayer(std::string const& login, std::string const& password) const;
 
-	FightReport getFightReport(size_t id) const;
-
 	//Requetes qui modifient la base
 	bool addPlayer(std::string const& login, std::string const& password);
 

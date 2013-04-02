@@ -421,13 +421,12 @@ void swap(CodeData& a, CodeData& b);
 
 typedef struct _Player__isset
 {
-	_Player__isset() : id(false), login(false), password(false), fleetsCode(false), planetsCode(false), eventList(false), tutoDisplayed(false), mainPlanet(false), score(true) {}
+	_Player__isset() : id(false), login(false), password(false), fleetsCode(false), planetsCode(false), tutoDisplayed(false), mainPlanet(false), score(true) {}
 	bool id;
 	bool login;
 	bool password;
 	bool fleetsCode;
 	bool planetsCode;
-	bool eventList;
 	bool tutoDisplayed;
 	bool mainPlanet;
 	bool score;
@@ -437,8 +436,8 @@ class Player
 {
 public:
 
-	static const char* ascii_fingerprint; // = "EBC625478E10039503754BAC121E6D64";
-	static const uint8_t binary_fingerprint[16]; // = {0xEB,0xC6,0x25,0x47,0x8E,0x10,0x03,0x95,0x03,0x75,0x4B,0xAC,0x12,0x1E,0x6D,0x64};
+	static const char* ascii_fingerprint; // = "1B41F2EFF95CDAD68DBDF7AC4B31DD2E";
+	static const uint8_t binary_fingerprint[16]; // = {0x1B,0x41,0xF2,0xEF,0xF9,0x5C,0xDA,0xD6,0x8D,0xBD,0xF7,0xAC,0x4B,0x31,0xDD,0x2E};
 
 	Player() : id(0), login(), password(), score(0LL)
 	{
@@ -451,7 +450,6 @@ public:
 	std::string password;
 	CodeData fleetsCode;
 	CodeData planetsCode;
-	std::vector<Event>  eventList;
 	std::map<std::string, int32_t>  tutoDisplayed;
 	Coord mainPlanet;
 	int64_t score;
@@ -483,11 +481,6 @@ public:
 		planetsCode = val;
 	}
 
-	void __set_eventList(const std::vector<Event>& val)
-	{
-		eventList = val;
-	}
-
 	void __set_tutoDisplayed(const std::map<std::string, int32_t>& val)
 	{
 		tutoDisplayed = val;
@@ -514,8 +507,6 @@ public:
 		if(!(fleetsCode == rhs.fleetsCode))
 			return false;
 		if(!(planetsCode == rhs.planetsCode))
-			return false;
-		if(!(eventList == rhs.eventList))
 			return false;
 		if(!(tutoDisplayed == rhs.tutoDisplayed))
 			return false;
@@ -1628,8 +1619,8 @@ class Universe
 {
 public:
 
-	static const char* ascii_fingerprint; // = "7D15BF17D197D025599EFC93C01F1FBD";
-	static const uint8_t binary_fingerprint[16]; // = {0x7D,0x15,0xBF,0x17,0xD1,0x97,0xD0,0x25,0x59,0x9E,0xFC,0x93,0xC0,0x1F,0x1F,0xBD};
+	static const char* ascii_fingerprint; // = "546166985BD102D195E59D65D75D410C";
+	static const uint8_t binary_fingerprint[16]; // = {0x54,0x61,0x66,0x98,0x5B,0xD1,0x02,0xD1,0x95,0xE5,0x9D,0x65,0xD7,0x5D,0x41,0x0C};
 
 	Universe() : nextPlayerID(0), nextFleetID(0), time(0)
 	{
@@ -1724,8 +1715,8 @@ class OptionalPlayer
 {
 public:
 
-	static const char* ascii_fingerprint; // = "35A7D79AFF0BD8AE0251388C1CE87997";
-	static const uint8_t binary_fingerprint[16]; // = {0x35,0xA7,0xD7,0x9A,0xFF,0x0B,0xD8,0xAE,0x02,0x51,0x38,0x8C,0x1C,0xE8,0x79,0x97};
+	static const char* ascii_fingerprint; // = "DE3397D8343568695BAD2DF24828C095";
+	static const uint8_t binary_fingerprint[16]; // = {0xDE,0x33,0x97,0xD8,0x34,0x35,0x68,0x69,0x5B,0xAD,0x2D,0xF2,0x48,0x28,0xC0,0x95};
 
 	OptionalPlayer()
 	{

@@ -505,9 +505,9 @@ uint32_t EngineServer_getPlayerFleets_args::read(::apache::thrift::protocol::TPr
 		case 40:
 			if(ftype == ::apache::thrift::protocol::T_I32)
 			{
-				int32_t ecast136;
-				xfer += iprot->readI32(ecast136);
-				this->sortType = (Sort_Type::type)ecast136;
+				int32_t ecast130;
+				xfer += iprot->readI32(ecast130);
+				this->sortType = (Sort_Type::type)ecast130;
 				this->__isset.sortType = true;
 			}
 			else
@@ -764,9 +764,9 @@ uint32_t EngineServer_getPlayerPlanets_args::read(::apache::thrift::protocol::TP
 		case 40:
 			if(ftype == ::apache::thrift::protocol::T_I32)
 			{
-				int32_t ecast137;
-				xfer += iprot->readI32(ecast137);
-				this->sortType = (Sort_Type::type)ecast137;
+				int32_t ecast131;
+				xfer += iprot->readI32(ecast131);
+				this->sortType = (Sort_Type::type)ecast131;
 				this->__isset.sortType = true;
 			}
 			else
@@ -2051,14 +2051,14 @@ uint32_t EngineServer_getPlayers_result::read(::apache::thrift::protocol::TProto
 			{
 				{
 					this->success.clear();
-					uint32_t _size138;
-					::apache::thrift::protocol::TType _etype141;
-					xfer += iprot->readListBegin(_etype141, _size138);
-					this->success.resize(_size138);
-					uint32_t _i142;
-					for(_i142 = 0; _i142 < _size138; ++_i142)
+					uint32_t _size132;
+					::apache::thrift::protocol::TType _etype135;
+					xfer += iprot->readListBegin(_etype135, _size132);
+					this->success.resize(_size132);
+					uint32_t _i136;
+					for(_i136 = 0; _i136 < _size132; ++_i136)
 					{
-						xfer += this->success[_i142].read(iprot);
+						xfer += this->success[_i136].read(iprot);
 					}
 					xfer += iprot->readListEnd();
 				}
@@ -2093,10 +2093,10 @@ uint32_t EngineServer_getPlayers_result::write(::apache::thrift::protocol::TProt
 		xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
 		{
 			xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
-			std::vector<Player> ::const_iterator _iter143;
-			for(_iter143 = this->success.begin(); _iter143 != this->success.end(); ++_iter143)
+			std::vector<Player> ::const_iterator _iter137;
+			for(_iter137 = this->success.begin(); _iter137 != this->success.end(); ++_iter137)
 			{
-				xfer += (*_iter143).write(oprot);
+				xfer += (*_iter137).write(oprot);
 			}
 			xfer += oprot->writeListEnd();
 		}
@@ -2134,14 +2134,14 @@ uint32_t EngineServer_getPlayers_presult::read(::apache::thrift::protocol::TProt
 			{
 				{
 					(*(this->success)).clear();
-					uint32_t _size144;
-					::apache::thrift::protocol::TType _etype147;
-					xfer += iprot->readListBegin(_etype147, _size144);
-					(*(this->success)).resize(_size144);
-					uint32_t _i148;
-					for(_i148 = 0; _i148 < _size144; ++_i148)
+					uint32_t _size138;
+					::apache::thrift::protocol::TType _etype141;
+					xfer += iprot->readListBegin(_etype141, _size138);
+					(*(this->success)).resize(_size138);
+					uint32_t _i142;
+					for(_i142 = 0; _i142 < _size138; ++_i142)
 					{
-						xfer += (*(this->success))[_i148].read(iprot);
+						xfer += (*(this->success))[_i142].read(iprot);
 					}
 					xfer += iprot->readListEnd();
 				}
@@ -2445,14 +2445,14 @@ uint32_t EngineServer_getPlanet_result::read(::apache::thrift::protocol::TProtoc
 			{
 				{
 					this->success.clear();
-					uint32_t _size149;
-					::apache::thrift::protocol::TType _etype152;
-					xfer += iprot->readListBegin(_etype152, _size149);
-					this->success.resize(_size149);
-					uint32_t _i153;
-					for(_i153 = 0; _i153 < _size149; ++_i153)
+					uint32_t _size143;
+					::apache::thrift::protocol::TType _etype146;
+					xfer += iprot->readListBegin(_etype146, _size143);
+					this->success.resize(_size143);
+					uint32_t _i147;
+					for(_i147 = 0; _i147 < _size143; ++_i147)
 					{
-						xfer += this->success[_i153].read(iprot);
+						xfer += this->success[_i147].read(iprot);
 					}
 					xfer += iprot->readListEnd();
 				}
@@ -2487,10 +2487,10 @@ uint32_t EngineServer_getPlanet_result::write(::apache::thrift::protocol::TProto
 		xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
 		{
 			xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
-			std::vector<Planet> ::const_iterator _iter154;
-			for(_iter154 = this->success.begin(); _iter154 != this->success.end(); ++_iter154)
+			std::vector<Planet> ::const_iterator _iter148;
+			for(_iter148 = this->success.begin(); _iter148 != this->success.end(); ++_iter148)
 			{
-				xfer += (*_iter154).write(oprot);
+				xfer += (*_iter148).write(oprot);
 			}
 			xfer += oprot->writeListEnd();
 		}
@@ -2528,14 +2528,14 @@ uint32_t EngineServer_getPlanet_presult::read(::apache::thrift::protocol::TProto
 			{
 				{
 					(*(this->success)).clear();
-					uint32_t _size155;
-					::apache::thrift::protocol::TType _etype158;
-					xfer += iprot->readListBegin(_etype158, _size155);
-					(*(this->success)).resize(_size155);
-					uint32_t _i159;
-					for(_i159 = 0; _i159 < _size155; ++_i159)
+					uint32_t _size149;
+					::apache::thrift::protocol::TType _etype152;
+					xfer += iprot->readListBegin(_etype152, _size149);
+					(*(this->success)).resize(_size149);
+					uint32_t _i153;
+					for(_i153 = 0; _i153 < _size149; ++_i153)
 					{
-						xfer += (*(this->success))[_i159].read(iprot);
+						xfer += (*(this->success))[_i153].read(iprot);
 					}
 					xfer += iprot->readListEnd();
 				}
@@ -3639,6 +3639,219 @@ uint32_t EngineServer_eraseAccount_presult::read(::apache::thrift::protocol::TPr
 	return xfer;
 }
 
+uint32_t EngineServer_getPlayerEvents_args::read(::apache::thrift::protocol::TProtocol* iprot)
+{
+
+	uint32_t xfer = 0;
+	std::string fname;
+	::apache::thrift::protocol::TType ftype;
+	int16_t fid;
+
+	xfer += iprot->readStructBegin(fname);
+
+	using ::apache::thrift::protocol::TProtocolException;
+
+
+	while(true)
+	{
+		xfer += iprot->readFieldBegin(fname, ftype, fid);
+		if(ftype == ::apache::thrift::protocol::T_STOP)
+		{
+			break;
+		}
+		switch(fid)
+		{
+		case 10:
+			if(ftype == ::apache::thrift::protocol::T_I32)
+			{
+				xfer += iprot->readI32(this->pid);
+				this->__isset.pid = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		default:
+			xfer += iprot->skip(ftype);
+			break;
+		}
+		xfer += iprot->readFieldEnd();
+	}
+
+	xfer += iprot->readStructEnd();
+
+	return xfer;
+}
+
+uint32_t EngineServer_getPlayerEvents_args::write(::apache::thrift::protocol::TProtocol* oprot) const
+{
+	uint32_t xfer = 0;
+	xfer += oprot->writeStructBegin("EngineServer_getPlayerEvents_args");
+
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
+	xfer += oprot->writeI32(this->pid);
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldStop();
+	xfer += oprot->writeStructEnd();
+	return xfer;
+}
+
+uint32_t EngineServer_getPlayerEvents_pargs::write(::apache::thrift::protocol::TProtocol* oprot) const
+{
+	uint32_t xfer = 0;
+	xfer += oprot->writeStructBegin("EngineServer_getPlayerEvents_pargs");
+
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
+	xfer += oprot->writeI32((*(this->pid)));
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldStop();
+	xfer += oprot->writeStructEnd();
+	return xfer;
+}
+
+uint32_t EngineServer_getPlayerEvents_result::read(::apache::thrift::protocol::TProtocol* iprot)
+{
+
+	uint32_t xfer = 0;
+	std::string fname;
+	::apache::thrift::protocol::TType ftype;
+	int16_t fid;
+
+	xfer += iprot->readStructBegin(fname);
+
+	using ::apache::thrift::protocol::TProtocolException;
+
+
+	while(true)
+	{
+		xfer += iprot->readFieldBegin(fname, ftype, fid);
+		if(ftype == ::apache::thrift::protocol::T_STOP)
+		{
+			break;
+		}
+		switch(fid)
+		{
+		case 0:
+			if(ftype == ::apache::thrift::protocol::T_LIST)
+			{
+				{
+					this->success.clear();
+					uint32_t _size154;
+					::apache::thrift::protocol::TType _etype157;
+					xfer += iprot->readListBegin(_etype157, _size154);
+					this->success.resize(_size154);
+					uint32_t _i158;
+					for(_i158 = 0; _i158 < _size154; ++_i158)
+					{
+						xfer += this->success[_i158].read(iprot);
+					}
+					xfer += iprot->readListEnd();
+				}
+				this->__isset.success = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		default:
+			xfer += iprot->skip(ftype);
+			break;
+		}
+		xfer += iprot->readFieldEnd();
+	}
+
+	xfer += iprot->readStructEnd();
+
+	return xfer;
+}
+
+uint32_t EngineServer_getPlayerEvents_result::write(::apache::thrift::protocol::TProtocol* oprot) const
+{
+
+	uint32_t xfer = 0;
+
+	xfer += oprot->writeStructBegin("EngineServer_getPlayerEvents_result");
+
+	if(this->__isset.success)
+	{
+		xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
+		{
+			xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
+			std::vector<Event> ::const_iterator _iter159;
+			for(_iter159 = this->success.begin(); _iter159 != this->success.end(); ++_iter159)
+			{
+				xfer += (*_iter159).write(oprot);
+			}
+			xfer += oprot->writeListEnd();
+		}
+		xfer += oprot->writeFieldEnd();
+	}
+	xfer += oprot->writeFieldStop();
+	xfer += oprot->writeStructEnd();
+	return xfer;
+}
+
+uint32_t EngineServer_getPlayerEvents_presult::read(::apache::thrift::protocol::TProtocol* iprot)
+{
+
+	uint32_t xfer = 0;
+	std::string fname;
+	::apache::thrift::protocol::TType ftype;
+	int16_t fid;
+
+	xfer += iprot->readStructBegin(fname);
+
+	using ::apache::thrift::protocol::TProtocolException;
+
+
+	while(true)
+	{
+		xfer += iprot->readFieldBegin(fname, ftype, fid);
+		if(ftype == ::apache::thrift::protocol::T_STOP)
+		{
+			break;
+		}
+		switch(fid)
+		{
+		case 0:
+			if(ftype == ::apache::thrift::protocol::T_LIST)
+			{
+				{
+					(*(this->success)).clear();
+					uint32_t _size160;
+					::apache::thrift::protocol::TType _etype163;
+					xfer += iprot->readListBegin(_etype163, _size160);
+					(*(this->success)).resize(_size160);
+					uint32_t _i164;
+					for(_i164 = 0; _i164 < _size160; ++_i164)
+					{
+						xfer += (*(this->success))[_i164].read(iprot);
+					}
+					xfer += iprot->readListEnd();
+				}
+				this->__isset.success = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		default:
+			xfer += iprot->skip(ftype);
+			break;
+		}
+		xfer += iprot->readFieldEnd();
+	}
+
+	xfer += iprot->readStructEnd();
+
+	return xfer;
+}
+
 uint32_t EngineServer_getBuildingsInfo_args::read(::apache::thrift::protocol::TProtocol* iprot)
 {
 
@@ -3715,14 +3928,14 @@ uint32_t EngineServer_getBuildingsInfo_result::read(::apache::thrift::protocol::
 			{
 				{
 					this->success.clear();
-					uint32_t _size160;
-					::apache::thrift::protocol::TType _etype163;
-					xfer += iprot->readListBegin(_etype163, _size160);
-					this->success.resize(_size160);
-					uint32_t _i164;
-					for(_i164 = 0; _i164 < _size160; ++_i164)
+					uint32_t _size165;
+					::apache::thrift::protocol::TType _etype168;
+					xfer += iprot->readListBegin(_etype168, _size165);
+					this->success.resize(_size165);
+					uint32_t _i169;
+					for(_i169 = 0; _i169 < _size165; ++_i169)
 					{
-						xfer += this->success[_i164].read(iprot);
+						xfer += this->success[_i169].read(iprot);
 					}
 					xfer += iprot->readListEnd();
 				}
@@ -3757,10 +3970,10 @@ uint32_t EngineServer_getBuildingsInfo_result::write(::apache::thrift::protocol:
 		xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
 		{
 			xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
-			std::vector<Building> ::const_iterator _iter165;
-			for(_iter165 = this->success.begin(); _iter165 != this->success.end(); ++_iter165)
+			std::vector<Building> ::const_iterator _iter170;
+			for(_iter170 = this->success.begin(); _iter170 != this->success.end(); ++_iter170)
 			{
-				xfer += (*_iter165).write(oprot);
+				xfer += (*_iter170).write(oprot);
 			}
 			xfer += oprot->writeListEnd();
 		}
@@ -3798,14 +4011,14 @@ uint32_t EngineServer_getBuildingsInfo_presult::read(::apache::thrift::protocol:
 			{
 				{
 					(*(this->success)).clear();
-					uint32_t _size166;
-					::apache::thrift::protocol::TType _etype169;
-					xfer += iprot->readListBegin(_etype169, _size166);
-					(*(this->success)).resize(_size166);
-					uint32_t _i170;
-					for(_i170 = 0; _i170 < _size166; ++_i170)
+					uint32_t _size171;
+					::apache::thrift::protocol::TType _etype174;
+					xfer += iprot->readListBegin(_etype174, _size171);
+					(*(this->success)).resize(_size171);
+					uint32_t _i175;
+					for(_i175 = 0; _i175 < _size171; ++_i175)
 					{
-						xfer += (*(this->success))[_i170].read(iprot);
+						xfer += (*(this->success))[_i175].read(iprot);
 					}
 					xfer += iprot->readListEnd();
 				}
@@ -3904,14 +4117,14 @@ uint32_t EngineServer_getCannonsInfo_result::read(::apache::thrift::protocol::TP
 			{
 				{
 					this->success.clear();
-					uint32_t _size171;
-					::apache::thrift::protocol::TType _etype174;
-					xfer += iprot->readListBegin(_etype174, _size171);
-					this->success.resize(_size171);
-					uint32_t _i175;
-					for(_i175 = 0; _i175 < _size171; ++_i175)
+					uint32_t _size176;
+					::apache::thrift::protocol::TType _etype179;
+					xfer += iprot->readListBegin(_etype179, _size176);
+					this->success.resize(_size176);
+					uint32_t _i180;
+					for(_i180 = 0; _i180 < _size176; ++_i180)
 					{
-						xfer += this->success[_i175].read(iprot);
+						xfer += this->success[_i180].read(iprot);
 					}
 					xfer += iprot->readListEnd();
 				}
@@ -3946,10 +4159,10 @@ uint32_t EngineServer_getCannonsInfo_result::write(::apache::thrift::protocol::T
 		xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
 		{
 			xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
-			std::vector<Cannon> ::const_iterator _iter176;
-			for(_iter176 = this->success.begin(); _iter176 != this->success.end(); ++_iter176)
+			std::vector<Cannon> ::const_iterator _iter181;
+			for(_iter181 = this->success.begin(); _iter181 != this->success.end(); ++_iter181)
 			{
-				xfer += (*_iter176).write(oprot);
+				xfer += (*_iter181).write(oprot);
 			}
 			xfer += oprot->writeListEnd();
 		}
@@ -3987,14 +4200,14 @@ uint32_t EngineServer_getCannonsInfo_presult::read(::apache::thrift::protocol::T
 			{
 				{
 					(*(this->success)).clear();
-					uint32_t _size177;
-					::apache::thrift::protocol::TType _etype180;
-					xfer += iprot->readListBegin(_etype180, _size177);
-					(*(this->success)).resize(_size177);
-					uint32_t _i181;
-					for(_i181 = 0; _i181 < _size177; ++_i181)
+					uint32_t _size182;
+					::apache::thrift::protocol::TType _etype185;
+					xfer += iprot->readListBegin(_etype185, _size182);
+					(*(this->success)).resize(_size182);
+					uint32_t _i186;
+					for(_i186 = 0; _i186 < _size182; ++_i186)
 					{
-						xfer += (*(this->success))[_i181].read(iprot);
+						xfer += (*(this->success))[_i186].read(iprot);
 					}
 					xfer += iprot->readListEnd();
 				}
@@ -4093,14 +4306,14 @@ uint32_t EngineServer_getShipsInfo_result::read(::apache::thrift::protocol::TPro
 			{
 				{
 					this->success.clear();
-					uint32_t _size182;
-					::apache::thrift::protocol::TType _etype185;
-					xfer += iprot->readListBegin(_etype185, _size182);
-					this->success.resize(_size182);
-					uint32_t _i186;
-					for(_i186 = 0; _i186 < _size182; ++_i186)
+					uint32_t _size187;
+					::apache::thrift::protocol::TType _etype190;
+					xfer += iprot->readListBegin(_etype190, _size187);
+					this->success.resize(_size187);
+					uint32_t _i191;
+					for(_i191 = 0; _i191 < _size187; ++_i191)
 					{
-						xfer += this->success[_i186].read(iprot);
+						xfer += this->success[_i191].read(iprot);
 					}
 					xfer += iprot->readListEnd();
 				}
@@ -4135,10 +4348,10 @@ uint32_t EngineServer_getShipsInfo_result::write(::apache::thrift::protocol::TPr
 		xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
 		{
 			xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
-			std::vector<Ship> ::const_iterator _iter187;
-			for(_iter187 = this->success.begin(); _iter187 != this->success.end(); ++_iter187)
+			std::vector<Ship> ::const_iterator _iter192;
+			for(_iter192 = this->success.begin(); _iter192 != this->success.end(); ++_iter192)
 			{
-				xfer += (*_iter187).write(oprot);
+				xfer += (*_iter192).write(oprot);
 			}
 			xfer += oprot->writeListEnd();
 		}
@@ -4176,14 +4389,14 @@ uint32_t EngineServer_getShipsInfo_presult::read(::apache::thrift::protocol::TPr
 			{
 				{
 					(*(this->success)).clear();
-					uint32_t _size188;
-					::apache::thrift::protocol::TType _etype191;
-					xfer += iprot->readListBegin(_etype191, _size188);
-					(*(this->success)).resize(_size188);
-					uint32_t _i192;
-					for(_i192 = 0; _i192 < _size188; ++_i192)
+					uint32_t _size193;
+					::apache::thrift::protocol::TType _etype196;
+					xfer += iprot->readListBegin(_etype196, _size193);
+					(*(this->success)).resize(_size193);
+					uint32_t _i197;
+					for(_i197 = 0; _i197 < _size193; ++_i197)
 					{
-						xfer += (*(this->success))[_i192].read(iprot);
+						xfer += (*(this->success))[_i197].read(iprot);
 					}
 					xfer += iprot->readListEnd();
 				}
@@ -5414,6 +5627,68 @@ bool EngineServerClient::recv_eraseAccount()
 		return _return;
 	}
 	throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "eraseAccount failed: unknown result");
+}
+
+void EngineServerClient::getPlayerEvents(std::vector<Event>& _return, const int32_t pid)
+{
+	send_getPlayerEvents(pid);
+	recv_getPlayerEvents(_return);
+}
+
+void EngineServerClient::send_getPlayerEvents(const int32_t pid)
+{
+	int32_t cseqid = 0;
+	oprot_->writeMessageBegin("getPlayerEvents", ::apache::thrift::protocol::T_CALL, cseqid);
+
+	EngineServer_getPlayerEvents_pargs args;
+	args.pid = &pid;
+	args.write(oprot_);
+
+	oprot_->writeMessageEnd();
+	oprot_->getTransport()->writeEnd();
+	oprot_->getTransport()->flush();
+}
+
+void EngineServerClient::recv_getPlayerEvents(std::vector<Event>& _return)
+{
+
+	int32_t rseqid = 0;
+	std::string fname;
+	::apache::thrift::protocol::TMessageType mtype;
+
+	iprot_->readMessageBegin(fname, mtype, rseqid);
+	if(mtype == ::apache::thrift::protocol::T_EXCEPTION)
+	{
+		::apache::thrift::TApplicationException x;
+		x.read(iprot_);
+		iprot_->readMessageEnd();
+		iprot_->getTransport()->readEnd();
+		throw x;
+	}
+	if(mtype != ::apache::thrift::protocol::T_REPLY)
+	{
+		iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+		iprot_->readMessageEnd();
+		iprot_->getTransport()->readEnd();
+	}
+	if(fname.compare("getPlayerEvents") != 0)
+	{
+		iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+		iprot_->readMessageEnd();
+		iprot_->getTransport()->readEnd();
+	}
+	EngineServer_getPlayerEvents_presult result;
+	result.success = &_return;
+	result.read(iprot_);
+	iprot_->readMessageEnd();
+	iprot_->getTransport()->readEnd();
+
+	if(result.__isset.success)
+	{
+		// _return pointer has now been filled
+		return;
+	}
+	throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "getPlayerEvents failed: unknown result");
 }
 
 void EngineServerClient::getBuildingsInfo(std::vector<Building>& _return)
@@ -6870,6 +7145,69 @@ void EngineServerProcessor::process_eraseAccount(int32_t seqid, ::apache::thrift
 	if(this->eventHandler_.get() != NULL)
 	{
 		this->eventHandler_->postWrite(ctx, "EngineServer.eraseAccount", bytes);
+	}
+}
+
+void EngineServerProcessor::process_getPlayerEvents(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+	void* ctx = NULL;
+	if(this->eventHandler_.get() != NULL)
+	{
+		ctx = this->eventHandler_->getContext("EngineServer.getPlayerEvents", callContext);
+	}
+	::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "EngineServer.getPlayerEvents");
+
+	if(this->eventHandler_.get() != NULL)
+	{
+		this->eventHandler_->preRead(ctx, "EngineServer.getPlayerEvents");
+	}
+
+	EngineServer_getPlayerEvents_args args;
+	args.read(iprot);
+	iprot->readMessageEnd();
+	uint32_t bytes = iprot->getTransport()->readEnd();
+
+	if(this->eventHandler_.get() != NULL)
+	{
+		this->eventHandler_->postRead(ctx, "EngineServer.getPlayerEvents", bytes);
+	}
+
+	EngineServer_getPlayerEvents_result result;
+	try
+	{
+		iface_->getPlayerEvents(result.success, args.pid);
+		result.__isset.success = true;
+	}
+	catch(const std::exception& e)
+	{
+		if(this->eventHandler_.get() != NULL)
+		{
+			this->eventHandler_->handlerError(ctx, "EngineServer.getPlayerEvents");
+		}
+
+		::apache::thrift::TApplicationException x(e.what());
+		oprot->writeMessageBegin("getPlayerEvents", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+		x.write(oprot);
+		oprot->writeMessageEnd();
+		oprot->getTransport()->writeEnd();
+		oprot->getTransport()->flush();
+		return;
+	}
+
+	if(this->eventHandler_.get() != NULL)
+	{
+		this->eventHandler_->preWrite(ctx, "EngineServer.getPlayerEvents");
+	}
+
+	oprot->writeMessageBegin("getPlayerEvents", ::apache::thrift::protocol::T_REPLY, seqid);
+	result.write(oprot);
+	oprot->writeMessageEnd();
+	bytes = oprot->getTransport()->writeEnd();
+	oprot->getTransport()->flush();
+
+	if(this->eventHandler_.get() != NULL)
+	{
+		this->eventHandler_->postWrite(ctx, "EngineServer.getPlayerEvents", bytes);
 	}
 }
 

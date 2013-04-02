@@ -25,13 +25,21 @@ public:
 
 	std::vector<Event> getPlayerEvents(Player::ID pid) const;
 
-	std::vector<Event> getPlanetEvents(Coord pcoord) const;
+	std::vector<Event> getPlanetEvents(Player::ID pid, Coord pcoord) const;
 
 	std::vector<Event> getFleetEvents(Player::ID pid, Fleet::ID fid) const;
 
 	void resetPlanetEvents(Coord pcoord);
 
 	void removeOldEvents();
+
+	//void addCodeData(Player::ID pid, CodeData::Target target, CodeData const& codeData);
+
+	size_t addFightReport(FightReport const& report);
+
+	void addFightReports(std::vector<FightReport> const& reports);
+
+	FightReport DataBase::getFightReport(size_t reportID);
 };
 
 #endif //__DRONEWARS_DATABASE__
