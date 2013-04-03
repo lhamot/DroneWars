@@ -52,7 +52,8 @@ typename T::iterator
 nextNot(T& map, I const& iter)
 {
 	I res = iter;
-	while((res != map.end()) && (res->first == iter->first))
+	auto mapEnd = map.end();
+	while((res != mapEnd) && (res->first == iter->first))
 		++res;
 	return res;
 }

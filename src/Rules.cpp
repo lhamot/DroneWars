@@ -3,6 +3,21 @@
 #include <boost/format.hpp>
 
 
+void onPlanetLose(Coord planetCoord,
+                  Universe& univ,
+                  std::unordered_map<Coord, Coord>& newParentMap)
+{
+	Planet& planet = univ.planetMap[planetCoord];
+	if(mapFind(univ.playerMap, planet.playerId)->second.mainPlanet != planetCoord)
+	{
+		planet.playerId = Player::NoId;
+		planet.buildingList.assign(planet.buildingList.size(), 0);
+		planet.taskQueue.clear();
+		newParentMap[planet.coord] = planet.parentCoord;
+		planet.parentCoord = planet.coord;
+	}
+}
+
 
 void getBlocklyHTML(size_t tutoLevel, std::string const& codecontext, std::ostream& out)
 {

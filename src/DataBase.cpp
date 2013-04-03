@@ -142,7 +142,6 @@ Player DataBase::addPlayer(std::string const& login,
                            std::string const& password
                           )
 {
-	Player player;
 	try
 	{
 		Transaction trans(*session_);
@@ -152,23 +151,19 @@ Player DataBase::addPlayer(std::string const& login,
 		size_t id = 0;
 		(*session_) << "SELECT LAST_INSERT_ID() ", into(id), now;
 		trans.commit();
-		player.id = id;
-		player.login = login;
-		player.password = password;
+		return Player(id, login, password);
 	}
 	catch(Poco::Data::DataException const& ex)
 	{
 		std::cerr << ex.displayText() << std::endl;
 		throw;
 	}
-	return player;
 }
 
 boost::optional<Player> DataBase::getPlayer(std::string const& login,
     std::string const& password
                                            ) const
 {
-	Player player;
 	typedef Tuple<size_t, std::string, std::string> PlayerTmp;
 	std::vector<PlayerTmp> playerList;
 	(*session_) <<
@@ -176,15 +171,12 @@ boost::optional<Player> DataBase::getPlayer(std::string const& login,
 	            into(playerList), use(login), use(password), now;
 	if(playerList.size() != 1)
 		return boost::optional<Player>();
-	player.id = playerList.front().get<0>();
-	player.login = playerList.front().get<1>();
-	player.password = playerList.front().get<2>();
-	return player;
+	return Player(playerList.front().get<0>(), login, password);
 }
 
 Player DataBase::getPlayer(Player::ID id) const
 {
-	Player player;
+	Player player(666, "bad", "bad");
 	typedef Tuple<size_t, std::string, std::string> PlayerTmp;
 	std::vector<PlayerTmp> playerList;
 	(*session_) <<
@@ -362,7 +354,6 @@ std::vector<Event> DataBase::getFleetEvents(
 {
 	std::vector<Event> out;
 	std::vector<DBEvent> dbEvents;
-	Player player;
 	(*session_) <<
 	            "SELECT * FROM Event "
 	            "WHERE playerID = ? AND fleetID = ? "

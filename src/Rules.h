@@ -4,24 +4,9 @@
 #include "Model.h"
 #include <boost/range/adaptor/map.hpp>
 
-inline void onPlanetLose(Coord planetCoord, Universe& univ)
-{
-	Planet& planet = univ.planetMap[planetCoord];
-	if(univ.playerMap[planet.playerId].mainPlanet != planetCoord)
-	{
-		planet.playerId = Player::NoId;
-		planet.buildingList.assign(planet.buildingList.size(), 0);
-		planet.taskQueue.clear();
-		Coord const coord = planet.coord;
-		Coord const parent = planet.parentCoord;
-		for(auto & fleet: univ.fleetMap | boost::adaptors::map_values)
-			if(fleet.origin == coord)
-				fleet.origin = parent;
-		for(auto & planet: univ.planetMap | boost::adaptors::map_values)
-			if(planet.parentCoord == coord)
-				planet.parentCoord = parent;
-	}
-}
+void onPlanetLose(Coord planetCoord,
+                  Universe& univ,
+                  std::unordered_map<Coord, Coord>& newParentMap);
 
 
 void getBlocklyHTML(size_t tutoLevel, std::string const& codecontext, std::ostream& out);

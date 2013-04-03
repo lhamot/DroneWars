@@ -522,33 +522,46 @@ void execFights(Universe& univ_,
 	vector<Coord> lostPlanets;
 	lostPlanets.reserve(univ_.planetMap.size());
 	typedef std::multimap<Coord, FighterPtr, CompCoord> FleetCoordMultimap;
-	FleetCoordMultimap fleetMultimap;
+	static FleetCoordMultimap fleetMultimap;
+
+	if(fleetMultimap.empty())
+		for(Planet & planet: univ_.planetMap | boost::adaptors::map_values)
+			fleetMultimap.insert(make_pair(planet.coord, FighterPtr(&planet)));
+	else
+	{
+		map_remove_erase_if(fleetMultimap, []
+		                    (FleetCoordMultimap::value_type const & nvp)
+		{
+			return nvp.second.isPlanet() == false;
+		});
+	}
 
 	//! Remplissage de la multimap de flote Coord=>flote
 	for(Fleet & fleet: univ_.fleetMap | boost::adaptors::map_values)
 		fleetMultimap.insert(make_pair(fleet.coord, FighterPtr(&fleet)));
-	for(Planet & planet: univ_.planetMap | boost::adaptors::map_values)
-		fleetMultimap.insert(make_pair(planet.coord, FighterPtr(&planet)));
 
 	std::vector<Fleet*> fleetVect;
 	//! Pour chaque coordonées, on accede au range des flotes
+	auto fleetMultimapEnd = fleetMultimap.end();
 	for(FleetCoordMultimap::iterator iter1 = fleetMultimap.begin(), iter2 = nextNot(fleetMultimap, iter1);
-	    iter1 != fleetMultimap.end();
+	    iter1 != fleetMultimapEnd;
 	    iter1 = iter2, iter2 = nextNot(fleetMultimap, iter1))
 	{
 		lockFleets.unlock(); //On peut deverouiller temporairement car on sait que
 		lockFleets.lock();   //   l'autre thread ne fera que lire les flottes(pas d'ajout)
-		auto fleetRange = make_pair(iter1, iter2);
 
-		//! - Si 0 vaisseau, on passe
-		auto testShipNumber = iter1;
-		if(testShipNumber == iter2)
-			continue;
-		++testShipNumber;
-		if(testShipNumber == iter2)
-			continue;
+		//! - Si 0 ou 1 combatant, on passe
+		{
+			auto testShipNumber = iter1;
+			if(testShipNumber == iter2)
+				continue;
+			++testShipNumber;
+			if(testShipNumber == iter2)
+				continue;
+		}
 
 		//! - On remplis le tableau de combatant a cette position
+		auto fleetRange = make_pair(iter1, iter2);
 		fleetVect.clear();
 		Planet* planetPtr = nullptr;
 		for(FighterPtr const & fighterPtr: fleetRange | boost::adaptors::map_values)
@@ -646,8 +659,36 @@ void execFights(Universe& univ_,
 
 	UpToUniqueLock writeLock(lockFleets);
 	//! On gère chaque planete perdues(onPlanetLose)
+	std::unordered_map<Coord, Coord> newParentMap;
 	for(Coord planetCoord: lostPlanets)
-		onPlanetLose(planetCoord, univ_);
+		onPlanetLose(planetCoord, univ_, newParentMap);
+
+	//! Les planètes et flottes orpheline sont réasigné a leurs grand-parents
+	auto newParentMapEnd = newParentMap.end();
+	for(Fleet & fleet: univ_.fleetMap | boost::adaptors::map_values)
+	{
+		while(true)
+		{
+			auto iter = newParentMap.find(fleet.origin);
+			if(iter != newParentMapEnd)
+				fleet.origin = iter->second;
+			else
+				break;
+		}
+	}
+	for(Planet & planet: univ_.planetMap | boost::adaptors::map_values)
+	{
+		if(planet.playerId == Player::NoId)
+			continue;
+		while(true)
+		{
+			auto iter = newParentMap.find(planet.parentCoord);
+			if(iter != newParentMapEnd)
+				planet.parentCoord = iter->second;
+			else
+				break;
+		}
+	}
 
 	//! Suppression de toute les flottes mortes
 	for(Fleet::ID fleetID: deadFleets)

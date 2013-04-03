@@ -592,6 +592,7 @@ struct Universe
 			res += sizeof(planetKV) + planetKV.second.heap_size() + 2 * sizeof(size_t);
 		for(auto const & fleetKV: fleetMap)
 			res += sizeof(fleetKV) + fleetKV.second.heap_size() + 2 * sizeof(size_t);
+		return res;
 	}
 
 	typedef boost::shared_mutex Mutex;

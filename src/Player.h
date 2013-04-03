@@ -88,6 +88,12 @@ private:
 	std::string lastError_;
 
 public:
+	enum Target
+	{
+	  Planet,
+	  Fleet
+	};
+
 	CodeData(): failCount_(0) {}
 
 	std::string const& getBlocklyCode() const {return blocklyCode_;}
@@ -150,7 +156,7 @@ private:
 	}
 
 public:
-	Player() {} //pour boost::serialization
+	Player() {} //pour boost::serialization et std::map
 
 	typedef size_t ID;
 	static ID const NoId = 0;

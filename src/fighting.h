@@ -31,6 +31,12 @@ public:
 		else
 			return planet_;
 	}
+
+	bool operator == (FighterPtr const& other) const
+	{
+		return isPlanet_ == other.isPlanet_ &&
+		       (void*)fleet_ == (void*)other.fleet_;
+	}
 };
 
 //! Planet peut etre NULL
