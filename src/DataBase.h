@@ -11,6 +11,12 @@ class DataBase
 {
 	std::unique_ptr<Poco::Data::Session> session_;
 public:
+	class Exception : public std::runtime_error
+	{
+	public:
+		Exception(std::string const& message): std::runtime_error(message) {}
+	};
+
 	DataBase();
 	~DataBase();
 
@@ -33,13 +39,34 @@ public:
 
 	void removeOldEvents();
 
-	//void addCodeData(Player::ID pid, CodeData::Target target, CodeData const& codeData);
+	size_t addScript(Player::ID pid,
+	                 CodeData::Target target,
+	                 std::string const& code);
+
+	size_t addBlocklyCode(Player::ID pid,
+	                      CodeData::Target target,
+	                      std::string const& code);
+
+	//CodeData getCodeData(size_t codeId) const;
+
+	CodeData getPlayerCode(Player::ID pid, CodeData::Target) const;
+
+	struct CodeError
+	{
+		size_t codeDataId;
+		std::string message;
+	};
+	void addCodeErrors(std::vector<CodeError> const& errors);
+
+	void addCodeError(size_t scriptId, std::string const& message);
 
 	size_t addFightReport(FightReport const& report);
 
 	void addFightReports(std::vector<FightReport> const& reports);
 
-	FightReport DataBase::getFightReport(size_t reportID);
+	FightReport getFightReport(size_t reportID);
+
+	void eraseAccount(Player::ID pid);
 };
 
 #endif //__DRONEWARS_DATABASE__

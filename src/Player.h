@@ -74,62 +74,36 @@ static size_t const MaxStringSize = 256;
 
 struct CodeData
 {
-private:
-	friend class boost::serialization::access;
-	template<class Archive>
-	void serialize(Archive& ar, const unsigned int)
-	{
-		ar& blocklyCode_& code_& failCount_& lastError_;
-	}
-
-	std::string blocklyCode_;
-	std::string code_;
-	size_t failCount_;
-	std::string lastError_;
-
-public:
 	enum Target
 	{
 	  Planet,
 	  Fleet
 	};
 
-	CodeData(): failCount_(0) {}
+	size_t id;
+	std::string code;
+	std::string blocklyCode;
+	std::string lastError;
 
-	std::string const& getBlocklyCode() const {return blocklyCode_;}
+	CodeData(): id(0) {}
 
-	std::string const& getCode() const {return code_;}
-
-	size_t getFailCount() const {return failCount_;}
-
-	std::string const& getLastError() const {return lastError_;}
-
-	void setCode(std::string const& newCode)
+	CodeData(CodeData const& other):
+		id(other.id),
+		code(other.code),
+		blocklyCode(other.blocklyCode),
+		lastError(other.lastError)
 	{
-		code_ = newCode;
-		failCount_ = 0;
-		lastError_.clear();
 	}
 
-	void setBlocklyCode(std::string const& newCode)
+	CodeData& operator=(CodeData other)
 	{
-		blocklyCode_ = newCode;
-	}
-
-	void newError(std::string newError)//Pour profiter du NRVO quand newError est temporaire
-	{
-		lastError_.swap(newError);
-		++failCount_;
-	}
-
-	size_t heap_size() const
-	{
-		return
-		  sizeof(blocklyCode_.capacity()) +
-		  sizeof(code_.capacity()) +
-		  sizeof(lastError_.capacity());
+		std::swap(id, other.id);
+		std::swap(code, other.code);
+		std::swap(blocklyCode, other.blocklyCode);
+		std::swap(lastError, other.lastError);
 	}
 };
+
 
 struct Player
 {
@@ -141,8 +115,6 @@ private:
 		ar& id;
 		ar& login;
 		ar& password;
-		ar& fleetsCode;
-		ar& planetsCode;
 		ar& tutoDisplayed;
 		ar& mainPlanet;
 		if(version < 1)
@@ -163,8 +135,6 @@ public:
 	ID id;
 	std::string login;
 	std::string password;
-	CodeData fleetsCode;
-	CodeData planetsCode;
 	static size_t const MaxCodeSize = 32 * 1024;
 	static size_t const MaxBlocklySize = MaxCodeSize * 8;
 	std::map<std::string, size_t> tutoDisplayed;
@@ -175,9 +145,7 @@ public:
 	{
 		size_t size =
 		  sizeof(login.capacity()) +
-		  sizeof(password.capacity()) +
-		  fleetsCode.heap_size() +
-		  planetsCode.heap_size();
+		  sizeof(password.capacity());
 		for(std::pair<std::string, size_t> const & kv: tutoDisplayed)
 			size += sizeof(kv) + kv.first.capacity() + sizeof(size_t) * 2;
 		return size;
@@ -198,7 +166,6 @@ public:
 	}
 };
 
-BOOST_CLASS_VERSION(Player, 1);
 
 static char const* const CoddingLevelTag = "BlocklyCodding";
 

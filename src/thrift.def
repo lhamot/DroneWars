@@ -49,7 +49,6 @@ struct CodeData
 {
 	1: string blocklyCode
 	2: string code
-	3: i32 failCount
 	4: string lastError
 }
 

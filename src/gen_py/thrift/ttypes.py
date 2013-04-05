@@ -499,7 +499,6 @@ class CodeData:
   Attributes:
    - blocklyCode
    - code
-   - failCount
    - lastError
   """
 
@@ -507,14 +506,13 @@ class CodeData:
     None, # 0
     (1, TType.STRING, 'blocklyCode', None, None, ), # 1
     (2, TType.STRING, 'code', None, None, ), # 2
-    (3, TType.I32, 'failCount', None, None, ), # 3
+    None, # 3
     (4, TType.STRING, 'lastError', None, None, ), # 4
   )
 
-  def __init__(self, blocklyCode=None, code=None, failCount=None, lastError=None,):
+  def __init__(self, blocklyCode=None, code=None, lastError=None,):
     self.blocklyCode = blocklyCode
     self.code = code
-    self.failCount = failCount
     self.lastError = lastError
 
   def read(self, iprot):
@@ -534,11 +532,6 @@ class CodeData:
       elif fid == 2:
         if ftype == TType.STRING:
           self.code = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 3:
-        if ftype == TType.I32:
-          self.failCount = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 4:
@@ -563,10 +556,6 @@ class CodeData:
     if self.code is not None:
       oprot.writeFieldBegin('code', TType.STRING, 2)
       oprot.writeString(self.code)
-      oprot.writeFieldEnd()
-    if self.failCount is not None:
-      oprot.writeFieldBegin('failCount', TType.I32, 3)
-      oprot.writeI32(self.failCount)
       oprot.writeFieldEnd()
     if self.lastError is not None:
       oprot.writeFieldBegin('lastError', TType.STRING, 4)

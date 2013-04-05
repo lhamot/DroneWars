@@ -346,10 +346,9 @@ void swap(Event& a, Event& b);
 
 typedef struct _CodeData__isset
 {
-	_CodeData__isset() : blocklyCode(false), code(false), failCount(false), lastError(false) {}
+	_CodeData__isset() : blocklyCode(false), code(false), lastError(false) {}
 	bool blocklyCode;
 	bool code;
-	bool failCount;
 	bool lastError;
 } _CodeData__isset;
 
@@ -357,10 +356,10 @@ class CodeData
 {
 public:
 
-	static const char* ascii_fingerprint; // = "AC16F1200213405F9A9267FCBF95F39A";
-	static const uint8_t binary_fingerprint[16]; // = {0xAC,0x16,0xF1,0x20,0x02,0x13,0x40,0x5F,0x9A,0x92,0x67,0xFC,0xBF,0x95,0xF3,0x9A};
+	static const char* ascii_fingerprint; // = "8C927FC383653B5F72B71AAB46CCBF55";
+	static const uint8_t binary_fingerprint[16]; // = {0x8C,0x92,0x7F,0xC3,0x83,0x65,0x3B,0x5F,0x72,0xB7,0x1A,0xAB,0x46,0xCC,0xBF,0x55};
 
-	CodeData() : blocklyCode(), code(), failCount(0), lastError()
+	CodeData() : blocklyCode(), code(), lastError()
 	{
 	}
 
@@ -368,7 +367,6 @@ public:
 
 	std::string blocklyCode;
 	std::string code;
-	int32_t failCount;
 	std::string lastError;
 
 	_CodeData__isset __isset;
@@ -383,11 +381,6 @@ public:
 		code = val;
 	}
 
-	void __set_failCount(const int32_t val)
-	{
-		failCount = val;
-	}
-
 	void __set_lastError(const std::string& val)
 	{
 		lastError = val;
@@ -398,8 +391,6 @@ public:
 		if(!(blocklyCode == rhs.blocklyCode))
 			return false;
 		if(!(code == rhs.code))
-			return false;
-		if(!(failCount == rhs.failCount))
 			return false;
 		if(!(lastError == rhs.lastError))
 			return false;
@@ -436,8 +427,8 @@ class Player
 {
 public:
 
-	static const char* ascii_fingerprint; // = "1B41F2EFF95CDAD68DBDF7AC4B31DD2E";
-	static const uint8_t binary_fingerprint[16]; // = {0x1B,0x41,0xF2,0xEF,0xF9,0x5C,0xDA,0xD6,0x8D,0xBD,0xF7,0xAC,0x4B,0x31,0xDD,0x2E};
+	static const char* ascii_fingerprint; // = "4862F5110DB18658E63B567FEBEF8456";
+	static const uint8_t binary_fingerprint[16]; // = {0x48,0x62,0xF5,0x11,0x0D,0xB1,0x86,0x58,0xE6,0x3B,0x56,0x7F,0xEB,0xEF,0x84,0x56};
 
 	Player() : id(0), login(), password(), score(0LL)
 	{
@@ -1619,8 +1610,8 @@ class Universe
 {
 public:
 
-	static const char* ascii_fingerprint; // = "546166985BD102D195E59D65D75D410C";
-	static const uint8_t binary_fingerprint[16]; // = {0x54,0x61,0x66,0x98,0x5B,0xD1,0x02,0xD1,0x95,0xE5,0x9D,0x65,0xD7,0x5D,0x41,0x0C};
+	static const char* ascii_fingerprint; // = "FF049B27778334A529CB5EA072BC4FD2";
+	static const uint8_t binary_fingerprint[16]; // = {0xFF,0x04,0x9B,0x27,0x77,0x83,0x34,0xA5,0x29,0xCB,0x5E,0xA0,0x72,0xBC,0x4F,0xD2};
 
 	Universe() : nextPlayerID(0), nextFleetID(0), time(0)
 	{
@@ -1715,8 +1706,8 @@ class OptionalPlayer
 {
 public:
 
-	static const char* ascii_fingerprint; // = "DE3397D8343568695BAD2DF24828C095";
-	static const uint8_t binary_fingerprint[16]; // = {0xDE,0x33,0x97,0xD8,0x34,0x35,0x68,0x69,0x5B,0xAD,0x2D,0xF2,0x48,0x28,0xC0,0x95};
+	static const char* ascii_fingerprint; // = "38C0E72FCEA186061C3C2B38B437865E";
+	static const uint8_t binary_fingerprint[16]; // = {0x38,0xC0,0xE7,0x2F,0xCE,0xA1,0x86,0x06,0x1C,0x3C,0x2B,0x38,0xB4,0x37,0x86,0x5E};
 
 	OptionalPlayer()
 	{

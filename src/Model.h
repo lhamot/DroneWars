@@ -374,8 +374,6 @@ struct Fleet
 	}
 };
 
-BOOST_CLASS_VERSION(Fleet, 1);
-
 
 struct FleetAction
 {
@@ -697,7 +695,7 @@ bool canDrop(Fleet const& fleet, Planet const& planet);
 
 void drop(Fleet& fleet, Planet& planet);
 
-void eraseAccount(Universe& univ, Player::ID pid);
+void eraseAccount(Universe& univ, DataBase& database, Player::ID pid);
 
 bool canPay(RessourceSet const& stock, RessourceSet const& price);
 

@@ -4,6 +4,7 @@
 #include <boost/thread/locks.hpp>
 #include <luabind/luabind.hpp>
 #include "Model.h"
+#include "DataBase.h"
 #include <boost/chrono.hpp>
 
 namespace LuaTools
@@ -15,7 +16,14 @@ struct PlayerCodes
 {
 	//Si une clef n'est pas trouvé dans une ObjectMap, ca veut dire que le code
 	// à été invalidé
-	typedef std::map<std::string, luabind::object> ObjectMap;
+	struct ObjectMap
+	{
+		typedef std::map<std::string, luabind::object> Map;
+		size_t scriptID;
+		Map functions;
+
+		ObjectMap(): scriptID(0) {}
+	};
 	ObjectMap fleetsCode;
 	ObjectMap planetsCode;
 };
@@ -28,7 +36,7 @@ class Simulation
 	Simulation(Simulation const&);
 	Simulation& operator = (Simulation const&);
 public:
-	Simulation(Universe& univ, DataBase& database);
+	Simulation(Universe& univ);
 
 	void reloadPlayer(Player::ID pid);
 
@@ -52,7 +60,7 @@ private:
 	std::set<Player::ID> playerToReload_;
 	boost::chrono::system_clock::time_point roundStart;
 	Universe& univ_;
-	DataBase& database_;
+	DataBase database_;
 	mutable boost::thread savingThread_;
 };
 

@@ -11,7 +11,7 @@ typedef boost::unique_lock<Universe::Mutex> UniqueLock;
 typedef boost::shared_lock<Universe::Mutex> SharedLock;
 
 Engine::Engine():
-	simulation_(new Simulation(univ_, database_))
+	simulation_(new Simulation(univ_))
 {
 	boost::filesystem::directory_iterator dir("save/"), end;
 
@@ -39,7 +39,10 @@ Engine::Engine():
 		load(ss.str(), version);
 	}
 	else
-		construct(univ_, database_);
+	{
+		DataBase database;
+		construct(univ_, database);
+	}
 	start();
 }
 
@@ -80,7 +83,7 @@ void Engine::stop()
 }
 
 
-bool Engine::addPlayer(std::string const& login, std::string const& password)
+bool Engine::addPlayer(DataBase& database, std::string const& login, std::string const& password)
 {
 	UniqueLock lock(univ_.planetsFleetsReportsmutex);
 	UniqueLock lockPlayers(univ_.playersMutex);
@@ -98,7 +101,7 @@ bool Engine::addPlayer(std::string const& login, std::string const& password)
 	if(iter != univ_.playerMap.end())
 		return false;
 
-	Player::ID const pid = createPlayer(univ_, database_, login, password); //Modifie le joueur ET une planete
+	Player::ID const pid = createPlayer(univ_, database, login, password); //Modifie le joueur ET une planete
 	simulation_->reloadPlayer(pid);
 	return true;
 }
@@ -130,57 +133,51 @@ std::vector<Planet> Engine::getPlayerPlanets(Player::ID pid) const
 }
 
 
-void Engine::setPlayerFleetCode(Player::ID pid, std::string const& code)
+void Engine::setPlayerFleetCode(DataBase& database, Player::ID pid, std::string const& code)
 {
-	UniqueLock lock(univ_.playersMutex);
 	if(code.size() > Player::MaxCodeSize)
 		BOOST_THROW_EXCEPTION(InvalidData("Engine::setPlayerFleetCode - Code size too long"));
-	mapFind(univ_.playerMap, pid)->second.fleetsCode.setCode(code);
+	database.addScript(pid, CodeData::Fleet, code);
 	simulation_->reloadPlayer(pid);
 }
 
 
-void Engine::setPlayerPlanetCode(Player::ID pid, std::string const& code)
+void Engine::setPlayerPlanetCode(DataBase& database, Player::ID pid, std::string const& code)
 {
-	UniqueLock lock(univ_.playersMutex);
 	if(code.size() > Player::MaxCodeSize)
 		BOOST_THROW_EXCEPTION(InvalidData("Engine::setPlayerPlanetCode - Code size too long"));
-	mapFind(univ_.playerMap, pid)->second.planetsCode.setCode(code);
+	database.addScript(pid, CodeData::Planet, code);
 	simulation_->reloadPlayer(pid);
 }
 
 
-void Engine::setPlayerFleetBlocklyCode(Player::ID pid, std::string const& code)
+void Engine::setPlayerFleetBlocklyCode(DataBase& database, Player::ID pid, std::string const& code)
 {
-	UniqueLock lock(univ_.playersMutex);
 	if(code.size() > Player::MaxBlocklySize)
 		BOOST_THROW_EXCEPTION(InvalidData("Engine::setPlayerFleetBlocklyCode - Code size too long"));
-	mapFind(univ_.playerMap, pid)->second.fleetsCode.setBlocklyCode(code);
+	database.addBlocklyCode(pid, CodeData::Fleet, code);
 	simulation_->reloadPlayer(pid);
 }
 
 
-void Engine::setPlayerPlanetBlocklyCode(Player::ID pid, std::string const& code)
+void Engine::setPlayerPlanetBlocklyCode(DataBase& database, Player::ID pid, std::string const& code)
 {
-	UniqueLock lock(univ_.playersMutex);
 	if(code.size() > Player::MaxBlocklySize)
 		BOOST_THROW_EXCEPTION(InvalidData("Engine::setPlayerPlanetBlocklyCode - Code size too long"));
-	mapFind(univ_.playerMap, pid)->second.planetsCode.setBlocklyCode(code);
+	database.addBlocklyCode(pid, CodeData::Planet, code);
 	simulation_->reloadPlayer(pid);
 }
 
 
-CodeData Engine::getPlayerFleetCode(Player::ID pid) const
+CodeData Engine::getPlayerFleetCode(DataBase& database, Player::ID pid) const
 {
-	SharedLock lock(univ_.playersMutex);
-	return 	mapFind(univ_.playerMap, pid)->second.fleetsCode;
+	return database.getPlayerCode(pid, CodeData::Fleet);
 }
 
 
-CodeData Engine::getPlayerPlanetCode(Player::ID pid) const
+CodeData Engine::getPlayerPlanetCode(DataBase& database, Player::ID pid) const
 {
-	SharedLock lock(univ_.playersMutex);
-	return 	mapFind(univ_.playerMap, pid)->second.planetsCode;
+	return database.getPlayerCode(pid, CodeData::Planet);
 }
 
 
@@ -264,9 +261,15 @@ TimeInfo Engine::getTimeInfo() const
 }
 
 
-void Engine::eraseAccount(Player::ID pid)
+void Engine::eraseAccount(DataBase& database, Player::ID pid)
 {
 	UniqueLock lock(univ_.playersMutex);
-	::eraseAccount(univ_, pid);
+	::eraseAccount(univ_, database, pid);
+	simulation_->reloadPlayer(pid);
+}
+
+
+void Engine::reloadPlayer(Player::ID pid)
+{
 	simulation_->reloadPlayer(pid);
 }

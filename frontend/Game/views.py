@@ -437,7 +437,7 @@ def BlocklyPlanetsCodesView(request):
     FirstSaveTag = "firstSave"
     pid = request.session["PlayerID"]
     service = createEngineClient()
-    player = service.getPlayer(pid)
+    player = None
 
     message = ""
     if request.method == "POST":
@@ -448,13 +448,15 @@ def BlocklyPlanetsCodesView(request):
         elif "blocklyXML" in request.POST:
             service.setPlayerPlanetBlocklyCode(pid, request.POST["blocklyXML"].encode("utf8"))
             service.setPlayerPlanetCode(pid, request.POST["scriptXML"].encode("utf8"))
+            player = service.getPlayer(pid)
             message = _("Code successfully saved")
             firstSave = player.tutoDisplayed.get(FirstSaveTag, 0);
             if firstSave == 0:
                 service.incrementTutoDisplayed(pid, FirstSaveTag)
                 message = _("See in planets tab if the building is in progress")
    
-    player = service.getPlayer(pid) #Redemendé car code modifié
+    if player == None:
+        player = service.getPlayer(pid)
     plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0)
     codeData = player.planetsCode
     tutosText = N_("BLOCKLY_TUTO_" + str(plLvl)) if plLvl <= 8 else None

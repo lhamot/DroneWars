@@ -91,7 +91,7 @@ Player::ID createPlayer(Universe& univ,
 				BOOST_THROW_EXCEPTION(std::ios::failure("Can't open blocklyFleetDefaultCode.xml"));
 			boost::iostreams::copy(fleetFile, blocklyFleetDefaultCode);
 		}
-		player.fleetsCode.setBlocklyCode(
+		std::string const blocklyCode =
 		  (boost::format(blocklyFleetDefaultCode.str()) %
 		   BL::gettext("my_fleet") %
 		   BL::gettext("otherFleet") %
@@ -99,8 +99,8 @@ Player::ID createPlayer(Universe& univ,
 		   BL::gettext("order") %
 		   BL::gettext("DO_GATHER_CODE_COMMENT") %
 		   BL::gettext("DO_FIGHT_CODE_COMMENT") %
-		   BL::gettext("FLEET_ACTION_CODE_COMMENT")).str());
-		player.fleetsCode.setCode(
+		   BL::gettext("FLEET_ACTION_CODE_COMMENT")).str();
+		std::string const code =
 		  "function AI:do_gather(myFleet, otherFleet)\n"
 		  "  return true\n"
 		  "end\n"
@@ -110,8 +110,9 @@ Player::ID createPlayer(Universe& univ,
 		  "function AI:action(myFleet, planet)\n"
 		  "  order = FleetAction(FleetAction.Nothing,Direction())\n"
 		  "  return order\n"
-		  "end"
-		);
+		  "end";
+		database.addScript(player.id, CodeData::Fleet, code);
+		database.addBlocklyCode(player.id, CodeData::Fleet, blocklyCode);
 	}
 
 	{
@@ -122,16 +123,18 @@ Player::ID createPlayer(Universe& univ,
 				BOOST_THROW_EXCEPTION(std::ios::failure("Can't open blocklyPlanetDefaultCode.xml"));
 			boost::iostreams::copy(planetFile, blocklyPlanetDefaultCode);
 		}
-		player.planetsCode.setBlocklyCode(
+		std::string const blocklyCode =
 		  (boost::format(blocklyPlanetDefaultCode.str()) %
 		   BL::gettext("my_planet") %
 		   BL::gettext("fleets") %
 		   BL::gettext("order") %
-		   BL::gettext("PLANET_ACTION_CODE_COMMENT")).str());
-		player.planetsCode.setCode(
+		   BL::gettext("PLANET_ACTION_CODE_COMMENT")).str();
+		std::string const code =
 		  "function AI(planet, fleets)\n"
 		  "  return noPlanetAction()\n"
-		  "end");
+		  "end";
+		database.addScript(player.id, CodeData::Planet, code);
+		database.addBlocklyCode(player.id, CodeData::Planet, blocklyCode);
 	}
 	Universe::PlayerMap::iterator playerIter;
 	bool added = false;
@@ -192,58 +195,18 @@ void construct(Universe& univ, DataBase& database)
 	for(int i = 0; i < 100; ++i)
 	{
 		Player::ID pid = createPlayer(univ, database, nameGen(), password);
-		Player& player = mapFind(univ.playerMap, pid)->second;
-		player.planetsCode.setCode(
-		  "function AI(planet, fleets)\n"
-		  "order = makeShip(Ship.Mosquito)\n"
-		  "if planet.buildingList[Building.MetalMine] < (4) then\n"
-		  "  order = makeBuilding(Building.MetalMine)\n"
-		  "elseif planet.buildingList[Building.Factory] == (0) then\n"
-		  "  order = makeBuilding(Building.Factory)\n"
-		  "elseif planet.cannonTab[Cannon.Cannon1] < (10) then\n"
-		  "  order = makeCannon(Cannon.Cannon1)\n"
-		  "else\n"
-		  "  for _,fleet in ipairs(fleets) do\n"
-		  "    if fleet.shipList[Ship.Queen] == (0) then\n"
-		  "      order = makeShip(Ship.Queen)\n"
-		  "    elseif fleet.shipList[Ship.Mosquito] < (10) then\n"
-		  "      order = makeShip(Ship.Mosquito)\n"
-		  "    end\n"
-		  "    ::continue::\n"
-		  "  end\n"
-		  "end\n"
-		  "return order\n"
-		  "end");
-		player.fleetsCode.setCode(
-		  "function AI:do_fight(myFleet, otherFleet)\n"
-		  "  return true\n"
-		  "end\n"
-		  "function AI:do_gather(myFleet, otherFleet)\n"
-		  "  return true\n"
-		  "end\n"
-		  "function AI:action(myFleet, planet)\n"
-		  "  if myFleet.ressourceSet:at(Ressource.Metal) > (2000) then\n"
-		  "    order = FleetAction(FleetAction.Move,directionFromTo(myFleet.coord,myFleet.origin))\n"
-		  "  else\n"
-		  "    order = FleetAction(FleetAction.Move,directionRandom())\n"
-		  "  end\n"
-		  "  if planet then\n"
-		  "    if planet:isFree() then\n"
-		  "      if myFleet.shipList[Ship.Queen] > (0) then\n"
-		  "        order = FleetAction(FleetAction.Colonize,Direction())\n"
-		  "      elseif planet.ressourceSet ~= RessourceSet(0,0,0) then\n"
-		  "        order = FleetAction(FleetAction.Harvest,Direction())\n"
-		  "      end\n"
-		  "    elseif planet.playerId == myFleet.playerId then\n"
-		  "      if myFleet.ressourceSet ~= RessourceSet(0,0,0) then\n"
-		  "        order = FleetAction(FleetAction.Drop,Direction())\n"
-		  "      elseif myFleet.shipList[Ship.Mosquito] < (10) then\n"
-		  "        order = FleetAction(FleetAction.Nothing,Direction())\n"
-		  "      end\n"
-		  "    end\n"
-		  "  end\n"
-		  "  return order\n"
-		  "end\n");
+		{
+			ifstream file("planetScript.lua");
+			std::string script;
+			std::getline(file, script, char(0));
+			database.addScript(pid, CodeData::Planet, script);
+		}
+		{
+			ifstream file("fleetScript.lua");
+			std::string script;
+			std::getline(file, script, char(0));
+			database.addScript(pid, CodeData::Fleet, script);
+		}
 	}
 };
 
@@ -729,11 +692,12 @@ void drop(Fleet& fleet, Planet& planet)
 }
 
 
-void eraseAccount(Universe& univ, Player::ID pid)
+void eraseAccount(Universe& univ, DataBase& database, Player::ID pid)
 {
 	Player& player = mapFind(univ.playerMap, pid)->second;
 	player.login = nameGen();
 	player.password = "gfd8fg451g51df8hgdf";
-	player.fleetsCode.setCode("");
-	player.planetsCode.setCode("");
+	database.eraseAccount(pid);
+	database.addScript(pid, CodeData::Planet, "");
+	database.addScript(pid, CodeData::Fleet, "");
 }

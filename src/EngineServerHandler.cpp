@@ -150,10 +150,9 @@ ndw::Planet planetToThrift(Planet const& planet)
 
 void codeDataCppToThrift(CodeData const& in, ndw::CodeData& out)
 {
-	out.blocklyCode = in.getBlocklyCode();
-	out.code = in.getCode();
-	out.failCount = numCast(in.getFailCount());
-	out.lastError = in.getLastError();
+	out.blocklyCode = in.blocklyCode;
+	out.code = in.code;
+	out.lastError = in.lastError;
 }
 
 ndw::Player playerToThrift(Player const& player)
@@ -162,8 +161,6 @@ ndw::Player playerToThrift(Player const& player)
 	outPlayer.id          = numCast(player.id);
 	outPlayer.login       = player.login;
 	outPlayer.password    = player.password;
-	codeDataCppToThrift(player.fleetsCode, outPlayer.fleetsCode);
-	codeDataCppToThrift(player.planetsCode, outPlayer.planetsCode);
 	outPlayer.mainPlanet = coordToThrift(player.mainPlanet);
 	for(auto tutoNVP: player.tutoDisplayed)
 		outPlayer.tutoDisplayed[tutoNVP.first] = numCast(tutoNVP.second);
@@ -228,8 +225,8 @@ void EngineServerHandler::stop()
 
 bool EngineServerHandler::addPlayer(const std::string& login, const std::string& password)
 {
-	LOG4CPLUS_TRACE(logger, "login: " << login);
-	return engine_.addPlayer(login, password);
+	LOG4CPLUS_TRACE(logger, "login: " << login << " password : " << password);
+	return engine_.addPlayer(database_, login, password);
 }
 
 
@@ -375,42 +372,42 @@ void EngineServerHandler::getPlayerPlanets(
 void EngineServerHandler::setPlayerFleetCode(const ndw::Player_ID pid, const std::string& code)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
-	engine_.setPlayerFleetCode(pid, code);
+	engine_.setPlayerFleetCode(database_, pid, code);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 void EngineServerHandler::setPlayerPlanetCode(const ndw::Player_ID pid, const std::string& code)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
-	engine_.setPlayerPlanetCode(pid, code);
+	engine_.setPlayerPlanetCode(database_, pid, code);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 void EngineServerHandler::setPlayerFleetBlocklyCode(const ndw::Player_ID pid, const std::string& code)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
-	engine_.setPlayerFleetBlocklyCode(pid, code);
+	engine_.setPlayerFleetBlocklyCode(database_, pid, code);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 void EngineServerHandler::setPlayerPlanetBlocklyCode(const ndw::Player_ID pid, const std::string& code)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
-	engine_.setPlayerPlanetBlocklyCode(pid, code);
+	engine_.setPlayerPlanetBlocklyCode(database_, pid, code);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 void EngineServerHandler::getPlayerFleetCode(ndw::CodeData& _return, const ndw::Player_ID pid)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid);
-	codeDataCppToThrift(engine_.getPlayerFleetCode(pid), _return);
+	codeDataCppToThrift(engine_.getPlayerFleetCode(database_, pid), _return);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 void EngineServerHandler::getPlayerPlanetCode(ndw::CodeData& _return, const ndw::Player_ID pid)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid);
-	codeDataCppToThrift(engine_.getPlayerPlanetCode(pid), _return);
+	codeDataCppToThrift(engine_.getPlayerPlanetCode(database_, pid), _return);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
@@ -423,11 +420,15 @@ void EngineServerHandler::getPlayers(std::vector<ndw::Player>& _return)
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
-void EngineServerHandler::getPlayer(ndw::Player& _return, const ndw::Player_ID pid)
+void EngineServerHandler::getPlayer(ndw::Player& outPlayer, const ndw::Player_ID pid)
 {
 	//TODO : Séparer en deux requetes differentes
 	LOG4CPLUS_TRACE(logger, "pid : " << pid);
-	_return = playerToThrift(engine_.getPlayer(pid));
+	outPlayer = playerToThrift(engine_.getPlayer(pid));
+	CodeData const fleetCode = database_.getPlayerCode(pid, CodeData::Fleet);
+	codeDataCppToThrift(fleetCode, outPlayer.fleetsCode);
+	CodeData const planetCode = database_.getPlayerCode(pid, CodeData::Planet);
+	codeDataCppToThrift(planetCode, outPlayer.planetsCode);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
@@ -466,7 +467,14 @@ void EngineServerHandler::logPlayer(ndw::OptionalPlayer& _return, const std::str
 	LOG4CPLUS_TRACE(logger, "login : " << login << " password : " << password);
 	optional<Player> optPlayer = engine_.getPlayer(login, password);
 	if(optPlayer)
+	{
 		_return.__set_player(playerToThrift(optPlayer.get()));
+		ndw::Player& outPlayer = _return.player;
+		codeDataCppToThrift(database_.getPlayerCode(outPlayer.id, CodeData::Fleet),
+		                    outPlayer.fleetsCode);
+		codeDataCppToThrift(database_.getPlayerCode(_return.player.id, CodeData::Planet),
+		                    outPlayer.planetsCode);
+	}
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
@@ -501,7 +509,7 @@ bool EngineServerHandler::eraseAccount(const int32_t pid, const std::string& pas
 	Player player = engine_.getPlayer(pid);
 	if(player.password == password)
 	{
-		engine_.eraseAccount(pid);
+		engine_.eraseAccount(database_, pid);
 		LOG4CPLUS_TRACE(logger, "true");
 		return true;
 	}

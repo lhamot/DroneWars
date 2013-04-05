@@ -37,9 +37,9 @@ public:
 
 	std::vector<Planet> getPlayerPlanets(Player::ID pid) const;
 
-	CodeData getPlayerFleetCode(Player::ID pid) const;
+	CodeData getPlayerFleetCode(DataBase& database, Player::ID pid) const;
 
-	CodeData getPlayerPlanetCode(Player::ID pid) const;
+	CodeData getPlayerPlanetCode(DataBase& database, Player::ID pid) const;
 
 	std::vector<Player> getPlayers() const;
 
@@ -54,25 +54,26 @@ public:
 	boost::optional<Player> getPlayer(std::string const& login, std::string const& password) const;
 
 	//Requetes qui modifient la base
-	bool addPlayer(std::string const& login, std::string const& password);
+	bool addPlayer(DataBase& database, std::string const& login, std::string const& password);
 
-	void setPlayerFleetCode(Player::ID pid, std::string const& code);
+	void setPlayerFleetCode(DataBase& database, Player::ID pid, std::string const& code);
 
-	void setPlayerPlanetCode(Player::ID pid, std::string const& code);
+	void setPlayerPlanetCode(DataBase& database, Player::ID pid, std::string const& code);
 
-	void setPlayerFleetBlocklyCode(Player::ID pid, std::string const& code);
+	void setPlayerFleetBlocklyCode(DataBase& database, Player::ID pid, std::string const& code);
 
-	void setPlayerPlanetBlocklyCode(Player::ID pid, std::string const& code);
+	void setPlayerPlanetBlocklyCode(DataBase& database, Player::ID pid, std::string const& code);
 
 	void incrementTutoDisplayed(Player::ID pid, std::string const& tutoName);
 
 	TimeInfo getTimeInfo() const;
 
-	void eraseAccount(Player::ID pid);
+	void eraseAccount(DataBase& database, Player::ID pid);
+
+	void reloadPlayer(Player::ID pid);
 
 private:
 	Universe univ_;
-	DataBase database_;
 	std::unique_ptr<Simulation> simulation_;
 	boost::thread simulating_;
 };
