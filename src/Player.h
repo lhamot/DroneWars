@@ -115,7 +115,6 @@ private:
 		ar& id;
 		ar& login;
 		ar& password;
-		ar& tutoDisplayed;
 		ar& mainPlanet;
 		if(version < 1)
 		{
@@ -137,32 +136,20 @@ public:
 	std::string password;
 	static size_t const MaxCodeSize = 32 * 1024;
 	static size_t const MaxBlocklySize = MaxCodeSize * 8;
-	std::map<std::string, size_t> tutoDisplayed;
 	Coord mainPlanet;
 	uint64_t score;
 
 	size_t heap_size() const
 	{
-		size_t size =
+		return
 		  sizeof(login.capacity()) +
 		  sizeof(password.capacity());
-		for(std::pair<std::string, size_t> const & kv: tutoDisplayed)
-			size += sizeof(kv) + kv.first.capacity() + sizeof(size_t) * 2;
-		return size;
 	}
 
 
 	Player(ID i, std::string const& lg, std::string const& pass):
 		id(i), login(lg), password(pass), score(0)
 	{
-	}
-
-	size_t getTutoLevel(char const* const tag) const
-	{
-		auto iter = tutoDisplayed.find(tag);
-		return iter == tutoDisplayed.end() ?
-		       0 :
-		       iter->second;
 	}
 };
 

@@ -162,8 +162,6 @@ ndw::Player playerToThrift(Player const& player)
 	outPlayer.login       = player.login;
 	outPlayer.password    = player.password;
 	outPlayer.mainPlanet = coordToThrift(player.mainPlanet);
-	for(auto tutoNVP: player.tutoDisplayed)
-		outPlayer.tutoDisplayed[tutoNVP.first] = numCast(tutoNVP.second);
 	outPlayer.score = numCast(player.score);
 	return outPlayer;
 }
@@ -429,6 +427,9 @@ void EngineServerHandler::getPlayer(ndw::Player& outPlayer, const ndw::Player_ID
 	codeDataCppToThrift(fleetCode, outPlayer.fleetsCode);
 	CodeData const planetCode = database_.getPlayerCode(pid, CodeData::Planet);
 	codeDataCppToThrift(planetCode, outPlayer.planetsCode);
+	std::map<std::string, size_t> const levelMap = database_.getTutoDisplayed(pid);
+	for(auto tutoNVP: levelMap)
+		outPlayer.tutoDisplayed[tutoNVP.first] = numCast(tutoNVP.second);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
@@ -474,6 +475,8 @@ void EngineServerHandler::logPlayer(ndw::OptionalPlayer& _return, const std::str
 		                    outPlayer.fleetsCode);
 		codeDataCppToThrift(database_.getPlayerCode(_return.player.id, CodeData::Planet),
 		                    outPlayer.planetsCode);
+		for(auto tutoNVP: database_.getTutoDisplayed(outPlayer.id))
+			outPlayer.tutoDisplayed[tutoNVP.first] = numCast(tutoNVP.second);
 	}
 	LOG4CPLUS_TRACE(logger, "exit");
 }
@@ -481,7 +484,7 @@ void EngineServerHandler::logPlayer(ndw::OptionalPlayer& _return, const std::str
 void EngineServerHandler::incrementTutoDisplayed(ndw::Player_ID pid, std::string const& tutoName)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " tutoName : " << tutoName);
-	engine_.incrementTutoDisplayed(pid, tutoName);
+	database_.incrementTutoDisplayed(pid, tutoName);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 

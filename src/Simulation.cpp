@@ -869,7 +869,7 @@ try
 
 	//! CheckTutos
 	LOG4CPLUS_TRACE(logger, "checkTutos start");
-	checkTutos(univ_, signals);
+	checkTutos(univ_, database_, signals);
 	LOG4CPLUS_TRACE(logger, "checkTutos end");
 
 

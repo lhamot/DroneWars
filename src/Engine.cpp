@@ -246,13 +246,6 @@ boost::optional<Player> Engine::getPlayer(
 }
 
 
-void Engine::incrementTutoDisplayed(Player::ID pid, std::string const& tutoName)
-{
-	UniqueLock lock(univ_.playersMutex);
-	mapFind(univ_.playerMap, pid)->second.tutoDisplayed[tutoName] += 1;
-}
-
-
 TimeInfo Engine::getTimeInfo() const
 {
 	SharedLock lock(univ_.planetsFleetsReportsmutex);

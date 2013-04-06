@@ -145,6 +145,18 @@ DataBase::DataBase()
 		            "  time INTEGER NOT NULL,"
 		            "  data BLOB NOT NULL"
 		            ")", now;
+
+		(*session_) <<
+		            "CREATE TABLE "
+		            "if not exists "
+		            "TutoDisplayed ("
+		            "  playerID INTEGER,"
+		            "  tag varchar(30) NOT NULL,"
+		            "  level INTEGER NOT NULL,"
+		            "  FOREIGN KEY (playerID) REFERENCES Player(id) ON DELETE CASCADE, "
+		            "  INDEX (playerID), "
+		            "  INDEX PlayerTag (playerID, tag)"
+		            ")", now;
 	}
 	DB_CATCH
 }
@@ -165,6 +177,11 @@ Player DataBase::addPlayer(std::string const& login,
 		            use(login), use(password), now;
 		size_t id = 0;
 		(*session_) << "SELECT LAST_INSERT_ID() ", into(id), now;
+		//Ajout du niveau de tutos
+		(*session_) <<
+		            "INSERT INTO TutoDisplayed "
+		            "(playerID, tag, level) "
+		            "VALUES(?, ?, ?)", use(id), use(std::string(CoddingLevelTag)), use(0), now;
 		trans.commit();
 		return Player(id, login, password);
 	}
@@ -611,13 +628,90 @@ CodeData DataBase::getPlayerCode(Player::ID pid, CodeData::Target target) const
 
 void DataBase::eraseAccount(Player::ID pid)
 {
-	std::string const login = nameGen();
-	std::string const password = "gfd8fg451g51df8hgdf";
+	try
+	{
+		std::string const login = nameGen();
+		std::string const password = "gfd8fg451g51df8hgdf";
 
-	(*session_) <<
-	            "UPDATE Player "
-	            "SET login = ?, password = ? "
-	            "WHERE id = ? ",
-	            use(login), use(password), use(pid),
-	            now;
+		(*session_) <<
+		            "UPDATE Player "
+		            "SET login = ?, password = ? "
+		            "WHERE id = ? ",
+		            use(login), use(password), use(pid),
+		            now;
+	}
+	DB_CATCH
+}
+
+
+void DataBase::incrementTutoDisplayed(std::vector<Player::ID> const& pids,
+                                      std::string const& tutoName)
+{
+	try
+	{
+		std::stringstream ss;
+		ss << "UPDATE TutoDisplayed "
+		   "SET level = level + 1 "
+		   "WHERE playerID IN (";
+		for(Player::ID pid: pids)
+			ss << pid << ",";
+		ss << "0) AND tag = ? ";
+		(*session_) << ss.str(), use(tutoName), now;
+	}
+	DB_CATCH
+}
+
+
+
+void DataBase::incrementTutoDisplayed(Player::ID pid, std::string const& tutoName)
+{
+	try
+	{
+		Transaction trans(*session_);
+		(*session_) <<
+		            "INSERT IGNORE INTO TutoDisplayed "
+		            "(playerID, tag, level) "
+		            "VALUES(?, ?, ?)", use(pid), use(tutoName), use(0), now;
+		(*session_) << "UPDATE TutoDisplayed "
+		            "SET level = level + 1 "
+		            "WHERE playerID = ? AND tag = ? ",
+		            use(pid), use(tutoName), now;
+		trans.commit();
+	}
+	DB_CATCH
+}
+
+
+DataBase::PlayerTutoMap DataBase::getTutoDisplayed(Player::ID pid) const
+{
+	try
+	{
+		PlayerTutoMap result;
+		typedef Poco::Tuple<std::string, size_t> TutoTuple;
+		std::vector<TutoTuple> tutos;
+		(*session_) <<
+		            "SELECT tag, level FROM TutoDisplayed "
+		            "WHERE playerID = ? ",
+		            use(pid), into(tutos), now;
+		for(TutoTuple const & tuto: tutos)
+			result.insert(make_pair(tuto.get<0>(), tuto.get<1>()));
+		return result;
+	}
+	DB_CATCH
+}
+
+
+std::map<Player::ID, DataBase::PlayerTutoMap> DataBase::getAllTutoDisplayed() const
+{
+	try
+	{
+		std::map<Player::ID, PlayerTutoMap> result;
+		typedef Poco::Tuple<Player::ID, std::string, size_t> TutoTuple;
+		std::vector<TutoTuple> tutos;
+		(*session_) << "SELECT * FROM TutoDisplayed", into(tutos), now;
+		for(TutoTuple const & tuto: tutos)
+			result[tuto.get<0>()].insert(make_pair(tuto.get<1>(), tuto.get<2>()));
+		return result;
+	}
+	DB_CATCH
 }

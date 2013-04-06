@@ -67,6 +67,16 @@ public:
 	FightReport getFightReport(size_t reportID);
 
 	void eraseAccount(Player::ID pid);
+
+	void incrementTutoDisplayed(std::vector<Player::ID> const& pid,
+	                            std::string const& tutoName);
+
+	void incrementTutoDisplayed(Player::ID pid, std::string const& tutoName);
+
+	typedef std::map<std::string, size_t> PlayerTutoMap;
+	PlayerTutoMap getTutoDisplayed(Player::ID pid) const;
+
+	std::map<Player::ID, PlayerTutoMap> getAllTutoDisplayed() const;
 };
 
 #endif //__DRONEWARS_DATABASE__

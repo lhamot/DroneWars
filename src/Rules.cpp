@@ -2,6 +2,7 @@
 #include "Rules.h"
 #include <boost/format.hpp>
 
+#include "DataBase.h"
 
 void onPlanetLose(Coord planetCoord,
                   Universe& univ,
@@ -103,23 +104,25 @@ typedef boost::shared_lock<Universe::Mutex> SharedLock;
 typedef boost::upgrade_lock<Universe::Mutex> UpgradeLock;
 typedef boost::upgrade_to_unique_lock<Universe::Mutex> UpToUniqueLock;
 
-void checkTutos(Universe& univ_, std::vector<Signal>& signals)
+void checkTutos(Universe& univ_, DataBase& database, std::vector<Signal>& signals)
 {
 	UpgradeLock lockPlayer(univ_.playersMutex);
 	SharedLock lockAllOthers(univ_.planetsFleetsReportsmutex);
 
-	std::vector<Player*> wisePlayer;
+	std::vector<Player::ID> wisePlayer;
 	wisePlayer.reserve(univ_.playerMap.size());
+	std::map<Player::ID, DataBase::PlayerTutoMap> allTutoMap = database.getAllTutoDisplayed();
 	for(Player & player: univ_.playerMap | boost::adaptors::map_values)
 	{
-		size_t const plLvl = player.getTutoLevel(CoddingLevelTag);
+		DataBase::PlayerTutoMap& tutoMap = allTutoMap[player.id];
+		size_t const plLvl = tutoMap[CoddingLevelTag];
 		switch(plLvl)
 		{
 		case 0: //! Cas 0 : Créer une mine de métal
 		{
 			Planet const& planet = mapFind(univ_.planetMap, player.mainPlanet)->second;
 			if(planet.buildingList[Building::MetalMine] > 0)
-				wisePlayer.push_back(&player);
+				wisePlayer.push_back(player.id);
 			break;
 		}
 		case 1: //! Cas 1 : Créer fabrique SI mine de métal a 4
@@ -127,7 +130,7 @@ void checkTutos(Universe& univ_, std::vector<Signal>& signals)
 			Planet const& planet = mapFind(univ_.planetMap, player.mainPlanet)->second;
 			if(planet.buildingList[Building::MetalMine] >= 4 &&
 			   planet.buildingList[Building::Factory] > 0)
-				wisePlayer.push_back(&player);
+				wisePlayer.push_back(player.id);
 			break;
 		}
 		case 2: //! Cas 2: Créer Vaisseau
@@ -136,7 +139,7 @@ void checkTutos(Universe& univ_, std::vector<Signal>& signals)
 			{
 				if(sig.playerID == player.id && sig.event.type == Event::ShipMade)
 				{
-					wisePlayer.push_back(&player);
+					wisePlayer.push_back(player.id);
 					break;
 				}
 			}
@@ -152,7 +155,7 @@ void checkTutos(Universe& univ_, std::vector<Signal>& signals)
 					                 univ_.fleetMap | boost::adaptors::map_values,
 					                 bind(&Fleet::playerId, _1) == player.id);
 					if(count == 3)
-						wisePlayer.push_back(&player);
+						wisePlayer.push_back(player.id);
 					break;
 				}
 			}
@@ -172,7 +175,7 @@ void checkTutos(Universe& univ_, std::vector<Signal>& signals)
 						       fleet.shipList[Ship::Mosquito] == 5;
 					});
 					if(count >= 3)
-						wisePlayer.push_back(&player);
+						wisePlayer.push_back(player.id);
 					break;
 				}
 			}
@@ -188,7 +191,7 @@ void checkTutos(Universe& univ_, std::vector<Signal>& signals)
 					fleetCoords.insert(fleet.coord);
 					if(fleetCoords.size() >= 6)
 					{
-						wisePlayer.push_back(&player);
+						wisePlayer.push_back(player.id);
 						break;
 					}
 				}
@@ -201,7 +204,7 @@ void checkTutos(Universe& univ_, std::vector<Signal>& signals)
 			{
 				if(sig.playerID == player.id && sig.event.type == Event::PlanetHarvested)
 				{
-					wisePlayer.push_back(&player);
+					wisePlayer.push_back(player.id);
 					break;
 				}
 			}
@@ -213,7 +216,7 @@ void checkTutos(Universe& univ_, std::vector<Signal>& signals)
 			{
 				if(sig.playerID == player.id && sig.event.type == Event::FleetDrop)
 				{
-					wisePlayer.push_back(&player);
+					wisePlayer.push_back(player.id);
 					break;
 				}
 			}
@@ -225,7 +228,7 @@ void checkTutos(Universe& univ_, std::vector<Signal>& signals)
 			{
 				if(sig.playerID == player.id && sig.event.type == Event::PlanetColonized)
 				{
-					wisePlayer.push_back(&player);
+					wisePlayer.push_back(player.id);
 					break;
 				}
 			}
@@ -240,8 +243,7 @@ void checkTutos(Universe& univ_, std::vector<Signal>& signals)
 	}
 
 	UpToUniqueLock writeLock(lockPlayer);
-	for(Player * player: wisePlayer)
-		player->tutoDisplayed[CoddingLevelTag] += 1;
+	database.incrementTutoDisplayed(wisePlayer, CoddingLevelTag);
 }
 
 

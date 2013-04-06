@@ -64,8 +64,6 @@ public:
 
 	void setPlayerPlanetBlocklyCode(DataBase& database, Player::ID pid, std::string const& code);
 
-	void incrementTutoDisplayed(Player::ID pid, std::string const& tutoName);
-
 	TimeInfo getTimeInfo() const;
 
 	void eraseAccount(DataBase& database, Player::ID pid);
