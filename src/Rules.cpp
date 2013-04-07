@@ -6,10 +6,11 @@
 
 void onPlanetLose(Coord planetCoord,
                   Universe& univ,
+                  std::map<size_t, Player> const& playerMap,
                   std::unordered_map<Coord, Coord>& newParentMap)
 {
 	Planet& planet = univ.planetMap[planetCoord];
-	if(mapFind(univ.playerMap, planet.playerId)->second.mainPlanet != planetCoord)
+	if(mapFind(playerMap, planet.playerId)->second.mainPlanet != planetCoord)
 	{
 		planet.playerId = Player::NoId;
 		planet.buildingList.assign(planet.buildingList.size(), 0);
@@ -106,13 +107,13 @@ typedef boost::upgrade_to_unique_lock<Universe::Mutex> UpToUniqueLock;
 
 void checkTutos(Universe& univ_, DataBase& database, std::vector<Signal>& signals)
 {
-	UpgradeLock lockPlayer(univ_.playersMutex);
-	SharedLock lockAllOthers(univ_.planetsFleetsReportsmutex);
+	SharedLock lockAll(univ_.planetsFleetsReportsmutex);
 
 	std::vector<Player::ID> wisePlayer;
-	wisePlayer.reserve(univ_.playerMap.size());
+	wisePlayer.reserve(10000);
 	std::map<Player::ID, DataBase::PlayerTutoMap> allTutoMap = database.getAllTutoDisplayed();
-	for(Player & player: univ_.playerMap | boost::adaptors::map_values)
+	std::vector<Player> players = database.getPlayers();
+	for(Player & player: players)
 	{
 		DataBase::PlayerTutoMap& tutoMap = allTutoMap[player.id];
 		size_t const plLvl = tutoMap[CoddingLevelTag];
@@ -242,23 +243,24 @@ void checkTutos(Universe& univ_, DataBase& database, std::vector<Signal>& signal
 		}
 	}
 
-	UpToUniqueLock writeLock(lockPlayer);
 	database.incrementTutoDisplayed(wisePlayer, CoddingLevelTag);
 }
 
 
-bool fleetCanSeePlanet(Fleet const& fleet, Planet const& planet, Universe const& univ)
+bool fleetCanSeePlanet(Fleet const& fleet, Planet const& planet, Universe const&) //univ
 {
 	if((fleet.playerId == planet.playerId) || (planet.playerId == Player::NoId))
 		return true;
 
-	uint64_t const score1 = mapFind(univ.playerMap, fleet.playerId)->second.score;
-	uint64_t const score2 = mapFind(univ.playerMap, planet.playerId)->second.score;
+	//uint64_t const score1 = mapFind(univ.playerMap, fleet.playerId)->second.score;
+	//uint64_t const score2 = mapFind(univ.playerMap, planet.playerId)->second.score;
 	//Bloquage si trop d'équart de niveaux
-	return (score1 * 5) > score2 && (score2 * 5) > score1;
+	//return (score1 * 5) > score2 && (score2 * 5) > score1;
+	//TODO : Gerer la difference de score
+	return true;
 }
 
-void updateScore(Universe& univ)
+void updateScore(Universe& univ, DataBase& database)
 {
 	std::map<Player::ID, uint64_t> playerScore;
 
@@ -282,6 +284,5 @@ void updateScore(Universe& univ)
 		playerScore[fleet.playerId] += score;
 	}
 
-	for(Player & player: univ.playerMap | boost::adaptors::map_values)
-		player.score = playerScore[player.id];
+	database.updateScore(playerScore);
 }

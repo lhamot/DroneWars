@@ -40,8 +40,7 @@ public:
 };
 
 //! Planet peut etre NULL
-void fight(Universe const& univ,
-           std::vector<Fleet*> const& fleetList,
+void fight(std::vector<Fleet*> const& fleetList,
            Planet* planet,
            FightReport& reportList);
 

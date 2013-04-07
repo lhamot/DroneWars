@@ -77,12 +77,8 @@ RessourceSet getBuilingPrice(Building::Enum id, size_t level)
 	return result;
 }
 
-Player::ID createPlayer(Universe& univ,
-                        DataBase& database,
-                        std::string const& login,
-                        std::string const& password)
+Coord createPlayer(Universe& univ, DataBase& database, Player::ID pid)
 {
-	Player player = database.addPlayer(login, password);
 	{
 		std::stringstream blocklyFleetDefaultCode;
 		{
@@ -111,8 +107,8 @@ Player::ID createPlayer(Universe& univ,
 		  "  order = FleetAction(FleetAction.Nothing,Direction())\n"
 		  "  return order\n"
 		  "end";
-		database.addScript(player.id, CodeData::Fleet, code);
-		database.addBlocklyCode(player.id, CodeData::Fleet, blocklyCode);
+		database.addScript(pid, CodeData::Fleet, code);
+		database.addBlocklyCode(pid, CodeData::Fleet, blocklyCode);
 	}
 
 	{
@@ -133,14 +129,12 @@ Player::ID createPlayer(Universe& univ,
 		  "function AI(planet, fleets)\n"
 		  "  return noPlanetAction()\n"
 		  "end";
-		database.addScript(player.id, CodeData::Planet, code);
-		database.addBlocklyCode(player.id, CodeData::Planet, blocklyCode);
+		database.addScript(pid, CodeData::Planet, code);
+		database.addBlocklyCode(pid, CodeData::Planet, blocklyCode);
 	}
-	Universe::PlayerMap::iterator playerIter;
-	bool added = false;
-	tie(playerIter, added) = univ.playerMap.insert(make_pair(player.id, player));
 
 	bool done = false;
+	Coord mainPlanetCoord;
 
 	do
 	{
@@ -150,11 +144,11 @@ Player::ID createPlayer(Universe& univ,
 		Planet& planet = planetIter->second;
 		if(planet.playerId == Player::NoId)
 		{
-			planet.playerId = player.id;
+			planet.playerId = pid;
 			if(planet.playerId > 100000)
 				BOOST_THROW_EXCEPTION(std::logic_error("planet.playerId > 100000"));
 
-			playerIter->second.mainPlanet = planet.coord;
+			mainPlanetCoord = planet.coord;
 
 			planet.buildingList[Building::CommandCenter] = 1;
 			planet.ressourceSet = RessourceSet(4000, 400, 0);
@@ -163,7 +157,9 @@ Player::ID createPlayer(Universe& univ,
 	}
 	while(done == false);
 
-	return player.id;
+	database.setPlayerMainPlanet(pid, mainPlanetCoord);
+
+	return mainPlanetCoord;
 }
 
 void construct(Universe& univ, DataBase& database)
@@ -192,20 +188,25 @@ void construct(Universe& univ, DataBase& database)
 	}
 
 	std::string const& password = "test";
-	for(int i = 0; i < 100; ++i)
+	for(size_t playerCount = 0; playerCount < 100;)
 	{
-		Player::ID pid = createPlayer(univ, database, nameGen(), password);
+		Player::ID const pid = database.addPlayer(nameGen(), password);
+		if(pid != Player::NoId)
 		{
-			ifstream file("planetScript.lua");
-			std::string script;
-			std::getline(file, script, char(0));
-			database.addScript(pid, CodeData::Planet, script);
-		}
-		{
-			ifstream file("fleetScript.lua");
-			std::string script;
-			std::getline(file, script, char(0));
-			database.addScript(pid, CodeData::Fleet, script);
+			createPlayer(univ, database, pid);
+			{
+				ifstream file("planetScript.lua");
+				std::string script;
+				std::getline(file, script, char(0));
+				database.addScript(pid, CodeData::Planet, script);
+			}
+			{
+				ifstream file("fleetScript.lua");
+				std::string script;
+				std::getline(file, script, char(0));
+				database.addScript(pid, CodeData::Fleet, script);
+			}
+			playerCount += 1;
 		}
 	}
 };
@@ -691,13 +692,3 @@ void drop(Fleet& fleet, Planet& planet)
 	boost::geometry::assign_value(fleet.ressourceSet.tab, 0);
 }
 
-
-void eraseAccount(Universe& univ, DataBase& database, Player::ID pid)
-{
-	Player& player = mapFind(univ.playerMap, pid)->second;
-	player.login = nameGen();
-	player.password = "gfd8fg451g51df8hgdf";
-	database.eraseAccount(pid);
-	database.addScript(pid, CodeData::Planet, "");
-	database.addScript(pid, CodeData::Fleet, "");
-}

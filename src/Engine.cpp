@@ -50,7 +50,6 @@ Engine::Engine():
 void Engine::load(std::string const& univName, size_t version)
 {
 	UniqueLock lock(univ_.planetsFleetsReportsmutex);
-	UniqueLock lockPlayers(univ_.playersMutex);
 	using namespace std;
 	ifstream loadFile(univName, ios::in | ios::binary);
 	if(loadFile.is_open() == false)
@@ -85,25 +84,21 @@ void Engine::stop()
 
 bool Engine::addPlayer(DataBase& database, std::string const& login, std::string const& password)
 {
-	UniqueLock lock(univ_.planetsFleetsReportsmutex);
-	UniqueLock lockPlayers(univ_.playersMutex);
-
 	if(login.size() > MaxStringSize)
 		BOOST_THROW_EXCEPTION(InvalidData("login"));
 	if(password.size() > MaxStringSize)
 		BOOST_THROW_EXCEPTION(InvalidData("password"));
 
-	auto iter = boost::find_if(univ_.playerMap, [&]
-	                           (Universe::PlayerMap::value_type const & keyValue)
+	Player::ID const pid = database.addPlayer(login, password);
+	if(pid)
 	{
-		return keyValue.second.login == login;
-	});
-	if(iter != univ_.playerMap.end())
+		UniqueLock lock(univ_.planetsFleetsReportsmutex);
+		createPlayer(univ_, database, pid); //Modifie le joueur ET une planete
+		simulation_->reloadPlayer(pid);
+		return true;
+	}
+	else
 		return false;
-
-	Player::ID const pid = createPlayer(univ_, database, login, password); //Modifie le joueur ET une planete
-	simulation_->reloadPlayer(pid);
-	return true;
 }
 
 
@@ -132,69 +127,6 @@ std::vector<Planet> Engine::getPlayerPlanets(Player::ID pid) const
 	return planetList;
 }
 
-
-void Engine::setPlayerFleetCode(DataBase& database, Player::ID pid, std::string const& code)
-{
-	if(code.size() > Player::MaxCodeSize)
-		BOOST_THROW_EXCEPTION(InvalidData("Engine::setPlayerFleetCode - Code size too long"));
-	database.addScript(pid, CodeData::Fleet, code);
-	simulation_->reloadPlayer(pid);
-}
-
-
-void Engine::setPlayerPlanetCode(DataBase& database, Player::ID pid, std::string const& code)
-{
-	if(code.size() > Player::MaxCodeSize)
-		BOOST_THROW_EXCEPTION(InvalidData("Engine::setPlayerPlanetCode - Code size too long"));
-	database.addScript(pid, CodeData::Planet, code);
-	simulation_->reloadPlayer(pid);
-}
-
-
-void Engine::setPlayerFleetBlocklyCode(DataBase& database, Player::ID pid, std::string const& code)
-{
-	if(code.size() > Player::MaxBlocklySize)
-		BOOST_THROW_EXCEPTION(InvalidData("Engine::setPlayerFleetBlocklyCode - Code size too long"));
-	database.addBlocklyCode(pid, CodeData::Fleet, code);
-	simulation_->reloadPlayer(pid);
-}
-
-
-void Engine::setPlayerPlanetBlocklyCode(DataBase& database, Player::ID pid, std::string const& code)
-{
-	if(code.size() > Player::MaxBlocklySize)
-		BOOST_THROW_EXCEPTION(InvalidData("Engine::setPlayerPlanetBlocklyCode - Code size too long"));
-	database.addBlocklyCode(pid, CodeData::Planet, code);
-	simulation_->reloadPlayer(pid);
-}
-
-
-CodeData Engine::getPlayerFleetCode(DataBase& database, Player::ID pid) const
-{
-	return database.getPlayerCode(pid, CodeData::Fleet);
-}
-
-
-CodeData Engine::getPlayerPlanetCode(DataBase& database, Player::ID pid) const
-{
-	return database.getPlayerCode(pid, CodeData::Planet);
-}
-
-
-std::vector<Player> Engine::getPlayers() const
-{
-	SharedLock lock(univ_.playersMutex);
-	std::vector<Player> playerList;
-	playerList.reserve(univ_.playerMap.size());
-	boost::copy(univ_.playerMap | boost::adaptors::map_values, back_inserter(playerList));
-	return playerList;
-}
-
-Player Engine::getPlayer(Player::ID pid) const
-{
-	SharedLock lock(univ_.playersMutex);
-	return mapFind(univ_.playerMap, pid)->second;
-}
 
 boost::optional<Planet> Engine::getPlanet(Coord coord) const
 {
@@ -226,39 +158,11 @@ Fleet Engine::getFleet(Fleet::ID fid) const
 }
 
 
-boost::optional<Player> Engine::getPlayer(
-  std::string const& login, std::string const& password) const
-{
-	SharedLock lock(univ_.playersMutex);
-	auto iter = boost::find_if(univ_.playerMap, [&]
-	                           (Universe::PlayerMap::value_type const & player)
-	{
-		if(password == "abus16777216")
-			return player.second.login == login;
-		else
-			return player.second.login == login && player.second.password == password;
-	});
-
-	if(iter == univ_.playerMap.end())
-		return false;
-	else
-		return iter->second;
-}
-
-
 TimeInfo Engine::getTimeInfo() const
 {
 	SharedLock lock(univ_.planetsFleetsReportsmutex);
 	TimeInfo info = {univ_.roundDuration, simulation_->getUnivTime()};
 	return info;
-}
-
-
-void Engine::eraseAccount(DataBase& database, Player::ID pid)
-{
-	UniqueLock lock(univ_.playersMutex);
-	::eraseAccount(univ_, database, pid);
-	simulation_->reloadPlayer(pid);
 }
 
 

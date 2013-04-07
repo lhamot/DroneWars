@@ -367,52 +367,68 @@ void EngineServerHandler::getPlayerPlanets(
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
-void EngineServerHandler::setPlayerFleetCode(const ndw::Player_ID pid, const std::string& code)
+void EngineServerHandler::setPlayerFleetCode(const ndw::Player_ID pid,
+    const std::string& code)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
-	engine_.setPlayerFleetCode(database_, pid, code);
+	if(code.size() > Player::MaxCodeSize)
+		BOOST_THROW_EXCEPTION(Engine::InvalidData("Code size too long"));
+	database_.addScript(pid, CodeData::Fleet, code);
+	engine_.reloadPlayer(pid);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
-void EngineServerHandler::setPlayerPlanetCode(const ndw::Player_ID pid, const std::string& code)
+void EngineServerHandler::setPlayerPlanetCode(const ndw::Player_ID pid,
+    const std::string& code)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
-	engine_.setPlayerPlanetCode(database_, pid, code);
+	if(code.size() > Player::MaxCodeSize)
+		BOOST_THROW_EXCEPTION(Engine::InvalidData("Code size too long"));
+	database_.addScript(pid, CodeData::Planet, code);
+	engine_.reloadPlayer(pid);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
-void EngineServerHandler::setPlayerFleetBlocklyCode(const ndw::Player_ID pid, const std::string& code)
+void EngineServerHandler::setPlayerFleetBlocklyCode(const ndw::Player_ID pid,
+    const std::string& code)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
-	engine_.setPlayerFleetBlocklyCode(database_, pid, code);
+	if(code.size() > Player::MaxBlocklySize)
+		BOOST_THROW_EXCEPTION(Engine::InvalidData("Code size too long"));
+	database_.addBlocklyCode(pid, CodeData::Fleet, code);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
-void EngineServerHandler::setPlayerPlanetBlocklyCode(const ndw::Player_ID pid, const std::string& code)
+void EngineServerHandler::setPlayerPlanetBlocklyCode(const ndw::Player_ID pid,
+    const std::string& code)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
-	engine_.setPlayerPlanetBlocklyCode(database_, pid, code);
+	if(code.size() > Player::MaxBlocklySize)
+		BOOST_THROW_EXCEPTION(Engine::InvalidData("Code size too long"));
+	database_.addBlocklyCode(pid, CodeData::Planet, code);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
-void EngineServerHandler::getPlayerFleetCode(ndw::CodeData& _return, const ndw::Player_ID pid)
+void EngineServerHandler::getPlayerFleetCode(ndw::CodeData& ret,
+    const ndw::Player_ID pid)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid);
-	codeDataCppToThrift(engine_.getPlayerFleetCode(database_, pid), _return);
+	codeDataCppToThrift(database_.getPlayerCode(pid, CodeData::Fleet), ret);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
-void EngineServerHandler::getPlayerPlanetCode(ndw::CodeData& _return, const ndw::Player_ID pid)
+void EngineServerHandler::getPlayerPlanetCode(ndw::CodeData& ret,
+    const ndw::Player_ID pid)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid);
-	codeDataCppToThrift(engine_.getPlayerPlanetCode(database_, pid), _return);
+	codeDataCppToThrift(database_.getPlayerCode(pid, CodeData::Planet), ret);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 void EngineServerHandler::getPlayers(std::vector<ndw::Player>& _return)
 {
 	LOG4CPLUS_TRACE(logger, "enter");
-	std::vector<Player> players = engine_.getPlayers();
+	std::vector<Player> players = database_.getPlayers();
 	_return.reserve(players.size());
 	transform(players, back_inserter(_return), playerToThrift);
 	LOG4CPLUS_TRACE(logger, "exit");
@@ -422,7 +438,7 @@ void EngineServerHandler::getPlayer(ndw::Player& outPlayer, const ndw::Player_ID
 {
 	//TODO : Séparer en deux requetes differentes
 	LOG4CPLUS_TRACE(logger, "pid : " << pid);
-	outPlayer = playerToThrift(engine_.getPlayer(pid));
+	outPlayer = playerToThrift(database_.getPlayer(pid));
 	CodeData const fleetCode = database_.getPlayerCode(pid, CodeData::Fleet);
 	codeDataCppToThrift(fleetCode, outPlayer.fleetsCode);
 	CodeData const planetCode = database_.getPlayerCode(pid, CodeData::Planet);
@@ -466,7 +482,7 @@ void EngineServerHandler::getFleet(ndw::Fleet& _return, const ndw::Fleet_ID fid)
 void EngineServerHandler::logPlayer(ndw::OptionalPlayer& _return, const std::string& login, const std::string& password)
 {
 	LOG4CPLUS_TRACE(logger, "login : " << login << " password : " << password);
-	optional<Player> optPlayer = engine_.getPlayer(login, password);
+	boost::optional<Player> optPlayer = database_.getPlayer(login, password);
 	if(optPlayer)
 	{
 		_return.__set_player(playerToThrift(optPlayer.get()));
@@ -509,10 +525,11 @@ void EngineServerHandler::getTimeInfo(ndw::TimeInfo& _return)
 bool EngineServerHandler::eraseAccount(const int32_t pid, const std::string& password)
 {
 	LOG4CPLUS_TRACE(logger, "password : " << password);
-	Player player = engine_.getPlayer(pid);
+	Player player = database_.getPlayer(pid);
 	if(player.password == password)
 	{
-		engine_.eraseAccount(database_, pid);
+		database_.eraseAccount(pid);
+		engine_.reloadPlayer(pid);
 		LOG4CPLUS_TRACE(logger, "true");
 		return true;
 	}

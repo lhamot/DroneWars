@@ -111,7 +111,6 @@ void addErrorMessage(Universe& univ_,
                      std::vector<Event>& events,
                      PlayerCodes::ObjectMap& luaObjectMap)
 {
-	UniqueLock lockPlayer(univ_.playersMutex);
 	addErrorMessageImpl(
 	  univ_, database, pid, isFleet, codeID, message, signals, events, &luaObjectMap);
 }
@@ -465,14 +464,12 @@ void Simulation::updatePlayersCode(LuaTools::LuaEngine& luaEngine,
 	{
 		CodeData const fleetsCode = database_.getPlayerCode(pid, CodeData::Fleet);
 		CodeData const planetsCode = database_.getPlayerCode(pid, CodeData::Planet);
-		UniqueLock lockPlayers(univ_.playersMutex);
-		Player& player = mapFind(univ_.playerMap, pid)->second;
 		PlayerCodes newCodes =
 		{
-			registerCode(univ_, database_, luaEngine, player.id, fleetsCode, true, signals, events),
-			registerCode(univ_, database_, luaEngine, player.id, planetsCode, false, signals, events)
+			registerCode(univ_, database_, luaEngine, pid, fleetsCode, true, signals, events),
+			registerCode(univ_, database_, luaEngine, pid, planetsCode, false, signals, events)
 		};
-		codesMap[player.id] = newCodes;
+		codesMap[pid] = newCodes;
 	}
 	playerToReload_.clear();
 	LOG4CPLUS_TRACE(logger, "exit");
@@ -532,6 +529,7 @@ void execFights(Universe& univ_,
 	deadFleets.reserve(univ_.fleetMap.size());
 	vector<Coord> lostPlanets;
 	lostPlanets.reserve(univ_.planetMap.size());
+	//TODO: Tenter avec un vector et un sort
 	typedef std::multimap<Coord, FighterPtr, CompCoord> FleetCoordMultimap;
 	static FleetCoordMultimap fleetMultimap;
 
@@ -588,7 +586,7 @@ void execFights(Universe& univ_,
 		UpToUniqueLock writeLock(lockFleets);
 		//! - On excecute le combats
 		FightReport fightReport;
-		fight(univ_, fleetVect, planetPtr, fightReport);
+		fight(fleetVect, planetPtr, fightReport);
 		bool hasFight = false;
 		auto range = make_zip_range(fleetVect, fightReport.fleetList);
 		for(auto fleetReportPair: range)
@@ -620,7 +618,6 @@ void execFights(Universe& univ_,
 			Fleet const& fleet = *fleetPtr;
 			if(report.isDead)
 			{
-				UniqueLock lockPlayer(univ_.playersMutex);
 				deadFleets.push_back(fleet.id);
 				Event event(fleet.playerId, time(0), Event::FleetLose);
 				event.setValue(intptr_t(reportID));
@@ -648,7 +645,6 @@ void execFights(Universe& univ_,
 				lostPlanets.push_back(planet.coord);
 				if(planet.playerId != Player::NoId)
 				{
-					UniqueLock lockPlayer(univ_.playersMutex);
 					Event event(planet.playerId, time(0), Event::PlanetLose);
 					event.setValue(intptr_t(reportID));
 					signals.push_back(Signal(planet.playerId, event));
@@ -671,8 +667,12 @@ void execFights(Universe& univ_,
 	UpToUniqueLock writeLock(lockFleets);
 	//! On gère chaque planete perdues(onPlanetLose)
 	std::unordered_map<Coord, Coord> newParentMap;
+	std::vector<Player> players = database.getPlayers();
+	std::map<size_t, Player> playerMap;
+	for(Player const & player: players)
+		playerMap.insert(make_pair(player.id, player));
 	for(Coord planetCoord: lostPlanets)
-		onPlanetLose(planetCoord, univ_, newParentMap);
+		onPlanetLose(planetCoord, univ_, playerMap, newParentMap);
 
 	//! Les planètes et flottes orpheline sont réasigné a leurs grand-parents
 	auto newParentMapEnd = newParentMap.end();
@@ -865,7 +865,7 @@ try
 
 	//! Met a jour les score des joueurs (modifie les joueurs)
 	LOG4CPLUS_TRACE(logger, "updateScore start");
-	updateScore(univ_);
+	updateScore(univ_, database_);
 
 	//! CheckTutos
 	LOG4CPLUS_TRACE(logger, "checkTutos start");
@@ -982,14 +982,12 @@ try
 	std::vector<Event> events;
 
 	{
-		UniqueLock lock(univ_.playersMutex);
-
 		//Chargement de tout les code flote/planet de tout les joueur(chargement dans python)
-		for(Universe::PlayerMap::value_type & playerNVP: univ_.playerMap)
+		std::vector<Player> const players = database_.getPlayers();
+		for(Player const & player: players)
 		{
-			CodeData const fleetsCode = database_.getPlayerCode(playerNVP.first, CodeData::Fleet);
-			CodeData const planetsCode = database_.getPlayerCode(playerNVP.first, CodeData::Planet);
-			Player& player = playerNVP.second;
+			CodeData const fleetsCode = database_.getPlayerCode(player.id, CodeData::Fleet);
+			CodeData const planetsCode = database_.getPlayerCode(player.id, CodeData::Planet);
 			PlayerCodes newCodes =
 			{
 				registerCode(univ_, database_, luaEngine, player.id, fleetsCode, true, signals, events),
@@ -1101,8 +1099,7 @@ void Simulation::save(std::string const& saveName) const
 	if(savingThread_.timed_join(boost::posix_time::seconds(0)))
 	{
 		LOG4CPLUS_TRACE(logger, "copy universe to save");
-		SharedLock lockPlayers(univ_.playersMutex);
-		SharedLock lockAllOthers(univ_.planetsFleetsReportsmutex);
+		SharedLock lockAll(univ_.planetsFleetsReportsmutex);
 		std::shared_ptr<Universe const> clone = make_shared<Universe>(univ_);
 		LOG4CPLUS_TRACE(logger, "lauch save");
 		savingThread_ = boost::thread(savingFunc, clone, saveName);

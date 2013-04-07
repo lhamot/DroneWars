@@ -20,12 +20,16 @@ public:
 	DataBase();
 	~DataBase();
 
-	Player addPlayer(std::string const& login, std::string const& password);
+	Player::ID addPlayer(std::string const& login, std::string const& password);
+
+	void setPlayerMainPlanet(Player::ID, Coord mainPlanet);
 
 	boost::optional<Player> getPlayer(
 	  std::string const& login, std::string const& password) const;
 
 	Player getPlayer(Player::ID) const;
+
+	std::vector<Player> getPlayers() const;
 
 	void addEvents(std::vector<Event> const& events);
 
@@ -46,8 +50,6 @@ public:
 	size_t addBlocklyCode(Player::ID pid,
 	                      CodeData::Target target,
 	                      std::string const& code);
-
-	//CodeData getCodeData(size_t codeId) const;
 
 	CodeData getPlayerCode(Player::ID pid, CodeData::Target) const;
 
@@ -77,6 +79,8 @@ public:
 	PlayerTutoMap getTutoDisplayed(Player::ID pid) const;
 
 	std::map<Player::ID, PlayerTutoMap> getAllTutoDisplayed() const;
+
+	void updateScore(std::map<Player::ID, uint64_t> const& scoreMap);
 };
 
 #endif //__DRONEWARS_DATABASE__

@@ -91,7 +91,11 @@ DataBase::DataBase()
 		            "Player ("
 		            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
 		            "  login VARCHAR(30) unique NOT NULL,"
-		            "  password VARCHAR(30) NOT NULL"
+		            "  password VARCHAR(30) NOT NULL,"
+		            "  score INTEGER NOT NULL,"
+		            "  planetCoordX INTEGER NOT NULL,"
+		            "  planetCoordY INTEGER NOT NULL,"
+		            "  planetCoordZ INTEGER NOT NULL"
 		            ")", now;
 
 		(*session_) <<
@@ -165,59 +169,114 @@ DataBase::~DataBase()
 {
 }
 
-Player DataBase::addPlayer(std::string const& login,
-                           std::string const& password
-                          )
+Player::ID DataBase::addPlayer(std::string const& login,
+                               std::string const& password)
 {
 	try
 	{
 		Transaction trans(*session_);
 		std::cout << login << " " << password << std::endl;
-		(*session_) << "INSERT INTO Player (login, password) VALUES(?, ?)",
+		(*session_) << "INSERT IGNORE INTO Player (login, password) VALUES(?, ?)",
 		            use(login), use(password), now;
-		size_t id = 0;
-		(*session_) << "SELECT LAST_INSERT_ID() ", into(id), now;
-		//Ajout du niveau de tutos
-		(*session_) <<
-		            "INSERT INTO TutoDisplayed "
-		            "(playerID, tag, level) "
-		            "VALUES(?, ?, ?)", use(id), use(std::string(CoddingLevelTag)), use(0), now;
-		trans.commit();
-		return Player(id, login, password);
+		size_t rowCount;
+		(*session_) << "SELECT ROW_COUNT() ", into(rowCount), now;
+		if(rowCount == 0)
+			return Player::NoId;
+		else
+		{
+			size_t id = 0;
+			(*session_) << "SELECT LAST_INSERT_ID() ", into(id), now;
+			//Ajout du niveau de tutos
+			(*session_) <<
+			            "INSERT INTO TutoDisplayed "
+			            "(playerID, tag, level) "
+			            "VALUES(?, ?, ?)", use(id), use(std::string(CoddingLevelTag)), use(0), now;
+			trans.commit();
+			return id;
+		}
 	}
 	DB_CATCH
 }
 
-boost::optional<Player> DataBase::getPlayer(std::string const& login,
-    std::string const& password
-                                           ) const
+
+void DataBase::setPlayerMainPlanet(Player::ID pid, Coord mainPlanet)
 {
-	typedef Tuple<size_t, std::string, std::string> PlayerTmp;
-	std::vector<PlayerTmp> playerList;
 	try
 	{
+		(*session_) <<
+		            "UPDATE Player "
+		            "SET planetCoordX = ?, planetCoordY = ?, planetCoordZ = ? "
+		            "WHERE id = ?",
+		            use(mainPlanet.X),
+		            use(mainPlanet.Y),
+		            use(mainPlanet.Z),
+		            use(pid),
+		            now;
+	}
+	DB_CATCH
+}
+
+typedef Tuple < size_t, std::string, std::string, uint64_t,
+        Coord::Value, Coord::Value, Coord::Value > PlayerTmp;
+Player playerFromTuple(PlayerTmp const& playerTup)
+{
+	Player player(playerTup.get<0>(), playerTup.get<1>(), playerTup.get<2>());
+	player.score = playerTup.get<3>();
+	player.mainPlanet.X = playerTup.get<4>();
+	player.mainPlanet.Y = playerTup.get<5>();
+	player.mainPlanet.Z = playerTup.get<6>();
+	return player;
+}
+
+
+boost::optional<Player> DataBase::getPlayer(
+  std::string const& login,
+  std::string const& password) const
+{
+	try
+	{
+		std::vector<PlayerTmp> playerList;
 		(*session_) <<
 		            "SELECT * FROM Player WHERE login = ? AND password = ?",
 		            into(playerList), use(login), use(password), now;
 		if(playerList.size() != 1)
 			return boost::optional<Player>();
+		else
+			return playerFromTuple(playerList.front());
 	}
 	DB_CATCH
-	return Player(playerList.front().get<0>(), login, password);
 }
+
+
+std::vector<Player> DataBase::getPlayers() const
+{
+	try
+	{
+		std::vector<PlayerTmp> playerList;
+		(*session_) <<
+		            "SELECT * FROM Player",
+		            into(playerList), now;
+		std::vector<Player> outPlayerList;
+		outPlayerList.reserve(playerList.size());
+		boost::transform(
+		  playerList, back_inserter(outPlayerList), playerFromTuple);
+		return outPlayerList;
+	}
+	DB_CATCH
+}
+
 
 Player DataBase::getPlayer(Player::ID id) const
 {
 	try
 	{
-		Player player(666, "bad", "bad");
-		typedef Tuple<size_t, std::string, std::string> PlayerTmp;
 		std::vector<PlayerTmp> playerList;
-		(*session_) <<
-		            "SELECT * FROM Player WHERE id = ?",
-		            into(player.id), into(player.login), into(player.password),
-		            use(id), now;
-		return player;
+		(*session_) << "SELECT * FROM Player WHERE id = ?",
+		            into(playerList), use(id), now;
+		if(playerList.size() != 1)
+			BOOST_THROW_EXCEPTION(std::invalid_argument("Player id not found in base"));
+		else
+			return playerFromTuple(playerList.front());
 	}
 	DB_CATCH
 }
@@ -630,6 +689,7 @@ void DataBase::eraseAccount(Player::ID pid)
 {
 	try
 	{
+		Transaction trans(*session_);
 		std::string const login = nameGen();
 		std::string const password = "gfd8fg451g51df8hgdf";
 
@@ -639,6 +699,9 @@ void DataBase::eraseAccount(Player::ID pid)
 		            "WHERE id = ? ",
 		            use(login), use(password), use(pid),
 		            now;
+		addScript(pid, CodeData::Planet, "");
+		addScript(pid, CodeData::Fleet, "");
+		trans.commit();
 	}
 	DB_CATCH
 }
@@ -712,6 +775,24 @@ std::map<Player::ID, DataBase::PlayerTutoMap> DataBase::getAllTutoDisplayed() co
 		for(TutoTuple const & tuto: tutos)
 			result[tuto.get<0>()].insert(make_pair(tuto.get<1>(), tuto.get<2>()));
 		return result;
+	}
+	DB_CATCH
+}
+
+
+void DataBase::updateScore(std::map<Player::ID, uint64_t> const& scoreMap)
+{
+	try
+	{
+		Transaction trans(*session_);
+		typedef Poco::Tuple<uint64_t, Player::ID> ScoreTuple;
+		std::vector<ScoreTuple> scoreVect;
+		scoreVect.reserve(scoreMap.size());
+		for(auto nvp: scoreMap)
+			scoreVect.push_back(ScoreTuple(nvp.second, nvp.first));
+		(*session_) << "UPDATE Player SET score = ? WHERE id = ?",
+		            use(scoreVect), now;
+		trans.commit();
 	}
 	DB_CATCH
 }

@@ -225,18 +225,6 @@ extern "C" int initDroneWars(lua_State* L)
 	    value("Harvest",   FleetAction::Harvest),
 	    value("Colonize",  FleetAction::Colonize),
 	    value("Drop",      FleetAction::Drop)
-	  ],
-
-	  //Pour l'instant inutil:
-	  class_<Universe>("Universe")
-	  .def_readonly("playerMap", &Universe::playerMap)
-	  .def_readonly("planetMap", &Universe::planetMap)
-	  .def_readonly("fleetMap", &Universe::fleetMap)
-	  .enum_("MapSize")
-	  [
-	    value("X", Universe::MapSizeX),
-	    value("Y", Universe::MapSizeY),
-	    value("Z", Universe::MapSizeZ)
 	  ]
 	];
 

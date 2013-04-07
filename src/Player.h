@@ -107,48 +107,19 @@ struct CodeData
 
 struct Player
 {
-private:
-	friend class boost::serialization::access;
-	template<class Archive>
-	void serialize(Archive& ar, const unsigned int version)
-	{
-		ar& id;
-		ar& login;
-		ar& password;
-		ar& mainPlanet;
-		if(version < 1)
-		{
-			size_t old;
-			ar& old;
-			score = old;
-		}
-		else
-			ar& score;
-	}
-
-public:
-	Player() {} //pour boost::serialization et std::map
+	static size_t const MaxCodeSize = 32 * 1024;          //TOTO: Rien a faire là
+	static size_t const MaxBlocklySize = MaxCodeSize * 8; //TOTO: Rien a faire là
 
 	typedef size_t ID;
 	static ID const NoId = 0;
 	ID id;
 	std::string login;
 	std::string password;
-	static size_t const MaxCodeSize = 32 * 1024;
-	static size_t const MaxBlocklySize = MaxCodeSize * 8;
 	Coord mainPlanet;
 	uint64_t score;
 
-	size_t heap_size() const
-	{
-		return
-		  sizeof(login.capacity()) +
-		  sizeof(password.capacity());
-	}
-
-
 	Player(ID i, std::string const& lg, std::string const& pass):
-		id(i), login(lg), password(pass), score(0)
+		id(i), login(lg), password(pass)
 	{
 	}
 };

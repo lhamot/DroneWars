@@ -3,9 +3,11 @@
 
 #include "Model.h"
 #include <boost/range/adaptor/map.hpp>
+#include "DataBase.h"
 
 void onPlanetLose(Coord planetCoord,
                   Universe& univ,
+                  std::map<size_t, Player> const& playerMap,
                   std::unordered_map<Coord, Coord>& newParentMap);
 
 
@@ -18,6 +20,6 @@ void checkTutos(Universe& univ_, DataBase& database, std::vector<Signal>& signal
 bool fleetCanSeePlanet(Fleet const& fleet, Planet const& planet, Universe const& univ);
 
 //! Recalcul le score des joueurs (modifie les joueurs)
-void updateScore(Universe& univ);
+void updateScore(Universe& univ, DataBase& database);
 
 #endif //__BTA_RULES__

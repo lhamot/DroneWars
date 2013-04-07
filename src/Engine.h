@@ -37,36 +37,16 @@ public:
 
 	std::vector<Planet> getPlayerPlanets(Player::ID pid) const;
 
-	CodeData getPlayerFleetCode(DataBase& database, Player::ID pid) const;
-
-	CodeData getPlayerPlanetCode(DataBase& database, Player::ID pid) const;
-
-	std::vector<Player> getPlayers() const;
-
-	Player getPlayer(Player::ID pid) const;
-
 	boost::optional<Planet> getPlanet(Coord coord) const;
 
 	std::vector<Planet> getPlanets(std::vector<Coord> const& coord) const;
 
 	Fleet getFleet(Fleet::ID fid) const;
 
-	boost::optional<Player> getPlayer(std::string const& login, std::string const& password) const;
-
 	//Requetes qui modifient la base
 	bool addPlayer(DataBase& database, std::string const& login, std::string const& password);
 
-	void setPlayerFleetCode(DataBase& database, Player::ID pid, std::string const& code);
-
-	void setPlayerPlanetCode(DataBase& database, Player::ID pid, std::string const& code);
-
-	void setPlayerFleetBlocklyCode(DataBase& database, Player::ID pid, std::string const& code);
-
-	void setPlayerPlanetBlocklyCode(DataBase& database, Player::ID pid, std::string const& code);
-
 	TimeInfo getTimeInfo() const;
-
-	void eraseAccount(DataBase& database, Player::ID pid);
 
 	void reloadPlayer(Player::ID pid);
 

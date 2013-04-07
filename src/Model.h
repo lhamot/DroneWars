@@ -559,7 +559,6 @@ struct Universe
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
-		ar& playerMap;
 		ar& planetMap;
 		ar& fleetMap;
 		ar& nextFleetID;
@@ -571,8 +570,6 @@ struct Universe
 	static const unsigned short MapSizeY = 100;
 	static const unsigned short MapSizeZ = 100;
 
-	typedef std::map<Player::ID, Player> PlayerMap;
-	PlayerMap playerMap;
 	typedef std::unordered_map<Coord, Planet> PlanetMap;
 	PlanetMap planetMap;
 	typedef std::map<Fleet::ID, Fleet> FleetMap;
@@ -584,8 +581,6 @@ struct Universe
 	size_t heap_size() const
 	{
 		size_t res = 0;
-		for(auto const & playerKV: playerMap)
-			res += sizeof(playerKV) + playerKV.second.heap_size() + 2 * sizeof(size_t);
 		for(auto const & planetKV: planetMap)
 			res += sizeof(planetKV) + planetKV.second.heap_size() + 2 * sizeof(size_t);
 		for(auto const & fleetKV: fleetMap)
@@ -595,7 +590,6 @@ struct Universe
 
 	typedef boost::shared_mutex Mutex;
 	mutable Mutex planetsFleetsReportsmutex;
-	mutable Mutex playersMutex;
 
 	Universe():
 		nextFleetID(1),
@@ -605,7 +599,6 @@ struct Universe
 	}
 
 	Universe(Universe const& other):
-		playerMap(other.playerMap),
 		planetMap(other.planetMap),
 		fleetMap(other.fleetMap),
 		nextFleetID(other.nextFleetID),
@@ -622,7 +615,6 @@ struct Universe
 
 	void swap(Universe& other)
 	{
-		playerMap.swap(other.playerMap);
 		planetMap.swap(other.planetMap);
 		fleetMap.swap(other.fleetMap);
 		std::swap(nextFleetID, other.nextFleetID);
@@ -637,10 +629,7 @@ void construct(Universe& univ, DataBase& database);
 
 RessourceSet getBuilingPrice(Building::Enum id, size_t level);
 
-Player::ID createPlayer(Universe& univ,
-                        DataBase& database,
-                        std::string const& login,
-                        std::string const& password);
+Coord createPlayer(Universe& univ, DataBase& database, Player::ID pid);
 
 void saveToStream(Universe const& univ, std::ostream& out);
 void loadFromStream_v1(std::istream& in, Universe& univ);
@@ -694,8 +683,6 @@ void addTaskColonize(Fleet& fleet, size_t roundCount, Planet const& planet);
 bool canDrop(Fleet const& fleet, Planet const& planet);
 
 void drop(Fleet& fleet, Planet& planet);
-
-void eraseAccount(Universe& univ, DataBase& database, Player::ID pid);
 
 bool canPay(RessourceSet const& stock, RessourceSet const& price);
 
