@@ -3,9 +3,11 @@
 #include <algorithm>
 
 using namespace boost;
+using namespace std;
 
 using namespace log4cplus;
-static Logger logger = Logger::getInstance(LOG4CPLUS_TEXT("EngineServerHandler"));
+static Logger logger = Logger::getInstance(
+                         LOG4CPLUS_TEXT("EngineServerHandler"));
 
 
 bool ndw::Coord::operator < (const ndw::Coord& b) const
@@ -22,7 +24,7 @@ bool ndw::Coord::operator < (const ndw::Coord& b) const
 		return Z < b.Z;
 }
 
-std::ostream& operator << (std::ostream& os, ndw::Coord const& coord)
+ostream& operator << (ostream& os, ndw::Coord const& coord)
 {
 	os << "(" << coord.X << "," << coord.Y << "," << coord.Z << ")";
 	return os;
@@ -44,12 +46,14 @@ struct NumerciCast
 	}
 };
 
+
 template<typename I>
 NumerciCast<I> numCast(I value)
 {
 	NumerciCast<I> cast = {value};
 	return cast;
 }
+
 
 ndw::Coord coordToThrift(Coord const& fleet)
 {
@@ -60,6 +64,7 @@ ndw::Coord coordToThrift(Coord const& fleet)
 	return res;
 }
 
+
 ndw::RessourceSet ressourceToThrift(RessourceSet const& ress)
 {
 	ndw::RessourceSet res;
@@ -68,6 +73,7 @@ ndw::RessourceSet ressourceToThrift(RessourceSet const& ress)
 		res.tab.push_back(numCast(value));
 	return res;
 }
+
 
 ndw::FleetTask fleetTaskToThrift(FleetTask const& task)
 {
@@ -92,6 +98,7 @@ ndw::PlanetTask planetTaskToThrift(PlanetTask const& task)
 	res.expired = task.expired;
 	return res;
 }
+
 
 ndw::Event eventToThrift(Event const& event)
 {
@@ -128,6 +135,7 @@ ndw::Fleet fleetToThrift(Fleet const& fleet)
 	return result;
 }
 
+
 ndw::Planet planetToThrift(Planet const& planet)
 {
 	ndw::Planet res;
@@ -139,7 +147,9 @@ ndw::Planet planetToThrift(Planet const& planet)
 	for(size_t value: planet.buildingList)
 		res.buildingList.push_back(numCast(value));
 	res.taskQueue.reserve(planet.taskQueue.size());
-	range::transform(planet.taskQueue, back_inserter(res.taskQueue), planetTaskToThrift);
+	transform(planet.taskQueue,
+	          back_inserter(res.taskQueue),
+	          planetTaskToThrift);
 	res.ressourceSet = ressourceToThrift(planet.ressourceSet);
 	res.cannonTab.reserve(planet.cannonTab.size());
 	for(size_t value: planet.cannonTab)
@@ -148,12 +158,14 @@ ndw::Planet planetToThrift(Planet const& planet)
 	return res;
 }
 
+
 void codeDataCppToThrift(CodeData const& in, ndw::CodeData& out)
 {
 	out.blocklyCode = in.blocklyCode;
 	out.code = in.code;
 	out.lastError = in.lastError;
 }
+
 
 ndw::Player playerToThrift(Player const& player)
 {
@@ -201,27 +213,33 @@ ndw::FightReport fightReportToThrift(FightReport const& report)
 		result.fleetList.push_back(fleetReportToThrift(fleetRep));
 	result.hasPlanet = report.hasPlanet;
 	if(result.hasPlanet != bool(report.planet))
-		BOOST_THROW_EXCEPTION(std::logic_error("Unconsistent FightReport::hasPlanet value"));
+		BOOST_THROW_EXCEPTION(
+		  logic_error("Unconsistent FightReport::hasPlanet value"));
 	if(report.planet)
 		result.__set_planet(planetReportToThrift(report.planet.get()));
 	return result;
 }
 
-}
+} //Namespace anonyme
+
 
 EngineServerHandler::EngineServerHandler()
 {
 }
 
+
 void EngineServerHandler::start()
 {
 }
+
 
 void EngineServerHandler::stop()
 {
 }
 
-bool EngineServerHandler::addPlayer(const std::string& login, const std::string& password)
+
+bool EngineServerHandler::addPlayer(const string& login,
+                                    const string& password)
 {
 	LOG4CPLUS_TRACE(logger, "login: " << login << " password : " << password);
 	return engine_.addPlayer(database_, login, password);
@@ -247,7 +265,7 @@ RandomAccessRange& sortOnAttr(RandomAccessRange& rng, bool asc, Attribute attr)
 
 
 template<typename Range>
-void sortOnType(Range& range, const ndw::Sort_Type::type sortType, const bool asc)
+void sortOnType(Range& range, ndw::Sort_Type::type sortType, const bool asc)
 {
 	typedef typename Range::value_type FleetOrPlanet;
 	switch(sortType)
@@ -274,7 +292,7 @@ void sortOnType(Range& range, const ndw::Sort_Type::type sortType, const bool as
 		sortOnAttr(range, asc, [](FleetOrPlanet const & elt) {return elt.ressourceSet.tab[2];});
 		break;
 	default:
-		BOOST_THROW_EXCEPTION(std::runtime_error("Unconsistent Sort_Type"));
+		BOOST_THROW_EXCEPTION(runtime_error("Unconsistent Sort_Type"));
 	};
 }
 
@@ -296,7 +314,7 @@ void EngineServerHandler::getPlayerFleets(
 	size_t endIndex = endIndexC;
 	auto fleetList = engine_.getPlayerFleets(pid);
 	if(beginIndexC >= endIndexC || beginIndexC < 0)
-		BOOST_THROW_EXCEPTION(std::runtime_error("Unconsistent index"));
+		BOOST_THROW_EXCEPTION(runtime_error("Unconsistent index"));
 	if(endIndex > fleetList.size())
 		endIndex = fleetList.size();
 	if(beginIndex > fleetList.size())
@@ -305,20 +323,20 @@ void EngineServerHandler::getPlayerFleets(
 	sortOnType(fleetList, sortType, asc);
 
 	if(endIndex > fleetList.size())
-		BOOST_THROW_EXCEPTION(std::logic_error("endIndex > fleetList.size()"));
+		BOOST_THROW_EXCEPTION(logic_error("endIndex > fleetList.size()"));
 	if(beginIndex > endIndex)
-		BOOST_THROW_EXCEPTION(std::logic_error("beginIndex > endIndex"));
+		BOOST_THROW_EXCEPTION(logic_error("beginIndex > endIndex"));
 
 	_return.fleetList.reserve(endIndex - beginIndex);
 	auto pageRange = make_iterator_range(fleetList.begin() + beginIndex,
 	                                     fleetList.begin() + endIndex);
-	std::set<Coord, CompCoord> fleetCoordSet;
+	set<Coord, CompCoord> fleetCoordSet;
 	for(Fleet const & fleet: pageRange)
 	{
 		_return.fleetList.push_back(fleetToThrift(fleet));
 		fleetCoordSet.insert(fleet.coord);
 	}
-	std::vector<Coord> fleetCoordVect(fleetCoordSet.begin(), fleetCoordSet.end());
+	vector<Coord> fleetCoordVect(fleetCoordSet.begin(), fleetCoordSet.end());
 	auto planetList = engine_.getPlanets(fleetCoordVect);
 	for(Planet const & planet: planetList)
 		_return.planetList.push_back(planetToThrift(planet));
@@ -345,7 +363,7 @@ void EngineServerHandler::getPlayerPlanets(
 	size_t endIndex = endIndexC;
 	auto planetList = engine_.getPlayerPlanets(pid);
 	if(beginIndexC >= endIndexC || beginIndexC < 0)
-		BOOST_THROW_EXCEPTION(std::runtime_error("Unconsistent index"));
+		BOOST_THROW_EXCEPTION(runtime_error("Unconsistent index"));
 	if(endIndex > planetList.size())
 		endIndex = planetList.size();
 	if(beginIndex > planetList.size())
@@ -354,9 +372,9 @@ void EngineServerHandler::getPlayerPlanets(
 	sortOnType(planetList, sortType, asc);
 
 	if(endIndex > planetList.size())
-		BOOST_THROW_EXCEPTION(std::logic_error("endIndex > planetList.size()"));
+		BOOST_THROW_EXCEPTION(logic_error("endIndex > planetList.size()"));
 	if(beginIndex > endIndex)
-		BOOST_THROW_EXCEPTION(std::logic_error("beginIndex > endIndex"));
+		BOOST_THROW_EXCEPTION(logic_error("beginIndex > endIndex"));
 
 	_return.planetList.reserve(endIndex - beginIndex);
 	auto pageRange = make_iterator_range(planetList.begin() + beginIndex,
@@ -367,8 +385,9 @@ void EngineServerHandler::getPlayerPlanets(
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
+
 void EngineServerHandler::setPlayerFleetCode(const ndw::Player_ID pid,
-    const std::string& code)
+    const string& code)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
 	if(code.size() > Player::MaxCodeSize)
@@ -378,8 +397,9 @@ void EngineServerHandler::setPlayerFleetCode(const ndw::Player_ID pid,
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
+
 void EngineServerHandler::setPlayerPlanetCode(const ndw::Player_ID pid,
-    const std::string& code)
+    const string& code)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
 	if(code.size() > Player::MaxCodeSize)
@@ -389,8 +409,9 @@ void EngineServerHandler::setPlayerPlanetCode(const ndw::Player_ID pid,
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
+
 void EngineServerHandler::setPlayerFleetBlocklyCode(const ndw::Player_ID pid,
-    const std::string& code)
+    const string& code)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
 	if(code.size() > Player::MaxBlocklySize)
@@ -399,8 +420,9 @@ void EngineServerHandler::setPlayerFleetBlocklyCode(const ndw::Player_ID pid,
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
+
 void EngineServerHandler::setPlayerPlanetBlocklyCode(const ndw::Player_ID pid,
-    const std::string& code)
+    const string& code)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
 	if(code.size() > Player::MaxBlocklySize)
@@ -408,6 +430,7 @@ void EngineServerHandler::setPlayerPlanetBlocklyCode(const ndw::Player_ID pid,
 	database_.addBlocklyCode(pid, CodeData::Planet, code);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
+
 
 void EngineServerHandler::getPlayerFleetCode(ndw::CodeData& ret,
     const ndw::Player_ID pid)
@@ -417,6 +440,7 @@ void EngineServerHandler::getPlayerFleetCode(ndw::CodeData& ret,
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
+
 void EngineServerHandler::getPlayerPlanetCode(ndw::CodeData& ret,
     const ndw::Player_ID pid)
 {
@@ -425,16 +449,19 @@ void EngineServerHandler::getPlayerPlanetCode(ndw::CodeData& ret,
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
-void EngineServerHandler::getPlayers(std::vector<ndw::Player>& _return)
+
+void EngineServerHandler::getPlayers(vector<ndw::Player>& _return)
 {
 	LOG4CPLUS_TRACE(logger, "enter");
-	std::vector<Player> players = database_.getPlayers();
+	vector<Player> players = database_.getPlayers();
 	_return.reserve(players.size());
 	transform(players, back_inserter(_return), playerToThrift);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
-void EngineServerHandler::getPlayer(ndw::Player& outPlayer, const ndw::Player_ID pid)
+
+void EngineServerHandler::getPlayer(ndw::Player& outPlayer,
+                                    const ndw::Player_ID pid)
 {
 	//TODO : Séparer en deux requetes differentes
 	LOG4CPLUS_TRACE(logger, "pid : " << pid);
@@ -443,13 +470,15 @@ void EngineServerHandler::getPlayer(ndw::Player& outPlayer, const ndw::Player_ID
 	codeDataCppToThrift(fleetCode, outPlayer.fleetsCode);
 	CodeData const planetCode = database_.getPlayerCode(pid, CodeData::Planet);
 	codeDataCppToThrift(planetCode, outPlayer.planetsCode);
-	std::map<std::string, size_t> const levelMap = database_.getTutoDisplayed(pid);
+	map<string, size_t> const levelMap = database_.getTutoDisplayed(pid);
 	for(auto tutoNVP: levelMap)
 		outPlayer.tutoDisplayed[tutoNVP.first] = numCast(tutoNVP.second);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
-void EngineServerHandler::getPlanet(std::vector<ndw::Planet>& _return, const ndw::Coord& ndwCoord)
+
+void EngineServerHandler::getPlanet(vector<ndw::Planet>& _return,
+                                    const ndw::Coord& ndwCoord)
 {
 	LOG4CPLUS_TRACE(logger, "ndwCoord : " << ndwCoord);
 	Coord const coord(ndwCoord.X, ndwCoord.Y, ndwCoord.Z);
@@ -457,7 +486,7 @@ void EngineServerHandler::getPlanet(std::vector<ndw::Planet>& _return, const ndw
 	if(planet.is_initialized())
 	{
 		_return.push_back(planetToThrift(*planet));
-		std::vector<Event> events =
+		vector<Event> events =
 		  database_.getPlanetEvents(planet->playerId, coord);
 		_return.front().eventList.reserve(events.size());
 		for(Event const & ev: events)
@@ -466,12 +495,14 @@ void EngineServerHandler::getPlanet(std::vector<ndw::Planet>& _return, const ndw
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
-void EngineServerHandler::getFleet(ndw::Fleet& _return, const ndw::Fleet_ID fid)
+
+void EngineServerHandler::getFleet(ndw::Fleet& _return,
+                                   const ndw::Fleet_ID fid)
 {
 	LOG4CPLUS_TRACE(logger, "fid : " << fid);
 	_return = fleetToThrift(engine_.getFleet(fid));
 
-	std::vector<Event> events = database_.getFleetEvents(_return.playerId, fid);
+	vector<Event> events = database_.getFleetEvents(_return.playerId, fid);
 	_return.eventList.reserve(events.size());
 	for(Event const & ev: events)
 		_return.eventList.push_back(eventToThrift(ev));
@@ -479,25 +510,32 @@ void EngineServerHandler::getFleet(ndw::Fleet& _return, const ndw::Fleet_ID fid)
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
-void EngineServerHandler::logPlayer(ndw::OptionalPlayer& _return, const std::string& login, const std::string& password)
+
+void EngineServerHandler::logPlayer(ndw::OptionalPlayer& _return,
+                                    const string& login,
+                                    const string& password)
 {
 	LOG4CPLUS_TRACE(logger, "login : " << login << " password : " << password);
-	boost::optional<Player> optPlayer = database_.getPlayer(login, password);
+	optional<Player> optPlayer = database_.getPlayer(login, password);
 	if(optPlayer)
 	{
 		_return.__set_player(playerToThrift(optPlayer.get()));
 		ndw::Player& outPlayer = _return.player;
-		codeDataCppToThrift(database_.getPlayerCode(outPlayer.id, CodeData::Fleet),
-		                    outPlayer.fleetsCode);
-		codeDataCppToThrift(database_.getPlayerCode(_return.player.id, CodeData::Planet),
-		                    outPlayer.planetsCode);
+		CodeData const fleetCode =
+		  database_.getPlayerCode(_return.player.id, CodeData::Fleet);
+		codeDataCppToThrift(fleetCode, outPlayer.fleetsCode);
+		CodeData const planetCode =
+		  database_.getPlayerCode(_return.player.id, CodeData::Planet);
+		codeDataCppToThrift(planetCode, outPlayer.planetsCode);
 		for(auto tutoNVP: database_.getTutoDisplayed(outPlayer.id))
 			outPlayer.tutoDisplayed[tutoNVP.first] = numCast(tutoNVP.second);
 	}
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
-void EngineServerHandler::incrementTutoDisplayed(ndw::Player_ID pid, std::string const& tutoName)
+
+void EngineServerHandler::incrementTutoDisplayed(ndw::Player_ID pid,
+    string const& tutoName)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " tutoName : " << tutoName);
 	database_.incrementTutoDisplayed(pid, tutoName);
@@ -505,13 +543,15 @@ void EngineServerHandler::incrementTutoDisplayed(ndw::Player_ID pid, std::string
 }
 
 
-void EngineServerHandler::getFightReport(ndw::FightReport& _return, const int32_t id)
+void EngineServerHandler::getFightReport(ndw::FightReport& _return,
+    const int32_t id)
 {
 	LOG4CPLUS_TRACE(logger, "id : " << id);
 	FightReport fr = database_.getFightReport(id);
 	_return = fightReportToThrift(fr);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
+
 
 void EngineServerHandler::getTimeInfo(ndw::TimeInfo& _return)
 {
@@ -522,7 +562,9 @@ void EngineServerHandler::getTimeInfo(ndw::TimeInfo& _return)
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
-bool EngineServerHandler::eraseAccount(const int32_t pid, const std::string& password)
+
+bool EngineServerHandler::eraseAccount(const int32_t pid,
+                                       const string& password)
 {
 	LOG4CPLUS_TRACE(logger, "password : " << password);
 	Player player = database_.getPlayer(pid);
@@ -542,17 +584,17 @@ bool EngineServerHandler::eraseAccount(const int32_t pid, const std::string& pas
 
 
 void EngineServerHandler::getPlayerEvents(
-  std::vector<ndw::Event>& _return, const int32_t pid)
+  vector<ndw::Event>& _return, const int32_t pid)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid);
-	std::vector<Event> events = database_.getPlayerEvents(pid);
+	vector<Event> events = database_.getPlayerEvents(pid);
 	_return.reserve(events.size());
-	boost::transform(events, back_inserter(_return), eventToThrift);
+	transform(events, back_inserter(_return), eventToThrift);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 
-void EngineServerHandler::getBuildingsInfo(std::vector<ndw::Building>& _return)
+void EngineServerHandler::getBuildingsInfo(vector<ndw::Building>& _return)
 {
 	LOG4CPLUS_TRACE(logger, "enter");
 	_return.reserve(Building::Count);
@@ -568,7 +610,8 @@ void EngineServerHandler::getBuildingsInfo(std::vector<ndw::Building>& _return)
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
-void EngineServerHandler::getCannonsInfo(std::vector<ndw::Cannon>& _return)
+
+void EngineServerHandler::getCannonsInfo(vector<ndw::Cannon>& _return)
 {
 	LOG4CPLUS_TRACE(logger, "enter");
 	_return.reserve(Cannon::Count);
@@ -585,7 +628,8 @@ void EngineServerHandler::getCannonsInfo(std::vector<ndw::Cannon>& _return)
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
-void EngineServerHandler::getShipsInfo(std::vector<ndw::Ship>& _return)
+
+void EngineServerHandler::getShipsInfo(vector<ndw::Ship>& _return)
 {
 	LOG4CPLUS_TRACE(logger, "enter");
 	_return.reserve(Ship::Count);

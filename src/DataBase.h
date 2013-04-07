@@ -20,7 +20,8 @@ public:
 	DataBase();
 	~DataBase();
 
-	Player::ID addPlayer(std::string const& login, std::string const& password);
+	Player::ID addPlayer(std::string const& login,
+	                     std::string const& password);
 
 	void setPlayerMainPlanet(Player::ID, Coord mainPlanet);
 

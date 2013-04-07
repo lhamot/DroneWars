@@ -22,7 +22,7 @@
 BOOST_GEOMETRY_REGISTER_BOOST_ARRAY_CS(cs::cartesian)
 
 using namespace std;
-//using namespace boost;
+using namespace boost;
 namespace BL = boost::locale;
 
 
@@ -38,7 +38,8 @@ Building const Building::List[] =
 	{RessourceSet(100, 0, 0), 1.6}, //SolarCentral
 	{RessourceSet(100, 0, 0), 1.6}  //GeothermicCentral
 };
-static_assert(sizeof(Building::List) == (sizeof(Building) * Building::Count), "Building info missing");
+static_assert(sizeof(Building::List) == (sizeof(Building) * Building::Count),
+              "Building info missing");
 
 
 Ship const Ship::List[] =
@@ -53,7 +54,8 @@ Ship const Ship::List[] =
 	{RessourceSet(400, 0, 0),    2,       0}, //Cargo
 	{RessourceSet(2000, 0, 0),   8,       0}  //LargeCargo
 };
-static_assert(sizeof(Ship::List) == (sizeof(Ship) * Ship::Count), "Ship info missing");
+static_assert(sizeof(Ship::List) == (sizeof(Ship) * Ship::Count),
+              "Ship info missing");
 
 Cannon const Cannon::List[] =
 {
@@ -64,7 +66,8 @@ Cannon const Cannon::List[] =
 	{RessourceSet(40000, 0, 0),  16,     16},
 	{RessourceSet(200000, 0, 0), 32,     32},
 };
-static_assert(sizeof(Cannon::List) == (sizeof(Cannon) * Cannon::Count), "Cannon info missing");
+static_assert(sizeof(Cannon::List) == (sizeof(Cannon) * Cannon::Count),
+              "Cannon info missing");
 
 
 RessourceSet getBuilingPrice(Building::Enum id, size_t level)
@@ -82,9 +85,11 @@ Coord createPlayer(Universe& univ, DataBase& database, Player::ID pid)
 	{
 		std::stringstream blocklyFleetDefaultCode;
 		{
-			std::ifstream fleetFile("blocklyFleetDefaultCode.xml", std::ios::binary | std::ios::in);
+			std::ifstream fleetFile("blocklyFleetDefaultCode.xml",
+			                        std::ios::binary | std::ios::in);
 			if(fleetFile.is_open() == false)
-				BOOST_THROW_EXCEPTION(std::ios::failure("Can't open blocklyFleetDefaultCode.xml"));
+				BOOST_THROW_EXCEPTION(
+				  std::ios::failure("Can't open blocklyFleetDefaultCode.xml"));
 			boost::iostreams::copy(fleetFile, blocklyFleetDefaultCode);
 		}
 		std::string const blocklyCode =
@@ -114,9 +119,11 @@ Coord createPlayer(Universe& univ, DataBase& database, Player::ID pid)
 	{
 		std::stringstream blocklyPlanetDefaultCode;
 		{
-			std::ifstream planetFile("blocklyPlanetDefaultCode.xml", std::ios::binary | std::ios::in);
+			std::ifstream planetFile("blocklyPlanetDefaultCode.xml",
+			                         std::ios::binary | std::ios::in);
 			if(planetFile.is_open() == false)
-				BOOST_THROW_EXCEPTION(std::ios::failure("Can't open blocklyPlanetDefaultCode.xml"));
+				BOOST_THROW_EXCEPTION(
+				  std::ios::failure("Cant open blocklyPlanetDefaultCode.xml"));
 			boost::iostreams::copy(planetFile, blocklyPlanetDefaultCode);
 		}
 		std::string const blocklyCode =
@@ -146,7 +153,8 @@ Coord createPlayer(Universe& univ, DataBase& database, Player::ID pid)
 		{
 			planet.playerId = pid;
 			if(planet.playerId > 100000)
-				BOOST_THROW_EXCEPTION(std::logic_error("planet.playerId > 100000"));
+				BOOST_THROW_EXCEPTION(
+				  std::logic_error("planet.playerId > 100000"));
 
 			mainPlanetCoord = planet.coord;
 
@@ -222,7 +230,8 @@ void saveToStream(Universe const& univ, std::ostream& out)
 	clock_t start = clock();
 	oa& univ;
 	clock_t end = clock();
-	std::cout << "Saving time : " << double(end - start) / CLOCKS_PER_SEC << " sec" << std::endl;
+	std::cout << "Saving time : " << double(end - start) / CLOCKS_PER_SEC <<
+	          " sec" << std::endl;
 }
 
 
@@ -324,11 +333,8 @@ bool canBuild(Planet const& planet, Building::Enum type)
 		return false;
 
 	auto iter = find_if(planet.taskQueue.begin(), planet.taskQueue.end(),
-	[&](PlanetTask const & task) {return task.value == static_cast<size_t>(type);});
-	if(iter == planet.taskQueue.end())
-		return true;
-	else
-		return false;
+	                    boost::bind(&PlanetTask::value, _1) == type);
+	return iter == planet.taskQueue.end();
 }
 
 
@@ -352,11 +358,13 @@ void addTask(Planet& planet, size_t roundCount, Building::Enum building)
 	size_t const buNextLevel =  planet.buildingList[building] + 1;
 	size_t const centerLevel = planet.buildingList[Building::CommandCenter];
 	if(centerLevel == 0)
-		BOOST_THROW_EXCEPTION(std::logic_error("Can't create Building without CommandCenter"));
+		BOOST_THROW_EXCEPTION(
+		  std::logic_error("Can't create Building without CommandCenter"));
 
-	size_t const duration = static_cast<size_t>((
-	                          (Building::List[building].price.tab[0] * pow(buNextLevel, 2.)) /
-	                          (log(centerLevel + 1) * 100)) + 0.5);
+	size_t const duration =
+	  static_cast<size_t>(
+	    ((Building::List[building].price.tab[0] * pow(buNextLevel, 2.)) /
+	     (log(centerLevel + 1) * 100)) + 0.5);
 	PlanetTask task(PlanetTask::UpgradeBuilding, roundCount, duration);
 	task.value = building;
 	RessourceSet const price = getBuilingPrice(building, buNextLevel);
@@ -373,11 +381,11 @@ void addTask(Planet& planet, size_t roundCount, Building::Enum building)
 void addTask(Planet& planet, size_t roundCount, Ship::Enum ship, size_t number)
 {
 	size_t const div = 7;
-	size_t const factoryLevel = planet.buildingList[Building::Factory];
-	if(factoryLevel == 0)
-		BOOST_THROW_EXCEPTION(std::logic_error("Can't create ship without Factory"));
-	size_t duration = static_cast<size_t>(
-	                    ((Ship::List[ship].price.tab[0] / div) / factoryLevel) + 0.5);
+	size_t const factoryLvl = planet.buildingList[Building::Factory];
+	if(factoryLvl == 0)
+		BOOST_THROW_EXCEPTION(std::logic_error("Need Factory"));
+	size_t const metal = Ship::List[ship].price.tab[0];
+	size_t duration = static_cast<size_t>(((metal / div) / factoryLvl) + 0.5);
 	if(duration == 0)
 		duration = 1;
 	PlanetTask task(PlanetTask::MakeShip, roundCount, duration);
@@ -390,14 +398,17 @@ void addTask(Planet& planet, size_t roundCount, Ship::Enum ship, size_t number)
 }
 
 
-void addTask(Planet& planet, size_t roundCount, Cannon::Enum cannon, size_t number)
+void addTask(Planet& planet,
+             size_t roundCount,
+             Cannon::Enum cannon,
+             size_t number)
 {
 	size_t const div = 7;
-	size_t const factoryLevel = planet.buildingList[Building::Factory];
-	if(factoryLevel == 0)
-		BOOST_THROW_EXCEPTION(std::logic_error("Can't create ship without Factory"));
-	size_t duration = static_cast<size_t>(
-	                    ((Cannon::List[cannon].price.tab[0] / div) / factoryLevel) + 0.5);
+	size_t const factoryLvl = planet.buildingList[Building::Factory];
+	if(factoryLvl == 0)
+		BOOST_THROW_EXCEPTION(std::logic_error("Need Factory"));
+	size_t const metal = Cannon::List[cannon].price.tab[0];
+	size_t duration = static_cast<size_t>(((metal / div) / factoryLvl) + 0.5);
 	if(duration == 0)
 		duration = 1;
 	PlanetTask task(PlanetTask::MakeCannon, roundCount, duration);
@@ -421,12 +432,15 @@ bool canStop(
 	return true;
 }
 
-void stopTask(Planet& planet, PlanetTask::Enum tasktype, Building::Enum building)
+void stopTask(Planet& planet,
+              PlanetTask::Enum tasktype,
+              Building::Enum building)
 {
 	auto iter = boost::find_if(planet.taskQueue, [&]
 	                           (PlanetTask const & task)
 	{
-		return task.type == tasktype && task.value == static_cast<size_t>(building);
+		return task.type == tasktype &&
+		       task.value == static_cast<size_t>(building);
 	});
 
 	if(iter != planet.taskQueue.end())
@@ -446,12 +460,12 @@ void execTask(Universe& univ,
 		{
 		case PlanetTask::UpgradeBuilding:
 			if(task.value >= planet.buildingList.size())
-				BOOST_THROW_EXCEPTION(std::logic_error("Unconsistent building type"));
+				BOOST_THROW_EXCEPTION(std::logic_error("Bad building type"));
 			else
 			{
 				planet.buildingList[task.value] += 1;
 				Event event(planet.playerId, time(0), Event::Upgraded);
-				event.setValue(intptr_t(task.value)).setPlanetCoord(planet.coord);
+				event.setValue(task.value).setPlanetCoord(planet.coord);
 				events.push_back(event);
 				signals.push_back(Signal(planet.playerId, event));
 			}
@@ -472,7 +486,7 @@ void execTask(Universe& univ,
 			{
 				planet.cannonTab[task.value] += 1;
 				Event event(planet.playerId, time(0), Event::CannonMade);
-				event.setValue(intptr_t(task.value)).setPlanetCoord(planet.coord);
+				event.setValue(task.value).setPlanetCoord(planet.coord);
 				events.push_back(event);
 				signals.push_back(Signal(planet.playerId, event));
 			}
@@ -480,7 +494,8 @@ void execTask(Universe& univ,
 		default:
 			BOOST_THROW_EXCEPTION(std::logic_error("Unknown PlanetTask"));
 		}
-		static_assert(PlanetTask::MakeCannon == (PlanetTask::Count - 1), "Missing cases in switch");
+		static_assert(PlanetTask::MakeCannon == (PlanetTask::Count - 1),
+		              "Missing cases in switch");
 		task.expired = true;
 	}
 }
@@ -504,7 +519,8 @@ void execTask(Universe& univ,
 			Planet& planet = mapFind(univ.planetMap, task.position)->second;
 			if(planet.playerId == Player::NoId)
 			{
-				boost::geometry::add_point(fleet.ressourceSet.tab, planet.ressourceSet.tab);
+				boost::geometry::add_point(fleet.ressourceSet.tab,
+				                           planet.ressourceSet.tab);
 				boost::geometry::assign_value(planet.ressourceSet.tab, 0);
 				Event event(fleet.playerId, time(0), Event::PlanetHarvested);
 				event.setFleetID(fleet.id);
@@ -519,21 +535,24 @@ void execTask(Universe& univ,
 			Planet& planet = mapFind(univ.planetMap, task.position)->second;
 			if(planet.playerId == Player::NoId && fleet.shipList[Ship::Queen])
 			{
-				size_t const planetCount = mapFind(playersPlanetCount, fleet.playerId)->second;
+				size_t const planetCount =
+				  mapFind(playersPlanetCount, fleet.playerId)->second;
 				if(planetCount < 1000)
 				{
-					Event event(fleet.playerId, time(0), Event::PlanetColonized);
-					event.setFleetID(fleet.id).setPlanetCoord(planet.coord);
-					events.push_back(event);
-					signals.push_back(Signal(fleet.playerId, event));
+					Event ev(fleet.playerId, time(0), Event::PlanetColonized);
+					ev.setFleetID(fleet.id).setPlanetCoord(planet.coord);
+					events.push_back(ev);
+					signals.push_back(Signal(fleet.playerId, ev));
 					fleet.shipList[Ship::Queen] -= 1;
 
 					planet.buildingList[Building::CommandCenter] = 1;
-					boost::geometry::add_point(planet.ressourceSet.tab, RessourceSet(2000, 500, 0).tab);
+					boost::geometry::add_point(planet.ressourceSet.tab,
+					                           RessourceSet(2000, 500, 0).tab);
 					planet.playerId = fleet.playerId;
 					planet.parentCoord = fleet.origin;
 					if(planet.playerId > 100000)
-						BOOST_THROW_EXCEPTION(std::logic_error("planet.playerId > 100000"));
+						BOOST_THROW_EXCEPTION(
+						  std::logic_error("planet.playerId > 100000"));
 				}
 			}
 		}
@@ -541,7 +560,8 @@ void execTask(Universe& univ,
 		default:
 			BOOST_THROW_EXCEPTION(std::logic_error("Unknown FleetTask"));
 		}
-		static_assert(FleetTask::Colonize == (FleetTask::Count - 1), "Missing cases in switch");
+		static_assert(FleetTask::Colonize == (FleetTask::Count - 1),
+		              "Missing cases in switch");
 		task.expired = true;
 	}
 }
@@ -557,7 +577,8 @@ void execBuilding(Planet& planet, Building::Enum type, size_t level)
 		planet.ressourceSet.tab[Ressource::Metal] += 1;
 		break;
 	case Building::MetalMine:
-		planet.ressourceSet.tab[Ressource::Metal] += level * size_t(std::pow(1.1, double(level))) * speedMult;
+		planet.ressourceSet.tab[Ressource::Metal] +=
+		  level * size_t(std::pow(1.1, double(level))) * speedMult;
 		break;
 	case Building::CarbonMine:
 		break;
@@ -584,7 +605,7 @@ void planetRound(Universe& univ,
 	for(PlanetTask & task: planet.taskQueue)
 		execTask(univ, planet, task, signals, events);
 
-	boost::remove_erase_if(planet.taskQueue, bind(&PlanetTask::expired, placeholders::_1));
+	remove_erase_if(planet.taskQueue, boost::bind(&PlanetTask::expired, _1));
 
 	for(size_t type = 0; type < planet.buildingList.size(); ++type)
 		execBuilding(planet, Building::Enum(type), planet.buildingList[type]);
@@ -612,7 +633,7 @@ void fleetRound(Universe& univ,
 	for(FleetTask & task: fleet.taskQueue)
 		execTask(univ, fleet, task, signals, events, playersPlanetCount);
 
-	boost::remove_erase_if(fleet.taskQueue, bind(&FleetTask::expired, placeholders::_1));
+	remove_erase_if(fleet.taskQueue, boost::bind(&FleetTask::expired, _1));
 
 	//Limitation des ressources à un milliard
 	for(auto & val: fleet.ressourceSet.tab)
@@ -622,8 +643,11 @@ void fleetRound(Universe& univ,
 
 void gather(Fleet& fleet, Fleet const& otherFleet)
 {
-	boost::geometry::add_point(fleet.ressourceSet.tab, otherFleet.ressourceSet.tab);
-	boost::transform(fleet.shipList, otherFleet.shipList, fleet.shipList.begin(), std::plus<size_t>());
+	geometry::add_point(fleet.ressourceSet.tab, otherFleet.ressourceSet.tab);
+	boost::transform(fleet.shipList,
+	                 otherFleet.shipList,
+	                 fleet.shipList.begin(),
+	                 std::plus<size_t>());
 }
 
 
@@ -688,7 +712,7 @@ bool canDrop(Fleet const& fleet, Planet const& planet)
 
 void drop(Fleet& fleet, Planet& planet)
 {
-	boost::geometry::add_point(planet.ressourceSet.tab, fleet.ressourceSet.tab);
-	boost::geometry::assign_value(fleet.ressourceSet.tab, 0);
+	geometry::add_point(planet.ressourceSet.tab, fleet.ressourceSet.tab);
+	geometry::assign_value(fleet.ressourceSet.tab, 0);
 }
 

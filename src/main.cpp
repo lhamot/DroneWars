@@ -16,6 +16,7 @@
 #include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TBufferTransports.h>
 #pragma warning(pop)
+#include <boost/make_shared.hpp>
 
 #include <log4cplus/configurator.h>
 
@@ -57,13 +58,14 @@ int main()//(int argc, char** argv)
 	try
 	{
 		int port = 9090;
-		boost::shared_ptr<EngineServerHandler> handler(new EngineServerHandler());
-		boost::shared_ptr<TProcessor> processor(new ndw::EngineServerProcessor(handler));
-		boost::shared_ptr<TServerTransport> serverTransport(new TServerSocket(port));
-		boost::shared_ptr<TTransportFactory> transportFactory(new TBufferedTransportFactory());
-		boost::shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());
+		auto handler = boost::make_shared<EngineServerHandler>();
+		auto proc = boost::make_shared<ndw::EngineServerProcessor>(handler);
+		auto serverTransport = boost::make_shared<TServerSocket>(port);
+		auto transpFactory = boost::make_shared<TBufferedTransportFactory>();
+		auto protocolFactory = boost::make_shared<TBinaryProtocolFactory>();
 
-		TSimpleServer server(processor, serverTransport, transportFactory, protocolFactory);
+		TSimpleServer server(
+		  proc, serverTransport, transpFactory, protocolFactory);
 
 		server.serve();
 		LOG4CPLUS_ERROR(logger, "Unexpected server stop");

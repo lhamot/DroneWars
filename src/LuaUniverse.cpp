@@ -13,7 +13,10 @@
 namespace BL = boost::locale;
 using namespace boost;
 
-void PlanetActionListPushBack(PlanetActionList& list, PlanetAction const& pa) {list.push_back(pa);}
+void PlanetActionListPushBack(PlanetActionList& list, PlanetAction const& pa)
+{
+	list.push_back(pa);
+}
 
 size_t getRessource(RessourceSet const& ress, size_t i)
 {
@@ -98,13 +101,16 @@ RessourceSet cannonPrice(Cannon::Enum cannon)
 RessourceSet buildingPrice(Building::Enum building, size_t level)
 {
 	if(building < 1 || building > Building::Count)
-		BOOST_THROW_EXCEPTION(std::runtime_error(str(format(BL::gettext(
-		                        "%1% expect a building number in the range [1: %2%]")) %
-		                      "buildingPrice" %
-		                      Building::Count)));
+	{
+		std::string message =
+		  str(format(BL::gettext(
+		               "%1% expect a building number in the range [1: %2%]")) %
+		      "buildingPrice" % Building::Count);
+		BOOST_THROW_EXCEPTION(std::runtime_error(message));
+	}
 	if(level < 1)
-		BOOST_THROW_EXCEPTION(std::runtime_error(
-		                        "buildingPrice expect a level greater than 1"));
+		BOOST_THROW_EXCEPTION(
+		  std::runtime_error("buildingPrice expect a level greater than 1"));
 	return getBuilingPrice(Building::Enum(building - 1), level);
 }
 

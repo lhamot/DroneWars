@@ -56,7 +56,9 @@ void fillShipList(Fleet const& fleet, std::vector<ShipInstance>& shipTab)
 		shipNumber += fleet.shipList[i];
 
 	shipTab.reserve(shipNumber);
-	for(Ship::Enum type = Ship::Enum(0); type < Ship::Count; type = Ship::Enum(type + 1))
+	for(Ship::Enum type = Ship::Enum(0);
+	    type < Ship::Count;
+	    type = Ship::Enum(type + 1))
 	{
 		Ship const& def = Ship::List[type];
 		size_t const count = fleet.shipList[type];
@@ -73,7 +75,9 @@ void fillShipList(Planet const& planet, std::vector<ShipInstance>& shipTab)
 		shipNumber += planet.cannonTab[i];
 
 	shipTab.reserve(shipNumber);
-	for(Cannon::Enum type = Cannon::Enum(0); type < Cannon::Count; type = Cannon::Enum(type + 1))
+	for(Cannon::Enum type = Cannon::Enum(0);
+	    type < Cannon::Count;
+	    type = Cannon::Enum(type + 1))
 	{
 		Cannon const& def = Cannon::List[type];
 		size_t const count = planet.cannonTab[type];
@@ -83,7 +87,8 @@ void fillShipList(Planet const& planet, std::vector<ShipInstance>& shipTab)
 }
 
 
-void applyRound(std::vector<ShipInstance>& shipTab1, std::vector<ShipInstance>& shipTab2)
+void applyRound(std::vector<ShipInstance>& shipTab1,
+                std::vector<ShipInstance>& shipTab2)
 {
 	size_t pos = 0;
 	size_t const size = shipTab2.size();
@@ -102,7 +107,8 @@ void applyRound(std::vector<ShipInstance>& shipTab1, std::vector<ShipInstance>& 
 
 
 //! Cette fonction modifie la flotte
-void fillFinalFleet(std::vector<ShipInstance> const& shipTab, Fleet& fleet) throw()
+void fillFinalFleet(std::vector<ShipInstance> const& shipTab,
+                    Fleet& fleet) throw()
 {
 	Fleet::ShipTab& outTab = fleet.shipList;
 	outTab.assign(Ship::Count, 0);
@@ -112,7 +118,8 @@ void fillFinalFleet(std::vector<ShipInstance> const& shipTab, Fleet& fleet) thro
 
 
 //! Cette fonction modifie la planet
-void fillFinalFleet(std::vector<ShipInstance> const& shipTab, Planet& planet) throw()
+void fillFinalFleet(std::vector<ShipInstance> const& shipTab,
+                    Planet& planet) throw()
 {
 	Planet::CannonTab& outTab = planet.cannonTab;
 	//outTab.assign(Cannon::Count, 0);
@@ -143,8 +150,8 @@ FightStatus fight(F1& fleet1, F2& fleet2)
 	{
 		applyRound(shipTab1, shipTab2);
 		applyRound(shipTab2, shipTab1);
-		boost::remove_erase_if(shipTab1, [](ShipInstance const & ship) {return ship.life <= 0;});
-		boost::remove_erase_if(shipTab2, [](ShipInstance const & ship) {return ship.life <= 0;});
+		remove_erase_if(shipTab1, boost::bind(&ShipInstance::life, _1) <= 0);
+		remove_erase_if(shipTab2, boost::bind(&ShipInstance::life, _1) <= 0);
 	}
 
 	//Impact sur les flotte
@@ -254,13 +261,15 @@ void fight(std::vector<Fleet*> const& fleetList,
 	//! On liste les paires combatantes
 	std::set<FleetPair> fightingPair;
 	//! - Flotte/Flotte
-	for(auto iter1 = fleetList.begin(), end = fleetList.end(); iter1 != end; ++iter1)
+	for(auto iter1 = fleetList.begin(),
+	    end = fleetList.end();
+	    iter1 != end; ++iter1)
 	{
 		for(auto iter2 = iter1 + 1; iter2 != end; ++iter2)
 		{
-			Player::ID const player1 = (*iter1)->playerId;
-			Player::ID const player2 = (*iter2)->playerId;
-			if(player1 != player2 && player1 != Player::NoId && player2 != Player::NoId)
+			Player::ID const pla1 = (*iter1)->playerId;
+			Player::ID const pla2 = (*iter2)->playerId;
+			if(pla1 != pla2 && pla1 != Player::NoId && pla2 != Player::NoId)
 			{
 				//uint64_t const score1 = mapFind(univ.playerMap, player1)->second.score;
 				//uint64_t const score2 = mapFind(univ.playerMap, player2)->second.score;
@@ -274,18 +283,21 @@ void fight(std::vector<Fleet*> const& fleetList,
 	//! - Planete/Flotte
 	if(reportList.hasPlanet)
 	{
-		for(auto iter1 = fleetList.begin(), end = fleetList.end(); iter1 != end; ++iter1)
+		for(auto iter1 = fleetList.begin(),
+		    end = fleetList.end();
+		    iter1 != end; ++iter1)
 		{
-			Player::ID const player1 = (*iter1)->playerId;
-			Player::ID const player2 = planet->playerId;
-			if(player1 != player2 && player1 != Player::NoId && player2 != Player::NoId)
+			Player::ID const pla1 = (*iter1)->playerId;
+			Player::ID const pla2 = planet->playerId;
+			if(pla1 != pla2 && pla1 != Player::NoId && pla2 != Player::NoId)
 			{
 				//uint64_t const score1 = mapFind(univ.playerMap, player1)->second.score;
 				//uint64_t const score2 = mapFind(univ.playerMap, player2)->second.score;
 				//Bloquage si trop d'équart de niveaux
 				//if((score1 * 5) > score2 && (score2 * 5) > score1)
 				//TOTO: Remetre la limitation sur les score trop differents
-				fightingPair.insert(FleetPair(iter1 - fleetList.begin(), PlanetIndex));
+				fightingPair.insert(
+				  FleetPair(iter1 - fleetList.begin(), PlanetIndex));
 			}
 		}
 	}
@@ -298,14 +310,18 @@ void fight(std::vector<Fleet*> const& fleetList,
 		{
 			Report<Planet>& report1 = reportList.planet.get();
 			Report<Fleet>& report2 = reportList.fleetList[fleetPair.index2];
-			handleFighterPair<Planet, Fleet>(fleetList, reportList, fleetPair, report1, *planet, report2, *fleetList[fleetPair.index2]);
+			handleFighterPair<Planet, Fleet>(
+			  fleetList, reportList, fleetPair, report1,
+			  *planet, report2, *fleetList[fleetPair.index2]);
 		}
 		//! - flotte vs planet
 		else if(fleetPair.index2 == PlanetIndex)
 		{
 			Report<Fleet>& report1 = reportList.fleetList[fleetPair.index1];
 			Report<Planet>& report2 = reportList.planet.get();
-			handleFighterPair<Fleet, Planet>(fleetList, reportList, fleetPair, report1, *fleetList[fleetPair.index1], report2, *planet);
+			handleFighterPair<Fleet, Planet>(
+			  fleetList, reportList, fleetPair, report1,
+			  *fleetList[fleetPair.index1], report2, *planet);
 		}
 		//! - flotte vs flotte
 		else
@@ -314,7 +330,9 @@ void fight(std::vector<Fleet*> const& fleetList,
 			Fleet* fighterPtr1 = fleetList[fleetPair.index1];
 			Report<Fleet>& report2 = reportList.fleetList[fleetPair.index2];
 			Fleet* fighterPtr2 = fleetList[fleetPair.index2];
-			handleFighterPair<Fleet, Fleet>(fleetList, reportList, fleetPair, report1, *fighterPtr1, report2, *fighterPtr2);
+			handleFighterPair<Fleet, Fleet>(
+			  fleetList, reportList, fleetPair, report1,
+			  *fighterPtr1, report2, *fighterPtr2);
 		}
 	}
 

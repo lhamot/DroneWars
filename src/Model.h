@@ -582,9 +582,13 @@ struct Universe
 	{
 		size_t res = 0;
 		for(auto const & planetKV: planetMap)
-			res += sizeof(planetKV) + planetKV.second.heap_size() + 2 * sizeof(size_t);
+			res += sizeof(planetKV) +
+			       planetKV.second.heap_size() +
+			       2 * sizeof(size_t);
 		for(auto const & fleetKV: fleetMap)
-			res += sizeof(fleetKV) + fleetKV.second.heap_size() + 2 * sizeof(size_t);
+			res += sizeof(fleetKV) +
+			       fleetKV.second.heap_size() +
+			       2 * sizeof(size_t);
 		return res;
 	}
 
@@ -641,15 +645,23 @@ bool canBuild(Planet const& planet, Building::Enum type);
 
 void addTask(Planet& planet, size_t roundCount, Building::Enum building);
 
-void addTask(Planet& planet, size_t roundCount, Ship::Enum ship, size_t number);
+void addTask(Planet& planet,
+             size_t roundCount,
+             Ship::Enum ship,
+             size_t number);
 
 bool canBuild(Planet const& planet, Cannon::Enum type, size_t number);
 
-void addTask(Planet& planet, size_t roundCount, Cannon::Enum cannon, size_t number);
+void addTask(Planet& planet,
+             size_t roundCount,
+             Cannon::Enum cannon,
+             size_t number);
 
 bool canStop(Planet const& planet, Building::Enum type);
 
-void stopTask(Planet& planet, PlanetTask::Enum tasktype, Building::Enum building);
+void stopTask(Planet& planet,
+              PlanetTask::Enum tasktype,
+              Building::Enum building);
 
 //! Gere l'écoulement du temps sur la planète.
 //! Peut modifier la liste dse flotte et des planètes

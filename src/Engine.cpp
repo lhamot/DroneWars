@@ -13,17 +13,17 @@ typedef boost::shared_lock<Universe::Mutex> SharedLock;
 Engine::Engine():
 	simulation_(new Simulation(univ_))
 {
-	boost::filesystem::directory_iterator dir("save/"), end;
+	filesystem::directory_iterator dir("save/"), end;
 
 	time_t maxtime = 0;
 	size_t version = 1;
-	for(const boost::filesystem::path & p: boost::make_iterator_range(dir, end))
+	for(const filesystem::path & p: make_iterator_range(dir, end))
 	{
-		std::string const fileStr = p.filename().string();
+		string const fileStr = p.filename().string();
 		if((fileStr.find("_save.bta") == 10) &&
 		   (fileStr.size() == 19 || fileStr.size() == 20))
 		{
-			std::string const strTime = fileStr.substr(0, 10);
+			string const strTime = fileStr.substr(0, 10);
 			time_t filetime = strtoul(strTime.c_str(), 0, 10);
 			maxtime = max(maxtime, filetime);
 			if(fileStr.size() == 20)
@@ -32,7 +32,7 @@ Engine::Engine():
 	}
 	if(maxtime)
 	{
-		std::stringstream ss;
+		stringstream ss;
 		ss << "save/" << maxtime << "_save.bta";
 		if(version == 2)
 			ss << "2";
@@ -47,19 +47,19 @@ Engine::Engine():
 }
 
 
-void Engine::load(std::string const& univName, size_t version)
+void Engine::load(string const& univName, size_t version)
 {
 	UniqueLock lock(univ_.planetsFleetsReportsmutex);
 	using namespace std;
 	ifstream loadFile(univName, ios::in | ios::binary);
 	if(loadFile.is_open() == false)
-		BOOST_THROW_EXCEPTION(std::ios::failure("Can't load from " + univName));
+		BOOST_THROW_EXCEPTION(ios::failure("Can't load from " + univName));
 	if(version == 1)
 		loadFromStream_v1(loadFile, univ_);
 	else if(version == 2)
 		loadFromStream_v2(loadFile, univ_);
 	else
-		BOOST_THROW_EXCEPTION(std::logic_error("Unexpected archive file version"));
+		BOOST_THROW_EXCEPTION(logic_error("Unexpected archive file version"));
 }
 
 
@@ -82,7 +82,9 @@ void Engine::stop()
 }
 
 
-bool Engine::addPlayer(DataBase& database, std::string const& login, std::string const& password)
+bool Engine::addPlayer(DataBase& database,
+                       string const& login,
+                       string const& password)
 {
 	if(login.size() > MaxStringSize)
 		BOOST_THROW_EXCEPTION(InvalidData("login"));
@@ -102,11 +104,11 @@ bool Engine::addPlayer(DataBase& database, std::string const& login, std::string
 }
 
 
-std::vector<Fleet> Engine::getPlayerFleets(Player::ID pid) const
+vector<Fleet> Engine::getPlayerFleets(Player::ID pid) const
 {
 	SharedLock lock(univ_.planetsFleetsReportsmutex);
-	std::vector<Fleet> fleetList;
-	for(Fleet const & fleet: univ_.fleetMap | boost::adaptors::map_values)
+	vector<Fleet> fleetList;
+	for(Fleet const & fleet: univ_.fleetMap | adaptors::map_values)
 	{
 		if(fleet.playerId == pid)
 			fleetList.push_back(fleet);
@@ -115,10 +117,10 @@ std::vector<Fleet> Engine::getPlayerFleets(Player::ID pid) const
 }
 
 
-std::vector<Planet> Engine::getPlayerPlanets(Player::ID pid) const
+vector<Planet> Engine::getPlayerPlanets(Player::ID pid) const
 {
 	SharedLock lock(univ_.planetsFleetsReportsmutex);
-	std::vector<Planet> planetList;
+	vector<Planet> planetList;
 	for(Universe::PlanetMap::value_type const & planetNVP: univ_.planetMap)
 	{
 		if(planetNVP.second.playerId == pid)
@@ -128,19 +130,19 @@ std::vector<Planet> Engine::getPlayerPlanets(Player::ID pid) const
 }
 
 
-boost::optional<Planet> Engine::getPlanet(Coord coord) const
+optional<Planet> Engine::getPlanet(Coord coord) const
 {
 	SharedLock lock(univ_.planetsFleetsReportsmutex);
 	auto iter = univ_.planetMap.find(coord);
 	return iter == univ_.planetMap.end() ?
-	       boost::optional<Planet>() :
+	       optional<Planet>() :
 	       iter->second;
 }
 
-std::vector<Planet> Engine::getPlanets(std::vector<Coord> const& coordVect) const
+vector<Planet> Engine::getPlanets(vector<Coord> const& coordVect) const
 {
 	SharedLock lock(univ_.planetsFleetsReportsmutex);
-	std::vector<Planet> result;
+	vector<Planet> result;
 	result.reserve(coordVect.size());
 	for(Coord const & coord: coordVect)
 	{
