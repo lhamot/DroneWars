@@ -65,8 +65,7 @@ void Simulation::reloadPlayer(Player::ID pid)
 }
 
 
-void addErrorMessageImpl(DataBase& database,
-                         Player::ID pid,
+void addErrorMessageImpl(Player::ID pid,
                          CodeData::Target target,
                          size_t codeID,
                          std::string const& message,
@@ -77,39 +76,35 @@ void addErrorMessageImpl(DataBase& database,
 	            target == CodeData::Fleet ?
 	            Event::FleetCodeError :
 	            Event::PlanetCodeError);
-	event.setComment(message);
+	event.setComment(message).setValue(codeID);
 	std::cout << "codeID : " << codeID << std::endl;
-	database.addCodeError(codeID, message);
 	events.push_back(event);
 	signals.push_back(Signal(pid, event));
 }
 
 
-void addErrorMessage(DataBase& database,
-                     CodeData const& codeData,
+void addErrorMessage(CodeData const& codeData,
                      std::string const& message,
                      std::vector<Signal>& signals,
                      std::vector<Event>& events)
 {
 	addErrorMessageImpl(
-	  database, codeData.playerId, codeData.target, codeData.id, message, signals, events);
+	  codeData.playerId, codeData.target, codeData.id, message, signals, events);
 }
 
 
-void addErrorMessage(DataBase& database,
-                     PlayerCodes::ObjectMap& objMap,
+void addErrorMessage(PlayerCodes::ObjectMap& objMap,
                      std::string const& message,
                      std::vector<Signal>& signals,
                      std::vector<Event>& events)
 {
 	addErrorMessageImpl(
-	  database, objMap.playerId, objMap.target, objMap.scriptID, message, signals, events);
+	  objMap.playerId, objMap.target, objMap.scriptID, message, signals, events);
 	objMap.functions.clear();
 }
 
 
 PlayerCodes::ObjectMap registerCode(
-  DataBase& database,
   LuaTools::LuaEngine& luaEngine,
   CodeData const& code,
   std::vector<Signal>& signals,
@@ -139,7 +134,7 @@ try
 	if(luaL_dostring(luaEngine.state(), codeString.c_str()) != 0)
 	{
 		char const* message = lua_tostring(luaEngine.state(), -1);
-		addErrorMessage(database, code, message, signals, events);
+		addErrorMessage(code, message, signals, events);
 		return PlayerCodes::ObjectMap(); //Vide car toute les fonction sont invalides
 	}
 	else
@@ -156,13 +151,13 @@ try
 catch(luabind::error& ex)
 {
 	std::string message = GetLuabindErrorString(ex);
-	addErrorMessage(database, code, message, signals, events);
+	addErrorMessage(code, message, signals, events);
 	return PlayerCodes::ObjectMap(); //Vide car toute les fonction sont invalides
 }
 catch(luabind::cast_failed& ex)
 {
 	std::string message = ex.what() + std::string(" to ") + ex.info().name();
-	addErrorMessage(database, code, message, signals, events);
+	addErrorMessage(code, message, signals, events);
 	return PlayerCodes::ObjectMap(); //Vide car toute les fonction sont invalides
 }
 //Les logic_error ne doivent pas etre catchées
@@ -179,7 +174,6 @@ catch(luabind::cast_failed& ex)
 //! Excecute le code de la planete et lui ajoute des tache
 void execPlanet(
   Universe& univ_,
-  DataBase& database,
   LuaEngine& luaEngine,
   PlayerCodes::ObjectMap& codeMap,
   Planet& planet,
@@ -197,7 +191,7 @@ try
 		//call_function crash quand on lui passe autre chose qu'une fonction
 		boost::format trans(BL::gettext("Procedure \"%1%\" not found."));
 		std::string const message = str(trans % "AI");
-		addErrorMessage(database, codeMap, message, signals, events);
+		addErrorMessage(codeMap, message, signals, events);
 		return;
 	}
 
@@ -249,13 +243,13 @@ try
 catch(luabind::error& ex)
 {
 	std::string const message = GetLuabindErrorString(ex);
-	addErrorMessage(database, codeMap, message, signals, events);
+	addErrorMessage(codeMap, message, signals, events);
 }
 catch(luabind::cast_failed& ex)
 {
 	std::string const message =
 	  str(boost::format(BL::gettext("Unable to make cast to %1%")) % ex.info().name());
-	addErrorMessage(database, codeMap, message, signals, events);
+	addErrorMessage(codeMap, message, signals, events);
 }
 //Les logic_error ne doivent pas etre catchées
 /*catch(std::exception const& ex)
@@ -267,8 +261,7 @@ catch(luabind::cast_failed& ex)
 }*/
 
 
-bool checkLuaMethode(DataBase& database,
-                     PlayerCodes::ObjectMap& codeMap,
+bool checkLuaMethode(PlayerCodes::ObjectMap& codeMap,
                      std::string const& name,
                      std::vector<Signal>& signals,
                      std::vector<Event>& events)
@@ -285,14 +278,13 @@ bool checkLuaMethode(DataBase& database,
 		{
 			std::string const message =
 			  str(boost::format(BL::gettext("Procedure \"%1%\" not found.")) % name);
-			addErrorMessage(database, codeMap, message, signals, events);
+			addErrorMessage(codeMap, message, signals, events);
 			return false;
 		}
 	}
 }
 
 bool execFleet(Universe& univ_,
-               DataBase& database,
                LuaEngine& luaEngine,
                PlayerCodes::ObjectMap& codeMap,
                Fleet& fleet,
@@ -303,7 +295,7 @@ try
 {
 	auto localFleetsKV = fleetMap.equal_range(fleet.coord);
 	auto fleetIter = localFleetsKV.first;
-	if(checkLuaMethode(database, codeMap, "do_gather", signals, events))
+	if(checkLuaMethode(codeMap, "do_gather", signals, events))
 	{
 		luabind::object do_gather = mapFind(codeMap.functions, "do_gather")->second;
 		while(fleetIter != localFleetsKV.second)
@@ -334,7 +326,7 @@ try
 		}
 	}
 
-	if(checkLuaMethode(database, codeMap, "action", signals, events) == false)
+	if(checkLuaMethode(codeMap, "action", signals, events) == false)
 		return true;
 	luabind::object actionFunc = mapFind(codeMap.functions, "action")->second;
 	auto planetIter = univ_.planetMap.find(fleet.coord);
@@ -395,14 +387,14 @@ try
 catch(luabind::error& ex)
 {
 	std::string const message = GetLuabindErrorString(ex);
-	addErrorMessage(database, codeMap, message, signals, events);
+	addErrorMessage(codeMap, message, signals, events);
 	return true;
 }
 catch(luabind::cast_failed& ex)
 {
 	std::string const message =
 	  str(boost::format(BL::gettext("Unable to make cast to %1%")) % ex.info().name());
-	addErrorMessage(database, codeMap, message, signals, events);
+	addErrorMessage(codeMap, message, signals, events);
 	return true;
 }
 //Les logic_error ne doivent pas etre catchées
@@ -449,8 +441,8 @@ void Simulation::updatePlayersCode(LuaTools::LuaEngine& luaEngine,
 		CodeData const planetsCode = database_.getPlayerCode(pid, CodeData::Planet);
 		PlayerCodes newCodes =
 		{
-			registerCode(database_, luaEngine, fleetsCode, signals, events),
-			registerCode(database_, luaEngine, planetsCode, signals, events)
+			registerCode(luaEngine, fleetsCode, signals, events),
+			registerCode(luaEngine, planetsCode, signals, events)
 		};
 		codesMap[pid] = newCodes;
 	}
@@ -460,7 +452,6 @@ void Simulation::updatePlayersCode(LuaTools::LuaEngine& luaEngine,
 
 
 void execPlanets(Universe& univ_,
-                 DataBase& database,
                  LuaTools::LuaEngine& luaEngine,
                  PlayerCodeMap& codesMap,
                  std::vector<Signal>& signals,
@@ -491,7 +482,7 @@ void execPlanets(Universe& univ_,
 		boost::transform(localFleets, back_inserter(fleetList), getFleetPointer);
 		planetRound(univ_, planet, signals, events);
 		if(planet.playerId != Player::NoId)
-			execPlanet(univ_, database, luaEngine, codesMap[planet.playerId].planetsCode, planet, fleetList, signals, events);
+			execPlanet(univ_, luaEngine, codesMap[planet.playerId].planetsCode, planet, fleetList, signals, events);
 	}
 	LOG4CPLUS_TRACE(logger, "exit");
 }
@@ -712,7 +703,6 @@ void execFights(Universe& univ_,
 //! Excecutes les code des flottes
 void execFleets(
   Universe& univ_,
-  DataBase& database,
   LuaTools::LuaEngine& luaEngine,
   PlayerCodeMap& codesMap,
   std::vector<Signal>& signals,
@@ -741,7 +731,6 @@ void execFleets(
 		fleetRound(univ_, iter->second, signals, events, playersPlanetCount);
 
 		bool keepFleet = execFleet(univ_,
-		                           database,
 		                           luaEngine,
 		                           codesMap[iter->second.playerId].fleetsCode,
 		                           iter->second,
@@ -850,19 +839,32 @@ try
 
 	//! Excecution du code des planetes(modifie l'univers)
 	//SharedLock writeLock(univ_.playersMutex);
-	execPlanets(univ_, database_, luaEngine, codesMap, signals, events);
+	execPlanets(univ_, luaEngine, codesMap, signals, events);
 
 	//! Les combats
 	execFights(univ_, database_, signals, events);
 
 	//! Les flottes
-	execFleets(univ_, database_, luaEngine, codesMap, signals, events);
+	execFleets(univ_, luaEngine, codesMap, signals, events);
 
 	//! Supprime evenement trop vieux dans les Player et les Rapport plus utile
 	database_.removeOldEvents();
 
 	//! Ajoute les nouveau evenements dans la base
 	database_.addEvents(events);
+
+	//! Ajout des erreur de code dans la base
+	std::vector<DataBase::CodeError> errorVect;
+	errorVect.reserve(events.size());
+	for(Event const & ev: events)
+	{
+		if(ev.type == Event::FleetCodeError || ev.type == Event::PlanetCodeError)
+		{
+			DataBase::CodeError err = {ev.value, ev.comment};
+			errorVect.push_back(err);
+		}
+	}
+	database_.addCodeErrors(errorVect);
 
 	//! Met a jour les score des joueurs (modifie les joueurs)
 	LOG4CPLUS_TRACE(logger, "updateScore start");
@@ -991,8 +993,8 @@ try
 			CodeData const planetsCode = database_.getPlayerCode(player.id, CodeData::Planet);
 			PlayerCodes newCodes =
 			{
-				registerCode(database_, luaEngine, fleetsCode, signals, events),
-				registerCode(database_, luaEngine, planetsCode, signals, events)
+				registerCode(luaEngine, fleetsCode, signals, events),
+				registerCode(luaEngine, planetsCode, signals, events)
 			};
 			codesMap.insert(make_pair(player.id, newCodes));
 		}

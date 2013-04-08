@@ -61,8 +61,6 @@ public:
 	};
 	void addCodeErrors(std::vector<CodeError> const& errors);
 
-	void addCodeError(size_t scriptId, std::string const& message);
-
 	size_t addFightReport(FightReport const& report);
 
 	void addFightReports(std::vector<FightReport> const& reports);

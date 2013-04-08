@@ -603,13 +603,6 @@ try
 DB_CATCH
 
 
-void DataBase::addCodeError(size_t scriptId, std::string const& message)
-{
-	CodeError error = {scriptId, message};
-	addCodeErrors(std::vector<CodeError>(1, error));
-}
-
-
 CodeData DataBase::getPlayerCode(Player::ID pid, CodeData::Target target) const
 try
 {
