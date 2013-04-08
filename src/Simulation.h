@@ -49,11 +49,9 @@ public:
 private:
 	void round(LuaTools::LuaEngine&,
 	           PlayerCodeMap& codesMap,
-	           std::vector<Signal>& signals,
 	           std::vector<Event>& events);
 	void updatePlayersCode(LuaTools::LuaEngine& luaEngine,
 	                       PlayerCodeMap& codesMap,
-	                       std::vector<Signal>& signals,
 	                       std::vector<Event>& events);
 	void save(std::string const& univName) const;
 	void removeOldSaves() const;

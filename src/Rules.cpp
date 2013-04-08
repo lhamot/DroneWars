@@ -30,7 +30,7 @@ typedef boost::upgrade_to_unique_lock<Universe::Mutex> UpToUniqueLock;
 
 void checkTutos(Universe& univ_,
                 DataBase& database,
-                std::vector<Signal>& signals)
+                std::vector<Event> const& events)
 {
 	SharedLock lockAll(univ_.planetsFleetsReportsmutex);
 
@@ -64,10 +64,10 @@ void checkTutos(Universe& univ_,
 		}
 		case 2: //! Cas 2: Créer Vaisseau
 		{
-			for(Signal const & sig: signals)
+			for(Event const & ev: events)
 			{
-				if(sig.playerID == player.id &&
-				   sig.event.type == Event::ShipMade)
+				if(ev.playerID == player.id &&
+				   ev.type == Event::ShipMade)
 				{
 					wisePlayer.push_back(player.id);
 					break;
@@ -77,10 +77,10 @@ void checkTutos(Universe& univ_,
 		}
 		case 3: //! Cas 3: Créer 3 flottes
 		{
-			for(Signal const & sig: signals)
+			for(Event const & sig: events)
 			{
 				if(sig.playerID == player.id &&
-				   sig.event.type == Event::ShipMade)
+				   sig.type == Event::ShipMade)
 				{
 					size_t const count =
 					  range::count_if(
@@ -95,10 +95,10 @@ void checkTutos(Universe& univ_,
 		}
 		case 4: //! Cas 4: Créer 3 flottes composé de 5 mosquito exactement
 		{
-			for(Signal const & sig: signals)
+			for(Event const & sig: events)
 			{
 				if(sig.playerID == player.id &&
-				   sig.event.type == Event::FleetsGather)
+				   sig.type == Event::FleetsGather)
 				{
 					auto mosqu5 = [&](Fleet const & fleet)
 					{
@@ -135,10 +135,10 @@ void checkTutos(Universe& univ_,
 		}
 		case 6: //! Cas 6: Récoltez ressources
 		{
-			for(Signal const & sig: signals)
+			for(Event const & sig: events)
 			{
 				if(sig.playerID == player.id &&
-				   sig.event.type == Event::PlanetHarvested)
+				   sig.type == Event::PlanetHarvested)
 				{
 					wisePlayer.push_back(player.id);
 					break;
@@ -148,10 +148,10 @@ void checkTutos(Universe& univ_,
 		}
 		case 7: //! Cas 7: Rapporter ressources
 		{
-			for(Signal const & sig: signals)
+			for(Event const & sig: events)
 			{
 				if(sig.playerID == player.id &&
-				   sig.event.type == Event::FleetDrop)
+				   sig.type == Event::FleetDrop)
 				{
 					wisePlayer.push_back(player.id);
 					break;
@@ -161,10 +161,10 @@ void checkTutos(Universe& univ_,
 		}
 		case 8: //! Cas 8: Colonisation
 		{
-			for(Signal const & sig: signals)
+			for(Event const & sig: events)
 			{
 				if(sig.playerID == player.id &&
-				   sig.event.type == Event::PlanetColonized)
+				   sig.type == Event::PlanetColonized)
 				{
 					wisePlayer.push_back(player.id);
 					break;

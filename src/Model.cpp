@@ -451,7 +451,6 @@ void stopTask(Planet& planet,
 void execTask(Universe& univ,
               Planet& planet,
               PlanetTask& task,
-              std::vector<Signal>& signals,
               std::vector<Event>& events)
 {
 	if((task.lauchTime + task.duration) <= univ.roundCount)
@@ -467,7 +466,6 @@ void execTask(Universe& univ,
 				Event event(planet.playerId, time(0), Event::Upgraded);
 				event.setValue(task.value).setPlanetCoord(planet.coord);
 				events.push_back(event);
-				signals.push_back(Signal(planet.playerId, event));
 			}
 			break;
 		case PlanetTask::MakeShip:
@@ -478,7 +476,6 @@ void execTask(Universe& univ,
 			Event event(planet.playerId, time(0), Event::ShipMade);
 			event.setValue(intptr_t(task.value)).setPlanetCoord(planet.coord);
 			events.push_back(event);
-			signals.push_back(Signal(planet.playerId, event));
 		}
 		break;
 		case PlanetTask::MakeCannon:
@@ -488,7 +485,6 @@ void execTask(Universe& univ,
 				Event event(planet.playerId, time(0), Event::CannonMade);
 				event.setValue(task.value).setPlanetCoord(planet.coord);
 				events.push_back(event);
-				signals.push_back(Signal(planet.playerId, event));
 			}
 			break;
 		default:
@@ -503,7 +499,6 @@ void execTask(Universe& univ,
 void execTask(Universe& univ,
               Fleet& fleet,
               FleetTask& task,
-              std::vector<Signal>& signals,
               std::vector<Event>& events,
               std::map<Player::ID, size_t> const& playersPlanetCount)
 {
@@ -525,7 +520,6 @@ void execTask(Universe& univ,
 				Event event(fleet.playerId, time(0), Event::PlanetHarvested);
 				event.setFleetID(fleet.id);
 				events.push_back(event);
-				signals.push_back(Signal(fleet.playerId, event));
 			}
 		}
 		break;
@@ -539,10 +533,13 @@ void execTask(Universe& univ,
 				  mapFind(playersPlanetCount, fleet.playerId)->second;
 				if(planetCount < 1000)
 				{
-					Event ev(fleet.playerId, time(0), Event::PlanetColonized);
-					ev.setFleetID(fleet.id).setPlanetCoord(planet.coord);
+					Event ev = Event(
+					             fleet.playerId,
+					             time(0),
+					             Event::PlanetColonized)
+					           .setFleetID(fleet.id)
+					           .setPlanetCoord(planet.coord);
 					events.push_back(ev);
-					signals.push_back(Signal(fleet.playerId, ev));
 					fleet.shipList[Ship::Queen] -= 1;
 
 					planet.buildingList[Building::CommandCenter] = 1;
@@ -599,11 +596,10 @@ void execBuilding(Planet& planet, Building::Enum type, size_t level)
 
 void planetRound(Universe& univ,
                  Planet& planet,
-                 std::vector<Signal>& signals,
                  std::vector<Event>& events)
 {
 	for(PlanetTask & task: planet.taskQueue)
-		execTask(univ, planet, task, signals, events);
+		execTask(univ, planet, task, events);
 
 	remove_erase_if(planet.taskQueue, boost::bind(&PlanetTask::expired, _1));
 
@@ -626,12 +622,11 @@ void planetRound(Universe& univ,
 
 void fleetRound(Universe& univ,
                 Fleet& fleet,
-                std::vector<Signal>& signals,
                 std::vector<Event>& events,
                 std::map<Player::ID, size_t> const& playersPlanetCount)
 {
 	for(FleetTask & task: fleet.taskQueue)
-		execTask(univ, fleet, task, signals, events, playersPlanetCount);
+		execTask(univ, fleet, task, events, playersPlanetCount);
 
 	remove_erase_if(fleet.taskQueue, boost::bind(&FleetTask::expired, _1));
 

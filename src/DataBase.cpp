@@ -585,18 +585,71 @@ try
 DB_CATCH
 
 
+namespace Poco
+{
+namespace Data
+{
+
+template <>
+class TypeHandler<typename DataBase::CodeError>
+{
+public:
+	static void bind(std::size_t pos,
+	                 const DataBase::CodeError& obj,
+	                 AbstractBinder* pBinder)
+	{
+		poco_assert_dbg(pBinder != 0);
+		TypeHandler<std::string>::bind(pos++, obj.message, pBinder);
+		TypeHandler<size_t>::bind(pos++, obj.codeDataId, pBinder);
+	}
+
+	static std::size_t size()
+	{
+		return 2;
+	}
+
+	static void prepare(std::size_t pos,
+	                    const DataBase::CodeError& obj,
+	                    AbstractPreparation* pPrepare)
+	{
+		poco_assert_dbg(pBinder != 0);
+		TypeHandler<std::string>::prepare(pos++, obj.message, pPrepare);
+		TypeHandler<size_t>::prepare(pos++, obj.codeDataId, pPrepare);
+	}
+
+	static void extract(std::size_t pos,
+	                    DataBase::CodeError& obj,
+	                    const DataBase::CodeError& defVal,
+	                    AbstractExtractor* pExt)
+	{
+		poco_assert_dbg(pExt != 0);
+		std::string message;
+		size_t codeID = 0;
+		TypeHandler<std::string>::extract(pos++, message, defVal.message, pExt);
+		TypeHandler<size_t>::extract(pos++, codeID, defVal.codeDataId, pExt);
+		obj.message = message;
+		obj.codeDataId = codeID;
+	}
+
+private:
+	TypeHandler();
+	~TypeHandler();
+	TypeHandler(const TypeHandler&);
+	TypeHandler& operator=(const TypeHandler&);
+};
+
+}
+} // namespace Poco::Data
+
 void DataBase::addCodeErrors(std::vector<CodeError> const& errors)
 try
 {
-	typedef Poco::Tuple<string, size_t> ErrorTuple;
-	std::vector<ErrorTuple> errorVect;
-	errorVect.reserve(errors.size());
+	if(errors.empty())
+		return;
 	Transaction trans(*session_);
-	for(CodeError const & error: errors)
-		errorVect.push_back(ErrorTuple(error.message, error.codeDataId));
 	(*session_) <<
 	            "UPDATE Script SET lastError = ? WHERE id = ? ",
-	            use(errorVect),
+	            use(errors),
 	            now;
 	trans.commit();
 }

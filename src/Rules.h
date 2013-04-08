@@ -19,7 +19,7 @@ void getBlocklyHTML(size_t tutoLevel,
 //! Verifie si il faut augrmenter le niveau du tutoriel
 void checkTutos(Universe& univ_,
                 DataBase& database,
-                std::vector<Signal>& signals);
+                std::vector<Event> const& events);
 
 bool fleetCanSeePlanet(Fleet const& fleet,
                        Planet const& planet,

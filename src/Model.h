@@ -540,19 +540,6 @@ struct Event
 	Event& setPlanetCoord(Coord pcoord) {planetCoord = pcoord; return *this;}
 };
 
-struct Signal
-{
-	Player::ID playerID;
-	Event event;
-
-	Signal(Player::ID player,
-	       Event const& event_):
-		playerID(player),
-		event(event_)
-	{
-	}
-};
-
 
 struct Universe
 {
@@ -667,14 +654,12 @@ void stopTask(Planet& planet,
 //! Peut modifier la liste dse flotte et des planètes
 void planetRound(Universe& univ,
                  Planet& planet,
-                 std::vector<Signal>& signals,
                  std::vector<Event>& events);
 
 //! Gere l'écoulement du temps sur la flotte.
 //! Peut modifier la liste des flottes et des planètes
 void fleetRound(Universe& univ,
                 Fleet& fleet,
-                std::vector<Signal>& signals,
                 std::vector<Event>& events,
                 std::map<Player::ID, size_t> const& playersPlanetCount);
 
