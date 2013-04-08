@@ -77,18 +77,23 @@ struct CodeData
 	enum Target
 	{
 	  Planet,
-	  Fleet
+	  Fleet,
+	  Undefined
 	};
 
 	size_t id;
+	size_t playerId;
+	Target target;
 	std::string code;
 	std::string blocklyCode;
 	std::string lastError;
 
-	CodeData(): id(0) {}
+	CodeData(): id(0), playerId(0), target(Undefined)  {}
 
 	CodeData(CodeData const& other):
 		id(other.id),
+		playerId(other.playerId),
+		target(other.target),
 		code(other.code),
 		blocklyCode(other.blocklyCode),
 		lastError(other.lastError)
@@ -98,6 +103,8 @@ struct CodeData
 	CodeData& operator=(CodeData other)
 	{
 		std::swap(id, other.id);
+		std::swap(playerId, other.playerId);
+		std::swap(target, other.target);
 		std::swap(code, other.code);
 		std::swap(blocklyCode, other.blocklyCode);
 		std::swap(lastError, other.lastError);

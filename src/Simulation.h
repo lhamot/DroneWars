@@ -20,9 +20,11 @@ struct PlayerCodes
 	{
 		typedef std::map<std::string, luabind::object> Map;
 		size_t scriptID;
+		size_t playerId;
+		CodeData::Target target;
 		Map functions;
 
-		ObjectMap(): scriptID(0) {}
+		ObjectMap(): scriptID(0), playerId(0), target(CodeData::Undefined) {}
 	};
 	ObjectMap fleetsCode;
 	ObjectMap planetsCode;

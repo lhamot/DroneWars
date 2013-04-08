@@ -613,7 +613,7 @@ void DataBase::addCodeError(size_t scriptId, std::string const& message)
 CodeData DataBase::getPlayerCode(Player::ID pid, CodeData::Target target) const
 try
 {
-	typedef Poco::Tuple < size_t, Player::ID, time_t, int,
+	typedef Poco::Tuple < size_t, Player::ID, time_t, size_t,
 	        BLOB, BLOB > ScriptTuple;
 	ScriptTuple scrData;
 	(*session_) <<
@@ -623,7 +623,7 @@ try
 	            "LIMIT 1 ",
 	            use(pid), use((int)target), into(scrData), now;
 
-	typedef Poco::Tuple<size_t, Player::ID, time_t, int, BLOB> BlocklyTuple;
+	typedef Poco::Tuple<size_t, Player::ID, time_t, size_t, BLOB> BlocklyTuple;
 	BlocklyTuple bloData;
 	(*session_) <<
 	            "SELECT * FROM BlocklyCode "
@@ -634,6 +634,8 @@ try
 
 	CodeData res;
 	res.id = scrData.get<0>();
+	res.playerId = pid;
+	res.target = target;
 	res.code.assign(scrData.get<4>().begin(), scrData.get<4>().end());
 	res.blocklyCode.assign(bloData.get<4>().begin(), bloData.get<4>().end());
 	res.lastError.assign(scrData.get<5>().begin(), scrData.get<5>().end());

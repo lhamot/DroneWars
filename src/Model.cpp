@@ -611,7 +611,7 @@ void planetRound(Universe& univ,
 		execBuilding(planet, Building::Enum(type), planet.buildingList[type]);
 
 	//Cristalisations des ressources
-	if((rand() % 10) == 0)
+	if((rand() % 10) == 0) //TOTO: rand rapide
 	{
 		planet.ressourceSet.tab[Ressource::Metal] += rand() % 7;
 		planet.ressourceSet.tab[Ressource::Carbon] += rand() % 5;

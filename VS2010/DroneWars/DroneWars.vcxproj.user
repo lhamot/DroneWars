@@ -24,7 +24,7 @@
     <LocalDebuggerCommandArguments>--docroot="I:\C\bit_them_all" --http-address=localhost --http-port=81 --config="I:\C\bit_them_all\wt_config.xml"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>I:\C\Bit_them_all</LocalDebuggerWorkingDirectory>
-    <LocalDebuggerDebuggerType>Auto</LocalDebuggerDebuggerType>
+    <LocalDebuggerDebuggerType>NativeOnly</LocalDebuggerDebuggerType>
     <LocalDebuggerEnvironment>PATH=I:\C_libs\log4cplus-1.1.0_VS2012_$(Platform)\src\$(Configuration);I:\C_libs\poco-1.4.6p1-all\bin64;C:\Program Files\MySQL\MySQL Server 5.6\lib;%PATH%</LocalDebuggerEnvironment>
   </PropertyGroup>
 </Project>
