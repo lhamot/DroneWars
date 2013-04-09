@@ -82,25 +82,10 @@ void Engine::stop()
 }
 
 
-bool Engine::addPlayer(DataBase& database,
-                       string const& login,
-                       string const& password)
+Coord Engine::addPlayer(Player::ID pid)
 {
-	if(login.size() > MaxStringSize)
-		BOOST_THROW_EXCEPTION(InvalidData("login"));
-	if(password.size() > MaxStringSize)
-		BOOST_THROW_EXCEPTION(InvalidData("password"));
-
-	Player::ID const pid = database.addPlayer(login, password);
-	if(pid)
-	{
-		UniqueLock lock(univ_.planetsFleetsReportsmutex);
-		createPlayer(univ_, database, pid); //Modifie le joueur ET une planete
-		simulation_->reloadPlayer(pid);
-		return true;
-	}
-	else
-		return false;
+	UniqueLock lock(univ_.planetsFleetsReportsmutex);
+	return createPlayer(univ_, pid); //Modifie une planete
 }
 
 

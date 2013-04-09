@@ -44,9 +44,7 @@ public:
 	Fleet getFleet(Fleet::ID fid) const;
 
 	//Requetes qui modifient la base
-	bool addPlayer(DataBase& database,
-	               std::string const& login,
-	               std::string const& password);
+	Coord addPlayer(Player::ID pid);
 
 	TimeInfo getTimeInfo() const;
 

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "EngineServerHandler.h"
+
 #include <algorithm>
+#include <boost/format.hpp>
 
 using namespace boost;
 using namespace std;
@@ -242,7 +244,23 @@ bool EngineServerHandler::addPlayer(const string& login,
                                     const string& password)
 {
 	LOG4CPLUS_TRACE(logger, "login: " << login << " password : " << password);
-	return engine_.addPlayer(database_, login, password);
+	if(login.size() > MaxStringSize)
+		BOOST_THROW_EXCEPTION(Engine::InvalidData("login"));
+	if(password.size() > MaxStringSize)
+		BOOST_THROW_EXCEPTION(Engine::InvalidData("password"));
+
+	std::vector<std::string> codes;
+	getNewPlayerCode(codes);
+	Player::ID const pid = database_.addPlayer(login, password, codes);
+	if(pid != Player::NoId)
+	{
+		Coord coord = engine_.addPlayer(pid);
+		database_.setPlayerMainPlanet(pid, coord);
+		engine_.reloadPlayer(pid);
+		return true;
+	}
+	else
+		return false;
 }
 
 

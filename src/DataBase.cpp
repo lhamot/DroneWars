@@ -166,18 +166,65 @@ DataBase::DataBase()
 	DB_CATCH
 }
 
+
 DataBase::~DataBase()
 {
 }
 
+
+size_t DataBase::addScriptImpl(Player::ID pid,
+                               CodeData::Target target,
+                               std::string const& code)
+try
+{
+	(*session_) <<
+	            "INSERT INTO Script "
+	            "(playerID, time, target, code) "
+	            "VALUES(?, ?, ?, ?)",
+	            use(pid),
+	            use(time(0)),
+	            use((int)target),
+	            use(code),
+	            now;
+	size_t id = 0;
+	(*session_) << "SELECT LAST_INSERT_ID() ", into(id), now;
+	return id;
+}
+DB_CATCH
+
+
+size_t DataBase::addBlocklyCodeImpl(Player::ID pid,
+                                    CodeData::Target target,
+                                    std::string const& code)
+try
+{
+	(*session_) <<
+	            "INSERT INTO BlocklyCode "
+	            "(playerID, time, target, code) "
+	            "VALUES(?, ?, ?, ?)",
+	            use(pid),
+	            use(time(0)),
+	            use((int)target),
+	            use(code),
+	            now;
+	size_t id = 0;
+	(*session_) << "SELECT LAST_INSERT_ID() ", into(id), now;
+	return id;
+}
+DB_CATCH
+
+
 Player::ID DataBase::addPlayer(std::string const& login,
-                               std::string const& password)
+                               std::string const& password,
+                               std::vector<std::string> const& codes)
 try
 {
 	Transaction trans(*session_);
 	std::cout << login << " " << password << std::endl;
 	(*session_) <<
-	            "INSERT IGNORE INTO Player (login, password) VALUES(?, ?)",
+	            "INSERT IGNORE INTO Player "
+	            "(login, password, planetCoordX, planetCoordY, planetCoordZ) "
+	            "VALUES(?, ?, -1, -1, -1)",
 	            use(login), use(password), now;
 	size_t rowCount;
 	(*session_) << "SELECT ROW_COUNT() ", into(rowCount), now;
@@ -185,17 +232,23 @@ try
 		return Player::NoId;
 	else
 	{
-		size_t id = 0;
-		(*session_) << "SELECT LAST_INSERT_ID() ", into(id), now;
+		size_t pid = 0;
+		(*session_) << "SELECT LAST_INSERT_ID() ", into(pid), now;
 		//Ajout du niveau de tutos
 		(*session_) <<
 		            "INSERT INTO TutoDisplayed "
 		            "(playerID, tag, level) "
 		            "VALUES(?, ?, ?)",
-		            use(id), use(std::string(CoddingLevelTag)), use(0),
+		            use(pid), use(std::string(CoddingLevelTag)), use(0),
 		            now;
+
+		addScriptImpl(pid, CodeData::Planet, codes[0]);
+		addBlocklyCodeImpl(pid, CodeData::Planet, codes[1]);
+		addScriptImpl(pid, CodeData::Fleet, codes[2]);
+		addBlocklyCodeImpl(pid, CodeData::Fleet, codes[3]);
+
 		trans.commit();
-		return id;
+		return pid;
 	}
 }
 DB_CATCH
@@ -545,17 +598,7 @@ size_t DataBase::addScript(Player::ID pid,
 try
 {
 	Transaction trans(*session_);
-	(*session_) <<
-	            "INSERT INTO Script "
-	            "(playerID, time, target, code) "
-	            "VALUES(?, ?, ?, ?)",
-	            use(pid),
-	            use(time(0)),
-	            use((int)target),
-	            use(code),
-	            now;
-	size_t id = 0;
-	(*session_) << "SELECT LAST_INSERT_ID() ", into(id), now;
+	size_t const id = addScriptImpl(pid, target, code);
 	trans.commit();
 	return id;
 }
@@ -568,17 +611,7 @@ size_t DataBase::addBlocklyCode(Player::ID pid,
 try
 {
 	Transaction trans(*session_);
-	(*session_) <<
-	            "INSERT INTO BlocklyCode "
-	            "(playerID, time, target, code) "
-	            "VALUES(?, ?, ?, ?)",
-	            use(pid),
-	            use(time(0)),
-	            use((int)target),
-	            use(code),
-	            now;
-	size_t id = 0;
-	(*session_) << "SELECT LAST_INSERT_ID() ", into(id), now;
+	size_t const id = addBlocklyCodeImpl(pid, target, code);
 	trans.commit();
 	return id;
 }

@@ -10,6 +10,15 @@ namespace Poco {namespace Data {class Session;}}
 class DataBase
 {
 	std::unique_ptr<Poco::Data::Session> session_;
+
+	size_t addScriptImpl(Player::ID pid,
+	                     CodeData::Target target,
+	                     std::string const& code);
+
+	size_t addBlocklyCodeImpl(Player::ID pid,
+	                          CodeData::Target target,
+	                          std::string const& code);
+
 public:
 	class Exception : public std::runtime_error
 	{
@@ -21,7 +30,8 @@ public:
 	~DataBase();
 
 	Player::ID addPlayer(std::string const& login,
-	                     std::string const& password);
+	                     std::string const& password,
+	                     std::vector<std::string> const& codes);
 
 	void setPlayerMainPlanet(Player::ID, Coord mainPlanet);
 

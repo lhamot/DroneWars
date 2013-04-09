@@ -80,8 +80,39 @@ RessourceSet getBuilingPrice(Building::Enum id, size_t level)
 	return result;
 }
 
-Coord createPlayer(Universe& univ, DataBase& database, Player::ID pid)
+void getNewPlayerCode(std::vector<std::string>& codes)
 {
+	namespace BL = boost::locale;
+	codes.clear();
+
+	//Ajout du code du joueur (Planet)
+	{
+		std::stringstream blocklyPlanetDefaultCode;
+		{
+			std::ifstream planetFile("blocklyPlanetDefaultCode.xml",
+			                         std::ios::binary | std::ios::in);
+			if(planetFile.is_open() == false)
+				BOOST_THROW_EXCEPTION(
+				  std::ios::failure("Cant open blocklyPlanetDefaultCode.xml"));
+			boost::iostreams::copy(planetFile, blocklyPlanetDefaultCode);
+		}
+		std::string const blocklyCode =
+		  (boost::format(blocklyPlanetDefaultCode.str()) %
+		   BL::gettext("my_planet") %
+		   BL::gettext("fleets") %
+		   BL::gettext("order") %
+		   BL::gettext("PLANET_ACTION_CODE_COMMENT")).str();
+		std::string const code =
+		  "function AI(planet, fleets)\n"
+		  "  return noPlanetAction()\n"
+		  "end";
+		codes.push_back(code);
+		codes.push_back(blocklyCode);
+		//database.addScript(pid, CodeData::Planet, code);
+		//database.addBlocklyCode(pid, CodeData::Planet, blocklyCode);
+	}
+
+	//Ajout du code du joueur (Fleet)
 	{
 		std::stringstream blocklyFleetDefaultCode;
 		{
@@ -112,34 +143,15 @@ Coord createPlayer(Universe& univ, DataBase& database, Player::ID pid)
 		  "  order = FleetAction(FleetAction.Nothing,Direction())\n"
 		  "  return order\n"
 		  "end";
-		database.addScript(pid, CodeData::Fleet, code);
-		database.addBlocklyCode(pid, CodeData::Fleet, blocklyCode);
+		codes.push_back(code);
+		codes.push_back(blocklyCode);
+		//database.addScript(pid, CodeData::Fleet, code);
+		//database.addBlocklyCode(pid, CodeData::Fleet, blocklyCode);
 	}
+}
 
-	{
-		std::stringstream blocklyPlanetDefaultCode;
-		{
-			std::ifstream planetFile("blocklyPlanetDefaultCode.xml",
-			                         std::ios::binary | std::ios::in);
-			if(planetFile.is_open() == false)
-				BOOST_THROW_EXCEPTION(
-				  std::ios::failure("Cant open blocklyPlanetDefaultCode.xml"));
-			boost::iostreams::copy(planetFile, blocklyPlanetDefaultCode);
-		}
-		std::string const blocklyCode =
-		  (boost::format(blocklyPlanetDefaultCode.str()) %
-		   BL::gettext("my_planet") %
-		   BL::gettext("fleets") %
-		   BL::gettext("order") %
-		   BL::gettext("PLANET_ACTION_CODE_COMMENT")).str();
-		std::string const code =
-		  "function AI(planet, fleets)\n"
-		  "  return noPlanetAction()\n"
-		  "end";
-		database.addScript(pid, CodeData::Planet, code);
-		database.addBlocklyCode(pid, CodeData::Planet, blocklyCode);
-	}
-
+Coord createPlayer(Universe& univ, Player::ID pid)
+{
 	bool done = false;
 	Coord mainPlanetCoord;
 
@@ -164,8 +176,6 @@ Coord createPlayer(Universe& univ, DataBase& database, Player::ID pid)
 		}
 	}
 	while(done == false);
-
-	database.setPlayerMainPlanet(pid, mainPlanetCoord);
 
 	return mainPlanetCoord;
 }
@@ -196,12 +206,15 @@ void construct(Universe& univ, DataBase& database)
 	}
 
 	std::string const& password = "test";
+	std::vector<std::string> codes;
+	getNewPlayerCode(codes);
 	for(size_t playerCount = 0; playerCount < 100;)
 	{
-		Player::ID const pid = database.addPlayer(nameGen(), password);
+		Player::ID const pid = database.addPlayer(nameGen(), password, codes);
 		if(pid != Player::NoId)
 		{
-			createPlayer(univ, database, pid);
+			Coord coord = createPlayer(univ, pid);
+			database.setPlayerMainPlanet(pid, coord);
 			{
 				ifstream file("planetScript.lua");
 				std::string script;

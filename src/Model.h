@@ -620,7 +620,9 @@ void construct(Universe& univ, DataBase& database);
 
 RessourceSet getBuilingPrice(Building::Enum id, size_t level);
 
-Coord createPlayer(Universe& univ, DataBase& database, Player::ID pid);
+void getNewPlayerCode(std::vector<std::string>& codes);
+
+Coord createPlayer(Universe& univ, Player::ID pid);
 
 void saveToStream(Universe const& univ, std::ostream& out);
 void loadFromStream_v1(std::istream& in, Universe& univ);

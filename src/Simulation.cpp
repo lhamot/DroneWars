@@ -862,33 +862,33 @@ try
 
 	//Calcule de l'occupation memoire
 	/*
-	size_t playerSize = 0;
 	size_t planetSize = 0;
 	size_t fleetSize = 0;
 	size_t fleetHeapSize = 0;
 	size_t fleetSizeMap = 0;
-	size_t reportSize = 0;
-	for(auto const& playerKV: univ_.playerMap)
-		playerSize += sizeof(playerKV) + playerKV.second.heap_size() + 2 * sizeof(size_t);
+	size_t planetHeapSize = 0;
+	size_t planetSizeMap = 0;
 	for(auto const& planetKV: univ_.planetMap)
-		planetSize += sizeof(planetKV) + planetKV.second.heap_size() + 2 * sizeof(size_t);
+	{
+		planetSize += sizeof(planetKV);
+		planetHeapSize += planetKV.second.heap_size();
+		planetSizeMap += sizeof(planetKV.first);// + 2 * sizeof(size_t);
+	}
 	for(auto const& fleetKV: univ_.fleetMap)
 	{
 		fleetSize += sizeof(fleetKV.second);
 		fleetHeapSize += fleetKV.second.heap_size();
-		fleetSizeMap += sizeof(fleetKV.first) + 2 * sizeof(size_t);
+		fleetSizeMap += sizeof(fleetKV.first);// + 2 * sizeof(size_t);
 	}
-	for(auto const& reportKV: univ_.reportMap)
-		reportSize += sizeof(reportKV) + reportKV.second.heap_size() + 2 * sizeof(size_t);
 
-	size_t const univSize = playerSize + planetSize + fleetSize + reportSize + fleetSizeMap + fleetHeapSize;
+	size_t const univSize =  planetSize + planetHeapSize + planetSizeMap + fleetSize + fleetSizeMap + fleetHeapSize;
 	cout << "Univ global size :" << univSize << endl;
-	cout << "  playerMap:" << playerSize << endl;
 	cout << "  planetMap:" << planetSize << endl;
+	cout << "  planetHeapSize:" << planetHeapSize << endl;
+	cout << "  planetSizeMap:" << planetSizeMap << endl;
 	cout << "  fleets:" << fleetSize << endl;
 	cout << "  fleetsheap:" << fleetHeapSize << endl;
 	cout << "  fleetMap:" << fleetSizeMap << endl;
-	cout << "  reportMap:" << reportSize << endl;
 	cout << "  fleet count:" << double(fleetSize) / sizeof(Fleet) << endl;
 	*/
 
