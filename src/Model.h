@@ -43,7 +43,8 @@ struct CompCoord
 
 struct Ressource
 {
-	enum Enum
+	typedef uint32_t Value;
+	enum Enum : uint8_t
 	{
 	  Metal,
 	  Carbon,
@@ -60,12 +61,15 @@ struct RessourceSet
 		ar& tab;
 	}
 
-	typedef boost::array<size_t, Ressource::Count> Tab;
+	typedef boost::array<Ressource::Value, Ressource::Count> Tab;
 	Tab tab;
 
 	RessourceSet(Tab const& t): tab(t) {}
 	RessourceSet() {tab.fill(0);}
-	RessourceSet(size_t a, size_t b, size_t c) {tab[0] = a; tab[1] = b; tab[2] = c;}
+	RessourceSet(Ressource::Value a, Ressource::Value b, Ressource::Value c)
+	{
+		tab[0] = a; tab[1] = b; tab[2] = c;
+	}
 
 	inline bool operator == (RessourceSet const& b) const
 	{
@@ -85,7 +89,7 @@ struct PlanetTask
 		ar& type& value& value2& lauchTime& duration& startCost& expired;
 	}
 
-	enum Enum
+	enum Enum : uint8_t
 	{
 	  UpgradeBuilding,
 	  MakeShip,
@@ -93,17 +97,17 @@ struct PlanetTask
 	  Count
 	};
 
-	Enum type;
-	size_t value;
-	size_t value2;
-	time_t lauchTime;
-	size_t duration;
+	uint32_t value;
+	uint32_t value2;
+	uint32_t lauchTime;
+	uint32_t duration;
 	RessourceSet startCost;
 	bool expired;
+	Enum type;
 
 	PlanetTask() {}
-	PlanetTask(Enum t, time_t lauch, size_t dur):
-		type(t), value(0), value2(0), lauchTime(lauch), duration(dur), expired(false)
+	PlanetTask(Enum t, uint32_t lauch, uint32_t dur):
+		value(0), value2(0), lauchTime(lauch), duration(dur), expired(false), type(t)
 	{
 	}
 };
@@ -116,7 +120,7 @@ struct FleetTask
 		ar& type& lauchTime& duration& position& expired;
 	}
 
-	enum Enum
+	enum Enum : uint8_t
 	{
 	  Move,
 	  Harvest,
@@ -124,15 +128,15 @@ struct FleetTask
 	  Count
 	};
 
-	Enum type;
-	time_t lauchTime;
-	size_t duration;
+	uint32_t lauchTime;
+	uint32_t duration;
 	Coord position;
 	bool expired;
+	Enum type;
 
 	FleetTask() {}
-	FleetTask(Enum t, size_t lauch, size_t dur):
-		type(t), lauchTime(lauch), duration(dur), expired(false)
+	FleetTask(Enum t, uint32_t lauch, uint32_t dur):
+		lauchTime(lauch), duration(dur), expired(false), type(t)
 	{
 	}
 };
@@ -164,7 +168,7 @@ struct Building
 
 struct Ship
 {
-	enum Enum
+	enum Enum : int8_t
 	{
 	  Undefined = -1,
 	  Mosquito,
@@ -190,7 +194,7 @@ struct Ship
 
 struct Cannon
 {
-	enum Enum
+	enum Enum : int8_t
 	{
 	  Undefined = -1,
 	  Cannon1,
@@ -203,8 +207,8 @@ struct Cannon
 	};
 
 	RessourceSet price;
-	size_t life;
-	size_t power;
+	uint32_t life;
+	uint32_t power;
 
 	static Cannon const List[Count];
 };
@@ -249,11 +253,11 @@ struct Planet
 	std::string name;
 	Coord coord;
 	Player::ID playerId;
-	typedef std::vector<size_t> BuildingTab;
+	typedef boost::array<uint16_t, Building::Count> BuildingTab;
 	BuildingTab buildingList;
 	std::vector<PlanetTask> taskQueue;
 	RessourceSet ressourceSet;
-	typedef boost::array<size_t, Cannon::Count> CannonTab;
+	typedef boost::array<uint32_t, Cannon::Count> CannonTab;
 	CannonTab cannonTab;
 	Coord parentCoord;
 
@@ -261,13 +265,14 @@ struct Planet
 	{
 		return
 		  name.capacity() +
-		  buildingList.capacity() * sizeof(size_t) +
+		  buildingList.size() * sizeof(size_t) +
 		  taskQueue.capacity() * sizeof(PlanetTask);
 	}
 
-	Planet(): playerId(1111111111), buildingList(Building::Count) {}
-	Planet(Coord c): coord(c), playerId(Player::NoId), buildingList(Building::Count)
+	Planet(): playerId(55555) {}
+	Planet(Coord c): coord(c), playerId(Player::NoId)
 	{
+		buildingList.fill(0);
 		cannonTab.fill(0);
 		if(playerId >= 100000 && playerId != Player::NoId)
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
@@ -282,7 +287,7 @@ struct Planet
 
 struct PlanetAction
 {
-	enum Type
+	enum Type : int8_t
 	{
 	  Undefined = -1,
 	  Building,
@@ -296,7 +301,7 @@ struct PlanetAction
 	Building::Enum building;
 	Ship::Enum ship;
 	Cannon::Enum cannon;
-	size_t number;
+	uint32_t number;
 
 	bool operator==(PlanetAction const& other)
 	{
@@ -308,8 +313,8 @@ struct PlanetAction
 
 	PlanetAction(): action(Undefined), building(Building::Undefined), ship(Ship::Undefined), cannon(Cannon::Undefined), number(0) {}
 	PlanetAction(Type a, Building::Enum b): action(a), building(b), ship(Ship::Undefined), cannon(Cannon::Undefined), number(0) {}
-	PlanetAction(Type a, Ship::Enum s, size_t n): action(a), building(Building::Undefined), ship(s), cannon(Cannon::Undefined), number(n) {}
-	PlanetAction(Type a, Cannon::Enum c, size_t n): action(a), building(Building::Undefined), ship(Ship::Undefined), cannon(c), number(n) {}
+	PlanetAction(Type a, Ship::Enum s, uint32_t n): action(a), building(Building::Undefined), ship(s), cannon(Cannon::Undefined), number(n) {}
+	PlanetAction(Type a, Cannon::Enum c, uint32_t n): action(a), building(Building::Undefined), ship(Ship::Undefined), cannon(c), number(n) {}
 };
 typedef std::vector<PlanetAction> PlanetActionList;
 
@@ -350,7 +355,7 @@ struct Fleet
 	Coord coord;
 	Coord origin;
 	std::string name;
-	typedef std::vector<size_t> ShipTab;
+	typedef boost::array<uint32_t, Ship::Count> ShipTab;
 	ShipTab shipList;
 	RessourceSet ressourceSet;
 	std::vector<FleetTask> taskQueue;
@@ -358,17 +363,15 @@ struct Fleet
 
 	size_t heap_size() const
 	{
-		return
-		  name.capacity() +
-		  shipList.capacity() * sizeof(size_t) +
-		  taskQueue.capacity() * sizeof(FleetTask);
+		return name.capacity();
 	}
 
 
 	Fleet() {}
 	Fleet(ID fid, Player::ID pid, Coord c):
-		id(fid), playerId(pid), coord(c), origin(c), shipList(Ship::Count)
+		id(fid), playerId(pid), coord(c), origin(c)
 	{
+		shipList.fill(0);
 		if(playerId >= 100000)
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 	}
@@ -377,7 +380,7 @@ struct Fleet
 
 struct FleetAction
 {
-	enum Type
+	enum Type : uint8_t
 	{
 	  Nothing,
 	  Move,
@@ -488,7 +491,7 @@ struct Event
 		ar& id& time& type& comment& value;
 	}
 
-	enum Type
+	enum Type : uint8_t
 	{
 	  FleetCodeError,
 	  FleetCodeExecError,
@@ -562,7 +565,7 @@ struct Universe
 	typedef std::map<Fleet::ID, Fleet> FleetMap;
 	FleetMap fleetMap;
 	Fleet::ID nextFleetID;
-	size_t roundCount;
+	uint32_t roundCount;
 	double roundDuration;
 
 	size_t heap_size() const
@@ -632,19 +635,19 @@ bool canBuild(Planet const& planet, Ship::Enum type, size_t number);
 
 bool canBuild(Planet const& planet, Building::Enum type);
 
-void addTask(Planet& planet, size_t roundCount, Building::Enum building);
+void addTask(Planet& planet, uint32_t roundCount, Building::Enum building);
 
 void addTask(Planet& planet,
-             size_t roundCount,
+             uint32_t roundCount,
              Ship::Enum ship,
-             size_t number);
+             uint32_t number);
 
 bool canBuild(Planet const& planet, Cannon::Enum type, size_t number);
 
 void addTask(Planet& planet,
-             size_t roundCount,
+             uint32_t roundCount,
              Cannon::Enum cannon,
-             size_t number);
+             uint32_t number);
 
 bool canStop(Planet const& planet, Building::Enum type);
 
@@ -669,15 +672,15 @@ void gather(Fleet& fleet, Fleet const& otherFleet);
 
 bool canMove(Fleet const& fleet, Coord const& coord);
 
-void addTask(Fleet& fleet, size_t roundCount, Coord const& coord);
+void addTask(Fleet& fleet, uint32_t roundCount, Coord const& coord);
 
 bool canHarvest(Fleet const& fleet, Planet const& planet);
 
-void addTaskHarvest(Fleet& fleet, size_t roundCount, Planet const& planet);
+void addTaskHarvest(Fleet& fleet, uint32_t roundCount, Planet const& planet);
 
 bool canColonize(Fleet const& fleet, Planet const& planet);
 
-void addTaskColonize(Fleet& fleet, size_t roundCount, Planet const& planet);
+void addTaskColonize(Fleet& fleet, uint32_t roundCount, Planet const& planet);
 
 bool canDrop(Fleet const& fleet, Planet const& planet);
 

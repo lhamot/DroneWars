@@ -1,7 +1,7 @@
 namespace cpp ndw
 
 
-typedef i32 Coord_Value
+typedef i16 Coord_Value
 
 struct Coord
 {
@@ -53,7 +53,7 @@ struct CodeData
 }
 
 
-typedef i32 Player_ID
+typedef i16 Player_ID
 
 const Player_ID Player_NoId = -1
 
@@ -353,8 +353,8 @@ service EngineServer
 	void incrementTutoDisplayed(10: Player_ID pid, 20: string tutoName),
 	FightReport getFightReport(10: i32 id),
 	TimeInfo getTimeInfo(),
-	bool eraseAccount(10: i32 pid, 20: string password),
-	list<Event> getPlayerEvents(10: i32 pid);
+	bool eraseAccount(10: Player_ID pid, 20: string password),
+	list<Event> getPlayerEvents(10: Player_ID pid);
 
 	list<Building> getBuildingsInfo();
 	list<Cannon> getCannonsInfo();

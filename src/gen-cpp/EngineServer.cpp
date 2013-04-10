@@ -470,9 +470,9 @@ uint32_t EngineServer_getPlayerFleets_args::read(::apache::thrift::protocol::TPr
 		switch(fid)
 		{
 		case 10:
-			if(ftype == ::apache::thrift::protocol::T_I32)
+			if(ftype == ::apache::thrift::protocol::T_I16)
 			{
-				xfer += iprot->readI32(this->pid);
+				xfer += iprot->readI16(this->pid);
 				this->__isset.pid = true;
 			}
 			else
@@ -543,8 +543,8 @@ uint32_t EngineServer_getPlayerFleets_args::write(::apache::thrift::protocol::TP
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_getPlayerFleets_args");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32(this->pid);
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16(this->pid);
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldBegin("beginIndex", ::apache::thrift::protocol::T_I32, 20);
@@ -573,8 +573,8 @@ uint32_t EngineServer_getPlayerFleets_pargs::write(::apache::thrift::protocol::T
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_getPlayerFleets_pargs");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32((*(this->pid)));
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16((*(this->pid)));
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldBegin("beginIndex", ::apache::thrift::protocol::T_I32, 20);
@@ -729,9 +729,9 @@ uint32_t EngineServer_getPlayerPlanets_args::read(::apache::thrift::protocol::TP
 		switch(fid)
 		{
 		case 10:
-			if(ftype == ::apache::thrift::protocol::T_I32)
+			if(ftype == ::apache::thrift::protocol::T_I16)
 			{
-				xfer += iprot->readI32(this->pid);
+				xfer += iprot->readI16(this->pid);
 				this->__isset.pid = true;
 			}
 			else
@@ -802,8 +802,8 @@ uint32_t EngineServer_getPlayerPlanets_args::write(::apache::thrift::protocol::T
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_getPlayerPlanets_args");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32(this->pid);
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16(this->pid);
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldBegin("beginIndex", ::apache::thrift::protocol::T_I32, 20);
@@ -832,8 +832,8 @@ uint32_t EngineServer_getPlayerPlanets_pargs::write(::apache::thrift::protocol::
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_getPlayerPlanets_pargs");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32((*(this->pid)));
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16((*(this->pid)));
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldBegin("beginIndex", ::apache::thrift::protocol::T_I32, 20);
@@ -988,9 +988,9 @@ uint32_t EngineServer_setPlayerFleetCode_args::read(::apache::thrift::protocol::
 		switch(fid)
 		{
 		case 10:
-			if(ftype == ::apache::thrift::protocol::T_I32)
+			if(ftype == ::apache::thrift::protocol::T_I16)
 			{
-				xfer += iprot->readI32(this->pid);
+				xfer += iprot->readI16(this->pid);
 				this->__isset.pid = true;
 			}
 			else
@@ -1026,8 +1026,8 @@ uint32_t EngineServer_setPlayerFleetCode_args::write(::apache::thrift::protocol:
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_setPlayerFleetCode_args");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32(this->pid);
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16(this->pid);
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldBegin("code", ::apache::thrift::protocol::T_STRING, 20);
@@ -1044,8 +1044,8 @@ uint32_t EngineServer_setPlayerFleetCode_pargs::write(::apache::thrift::protocol
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_setPlayerFleetCode_pargs");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32((*(this->pid)));
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16((*(this->pid)));
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldBegin("code", ::apache::thrift::protocol::T_STRING, 20);
@@ -1150,9 +1150,9 @@ uint32_t EngineServer_setPlayerPlanetCode_args::read(::apache::thrift::protocol:
 		switch(fid)
 		{
 		case 10:
-			if(ftype == ::apache::thrift::protocol::T_I32)
+			if(ftype == ::apache::thrift::protocol::T_I16)
 			{
-				xfer += iprot->readI32(this->pid);
+				xfer += iprot->readI16(this->pid);
 				this->__isset.pid = true;
 			}
 			else
@@ -1188,8 +1188,8 @@ uint32_t EngineServer_setPlayerPlanetCode_args::write(::apache::thrift::protocol
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_setPlayerPlanetCode_args");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32(this->pid);
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16(this->pid);
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldBegin("code", ::apache::thrift::protocol::T_STRING, 20);
@@ -1206,8 +1206,8 @@ uint32_t EngineServer_setPlayerPlanetCode_pargs::write(::apache::thrift::protoco
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_setPlayerPlanetCode_pargs");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32((*(this->pid)));
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16((*(this->pid)));
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldBegin("code", ::apache::thrift::protocol::T_STRING, 20);
@@ -1312,9 +1312,9 @@ uint32_t EngineServer_setPlayerFleetBlocklyCode_args::read(::apache::thrift::pro
 		switch(fid)
 		{
 		case 10:
-			if(ftype == ::apache::thrift::protocol::T_I32)
+			if(ftype == ::apache::thrift::protocol::T_I16)
 			{
-				xfer += iprot->readI32(this->pid);
+				xfer += iprot->readI16(this->pid);
 				this->__isset.pid = true;
 			}
 			else
@@ -1350,8 +1350,8 @@ uint32_t EngineServer_setPlayerFleetBlocklyCode_args::write(::apache::thrift::pr
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_setPlayerFleetBlocklyCode_args");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32(this->pid);
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16(this->pid);
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldBegin("code", ::apache::thrift::protocol::T_STRING, 20);
@@ -1368,8 +1368,8 @@ uint32_t EngineServer_setPlayerFleetBlocklyCode_pargs::write(::apache::thrift::p
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_setPlayerFleetBlocklyCode_pargs");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32((*(this->pid)));
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16((*(this->pid)));
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldBegin("code", ::apache::thrift::protocol::T_STRING, 20);
@@ -1474,9 +1474,9 @@ uint32_t EngineServer_setPlayerPlanetBlocklyCode_args::read(::apache::thrift::pr
 		switch(fid)
 		{
 		case 10:
-			if(ftype == ::apache::thrift::protocol::T_I32)
+			if(ftype == ::apache::thrift::protocol::T_I16)
 			{
-				xfer += iprot->readI32(this->pid);
+				xfer += iprot->readI16(this->pid);
 				this->__isset.pid = true;
 			}
 			else
@@ -1512,8 +1512,8 @@ uint32_t EngineServer_setPlayerPlanetBlocklyCode_args::write(::apache::thrift::p
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_setPlayerPlanetBlocklyCode_args");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32(this->pid);
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16(this->pid);
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldBegin("code", ::apache::thrift::protocol::T_STRING, 20);
@@ -1530,8 +1530,8 @@ uint32_t EngineServer_setPlayerPlanetBlocklyCode_pargs::write(::apache::thrift::
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_setPlayerPlanetBlocklyCode_pargs");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32((*(this->pid)));
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16((*(this->pid)));
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldBegin("code", ::apache::thrift::protocol::T_STRING, 20);
@@ -1636,9 +1636,9 @@ uint32_t EngineServer_getPlayerFleetCode_args::read(::apache::thrift::protocol::
 		switch(fid)
 		{
 		case 10:
-			if(ftype == ::apache::thrift::protocol::T_I32)
+			if(ftype == ::apache::thrift::protocol::T_I16)
 			{
-				xfer += iprot->readI32(this->pid);
+				xfer += iprot->readI16(this->pid);
 				this->__isset.pid = true;
 			}
 			else
@@ -1663,8 +1663,8 @@ uint32_t EngineServer_getPlayerFleetCode_args::write(::apache::thrift::protocol:
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_getPlayerFleetCode_args");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32(this->pid);
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16(this->pid);
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldStop();
@@ -1677,8 +1677,8 @@ uint32_t EngineServer_getPlayerFleetCode_pargs::write(::apache::thrift::protocol
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_getPlayerFleetCode_pargs");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32((*(this->pid)));
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16((*(this->pid)));
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldStop();
@@ -1817,9 +1817,9 @@ uint32_t EngineServer_getPlayerPlanetCode_args::read(::apache::thrift::protocol:
 		switch(fid)
 		{
 		case 10:
-			if(ftype == ::apache::thrift::protocol::T_I32)
+			if(ftype == ::apache::thrift::protocol::T_I16)
 			{
-				xfer += iprot->readI32(this->pid);
+				xfer += iprot->readI16(this->pid);
 				this->__isset.pid = true;
 			}
 			else
@@ -1844,8 +1844,8 @@ uint32_t EngineServer_getPlayerPlanetCode_args::write(::apache::thrift::protocol
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_getPlayerPlanetCode_args");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32(this->pid);
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16(this->pid);
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldStop();
@@ -1858,8 +1858,8 @@ uint32_t EngineServer_getPlayerPlanetCode_pargs::write(::apache::thrift::protoco
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_getPlayerPlanetCode_pargs");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32((*(this->pid)));
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16((*(this->pid)));
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldStop();
@@ -2187,9 +2187,9 @@ uint32_t EngineServer_getPlayer_args::read(::apache::thrift::protocol::TProtocol
 		switch(fid)
 		{
 		case 10:
-			if(ftype == ::apache::thrift::protocol::T_I32)
+			if(ftype == ::apache::thrift::protocol::T_I16)
 			{
-				xfer += iprot->readI32(this->pid);
+				xfer += iprot->readI16(this->pid);
 				this->__isset.pid = true;
 			}
 			else
@@ -2214,8 +2214,8 @@ uint32_t EngineServer_getPlayer_args::write(::apache::thrift::protocol::TProtoco
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_getPlayer_args");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32(this->pid);
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16(this->pid);
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldStop();
@@ -2228,8 +2228,8 @@ uint32_t EngineServer_getPlayer_pargs::write(::apache::thrift::protocol::TProtoc
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_getPlayer_pargs");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32((*(this->pid)));
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16((*(this->pid)));
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldStop();
@@ -2962,9 +2962,9 @@ uint32_t EngineServer_incrementTutoDisplayed_args::read(::apache::thrift::protoc
 		switch(fid)
 		{
 		case 10:
-			if(ftype == ::apache::thrift::protocol::T_I32)
+			if(ftype == ::apache::thrift::protocol::T_I16)
 			{
-				xfer += iprot->readI32(this->pid);
+				xfer += iprot->readI16(this->pid);
 				this->__isset.pid = true;
 			}
 			else
@@ -3000,8 +3000,8 @@ uint32_t EngineServer_incrementTutoDisplayed_args::write(::apache::thrift::proto
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_incrementTutoDisplayed_args");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32(this->pid);
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16(this->pid);
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldBegin("tutoName", ::apache::thrift::protocol::T_STRING, 20);
@@ -3018,8 +3018,8 @@ uint32_t EngineServer_incrementTutoDisplayed_pargs::write(::apache::thrift::prot
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_incrementTutoDisplayed_pargs");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32((*(this->pid)));
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16((*(this->pid)));
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldBegin("tutoName", ::apache::thrift::protocol::T_STRING, 20);
@@ -3462,9 +3462,9 @@ uint32_t EngineServer_eraseAccount_args::read(::apache::thrift::protocol::TProto
 		switch(fid)
 		{
 		case 10:
-			if(ftype == ::apache::thrift::protocol::T_I32)
+			if(ftype == ::apache::thrift::protocol::T_I16)
 			{
-				xfer += iprot->readI32(this->pid);
+				xfer += iprot->readI16(this->pid);
 				this->__isset.pid = true;
 			}
 			else
@@ -3500,8 +3500,8 @@ uint32_t EngineServer_eraseAccount_args::write(::apache::thrift::protocol::TProt
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_eraseAccount_args");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32(this->pid);
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16(this->pid);
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldBegin("password", ::apache::thrift::protocol::T_STRING, 20);
@@ -3518,8 +3518,8 @@ uint32_t EngineServer_eraseAccount_pargs::write(::apache::thrift::protocol::TPro
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_eraseAccount_pargs");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32((*(this->pid)));
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16((*(this->pid)));
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldBegin("password", ::apache::thrift::protocol::T_STRING, 20);
@@ -3662,9 +3662,9 @@ uint32_t EngineServer_getPlayerEvents_args::read(::apache::thrift::protocol::TPr
 		switch(fid)
 		{
 		case 10:
-			if(ftype == ::apache::thrift::protocol::T_I32)
+			if(ftype == ::apache::thrift::protocol::T_I16)
 			{
-				xfer += iprot->readI32(this->pid);
+				xfer += iprot->readI16(this->pid);
 				this->__isset.pid = true;
 			}
 			else
@@ -3689,8 +3689,8 @@ uint32_t EngineServer_getPlayerEvents_args::write(::apache::thrift::protocol::TP
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_getPlayerEvents_args");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32(this->pid);
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16(this->pid);
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldStop();
@@ -3703,8 +3703,8 @@ uint32_t EngineServer_getPlayerEvents_pargs::write(::apache::thrift::protocol::T
 	uint32_t xfer = 0;
 	xfer += oprot->writeStructBegin("EngineServer_getPlayerEvents_pargs");
 
-	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I32, 10);
-	xfer += oprot->writeI32((*(this->pid)));
+	xfer += oprot->writeFieldBegin("pid", ::apache::thrift::protocol::T_I16, 10);
+	xfer += oprot->writeI16((*(this->pid)));
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldStop();
@@ -5566,13 +5566,13 @@ void EngineServerClient::recv_getTimeInfo(TimeInfo& _return)
 	throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "getTimeInfo failed: unknown result");
 }
 
-bool EngineServerClient::eraseAccount(const int32_t pid, const std::string& password)
+bool EngineServerClient::eraseAccount(const Player_ID pid, const std::string& password)
 {
 	send_eraseAccount(pid, password);
 	return recv_eraseAccount();
 }
 
-void EngineServerClient::send_eraseAccount(const int32_t pid, const std::string& password)
+void EngineServerClient::send_eraseAccount(const Player_ID pid, const std::string& password)
 {
 	int32_t cseqid = 0;
 	oprot_->writeMessageBegin("eraseAccount", ::apache::thrift::protocol::T_CALL, cseqid);
@@ -5629,13 +5629,13 @@ bool EngineServerClient::recv_eraseAccount()
 	throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "eraseAccount failed: unknown result");
 }
 
-void EngineServerClient::getPlayerEvents(std::vector<Event>& _return, const int32_t pid)
+void EngineServerClient::getPlayerEvents(std::vector<Event>& _return, const Player_ID pid)
 {
 	send_getPlayerEvents(pid);
 	recv_getPlayerEvents(_return);
 }
 
-void EngineServerClient::send_getPlayerEvents(const int32_t pid)
+void EngineServerClient::send_getPlayerEvents(const Player_ID pid)
 {
 	int32_t cseqid = 0;
 	oprot_->writeMessageBegin("getPlayerEvents", ::apache::thrift::protocol::T_CALL, cseqid);

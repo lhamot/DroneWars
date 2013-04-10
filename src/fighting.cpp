@@ -111,7 +111,7 @@ void fillFinalFleet(std::vector<ShipInstance> const& shipTab,
                     Fleet& fleet) throw()
 {
 	Fleet::ShipTab& outTab = fleet.shipList;
-	outTab.assign(Ship::Count, 0);
+	outTab.assign(0);
 	for(ShipInstance const & ship: shipTab)
 		++outTab[ship.type];
 }
@@ -129,7 +129,7 @@ void fillFinalFleet(std::vector<ShipInstance> const& shipTab,
 }
 
 
-enum FightStatus
+enum FightStatus : uint8_t
 {
   Fighter1Win,
   Fighter2Win,

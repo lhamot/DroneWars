@@ -36,8 +36,8 @@ public:
 	virtual void incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName) = 0;
 	virtual void getFightReport(FightReport& _return, const int32_t id) = 0;
 	virtual void getTimeInfo(TimeInfo& _return) = 0;
-	virtual bool eraseAccount(const int32_t pid, const std::string& password) = 0;
-	virtual void getPlayerEvents(std::vector<Event>& _return, const int32_t pid) = 0;
+	virtual bool eraseAccount(const Player_ID pid, const std::string& password) = 0;
+	virtual void getPlayerEvents(std::vector<Event>& _return, const Player_ID pid) = 0;
 	virtual void getBuildingsInfo(std::vector<Building>& _return) = 0;
 	virtual void getCannonsInfo(std::vector<Cannon>& _return) = 0;
 	virtual void getShipsInfo(std::vector<Ship>& _return) = 0;
@@ -151,12 +151,12 @@ public:
 	{
 		return;
 	}
-	bool eraseAccount(const int32_t /* pid */, const std::string& /* password */)
+	bool eraseAccount(const Player_ID /* pid */, const std::string& /* password */)
 	{
 		bool _return = false;
 		return _return;
 	}
-	void getPlayerEvents(std::vector<Event>& /* _return */, const int32_t /* pid */)
+	void getPlayerEvents(std::vector<Event>& /* _return */, const Player_ID /* pid */)
 	{
 		return;
 	}
@@ -2415,12 +2415,12 @@ public:
 
 	virtual ~EngineServer_eraseAccount_args() throw() {}
 
-	int32_t pid;
+	Player_ID pid;
 	std::string password;
 
 	_EngineServer_eraseAccount_args__isset __isset;
 
-	void __set_pid(const int32_t val)
+	void __set_pid(const Player_ID val)
 	{
 		pid = val;
 	}
@@ -2458,7 +2458,7 @@ public:
 
 	virtual ~EngineServer_eraseAccount_pargs() throw() {}
 
-	const int32_t* pid;
+	const Player_ID* pid;
 	const std::string* password;
 
 	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
@@ -2545,11 +2545,11 @@ public:
 
 	virtual ~EngineServer_getPlayerEvents_args() throw() {}
 
-	int32_t pid;
+	Player_ID pid;
 
 	_EngineServer_getPlayerEvents_args__isset __isset;
 
-	void __set_pid(const int32_t val)
+	void __set_pid(const Player_ID val)
 	{
 		pid = val;
 	}
@@ -2580,7 +2580,7 @@ public:
 
 	virtual ~EngineServer_getPlayerEvents_pargs() throw() {}
 
-	const int32_t* pid;
+	const Player_ID* pid;
 
 	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
 
@@ -3047,11 +3047,11 @@ public:
 	void getTimeInfo(TimeInfo& _return);
 	void send_getTimeInfo();
 	void recv_getTimeInfo(TimeInfo& _return);
-	bool eraseAccount(const int32_t pid, const std::string& password);
-	void send_eraseAccount(const int32_t pid, const std::string& password);
+	bool eraseAccount(const Player_ID pid, const std::string& password);
+	void send_eraseAccount(const Player_ID pid, const std::string& password);
 	bool recv_eraseAccount();
-	void getPlayerEvents(std::vector<Event>& _return, const int32_t pid);
-	void send_getPlayerEvents(const int32_t pid);
+	void getPlayerEvents(std::vector<Event>& _return, const Player_ID pid);
+	void send_getPlayerEvents(const Player_ID pid);
 	void recv_getPlayerEvents(std::vector<Event>& _return);
 	void getBuildingsInfo(std::vector<Building>& _return);
 	void send_getBuildingsInfo();
@@ -3382,7 +3382,7 @@ public:
 		return;
 	}
 
-	bool eraseAccount(const int32_t pid, const std::string& password)
+	bool eraseAccount(const Player_ID pid, const std::string& password)
 	{
 		size_t sz = ifaces_.size();
 		size_t i = 0;
@@ -3393,7 +3393,7 @@ public:
 		return ifaces_[i]->eraseAccount(pid, password);
 	}
 
-	void getPlayerEvents(std::vector<Event>& _return, const int32_t pid)
+	void getPlayerEvents(std::vector<Event>& _return, const Player_ID pid)
 	{
 		size_t sz = ifaces_.size();
 		size_t i = 0;

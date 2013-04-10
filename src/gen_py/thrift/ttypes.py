@@ -300,9 +300,9 @@ class Coord:
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'X', None, None, ), # 1
-    (2, TType.I32, 'Y', None, None, ), # 2
-    (3, TType.I32, 'Z', None, None, ), # 3
+    (1, TType.I16, 'X', None, None, ), # 1
+    (2, TType.I16, 'Y', None, None, ), # 2
+    (3, TType.I16, 'Z', None, None, ), # 3
   )
 
   def __init__(self, X=None, Y=None, Z=None,):
@@ -320,18 +320,18 @@ class Coord:
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.I32:
-          self.X = iprot.readI32();
+        if ftype == TType.I16:
+          self.X = iprot.readI16();
         else:
           iprot.skip(ftype)
       elif fid == 2:
-        if ftype == TType.I32:
-          self.Y = iprot.readI32();
+        if ftype == TType.I16:
+          self.Y = iprot.readI16();
         else:
           iprot.skip(ftype)
       elif fid == 3:
-        if ftype == TType.I32:
-          self.Z = iprot.readI32();
+        if ftype == TType.I16:
+          self.Z = iprot.readI16();
         else:
           iprot.skip(ftype)
       else:
@@ -345,16 +345,16 @@ class Coord:
       return
     oprot.writeStructBegin('Coord')
     if self.X is not None:
-      oprot.writeFieldBegin('X', TType.I32, 1)
-      oprot.writeI32(self.X)
+      oprot.writeFieldBegin('X', TType.I16, 1)
+      oprot.writeI16(self.X)
       oprot.writeFieldEnd()
     if self.Y is not None:
-      oprot.writeFieldBegin('Y', TType.I32, 2)
-      oprot.writeI32(self.Y)
+      oprot.writeFieldBegin('Y', TType.I16, 2)
+      oprot.writeI16(self.Y)
       oprot.writeFieldEnd()
     if self.Z is not None:
-      oprot.writeFieldBegin('Z', TType.I32, 3)
-      oprot.writeI32(self.Z)
+      oprot.writeFieldBegin('Z', TType.I16, 3)
+      oprot.writeI16(self.Z)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -594,7 +594,7 @@ class Player:
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'id', None, None, ), # 1
+    (1, TType.I16, 'id', None, None, ), # 1
     (2, TType.STRING, 'login', None, None, ), # 2
     (3, TType.STRING, 'password', None, None, ), # 3
     (4, TType.STRUCT, 'fleetsCode', (CodeData, CodeData.thrift_spec), None, ), # 4
@@ -625,8 +625,8 @@ class Player:
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.I32:
-          self.id = iprot.readI32();
+        if ftype == TType.I16:
+          self.id = iprot.readI16();
         else:
           iprot.skip(ftype)
       elif fid == 2:
@@ -684,8 +684,8 @@ class Player:
       return
     oprot.writeStructBegin('Player')
     if self.id is not None:
-      oprot.writeFieldBegin('id', TType.I32, 1)
-      oprot.writeI32(self.id)
+      oprot.writeFieldBegin('id', TType.I16, 1)
+      oprot.writeI16(self.id)
       oprot.writeFieldEnd()
     if self.login is not None:
       oprot.writeFieldBegin('login', TType.STRING, 2)
@@ -1442,7 +1442,7 @@ class Planet:
     None, # 0
     (1, TType.STRING, 'name', None, None, ), # 1
     (2, TType.STRUCT, 'coord', (Coord, Coord.thrift_spec), None, ), # 2
-    (3, TType.I32, 'playerId', None, None, ), # 3
+    (3, TType.I16, 'playerId', None, None, ), # 3
     (4, TType.LIST, 'buildingList', (TType.I32,None), None, ), # 4
     (5, TType.LIST, 'taskQueue', (TType.STRUCT,(PlanetTask, PlanetTask.thrift_spec)), None, ), # 5
     (6, TType.STRUCT, 'ressourceSet', (RessourceSet, RessourceSet.thrift_spec), None, ), # 6
@@ -1481,8 +1481,8 @@ class Planet:
         else:
           iprot.skip(ftype)
       elif fid == 3:
-        if ftype == TType.I32:
-          self.playerId = iprot.readI32();
+        if ftype == TType.I16:
+          self.playerId = iprot.readI16();
         else:
           iprot.skip(ftype)
       elif fid == 4:
@@ -1552,8 +1552,8 @@ class Planet:
       self.coord.write(oprot)
       oprot.writeFieldEnd()
     if self.playerId is not None:
-      oprot.writeFieldBegin('playerId', TType.I32, 3)
-      oprot.writeI32(self.playerId)
+      oprot.writeFieldBegin('playerId', TType.I16, 3)
+      oprot.writeI16(self.playerId)
       oprot.writeFieldEnd()
     if self.buildingList is not None:
       oprot.writeFieldBegin('buildingList', TType.LIST, 4)
@@ -1640,7 +1640,7 @@ class Fleet:
     None, # 17
     None, # 18
     None, # 19
-    (20, TType.I32, 'playerId', None, None, ), # 20
+    (20, TType.I16, 'playerId', None, None, ), # 20
     None, # 21
     None, # 22
     None, # 23
@@ -1739,8 +1739,8 @@ class Fleet:
         else:
           iprot.skip(ftype)
       elif fid == 20:
-        if ftype == TType.I32:
-          self.playerId = iprot.readI32();
+        if ftype == TType.I16:
+          self.playerId = iprot.readI16();
         else:
           iprot.skip(ftype)
       elif fid == 30:
@@ -1813,8 +1813,8 @@ class Fleet:
       oprot.writeI64(self.id)
       oprot.writeFieldEnd()
     if self.playerId is not None:
-      oprot.writeFieldBegin('playerId', TType.I32, 20)
-      oprot.writeI32(self.playerId)
+      oprot.writeFieldBegin('playerId', TType.I16, 20)
+      oprot.writeI16(self.playerId)
       oprot.writeFieldEnd()
     if self.coord is not None:
       oprot.writeFieldBegin('coord', TType.STRUCT, 30)
@@ -2545,11 +2545,11 @@ class Universe:
 
   thrift_spec = (
     None, # 0
-    (1, TType.MAP, 'playerMap', (TType.I32,None,TType.STRUCT,(Player, Player.thrift_spec)), None, ), # 1
+    (1, TType.MAP, 'playerMap', (TType.I16,None,TType.STRUCT,(Player, Player.thrift_spec)), None, ), # 1
     (2, TType.MAP, 'planetMap', (TType.STRUCT,(Coord, Coord.thrift_spec),TType.STRUCT,(Planet, Planet.thrift_spec)), None, ), # 2
     (3, TType.MAP, 'fleetMap', (TType.I64,None,TType.STRUCT,(Fleet, Fleet.thrift_spec)), None, ), # 3
     (4, TType.MAP, 'reportMap', (TType.I32,None,TType.STRUCT,(FightReport, FightReport.thrift_spec)), None, ), # 4
-    (5, TType.I32, 'nextPlayerID', None, None, ), # 5
+    (5, TType.I16, 'nextPlayerID', None, None, ), # 5
     (6, TType.I64, 'nextFleetID', None, None, ), # 6
     (7, TType.I32, 'time', None, None, ), # 7
   )
@@ -2577,7 +2577,7 @@ class Universe:
           self.playerMap = {}
           (_ktype87, _vtype88, _size86 ) = iprot.readMapBegin() 
           for _i90 in xrange(_size86):
-            _key91 = iprot.readI32();
+            _key91 = iprot.readI16();
             _val92 = Player()
             _val92.read(iprot)
             self.playerMap[_key91] = _val92
@@ -2622,8 +2622,8 @@ class Universe:
         else:
           iprot.skip(ftype)
       elif fid == 5:
-        if ftype == TType.I32:
-          self.nextPlayerID = iprot.readI32();
+        if ftype == TType.I16:
+          self.nextPlayerID = iprot.readI16();
         else:
           iprot.skip(ftype)
       elif fid == 6:
@@ -2648,9 +2648,9 @@ class Universe:
     oprot.writeStructBegin('Universe')
     if self.playerMap is not None:
       oprot.writeFieldBegin('playerMap', TType.MAP, 1)
-      oprot.writeMapBegin(TType.I32, TType.STRUCT, len(self.playerMap))
+      oprot.writeMapBegin(TType.I16, TType.STRUCT, len(self.playerMap))
       for kiter114,viter115 in self.playerMap.items():
-        oprot.writeI32(kiter114)
+        oprot.writeI16(kiter114)
         viter115.write(oprot)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
@@ -2679,8 +2679,8 @@ class Universe:
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     if self.nextPlayerID is not None:
-      oprot.writeFieldBegin('nextPlayerID', TType.I32, 5)
-      oprot.writeI32(self.nextPlayerID)
+      oprot.writeFieldBegin('nextPlayerID', TType.I16, 5)
+      oprot.writeI16(self.nextPlayerID)
       oprot.writeFieldEnd()
     if self.nextFleetID is not None:
       oprot.writeFieldBegin('nextFleetID', TType.I64, 6)

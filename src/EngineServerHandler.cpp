@@ -499,7 +499,10 @@ void EngineServerHandler::getPlanet(vector<ndw::Planet>& _return,
                                     const ndw::Coord& ndwCoord)
 {
 	LOG4CPLUS_TRACE(logger, "ndwCoord : " << ndwCoord);
-	Coord const coord(ndwCoord.X, ndwCoord.Y, ndwCoord.Z);
+	Coord const coord(
+	  numeric_cast<Coord::Value>(ndwCoord.X),
+	  numeric_cast<Coord::Value>(ndwCoord.Y),
+	  numeric_cast<Coord::Value>(ndwCoord.Z));
 	optional<Planet> planet = engine_.getPlanet(coord);
 	if(planet.is_initialized())
 	{
@@ -581,7 +584,7 @@ void EngineServerHandler::getTimeInfo(ndw::TimeInfo& _return)
 }
 
 
-bool EngineServerHandler::eraseAccount(const int32_t pid,
+bool EngineServerHandler::eraseAccount(const ndw::Player_ID pid,
                                        const string& password)
 {
 	LOG4CPLUS_TRACE(logger, "password : " << password);
@@ -602,7 +605,7 @@ bool EngineServerHandler::eraseAccount(const int32_t pid,
 
 
 void EngineServerHandler::getPlayerEvents(
-  vector<ndw::Event>& _return, const int32_t pid)
+  vector<ndw::Event>& _return, const ndw::Player_ID pid)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid);
 	vector<Event> events = database_.getPlayerEvents(pid);

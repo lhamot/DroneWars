@@ -15,7 +15,7 @@ void onPlanetLose(Coord planetCoord,
 	if(mapFind(playerMap, planet.playerId)->second.mainPlanet != planetCoord)
 	{
 		planet.playerId = Player::NoId;
-		planet.buildingList.assign(planet.buildingList.size(), 0);
+		planet.buildingList.assign(0);
 		planet.taskQueue.clear();
 		newParentMap[planet.coord] = planet.parentCoord;
 		planet.parentCoord = planet.coord;

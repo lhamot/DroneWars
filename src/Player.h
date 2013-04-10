@@ -11,7 +11,7 @@ struct Coord
 		ar& X& Y& Z;
 	}
 
-	typedef int32_t Value;
+	typedef int8_t Value;
 	Value X;
 	Value Y;
 	Value Z;
@@ -44,7 +44,7 @@ struct Direction
 		ar& X& Y& Z;
 	}
 
-	typedef long Value;
+	typedef int8_t Value;
 	Value X;
 	Value Y;
 	Value Z;
@@ -74,7 +74,7 @@ static size_t const MaxStringSize = 256;
 
 struct CodeData
 {
-	enum Target
+	enum Target : uint8_t
 	{
 	  Planet,
 	  Fleet,
@@ -82,7 +82,7 @@ struct CodeData
 	};
 
 	size_t id;
-	size_t playerId;
+	uint16_t playerId;
 	Target target;
 	std::string code;
 	std::string blocklyCode;
@@ -117,7 +117,7 @@ struct Player
 	static size_t const MaxCodeSize = 32 * 1024;          //TOTO: Rien a faire là
 	static size_t const MaxBlocklySize = MaxCodeSize * 8; //TOTO: Rien a faire là
 
-	typedef size_t ID;
+	typedef uint16_t ID;
 	static ID const NoId = 0;
 	ID id;
 	std::string login;

@@ -66,105 +66,110 @@ public:
 	}
 
 DataBase::DataBase()
+try
 {
-	try
-	{
-		Poco::Data::MySQL::Connector::registerConnector();
-		session_.reset(new Session("MySQL",
-		                           "host=localhost;"
-		                           "port=3306;"
-		                           "db=dronewars;"
-		                           "user=Blaspheme;"
-		                           "password=pdcx3wady6nsMfUm"));
+	Poco::Data::MySQL::Connector::registerConnector();
+	session_.reset(new Session("MySQL",
+	                           "host=localhost;"
+	                           "port=3306;"
+	                           "db=dronewars;"
+	                           "user=Blaspheme;"
+	                           "password=pdcx3wady6nsMfUm"));
 
-		(*session_) <<
-		            "CREATE TABLE "
-		            "if not exists "
-		            "Options ("
-		            "  name VARCHAR(30) NOT NULL,"
-		            "  value VARCHAR(30) NOT NULL"
-		            ")", now;
+	(*session_) <<
+	            "CREATE TABLE "
+	            "if not exists "
+	            "Options ("
+	            "  name VARCHAR(30) NOT NULL,"
+	            "  value VARCHAR(30) NOT NULL"
+	            ")", now;
 
-		(*session_) <<
-		            "CREATE TABLE "
-		            "if not exists "
-		            "Player ("
-		            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-		            "  login VARCHAR(30) unique NOT NULL,"
-		            "  password VARCHAR(30) NOT NULL,"
-		            "  score INTEGER NOT NULL,"
-		            "  planetCoordX INTEGER NOT NULL,"
-		            "  planetCoordY INTEGER NOT NULL,"
-		            "  planetCoordZ INTEGER NOT NULL"
-		            ")", now;
+	(*session_) <<
+	            "CREATE TABLE "
+	            "if not exists "
+	            "Player ("
+	            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+	            "  login VARCHAR(30) unique NOT NULL,"
+	            "  password VARCHAR(30) NOT NULL,"
+	            "  score INTEGER NOT NULL,"
+	            "  planetCoordX INTEGER NOT NULL,"
+	            "  planetCoordY INTEGER NOT NULL,"
+	            "  planetCoordZ INTEGER NOT NULL"
+	            ")", now;
 
-		(*session_) <<
-		            "CREATE TABLE "
-		            "if not exists "
-		            "Event ("
-		            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-		            "  time INTEGER NOT NULL,"
-		            "  type INTEGER NOT NULL,"
-		            "  comment VARCHAR(500) NOT NULL,"
-		            "  value INTEGER NOT NULL,"
-		            "  viewed INTEGER NOT NULL,"
-		            "  playerID INTEGER NOT NULL,"
-		            "  fleetID INTEGER NOT NULL,"
-		            "  planetCoordX INTEGER NOT NULL,"
-		            "  planetCoordY INTEGER NOT NULL,"
-		            "  planetCoordZ INTEGER NOT NULL,"
-		            "  INDEX (playerID),"
-		            "  INDEX (fleetID),"
-		            "  INDEX Coord (planetCoordX, planetCoordY, planetCoordZ)"
-		            ")", now;
+	(*session_) <<
+	            "CREATE TABLE "
+	            "if not exists "
+	            "Event ("
+	            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+	            "  time INTEGER NOT NULL,"
+	            "  type INTEGER NOT NULL,"
+	            "  comment VARCHAR(500) NOT NULL,"
+	            "  value INTEGER NOT NULL,"
+	            "  viewed INTEGER NOT NULL,"
+	            "  playerID INTEGER NOT NULL,"
+	            "  fleetID INTEGER NOT NULL,"
+	            "  planetCoordX INTEGER NOT NULL,"
+	            "  planetCoordY INTEGER NOT NULL,"
+	            "  planetCoordZ INTEGER NOT NULL,"
+	            "  FOREIGN KEY (playerID) REFERENCES Player(id) "
+	            "    ON DELETE CASCADE, "
+	            "  INDEX (playerID),"
+	            "  INDEX (fleetID),"
+	            "  INDEX Coord (planetCoordX, planetCoordY, planetCoordZ)"
+	            ")", now;
 
-		(*session_) <<
-		            "CREATE TABLE "
-		            "if not exists "
-		            "Script ("
-		            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-		            "  playerID INTEGER NOT NULL,"
-		            "  time INTEGER NOT NULL,"
-		            "  target INTEGER NOT NULL,"
-		            "  code TEXT NOT NULL,"
-		            "  lastError TEXT"
-		            ")", now;
+	(*session_) <<
+	            "CREATE TABLE "
+	            "if not exists "
+	            "Script ("
+	            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+	            "  playerID INTEGER NOT NULL,"
+	            "  time INTEGER NOT NULL,"
+	            "  target INTEGER NOT NULL,"
+	            "  code TEXT NOT NULL,"
+	            "  lastError TEXT,"
+	            "  FOREIGN KEY (playerID) REFERENCES Player(id) "
+	            "    ON DELETE CASCADE "
+	            ")", now;
 
-		(*session_) <<
-		            "CREATE TABLE "
-		            "if not exists "
-		            "BlocklyCode ("
-		            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-		            "  playerID INTEGER NOT NULL,"
-		            "  time INTEGER NOT NULL,"
-		            "  target INTEGER NOT NULL,"
-		            "  code TEXT NOT NULL"
-		            ")", now;
+	(*session_) <<
+	            "CREATE TABLE "
+	            "if not exists "
+	            "BlocklyCode ("
+	            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+	            "  playerID INTEGER NOT NULL,"
+	            "  time INTEGER NOT NULL,"
+	            "  target INTEGER NOT NULL,"
+	            "  code TEXT NOT NULL,"
+	            "  FOREIGN KEY (playerID) REFERENCES Player(id) "
+	            "    ON DELETE CASCADE "
 
-		(*session_) <<
-		            "CREATE TABLE "
-		            "if not exists "
-		            "FightReport ("
-		            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-		            "  time INTEGER NOT NULL,"
-		            "  data BLOB NOT NULL"
-		            ")", now;
+	            ")", now;
 
-		(*session_) <<
-		            "CREATE TABLE "
-		            "if not exists "
-		            "TutoDisplayed ("
-		            "  playerID INTEGER,"
-		            "  tag varchar(30) NOT NULL,"
-		            "  level INTEGER NOT NULL,"
-		            "  FOREIGN KEY (playerID) REFERENCES Player(id) "
-		            "    ON DELETE CASCADE, "
-		            "  INDEX (playerID), "
-		            "  INDEX PlayerTag (playerID, tag)"
-		            ")", now;
-	}
-	DB_CATCH
+	(*session_) <<
+	            "CREATE TABLE "
+	            "if not exists "
+	            "FightReport ("
+	            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+	            "  time INTEGER NOT NULL,"
+	            "  data BLOB NOT NULL"
+	            ")", now;
+
+	(*session_) <<
+	            "CREATE TABLE "
+	            "if not exists "
+	            "TutoDisplayed ("
+	            "  playerID INTEGER,"
+	            "  tag varchar(30) NOT NULL,"
+	            "  level INTEGER NOT NULL,"
+	            "  FOREIGN KEY (playerID) REFERENCES Player(id) "
+	            "    ON DELETE CASCADE, "
+	            "  INDEX (playerID), "
+	            "  INDEX PlayerTag (playerID, tag)"
+	            ")", now;
 }
+DB_CATCH
 
 
 DataBase::~DataBase()
@@ -172,9 +177,9 @@ DataBase::~DataBase()
 }
 
 
-size_t DataBase::addScriptImpl(Player::ID pid,
-                               CodeData::Target target,
-                               std::string const& code)
+void DataBase::addScriptImpl(Player::ID pid,
+                             CodeData::Target target,
+                             std::string const& code)
 try
 {
 	(*session_) <<
@@ -186,16 +191,13 @@ try
 	            use((int)target),
 	            use(code),
 	            now;
-	size_t id = 0;
-	(*session_) << "SELECT LAST_INSERT_ID() ", into(id), now;
-	return id;
 }
 DB_CATCH
 
 
-size_t DataBase::addBlocklyCodeImpl(Player::ID pid,
-                                    CodeData::Target target,
-                                    std::string const& code)
+void DataBase::addBlocklyCodeImpl(Player::ID pid,
+                                  CodeData::Target target,
+                                  std::string const& code)
 try
 {
 	(*session_) <<
@@ -207,9 +209,6 @@ try
 	            use((int)target),
 	            use(code),
 	            now;
-	size_t id = 0;
-	(*session_) << "SELECT LAST_INSERT_ID() ", into(id), now;
-	return id;
 }
 DB_CATCH
 
@@ -232,7 +231,7 @@ try
 		return Player::NoId;
 	else
 	{
-		size_t pid = 0;
+		Player::ID pid = 0;
 		(*session_) << "SELECT LAST_INSERT_ID() ", into(pid), now;
 		//Ajout du niveau de tutos
 		(*session_) <<
@@ -270,7 +269,7 @@ try
 DB_CATCH
 
 
-typedef Tuple < size_t, std::string, std::string, uint64_t,
+typedef Tuple < Player::ID, std::string, std::string, uint64_t,
         Coord::Value, Coord::Value, Coord::Value > PlayerTmp;
 Player playerFromTuple(PlayerTmp const& playerTup)
 {
@@ -598,7 +597,9 @@ size_t DataBase::addScript(Player::ID pid,
 try
 {
 	Transaction trans(*session_);
-	size_t const id = addScriptImpl(pid, target, code);
+	addScriptImpl(pid, target, code);
+	size_t id = 0;
+	(*session_) << "SELECT LAST_INSERT_ID() ", into(id), now;
 	trans.commit();
 	return id;
 }
@@ -611,7 +612,9 @@ size_t DataBase::addBlocklyCode(Player::ID pid,
 try
 {
 	Transaction trans(*session_);
-	size_t const id = addBlocklyCodeImpl(pid, target, code);
+	addBlocklyCodeImpl(pid, target, code);
+	size_t id = 0;
+	(*session_) << "SELECT LAST_INSERT_ID() ", into(id), now;
 	trans.commit();
 	return id;
 }

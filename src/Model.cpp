@@ -75,7 +75,7 @@ RessourceSet getBuilingPrice(Building::Enum id, size_t level)
 	Building const& building = Building::List[id];
 	double const coef = std::pow(building.coef, level - 1.);
 	RessourceSet result = building.price;
-	boost::geometry::multiply_value(result.tab, size_t(coef * 1000.));
+	boost::geometry::multiply_value(result.tab, Ressource::Value(coef * 1000.));
 	boost::geometry::divide_value(result.tab, 1000);
 	return result;
 }
@@ -327,7 +327,7 @@ bool canBuild(Planet const& planet, Ship::Enum type, size_t number)
 		return false;
 
 	RessourceSet price = Ship::List[type].price;
-	boost::geometry::multiply_value(price.tab, number);
+	boost::geometry::multiply_value(price.tab, Ressource::Value(number));
 	return canPay(planet, price);
 }
 
@@ -346,7 +346,7 @@ bool canBuild(Planet const& planet, Building::Enum type)
 		return false;
 
 	auto iter = find_if(planet.taskQueue.begin(), planet.taskQueue.end(),
-	                    boost::bind(&PlanetTask::value, _1) == type);
+	                    boost::bind(&PlanetTask::value, _1) == uint32_t(type));
 	return iter == planet.taskQueue.end();
 }
 
@@ -361,12 +361,12 @@ bool canBuild(Planet const& planet, Cannon::Enum type, size_t number)
 		return false;
 
 	RessourceSet price = Cannon::List[type].price;
-	boost::geometry::multiply_value(price.tab, number);
+	boost::geometry::multiply_value(price.tab, Ressource::Value(number));
 	return canPay(planet, price);
 }
 
 
-void addTask(Planet& planet, size_t roundCount, Building::Enum building)
+void addTask(Planet& planet, uint32_t roundCount, Building::Enum building)
 {
 	size_t const buNextLevel =  planet.buildingList[building] + 1;
 	size_t const centerLevel = planet.buildingList[Building::CommandCenter];
@@ -374,8 +374,8 @@ void addTask(Planet& planet, size_t roundCount, Building::Enum building)
 		BOOST_THROW_EXCEPTION(
 		  std::logic_error("Can't create Building without CommandCenter"));
 
-	size_t const duration =
-	  static_cast<size_t>(
+	uint32_t const duration =
+	  static_cast<uint32_t>(
 	    ((Building::List[building].price.tab[0] * pow(buNextLevel, 2.)) /
 	     (log(centerLevel + 1) * 100)) + 0.5);
 	PlanetTask task(PlanetTask::UpgradeBuilding, roundCount, duration);
@@ -391,14 +391,14 @@ void addTask(Planet& planet, size_t roundCount, Building::Enum building)
 }
 
 
-void addTask(Planet& planet, size_t roundCount, Ship::Enum ship, size_t number)
+void addTask(Planet& planet, uint32_t roundCount, Ship::Enum ship, uint32_t number)
 {
 	size_t const div = 7;
 	size_t const factoryLvl = planet.buildingList[Building::Factory];
 	if(factoryLvl == 0)
 		BOOST_THROW_EXCEPTION(std::logic_error("Need Factory"));
 	size_t const metal = Ship::List[ship].price.tab[0];
-	size_t duration = static_cast<size_t>(((metal / div) / factoryLvl) + 0.5);
+	uint32_t duration = static_cast<uint32_t>(((metal / div) / factoryLvl) + 0.5);
 	if(duration == 0)
 		duration = 1;
 	PlanetTask task(PlanetTask::MakeShip, roundCount, duration);
@@ -412,16 +412,16 @@ void addTask(Planet& planet, size_t roundCount, Ship::Enum ship, size_t number)
 
 
 void addTask(Planet& planet,
-             size_t roundCount,
+             uint32_t roundCount,
              Cannon::Enum cannon,
-             size_t number)
+             uint32_t number)
 {
 	size_t const div = 7;
 	size_t const factoryLvl = planet.buildingList[Building::Factory];
 	if(factoryLvl == 0)
 		BOOST_THROW_EXCEPTION(std::logic_error("Need Factory"));
 	size_t const metal = Cannon::List[cannon].price.tab[0];
-	size_t duration = static_cast<size_t>(((metal / div) / factoryLvl) + 0.5);
+	uint32_t duration = static_cast<uint32_t>(((metal / div) / factoryLvl) + 0.5);
 	if(duration == 0)
 		duration = 1;
 	PlanetTask task(PlanetTask::MakeCannon, roundCount, duration);
@@ -576,7 +576,7 @@ void execTask(Universe& univ,
 	}
 }
 
-void execBuilding(Planet& planet, Building::Enum type, size_t level)
+void execBuilding(Planet& planet, Building::Enum type, uint32_t level)
 {
 	size_t const speedMult = 4;
 	if(level == 0)
@@ -588,7 +588,7 @@ void execBuilding(Planet& planet, Building::Enum type, size_t level)
 		break;
 	case Building::MetalMine:
 		planet.ressourceSet.tab[Ressource::Metal] +=
-		  level * size_t(std::pow(1.1, double(level))) * speedMult;
+		  level * uint32_t(std::pow(1.1, double(level))) * speedMult;
 		break;
 	case Building::CarbonMine:
 		break;
@@ -629,7 +629,7 @@ void planetRound(Universe& univ,
 
 	//Limitation des ressources à un milliard
 	for(auto & val: planet.ressourceSet.tab)
-		val = std::min(val, size_t(1000000000));
+		val = std::min(val, uint32_t(1000000000));
 }
 
 
@@ -645,7 +645,7 @@ void fleetRound(Universe& univ,
 
 	//Limitation des ressources à un milliard
 	for(auto & val: fleet.ressourceSet.tab)
-		val = std::min(val, size_t(1000000000));
+		val = std::min(val, uint32_t(1000000000));
 }
 
 
@@ -655,7 +655,7 @@ void gather(Fleet& fleet, Fleet const& otherFleet)
 	boost::transform(fleet.shipList,
 	                 otherFleet.shipList,
 	                 fleet.shipList.begin(),
-	                 std::plus<size_t>());
+	                 std::plus<uint32_t>());
 }
 
 
@@ -677,7 +677,7 @@ bool canMove(Fleet const& fleet,
 	return true;
 }
 
-void addTask(Fleet& fleet, size_t roundCount, Coord const& coord)
+void addTask(Fleet& fleet, uint32_t roundCount, Coord const& coord)
 {
 	FleetTask task(FleetTask::Move, roundCount, 1);
 	task.position = coord;
@@ -691,7 +691,7 @@ bool canHarvest(Fleet const& fleet, Planet const& planet)
 	return planet.playerId == Player::NoId;
 }
 
-void addTaskHarvest(Fleet& fleet, size_t roundCount, Planet const& planet)
+void addTaskHarvest(Fleet& fleet, uint32_t roundCount, Planet const& planet)
 {
 	FleetTask task(FleetTask::Harvest, roundCount, 1);
 	task.position = planet.coord;
@@ -705,7 +705,7 @@ bool canColonize(Fleet const& fleet, Planet const& planet)
 	return planet.playerId == Player::NoId && fleet.shipList[Ship::Queen];
 }
 
-void addTaskColonize(Fleet& fleet, size_t roundCount, Planet const& planet)
+void addTaskColonize(Fleet& fleet, uint32_t roundCount, Planet const& planet)
 {
 	FleetTask task(FleetTask::Colonize, roundCount, 1);
 	task.position = planet.coord;
@@ -714,7 +714,7 @@ void addTaskColonize(Fleet& fleet, size_t roundCount, Planet const& planet)
 
 bool canDrop(Fleet const& fleet, Planet const& planet)
 {
-	size_t const ressCount = boost::accumulate(fleet.ressourceSet.tab, 0);
+	Ressource::Value const ressCount = boost::accumulate(fleet.ressourceSet.tab, 0);
 	return planet.playerId == fleet.playerId && ressCount > 0;
 }
 

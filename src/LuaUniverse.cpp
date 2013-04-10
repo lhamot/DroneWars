@@ -148,7 +148,7 @@ extern "C" int initDroneWars(lua_State* L)
 	  .def_readonly("cannonTab", &Planet::cannonTab)
 	  .def_readonly("ressourceSet", &Planet::ressourceSet),
 	  class_<RessourceSet>("RessourceSet")
-	  .def(constructor<size_t, size_t, size_t>())
+	  .def(constructor<Ressource::Value, Ressource::Value, Ressource::Value>())
 	  .def(constructor<>())
 	  .def(const_self == other<RessourceSet>())
 	  .def("contains", canPay)

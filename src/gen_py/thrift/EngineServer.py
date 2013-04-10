@@ -1535,7 +1535,7 @@ class getPlayerFleets_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I32, 'pid', None, None, ), # 10
+    (10, TType.I16, 'pid', None, None, ), # 10
     None, # 11
     None, # 12
     None, # 13
@@ -1595,8 +1595,8 @@ class getPlayerFleets_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I32:
-          self.pid = iprot.readI32();
+        if ftype == TType.I16:
+          self.pid = iprot.readI16();
         else:
           iprot.skip(ftype)
       elif fid == 20:
@@ -1630,8 +1630,8 @@ class getPlayerFleets_args:
       return
     oprot.writeStructBegin('getPlayerFleets_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I32, 10)
-      oprot.writeI32(self.pid)
+      oprot.writeFieldBegin('pid', TType.I16, 10)
+      oprot.writeI16(self.pid)
       oprot.writeFieldEnd()
     if self.beginIndex is not None:
       oprot.writeFieldBegin('beginIndex', TType.I32, 20)
@@ -1748,7 +1748,7 @@ class getPlayerPlanets_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I32, 'pid', None, None, ), # 10
+    (10, TType.I16, 'pid', None, None, ), # 10
     None, # 11
     None, # 12
     None, # 13
@@ -1808,8 +1808,8 @@ class getPlayerPlanets_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I32:
-          self.pid = iprot.readI32();
+        if ftype == TType.I16:
+          self.pid = iprot.readI16();
         else:
           iprot.skip(ftype)
       elif fid == 20:
@@ -1843,8 +1843,8 @@ class getPlayerPlanets_args:
       return
     oprot.writeStructBegin('getPlayerPlanets_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I32, 10)
-      oprot.writeI32(self.pid)
+      oprot.writeFieldBegin('pid', TType.I16, 10)
+      oprot.writeI16(self.pid)
       oprot.writeFieldEnd()
     if self.beginIndex is not None:
       oprot.writeFieldBegin('beginIndex', TType.I32, 20)
@@ -1958,7 +1958,7 @@ class setPlayerFleetCode_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I32, 'pid', None, None, ), # 10
+    (10, TType.I16, 'pid', None, None, ), # 10
     None, # 11
     None, # 12
     None, # 13
@@ -1985,8 +1985,8 @@ class setPlayerFleetCode_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I32:
-          self.pid = iprot.readI32();
+        if ftype == TType.I16:
+          self.pid = iprot.readI16();
         else:
           iprot.skip(ftype)
       elif fid == 20:
@@ -2005,8 +2005,8 @@ class setPlayerFleetCode_args:
       return
     oprot.writeStructBegin('setPlayerFleetCode_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I32, 10)
-      oprot.writeI32(self.pid)
+      oprot.writeFieldBegin('pid', TType.I16, 10)
+      oprot.writeI16(self.pid)
       oprot.writeFieldEnd()
     if self.code is not None:
       oprot.writeFieldBegin('code', TType.STRING, 20)
@@ -2090,7 +2090,7 @@ class setPlayerPlanetCode_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I32, 'pid', None, None, ), # 10
+    (10, TType.I16, 'pid', None, None, ), # 10
     None, # 11
     None, # 12
     None, # 13
@@ -2117,8 +2117,8 @@ class setPlayerPlanetCode_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I32:
-          self.pid = iprot.readI32();
+        if ftype == TType.I16:
+          self.pid = iprot.readI16();
         else:
           iprot.skip(ftype)
       elif fid == 20:
@@ -2137,8 +2137,8 @@ class setPlayerPlanetCode_args:
       return
     oprot.writeStructBegin('setPlayerPlanetCode_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I32, 10)
-      oprot.writeI32(self.pid)
+      oprot.writeFieldBegin('pid', TType.I16, 10)
+      oprot.writeI16(self.pid)
       oprot.writeFieldEnd()
     if self.code is not None:
       oprot.writeFieldBegin('code', TType.STRING, 20)
@@ -2222,7 +2222,7 @@ class setPlayerFleetBlocklyCode_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I32, 'pid', None, None, ), # 10
+    (10, TType.I16, 'pid', None, None, ), # 10
     None, # 11
     None, # 12
     None, # 13
@@ -2249,8 +2249,8 @@ class setPlayerFleetBlocklyCode_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I32:
-          self.pid = iprot.readI32();
+        if ftype == TType.I16:
+          self.pid = iprot.readI16();
         else:
           iprot.skip(ftype)
       elif fid == 20:
@@ -2269,8 +2269,8 @@ class setPlayerFleetBlocklyCode_args:
       return
     oprot.writeStructBegin('setPlayerFleetBlocklyCode_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I32, 10)
-      oprot.writeI32(self.pid)
+      oprot.writeFieldBegin('pid', TType.I16, 10)
+      oprot.writeI16(self.pid)
       oprot.writeFieldEnd()
     if self.code is not None:
       oprot.writeFieldBegin('code', TType.STRING, 20)
@@ -2354,7 +2354,7 @@ class setPlayerPlanetBlocklyCode_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I32, 'pid', None, None, ), # 10
+    (10, TType.I16, 'pid', None, None, ), # 10
     None, # 11
     None, # 12
     None, # 13
@@ -2381,8 +2381,8 @@ class setPlayerPlanetBlocklyCode_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I32:
-          self.pid = iprot.readI32();
+        if ftype == TType.I16:
+          self.pid = iprot.readI16();
         else:
           iprot.skip(ftype)
       elif fid == 20:
@@ -2401,8 +2401,8 @@ class setPlayerPlanetBlocklyCode_args:
       return
     oprot.writeStructBegin('setPlayerPlanetBlocklyCode_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I32, 10)
-      oprot.writeI32(self.pid)
+      oprot.writeFieldBegin('pid', TType.I16, 10)
+      oprot.writeI16(self.pid)
       oprot.writeFieldEnd()
     if self.code is not None:
       oprot.writeFieldBegin('code', TType.STRING, 20)
@@ -2485,7 +2485,7 @@ class getPlayerFleetCode_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I32, 'pid', None, None, ), # 10
+    (10, TType.I16, 'pid', None, None, ), # 10
   )
 
   def __init__(self, pid=None,):
@@ -2501,8 +2501,8 @@ class getPlayerFleetCode_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I32:
-          self.pid = iprot.readI32();
+        if ftype == TType.I16:
+          self.pid = iprot.readI16();
         else:
           iprot.skip(ftype)
       else:
@@ -2516,8 +2516,8 @@ class getPlayerFleetCode_args:
       return
     oprot.writeStructBegin('getPlayerFleetCode_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I32, 10)
-      oprot.writeI32(self.pid)
+      oprot.writeFieldBegin('pid', TType.I16, 10)
+      oprot.writeI16(self.pid)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -2614,7 +2614,7 @@ class getPlayerPlanetCode_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I32, 'pid', None, None, ), # 10
+    (10, TType.I16, 'pid', None, None, ), # 10
   )
 
   def __init__(self, pid=None,):
@@ -2630,8 +2630,8 @@ class getPlayerPlanetCode_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I32:
-          self.pid = iprot.readI32();
+        if ftype == TType.I16:
+          self.pid = iprot.readI16();
         else:
           iprot.skip(ftype)
       else:
@@ -2645,8 +2645,8 @@ class getPlayerPlanetCode_args:
       return
     oprot.writeStructBegin('getPlayerPlanetCode_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I32, 10)
-      oprot.writeI32(self.pid)
+      oprot.writeFieldBegin('pid', TType.I16, 10)
+      oprot.writeI16(self.pid)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -2853,7 +2853,7 @@ class getPlayer_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I32, 'pid', None, None, ), # 10
+    (10, TType.I16, 'pid', None, None, ), # 10
   )
 
   def __init__(self, pid=None,):
@@ -2869,8 +2869,8 @@ class getPlayer_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I32:
-          self.pid = iprot.readI32();
+        if ftype == TType.I16:
+          self.pid = iprot.readI16();
         else:
           iprot.skip(ftype)
       else:
@@ -2884,8 +2884,8 @@ class getPlayer_args:
       return
     oprot.writeStructBegin('getPlayer_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I32, 10)
-      oprot.writeI32(self.pid)
+      oprot.writeFieldBegin('pid', TType.I16, 10)
+      oprot.writeI16(self.pid)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -3400,7 +3400,7 @@ class incrementTutoDisplayed_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I32, 'pid', None, None, ), # 10
+    (10, TType.I16, 'pid', None, None, ), # 10
     None, # 11
     None, # 12
     None, # 13
@@ -3427,8 +3427,8 @@ class incrementTutoDisplayed_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I32:
-          self.pid = iprot.readI32();
+        if ftype == TType.I16:
+          self.pid = iprot.readI16();
         else:
           iprot.skip(ftype)
       elif fid == 20:
@@ -3447,8 +3447,8 @@ class incrementTutoDisplayed_args:
       return
     oprot.writeStructBegin('incrementTutoDisplayed_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I32, 10)
-      oprot.writeI32(self.pid)
+      oprot.writeFieldBegin('pid', TType.I16, 10)
+      oprot.writeI16(self.pid)
       oprot.writeFieldEnd()
     if self.tutoName is not None:
       oprot.writeFieldBegin('tutoName', TType.STRING, 20)
@@ -3763,7 +3763,7 @@ class eraseAccount_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I32, 'pid', None, None, ), # 10
+    (10, TType.I16, 'pid', None, None, ), # 10
     None, # 11
     None, # 12
     None, # 13
@@ -3790,8 +3790,8 @@ class eraseAccount_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I32:
-          self.pid = iprot.readI32();
+        if ftype == TType.I16:
+          self.pid = iprot.readI16();
         else:
           iprot.skip(ftype)
       elif fid == 20:
@@ -3810,8 +3810,8 @@ class eraseAccount_args:
       return
     oprot.writeStructBegin('eraseAccount_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I32, 10)
-      oprot.writeI32(self.pid)
+      oprot.writeFieldBegin('pid', TType.I16, 10)
+      oprot.writeI16(self.pid)
       oprot.writeFieldEnd()
     if self.password is not None:
       oprot.writeFieldBegin('password', TType.STRING, 20)
@@ -3911,7 +3911,7 @@ class getPlayerEvents_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I32, 'pid', None, None, ), # 10
+    (10, TType.I16, 'pid', None, None, ), # 10
   )
 
   def __init__(self, pid=None,):
@@ -3927,8 +3927,8 @@ class getPlayerEvents_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I32:
-          self.pid = iprot.readI32();
+        if ftype == TType.I16:
+          self.pid = iprot.readI16();
         else:
           iprot.skip(ftype)
       else:
@@ -3942,8 +3942,8 @@ class getPlayerEvents_args:
       return
     oprot.writeStructBegin('getPlayerEvents_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I32, 10)
-      oprot.writeI32(self.pid)
+      oprot.writeFieldBegin('pid', TType.I16, 10)
+      oprot.writeI16(self.pid)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

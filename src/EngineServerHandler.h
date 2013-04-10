@@ -64,9 +64,9 @@ public:
 
 	void getTimeInfo(ndw::TimeInfo& _return);
 
-	bool eraseAccount(const int32_t pid, const std::string& password);
+	bool eraseAccount(const ndw::Player_ID pid, const std::string& password);
 
-	void getPlayerEvents(std::vector<ndw::Event>& _return, const int32_t pid);
+	void getPlayerEvents(std::vector<ndw::Event>& _return, const ndw::Player_ID pid);
 
 	void getBuildingsInfo(std::vector<ndw::Building>& _return);
 

@@ -11,13 +11,13 @@ class DataBase
 {
 	std::unique_ptr<Poco::Data::Session> session_;
 
-	size_t addScriptImpl(Player::ID pid,
-	                     CodeData::Target target,
-	                     std::string const& code);
+	void addScriptImpl(Player::ID pid,
+	                   CodeData::Target target,
+	                   std::string const& code);
 
-	size_t addBlocklyCodeImpl(Player::ID pid,
-	                          CodeData::Target target,
-	                          std::string const& code);
+	void addBlocklyCodeImpl(Player::ID pid,
+	                        CodeData::Target target,
+	                        std::string const& code);
 
 public:
 	class Exception : public std::runtime_error
