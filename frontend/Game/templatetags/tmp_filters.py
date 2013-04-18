@@ -4,6 +4,7 @@ from django import template
 from gen_py.thrift.ttypes import *
 import datetime
 from Game.views import Ship_Enum
+import bbcode as BBCode
 
 register = template.Library()
 
@@ -80,22 +81,6 @@ def fleettasktarget(task):
     return coord(task.position)
 
 
-@register.tag
-def forlevel(mode, level, planetmin, fleetmin):
-    if mode == "Planet":
-        if level >= planetmin:
-            return True
-        else:
-            return False
-    elif mode == "Fleet":
-        if level >= fleetmin:
-            return True
-        else:
-            return False
-    else:
-        raise AssertionError("Unexpected type")
-
-
 @register.filter
 def int2datetime(ts):
     return datetime.datetime.fromtimestamp(ts)
@@ -147,8 +132,25 @@ def roundtimeleft(timeinfo):
     return roundleft
 
 
-@register.filter()
+@register.filter
 def img_path(planet, prefix):
     PlanetImageCount = 23
     planetHash = planet.coord.X + (planet.coord.Y * 1000) + (planet.coord.Z * 1000000) 
     return "img/Planetes/%s%03i.jpg" % (prefix, planetHash % PlanetImageCount);
+
+
+@register.filter
+def playerlink(playerID, playerName):
+    return '<a href="/ingame/create_message.html?recipientID=%i">%s</a>' % (playerID, playerName)
+
+
+@register.filter
+def alliancelink(allianceID, allianceName):
+    return '<a href="/ingame/alliance.html?alliance=%i">%s</a>' % (allianceID, allianceName)
+
+
+@register.filter
+def bbcode(code):
+    parser = BBCode.Parser()
+    return parser.format(code)
+    

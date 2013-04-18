@@ -177,6 +177,8 @@ ndw::Player playerToThrift(Player const& player)
 	outPlayer.password    = player.password;
 	outPlayer.mainPlanet = coordToThrift(player.mainPlanet);
 	outPlayer.score = numCast(player.score);
+	outPlayer.allianceID = numCast(player.allianceID);
+	outPlayer.allianceName = player.allianceName;
 	return outPlayer;
 }
 
@@ -285,29 +287,29 @@ RandomAccessRange& sortOnAttr(RandomAccessRange& rng, bool asc, Attribute attr)
 template<typename Range>
 void sortOnType(Range& range, ndw::Sort_Type::type sortType, const bool asc)
 {
-	typedef typename Range::value_type FleetOrPlanet;
+	typedef typename Range::value_type FoP; //FleetOrPlanet
 	switch(sortType)
 	{
 	case ndw::Sort_Type::Name:
-		sortOnAttr(range, asc, [](FleetOrPlanet const & elt) {return elt.name;});
+		sortOnAttr(range, asc, [](FoP const & elt) {return elt.name;});
 		break;
 	case ndw::Sort_Type::X:
-		sortOnAttr(range, asc, [](FleetOrPlanet const & elt) {return elt.coord.X;});
+		sortOnAttr(range, asc, [](FoP const & elt) {return elt.coord.X;});
 		break;
 	case ndw::Sort_Type::Y:
-		sortOnAttr(range, asc, [](FleetOrPlanet const & elt) {return elt.coord.Y;});
+		sortOnAttr(range, asc, [](FoP const & elt) {return elt.coord.Y;});
 		break;
 	case ndw::Sort_Type::Z:
-		sortOnAttr(range, asc, [](FleetOrPlanet const & elt) {return elt.coord.Z;});
+		sortOnAttr(range, asc, [](FoP const & elt) {return elt.coord.Z;});
 		break;
 	case ndw::Sort_Type::M:
-		sortOnAttr(range, asc, [](FleetOrPlanet const & elt) {return elt.ressourceSet.tab[0];});
+		sortOnAttr(range, asc, [](FoP const & elt) {return elt.ressourceSet.tab[0];});
 		break;
 	case ndw::Sort_Type::C:
-		sortOnAttr(range, asc, [](FleetOrPlanet const & elt) {return elt.ressourceSet.tab[1];});
+		sortOnAttr(range, asc, [](FoP const & elt) {return elt.ressourceSet.tab[1];});
 		break;
 	case ndw::Sort_Type::L:
-		sortOnAttr(range, asc, [](FleetOrPlanet const & elt) {return elt.ressourceSet.tab[2];});
+		sortOnAttr(range, asc, [](FoP const & elt) {return elt.ressourceSet.tab[2];});
 		break;
 	default:
 		BOOST_THROW_EXCEPTION(runtime_error("Unconsistent Sort_Type"));
@@ -666,3 +668,180 @@ void EngineServerHandler::getShipsInfo(vector<ndw::Ship>& _return)
 	}
 	LOG4CPLUS_TRACE(logger, "exit");
 }
+
+
+//***************************  Messages  **********************************
+
+void EngineServerHandler::addMessage(
+  const ndw::Player_ID sender,
+  const ndw::Player_ID recipient,
+  const std::string& suject,
+  const std::string& message)
+{
+	LOG4CPLUS_TRACE(logger, "server:" << sender <<
+	                " recipient:" << recipient <<
+	                " suject:" << suject <<
+	                " message:" << message);
+	database_.addMessage(sender, recipient, suject, message);
+	LOG4CPLUS_TRACE(logger, "exit");
+}
+
+
+void EngineServerHandler::getMessages(
+  std::vector<ndw::Message>& _return,
+  const ndw::Player_ID recipient)
+{
+	LOG4CPLUS_TRACE(logger, "recipient:" << recipient);
+	std::vector<Message> messages = database_.getMessages(recipient);
+	_return.reserve(messages.size());
+	for(Message const & message: messages)
+	{
+		ndw::Message newMess;
+		newMess.id = message.id;
+		newMess.sender = message.sender;
+		newMess.recipient = message.recipient;
+		newMess.time = numCast(message.time);
+		newMess.subject = message.subject;
+		newMess.message = message.message;
+		newMess.senderLogin = message.senderLogin;
+		LOG4CPLUS_TRACE(logger, "id:" << message.id <<
+		                " sender:" << message.recipient <<
+		                " time:" << message.time <<
+		                " subject:" << message.subject <<
+		                " message:" << message.message <<
+		                " senderLogin:" << message.senderLogin);
+		_return.push_back(newMess);
+	}
+	LOG4CPLUS_TRACE(logger, "exit");
+}
+
+
+void EngineServerHandler::eraseMesage(const ndw::Message_ID mid)
+{
+	LOG4CPLUS_TRACE(logger, "message.id:" << mid);
+	database_.eraseMesage(numCast(mid));
+	LOG4CPLUS_TRACE(logger, "exit");
+}
+
+
+//***************************  Friendship  ********************************
+
+void EngineServerHandler::addFriendshipRequest(
+  const ndw::Player_ID playerA,
+  const ndw::Player_ID playerB)
+{
+	LOG4CPLUS_TRACE(logger, "playerA:" << playerA << " playerB:" << playerB);
+	database_.addFriendshipRequest(playerA, playerB);
+	LOG4CPLUS_TRACE(logger, "exit");
+}
+
+
+void EngineServerHandler::acceptFriendshipRequest(
+  const ndw::Player_ID playerA,
+  const ndw::Player_ID playerB,
+  const bool accept)
+{
+	LOG4CPLUS_TRACE(logger, "playerA:" << playerA <<
+	                " playerB:" << playerB <<
+	                " accept:" << accept);
+	database_.acceptFriendshipRequest(playerA, playerB, accept);
+	LOG4CPLUS_TRACE(logger, "exit");
+}
+
+
+void EngineServerHandler::closeFriendship(
+  const ndw::Player_ID playerA,
+  const ndw::Player_ID playerB)
+{
+	LOG4CPLUS_TRACE(logger, "playerA:" << playerA << " playerB:" << playerB);
+	database_.closeFriendship(playerA, playerB);
+	LOG4CPLUS_TRACE(logger, "exit");
+}
+
+
+void EngineServerHandler::getFriends(
+  std::vector<ndw::Player>& _return,
+  const ndw::Player_ID player)
+{
+	LOG4CPLUS_TRACE(logger, "player:" << player);
+	boost::transform(database_.getFriends(player),
+	                 back_inserter(_return),
+	                 playerToThrift);
+	LOG4CPLUS_TRACE(logger, "exit");
+}
+
+
+void EngineServerHandler::getFriendshipRequest(
+  ndw::FriendshipRequests& ret,
+  const ndw::Player_ID player)
+{
+	LOG4CPLUS_TRACE(logger, "player:" << player);
+	FriendshipRequests requ = database_.getFriendshipRequest(player);
+	transform(requ.received, back_inserter(ret.received), playerToThrift);
+	transform(requ.sent, back_inserter(ret.sent), playerToThrift);
+	LOG4CPLUS_TRACE(logger, "exit");
+}
+
+
+//***************************  Alliance  **********************************
+
+
+ndw::Alliance_ID EngineServerHandler::addAlliance(
+  const ndw::Player_ID pid,
+  const std::string& name,
+  const std::string& descri)
+{
+	LOG4CPLUS_TRACE(logger, "pid:" << pid <<
+	                " name:" << name <<
+	                " descri:" << descri);
+	return database_.addAlliance(pid, name, descri);
+	LOG4CPLUS_TRACE(logger, "exit");
+}
+
+
+void EngineServerHandler::getAlliance(ndw::Alliance& _return,
+                                      const ndw::Alliance_ID aid)
+{
+	LOG4CPLUS_TRACE(logger, "allianceID:" << aid);
+	Alliance al = database_.getAlliance(aid);
+	_return.id          = al.id;
+	_return.masterID    = al.masterID;
+	_return.name        = al.name;
+	_return.description = al.description;
+	_return.masterLogin = al.masterLogin;
+	LOG4CPLUS_TRACE(logger, "exit");
+}
+
+
+void EngineServerHandler::updateAlliance(const ndw::Alliance& al)
+{
+	database_.updateAlliance(
+	  Alliance(al.id, al.masterID, al.name, al.description, al.masterLogin));
+}
+
+
+void EngineServerHandler::transfertAlliance(const ndw::Alliance_ID aid, const ndw::Player_ID pid)
+{
+	database_.transfertAlliance(aid, pid);
+}
+
+
+
+void EngineServerHandler::eraseAlliance(const ndw::Alliance_ID aid)
+{
+	database_.eraseAlliance(aid);
+}
+
+
+void EngineServerHandler::joinAlliance(const ndw::Player_ID pid,
+                                       const ndw::Alliance_ID aid)
+{
+	database_.joinAlliance(pid, aid);
+}
+
+
+void EngineServerHandler::quitAlliance(const ndw::Player_ID pid)
+{
+	database_.quitAlliance(pid);
+}
+

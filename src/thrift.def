@@ -5,9 +5,9 @@ typedef i16 Coord_Value
 
 struct Coord
 {
-	1: Coord_Value X
-	2: Coord_Value Y
-	3: Coord_Value Z
+	10: Coord_Value X
+	20: Coord_Value Y
+	30: Coord_Value Z
 }
 
 
@@ -36,37 +36,50 @@ typedef i32 Event_ID
 
 struct Event 
 {
-	1: Event_ID id
-	2: i32 time
-	3: Event_Type type
-	4: string comment
-	5: i32 value
-	6: bool viewed
+	10: Event_ID id
+	20: i32 time
+	30: Event_Type type
+	40: string comment
+	50: i32 value
+	60: bool viewed
 }
 
 
 struct CodeData
 {
-	1: string blocklyCode
-	2: string code
-	4: string lastError
+	10: string blocklyCode
+	20: string code
+	30: string lastError
 }
 
 
-typedef i16 Player_ID
+typedef i32 Alliance_ID
+const Alliance_ID Alliance_NoId = 0
+typedef i32 Player_ID
+const Player_ID Player_NoId = 0
 
-const Player_ID Player_NoId = -1
+struct Alliance
+{
+	10: Alliance_ID id
+	20: Player_ID masterID
+	30: string name
+	40: string description
+	50: string masterLogin
+}
+
 
 struct Player
 {
-	1: Player_ID id
-	2: string login
-	3: string password
-	4: CodeData fleetsCode
-	5: CodeData planetsCode
-	7: map<string, i32> tutoDisplayed
-	8: Coord mainPlanet
-	9: i64 score = 0
+	10: Player_ID id
+	20: string login
+	30: string password
+	40: CodeData fleetsCode
+	50: CodeData planetsCode
+	70: map<string, i32> tutoDisplayed
+	80: Coord mainPlanet
+	90: i64 score = 0
+	100: Alliance_ID allianceID
+	110: string allianceName
 }
 
 
@@ -331,32 +344,68 @@ struct PlanetList
 	20: i32 planetCount
 }
 
+typedef i32 Message_ID
+struct Message
+{
+	10: Message_ID id
+	20: Player_ID sender
+	30: Player_ID recipient
+	40: i32 time
+	50: string subject
+	60: string message
+	70: string senderLogin
+}
+
+struct FriendshipRequests
+{
+	10: list<Player> sent
+	20: list<Player> received
+}
+
 
 service EngineServer
 {
-	void start(),
-	void stop(),
-	bool addPlayer(10: string login, 20: string password),
-	FleetList getPlayerFleets(10: Player_ID pid, 20: i32 beginIndex, 30: i32 endIndex, 40: Sort_Type sortType, 50: bool asc),
-	PlanetList getPlayerPlanets(10: Player_ID pid, 20: i32 beginIndex, 30: i32 endIndex, 40: Sort_Type sortType, 50: bool asc),
-	void setPlayerFleetCode(10: Player_ID pid, 20: string code),
-	void setPlayerPlanetCode(10: Player_ID pid, 20: string code),
-	void setPlayerFleetBlocklyCode(10: Player_ID pid, 20: string code),
-	void setPlayerPlanetBlocklyCode(10: Player_ID pid, 20: string code),
-	CodeData getPlayerFleetCode(10: Player_ID pid),
-	CodeData getPlayerPlanetCode(10: Player_ID pid),
-	list<Player> getPlayers(),
-	Player getPlayer(10: Player_ID pid),
-	list<Planet> getPlanet(10: Coord coord),
-	Fleet getFleet(10: Fleet_ID fid),
-	OptionalPlayer logPlayer(10: string login, 20: string password),
-	void incrementTutoDisplayed(10: Player_ID pid, 20: string tutoName),
-	FightReport getFightReport(10: i32 id),
-	TimeInfo getTimeInfo(),
-	bool eraseAccount(10: Player_ID pid, 20: string password),
-	list<Event> getPlayerEvents(10: Player_ID pid);
+	void start()
+	void stop()
+	bool addPlayer(10: string login, 20: string password)
+	FleetList getPlayerFleets(10: Player_ID pid, 20: i32 beginIndex, 30: i32 endIndex, 40: Sort_Type sortType, 50: bool asc)
+	PlanetList getPlayerPlanets(10: Player_ID pid, 20: i32 beginIndex, 30: i32 endIndex, 40: Sort_Type sortType, 50: bool asc)
+	void setPlayerFleetCode(10: Player_ID pid, 20: string code)
+	void setPlayerPlanetCode(10: Player_ID pid, 20: string code)
+	void setPlayerFleetBlocklyCode(10: Player_ID pid, 20: string code)
+	void setPlayerPlanetBlocklyCode(10: Player_ID pid, 20: string code)
+	CodeData getPlayerFleetCode(10: Player_ID pid)
+	CodeData getPlayerPlanetCode(10: Player_ID pid)
+	list<Player> getPlayers()
+	Player getPlayer(10: Player_ID pid)
+	list<Planet> getPlanet(10: Coord coord)
+	Fleet getFleet(10: Fleet_ID fid)
+	OptionalPlayer logPlayer(10: string login, 20: string password)
+	void incrementTutoDisplayed(10: Player_ID pid, 20: string tutoName)
+	FightReport getFightReport(10: i32 id)
+	TimeInfo getTimeInfo()
+	bool eraseAccount(10: Player_ID pid, 20: string password)
+	list<Event> getPlayerEvents(10: Player_ID pid)
 
-	list<Building> getBuildingsInfo();
-	list<Cannon> getCannonsInfo();
-	list<Ship> getShipsInfo();
+	list<Building> getBuildingsInfo()
+	list<Cannon> getCannonsInfo()
+	list<Ship> getShipsInfo()
+
+	void addMessage(10: Player_ID sender, 20: Player_ID recipient, 30: string suject, 40: string message)
+	list<Message> getMessages(10: Player_ID recipient)
+	void eraseMesage(10: Message_ID mid)
+
+	void addFriendshipRequest(10: Player_ID playerA, 20: Player_ID playerB)
+	void acceptFriendshipRequest(10: Player_ID playerA, 20: Player_ID playerB, 30: bool accept)
+	void closeFriendship(10: Player_ID playerA, 20: Player_ID playerB)
+	list<Player> getFriends(10: Player_ID player)
+	FriendshipRequests getFriendshipRequest(10: Player_ID player)
+
+	Alliance_ID addAlliance(10: Player_ID pid, 20: string name, 30: string description)
+	Alliance getAlliance(10: Alliance_ID aid)
+	void updateAlliance(10: Alliance alliance)
+	void transfertAlliance(10: Alliance_ID aid, 20: Player_ID pid)
+	void eraseAlliance(10: Alliance_ID aid)
+	void joinAlliance(10: Player_ID pid, 20: Alliance_ID aid)
+	void quitAlliance(10: Player_ID pid)
 }

@@ -44,7 +44,7 @@ struct CompCoord
 struct Ressource
 {
 	typedef uint32_t Value;
-	enum Enum : uint8_t
+enum Enum : uint8_t
 	{
 	  Metal,
 	  Carbon,
@@ -89,7 +89,7 @@ struct PlanetTask
 		ar& type& value& value2& lauchTime& duration& startCost& expired;
 	}
 
-	enum Enum : uint8_t
+enum Enum : uint8_t
 	{
 	  UpgradeBuilding,
 	  MakeShip,
@@ -120,7 +120,7 @@ struct FleetTask
 		ar& type& lauchTime& duration& position& expired;
 	}
 
-	enum Enum : uint8_t
+enum Enum : uint8_t
 	{
 	  Move,
 	  Harvest,
@@ -168,7 +168,7 @@ struct Building
 
 struct Ship
 {
-	enum Enum : int8_t
+enum Enum : int8_t
 	{
 	  Undefined = -1,
 	  Mosquito,
@@ -194,7 +194,7 @@ struct Ship
 
 struct Cannon
 {
-	enum Enum : int8_t
+enum Enum : int8_t
 	{
 	  Undefined = -1,
 	  Cannon1,
@@ -287,7 +287,7 @@ struct Planet
 
 struct PlanetAction
 {
-	enum Type : int8_t
+enum Type : int8_t
 	{
 	  Undefined = -1,
 	  Building,
@@ -380,7 +380,7 @@ struct Fleet
 
 struct FleetAction
 {
-	enum Type : uint8_t
+enum Type : uint8_t
 	{
 	  Nothing,
 	  Move,
@@ -491,7 +491,7 @@ struct Event
 		ar& id& time& type& comment& value;
 	}
 
-	enum Type : uint8_t
+enum Type : uint8_t
 	{
 	  FleetCodeError,
 	  FleetCodeExecError,

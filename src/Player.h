@@ -74,7 +74,7 @@ static size_t const MaxStringSize = 256;
 
 struct CodeData
 {
-	enum Target : uint8_t
+enum Target : uint8_t
 	{
 	  Planet,
 	  Fleet,
@@ -82,7 +82,7 @@ struct CodeData
 	};
 
 	size_t id;
-	uint16_t playerId;
+	uint32_t playerId;
 	Target target;
 	std::string code;
 	std::string blocklyCode;
@@ -112,21 +112,50 @@ struct CodeData
 };
 
 
+struct Alliance
+{
+	typedef uint32_t ID;
+	static ID const NoId = 0;
+	ID id;
+	uint32_t masterID;
+	std::string name;
+	std::string description;
+	std::string masterLogin;
+
+	Alliance(): id(0), masterID(0) {}
+
+	Alliance(Alliance::ID id,
+	         uint32_t playerID,
+	         std::string const& name,
+	         std::string const& description,
+	         std::string const& masterLogin):
+		id(id),
+		masterID(playerID),
+		name(name),
+		description(description),
+		masterLogin(masterLogin)
+	{
+	}
+};
+
+
 struct Player
 {
 	static size_t const MaxCodeSize = 32 * 1024;          //TOTO: Rien a faire là
 	static size_t const MaxBlocklySize = MaxCodeSize * 8; //TOTO: Rien a faire là
 
-	typedef uint16_t ID;
+	typedef uint32_t ID;
 	static ID const NoId = 0;
 	ID id;
 	std::string login;
 	std::string password;
 	Coord mainPlanet;
 	uint64_t score;
+	Alliance::ID allianceID;
+	std::string allianceName;
 
 	Player(ID i, std::string const& lg, std::string const& pass):
-		id(i), login(lg), password(pass)
+		id(i), login(lg), password(pass), allianceID(0)
 	{
 	}
 };

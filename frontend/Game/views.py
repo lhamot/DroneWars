@@ -38,15 +38,15 @@ def updateLastRequest(viewFunc):
 
 
 class SubscribeForm(forms.Form):
-    login = forms.CharField(max_length=100, label=_("Login"))
-    password = forms.CharField(label=_("Password"), widget=forms.PasswordInput)
-    password2 = forms.CharField(label=_("Password2"), widget=forms.PasswordInput)
+    login = forms.CharField(max_length=30, label=_("Login"))
+    password = forms.CharField(max_length=30, label=_("Password"), widget=forms.PasswordInput)
+    password2 = forms.CharField(max_length=30, label=_("Password2"), widget=forms.PasswordInput)
     #email = forms.EmailField()
 
 
 class LoginForm(forms.Form):
-    login = forms.CharField(max_length=100, label=_("Login"))
-    password = forms.CharField(label=_("Password"), widget=forms.PasswordInput)
+    login = forms.CharField(max_length=30, label=_("Login"))
+    password = forms.CharField(max_length=30, label=_("Password"), widget=forms.PasswordInput)
 
 def createEngineClient():
     # Talk to a server via TCP sockets, using a binary protocol

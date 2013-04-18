@@ -174,6 +174,122 @@ class Iface:
   def getShipsInfo(self, ):
     pass
 
+  def addMessage(self, sender, recipient, suject, message):
+    """
+    Parameters:
+     - sender
+     - recipient
+     - suject
+     - message
+    """
+    pass
+
+  def getMessages(self, recipient):
+    """
+    Parameters:
+     - recipient
+    """
+    pass
+
+  def eraseMesage(self, mid):
+    """
+    Parameters:
+     - mid
+    """
+    pass
+
+  def addFriendshipRequest(self, playerA, playerB):
+    """
+    Parameters:
+     - playerA
+     - playerB
+    """
+    pass
+
+  def acceptFriendshipRequest(self, playerA, playerB, accept):
+    """
+    Parameters:
+     - playerA
+     - playerB
+     - accept
+    """
+    pass
+
+  def closeFriendship(self, playerA, playerB):
+    """
+    Parameters:
+     - playerA
+     - playerB
+    """
+    pass
+
+  def getFriends(self, player):
+    """
+    Parameters:
+     - player
+    """
+    pass
+
+  def getFriendshipRequest(self, player):
+    """
+    Parameters:
+     - player
+    """
+    pass
+
+  def addAlliance(self, pid, name, description):
+    """
+    Parameters:
+     - pid
+     - name
+     - description
+    """
+    pass
+
+  def getAlliance(self, aid):
+    """
+    Parameters:
+     - aid
+    """
+    pass
+
+  def updateAlliance(self, alliance):
+    """
+    Parameters:
+     - alliance
+    """
+    pass
+
+  def transfertAlliance(self, aid, pid):
+    """
+    Parameters:
+     - aid
+     - pid
+    """
+    pass
+
+  def eraseAlliance(self, aid):
+    """
+    Parameters:
+     - aid
+    """
+    pass
+
+  def joinAlliance(self, pid, aid):
+    """
+    Parameters:
+     - pid
+     - aid
+    """
+    pass
+
+  def quitAlliance(self, pid):
+    """
+    Parameters:
+     - pid
+    """
+    pass
+
 
 class Client(Iface):
   def __init__(self, iprot, oprot=None):
@@ -885,6 +1001,458 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getShipsInfo failed: unknown result");
 
+  def addMessage(self, sender, recipient, suject, message):
+    """
+    Parameters:
+     - sender
+     - recipient
+     - suject
+     - message
+    """
+    self.send_addMessage(sender, recipient, suject, message)
+    self.recv_addMessage()
+
+  def send_addMessage(self, sender, recipient, suject, message):
+    self._oprot.writeMessageBegin('addMessage', TMessageType.CALL, self._seqid)
+    args = addMessage_args()
+    args.sender = sender
+    args.recipient = recipient
+    args.suject = suject
+    args.message = message
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_addMessage(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = addMessage_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def getMessages(self, recipient):
+    """
+    Parameters:
+     - recipient
+    """
+    self.send_getMessages(recipient)
+    return self.recv_getMessages()
+
+  def send_getMessages(self, recipient):
+    self._oprot.writeMessageBegin('getMessages', TMessageType.CALL, self._seqid)
+    args = getMessages_args()
+    args.recipient = recipient
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getMessages(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getMessages_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getMessages failed: unknown result");
+
+  def eraseMesage(self, mid):
+    """
+    Parameters:
+     - mid
+    """
+    self.send_eraseMesage(mid)
+    self.recv_eraseMesage()
+
+  def send_eraseMesage(self, mid):
+    self._oprot.writeMessageBegin('eraseMesage', TMessageType.CALL, self._seqid)
+    args = eraseMesage_args()
+    args.mid = mid
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_eraseMesage(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = eraseMesage_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def addFriendshipRequest(self, playerA, playerB):
+    """
+    Parameters:
+     - playerA
+     - playerB
+    """
+    self.send_addFriendshipRequest(playerA, playerB)
+    self.recv_addFriendshipRequest()
+
+  def send_addFriendshipRequest(self, playerA, playerB):
+    self._oprot.writeMessageBegin('addFriendshipRequest', TMessageType.CALL, self._seqid)
+    args = addFriendshipRequest_args()
+    args.playerA = playerA
+    args.playerB = playerB
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_addFriendshipRequest(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = addFriendshipRequest_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def acceptFriendshipRequest(self, playerA, playerB, accept):
+    """
+    Parameters:
+     - playerA
+     - playerB
+     - accept
+    """
+    self.send_acceptFriendshipRequest(playerA, playerB, accept)
+    self.recv_acceptFriendshipRequest()
+
+  def send_acceptFriendshipRequest(self, playerA, playerB, accept):
+    self._oprot.writeMessageBegin('acceptFriendshipRequest', TMessageType.CALL, self._seqid)
+    args = acceptFriendshipRequest_args()
+    args.playerA = playerA
+    args.playerB = playerB
+    args.accept = accept
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_acceptFriendshipRequest(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = acceptFriendshipRequest_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def closeFriendship(self, playerA, playerB):
+    """
+    Parameters:
+     - playerA
+     - playerB
+    """
+    self.send_closeFriendship(playerA, playerB)
+    self.recv_closeFriendship()
+
+  def send_closeFriendship(self, playerA, playerB):
+    self._oprot.writeMessageBegin('closeFriendship', TMessageType.CALL, self._seqid)
+    args = closeFriendship_args()
+    args.playerA = playerA
+    args.playerB = playerB
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_closeFriendship(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = closeFriendship_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def getFriends(self, player):
+    """
+    Parameters:
+     - player
+    """
+    self.send_getFriends(player)
+    return self.recv_getFriends()
+
+  def send_getFriends(self, player):
+    self._oprot.writeMessageBegin('getFriends', TMessageType.CALL, self._seqid)
+    args = getFriends_args()
+    args.player = player
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getFriends(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getFriends_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getFriends failed: unknown result");
+
+  def getFriendshipRequest(self, player):
+    """
+    Parameters:
+     - player
+    """
+    self.send_getFriendshipRequest(player)
+    return self.recv_getFriendshipRequest()
+
+  def send_getFriendshipRequest(self, player):
+    self._oprot.writeMessageBegin('getFriendshipRequest', TMessageType.CALL, self._seqid)
+    args = getFriendshipRequest_args()
+    args.player = player
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getFriendshipRequest(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getFriendshipRequest_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getFriendshipRequest failed: unknown result");
+
+  def addAlliance(self, pid, name, description):
+    """
+    Parameters:
+     - pid
+     - name
+     - description
+    """
+    self.send_addAlliance(pid, name, description)
+    return self.recv_addAlliance()
+
+  def send_addAlliance(self, pid, name, description):
+    self._oprot.writeMessageBegin('addAlliance', TMessageType.CALL, self._seqid)
+    args = addAlliance_args()
+    args.pid = pid
+    args.name = name
+    args.description = description
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_addAlliance(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = addAlliance_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "addAlliance failed: unknown result");
+
+  def getAlliance(self, aid):
+    """
+    Parameters:
+     - aid
+    """
+    self.send_getAlliance(aid)
+    return self.recv_getAlliance()
+
+  def send_getAlliance(self, aid):
+    self._oprot.writeMessageBegin('getAlliance', TMessageType.CALL, self._seqid)
+    args = getAlliance_args()
+    args.aid = aid
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getAlliance(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getAlliance_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getAlliance failed: unknown result");
+
+  def updateAlliance(self, alliance):
+    """
+    Parameters:
+     - alliance
+    """
+    self.send_updateAlliance(alliance)
+    self.recv_updateAlliance()
+
+  def send_updateAlliance(self, alliance):
+    self._oprot.writeMessageBegin('updateAlliance', TMessageType.CALL, self._seqid)
+    args = updateAlliance_args()
+    args.alliance = alliance
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_updateAlliance(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = updateAlliance_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def transfertAlliance(self, aid, pid):
+    """
+    Parameters:
+     - aid
+     - pid
+    """
+    self.send_transfertAlliance(aid, pid)
+    self.recv_transfertAlliance()
+
+  def send_transfertAlliance(self, aid, pid):
+    self._oprot.writeMessageBegin('transfertAlliance', TMessageType.CALL, self._seqid)
+    args = transfertAlliance_args()
+    args.aid = aid
+    args.pid = pid
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_transfertAlliance(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = transfertAlliance_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def eraseAlliance(self, aid):
+    """
+    Parameters:
+     - aid
+    """
+    self.send_eraseAlliance(aid)
+    self.recv_eraseAlliance()
+
+  def send_eraseAlliance(self, aid):
+    self._oprot.writeMessageBegin('eraseAlliance', TMessageType.CALL, self._seqid)
+    args = eraseAlliance_args()
+    args.aid = aid
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_eraseAlliance(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = eraseAlliance_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def joinAlliance(self, pid, aid):
+    """
+    Parameters:
+     - pid
+     - aid
+    """
+    self.send_joinAlliance(pid, aid)
+    self.recv_joinAlliance()
+
+  def send_joinAlliance(self, pid, aid):
+    self._oprot.writeMessageBegin('joinAlliance', TMessageType.CALL, self._seqid)
+    args = joinAlliance_args()
+    args.pid = pid
+    args.aid = aid
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_joinAlliance(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = joinAlliance_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def quitAlliance(self, pid):
+    """
+    Parameters:
+     - pid
+    """
+    self.send_quitAlliance(pid)
+    self.recv_quitAlliance()
+
+  def send_quitAlliance(self, pid):
+    self._oprot.writeMessageBegin('quitAlliance', TMessageType.CALL, self._seqid)
+    args = quitAlliance_args()
+    args.pid = pid
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_quitAlliance(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = quitAlliance_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
 
 class Processor(Iface, TProcessor):
   def __init__(self, handler):
@@ -914,6 +1482,21 @@ class Processor(Iface, TProcessor):
     self._processMap["getBuildingsInfo"] = Processor.process_getBuildingsInfo
     self._processMap["getCannonsInfo"] = Processor.process_getCannonsInfo
     self._processMap["getShipsInfo"] = Processor.process_getShipsInfo
+    self._processMap["addMessage"] = Processor.process_addMessage
+    self._processMap["getMessages"] = Processor.process_getMessages
+    self._processMap["eraseMesage"] = Processor.process_eraseMesage
+    self._processMap["addFriendshipRequest"] = Processor.process_addFriendshipRequest
+    self._processMap["acceptFriendshipRequest"] = Processor.process_acceptFriendshipRequest
+    self._processMap["closeFriendship"] = Processor.process_closeFriendship
+    self._processMap["getFriends"] = Processor.process_getFriends
+    self._processMap["getFriendshipRequest"] = Processor.process_getFriendshipRequest
+    self._processMap["addAlliance"] = Processor.process_addAlliance
+    self._processMap["getAlliance"] = Processor.process_getAlliance
+    self._processMap["updateAlliance"] = Processor.process_updateAlliance
+    self._processMap["transfertAlliance"] = Processor.process_transfertAlliance
+    self._processMap["eraseAlliance"] = Processor.process_eraseAlliance
+    self._processMap["joinAlliance"] = Processor.process_joinAlliance
+    self._processMap["quitAlliance"] = Processor.process_quitAlliance
 
   def process(self, iprot, oprot):
     (name, type, seqid) = iprot.readMessageBegin()
@@ -1190,6 +1773,171 @@ class Processor(Iface, TProcessor):
     result = getShipsInfo_result()
     result.success = self._handler.getShipsInfo()
     oprot.writeMessageBegin("getShipsInfo", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_addMessage(self, seqid, iprot, oprot):
+    args = addMessage_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = addMessage_result()
+    self._handler.addMessage(args.sender, args.recipient, args.suject, args.message)
+    oprot.writeMessageBegin("addMessage", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getMessages(self, seqid, iprot, oprot):
+    args = getMessages_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getMessages_result()
+    result.success = self._handler.getMessages(args.recipient)
+    oprot.writeMessageBegin("getMessages", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_eraseMesage(self, seqid, iprot, oprot):
+    args = eraseMesage_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = eraseMesage_result()
+    self._handler.eraseMesage(args.mid)
+    oprot.writeMessageBegin("eraseMesage", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_addFriendshipRequest(self, seqid, iprot, oprot):
+    args = addFriendshipRequest_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = addFriendshipRequest_result()
+    self._handler.addFriendshipRequest(args.playerA, args.playerB)
+    oprot.writeMessageBegin("addFriendshipRequest", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_acceptFriendshipRequest(self, seqid, iprot, oprot):
+    args = acceptFriendshipRequest_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = acceptFriendshipRequest_result()
+    self._handler.acceptFriendshipRequest(args.playerA, args.playerB, args.accept)
+    oprot.writeMessageBegin("acceptFriendshipRequest", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_closeFriendship(self, seqid, iprot, oprot):
+    args = closeFriendship_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = closeFriendship_result()
+    self._handler.closeFriendship(args.playerA, args.playerB)
+    oprot.writeMessageBegin("closeFriendship", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getFriends(self, seqid, iprot, oprot):
+    args = getFriends_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getFriends_result()
+    result.success = self._handler.getFriends(args.player)
+    oprot.writeMessageBegin("getFriends", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getFriendshipRequest(self, seqid, iprot, oprot):
+    args = getFriendshipRequest_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getFriendshipRequest_result()
+    result.success = self._handler.getFriendshipRequest(args.player)
+    oprot.writeMessageBegin("getFriendshipRequest", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_addAlliance(self, seqid, iprot, oprot):
+    args = addAlliance_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = addAlliance_result()
+    result.success = self._handler.addAlliance(args.pid, args.name, args.description)
+    oprot.writeMessageBegin("addAlliance", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getAlliance(self, seqid, iprot, oprot):
+    args = getAlliance_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getAlliance_result()
+    result.success = self._handler.getAlliance(args.aid)
+    oprot.writeMessageBegin("getAlliance", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_updateAlliance(self, seqid, iprot, oprot):
+    args = updateAlliance_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = updateAlliance_result()
+    self._handler.updateAlliance(args.alliance)
+    oprot.writeMessageBegin("updateAlliance", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_transfertAlliance(self, seqid, iprot, oprot):
+    args = transfertAlliance_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = transfertAlliance_result()
+    self._handler.transfertAlliance(args.aid, args.pid)
+    oprot.writeMessageBegin("transfertAlliance", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_eraseAlliance(self, seqid, iprot, oprot):
+    args = eraseAlliance_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = eraseAlliance_result()
+    self._handler.eraseAlliance(args.aid)
+    oprot.writeMessageBegin("eraseAlliance", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_joinAlliance(self, seqid, iprot, oprot):
+    args = joinAlliance_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = joinAlliance_result()
+    self._handler.joinAlliance(args.pid, args.aid)
+    oprot.writeMessageBegin("joinAlliance", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_quitAlliance(self, seqid, iprot, oprot):
+    args = quitAlliance_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = quitAlliance_result()
+    self._handler.quitAlliance(args.pid)
+    oprot.writeMessageBegin("quitAlliance", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -1535,7 +2283,7 @@ class getPlayerFleets_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I16, 'pid', None, None, ), # 10
+    (10, TType.I32, 'pid', None, None, ), # 10
     None, # 11
     None, # 12
     None, # 13
@@ -1595,8 +2343,8 @@ class getPlayerFleets_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I16:
-          self.pid = iprot.readI16();
+        if ftype == TType.I32:
+          self.pid = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 20:
@@ -1630,8 +2378,8 @@ class getPlayerFleets_args:
       return
     oprot.writeStructBegin('getPlayerFleets_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I16, 10)
-      oprot.writeI16(self.pid)
+      oprot.writeFieldBegin('pid', TType.I32, 10)
+      oprot.writeI32(self.pid)
       oprot.writeFieldEnd()
     if self.beginIndex is not None:
       oprot.writeFieldBegin('beginIndex', TType.I32, 20)
@@ -1748,7 +2496,7 @@ class getPlayerPlanets_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I16, 'pid', None, None, ), # 10
+    (10, TType.I32, 'pid', None, None, ), # 10
     None, # 11
     None, # 12
     None, # 13
@@ -1808,8 +2556,8 @@ class getPlayerPlanets_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I16:
-          self.pid = iprot.readI16();
+        if ftype == TType.I32:
+          self.pid = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 20:
@@ -1843,8 +2591,8 @@ class getPlayerPlanets_args:
       return
     oprot.writeStructBegin('getPlayerPlanets_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I16, 10)
-      oprot.writeI16(self.pid)
+      oprot.writeFieldBegin('pid', TType.I32, 10)
+      oprot.writeI32(self.pid)
       oprot.writeFieldEnd()
     if self.beginIndex is not None:
       oprot.writeFieldBegin('beginIndex', TType.I32, 20)
@@ -1958,7 +2706,7 @@ class setPlayerFleetCode_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I16, 'pid', None, None, ), # 10
+    (10, TType.I32, 'pid', None, None, ), # 10
     None, # 11
     None, # 12
     None, # 13
@@ -1985,8 +2733,8 @@ class setPlayerFleetCode_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I16:
-          self.pid = iprot.readI16();
+        if ftype == TType.I32:
+          self.pid = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 20:
@@ -2005,8 +2753,8 @@ class setPlayerFleetCode_args:
       return
     oprot.writeStructBegin('setPlayerFleetCode_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I16, 10)
-      oprot.writeI16(self.pid)
+      oprot.writeFieldBegin('pid', TType.I32, 10)
+      oprot.writeI32(self.pid)
       oprot.writeFieldEnd()
     if self.code is not None:
       oprot.writeFieldBegin('code', TType.STRING, 20)
@@ -2090,7 +2838,7 @@ class setPlayerPlanetCode_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I16, 'pid', None, None, ), # 10
+    (10, TType.I32, 'pid', None, None, ), # 10
     None, # 11
     None, # 12
     None, # 13
@@ -2117,8 +2865,8 @@ class setPlayerPlanetCode_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I16:
-          self.pid = iprot.readI16();
+        if ftype == TType.I32:
+          self.pid = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 20:
@@ -2137,8 +2885,8 @@ class setPlayerPlanetCode_args:
       return
     oprot.writeStructBegin('setPlayerPlanetCode_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I16, 10)
-      oprot.writeI16(self.pid)
+      oprot.writeFieldBegin('pid', TType.I32, 10)
+      oprot.writeI32(self.pid)
       oprot.writeFieldEnd()
     if self.code is not None:
       oprot.writeFieldBegin('code', TType.STRING, 20)
@@ -2222,7 +2970,7 @@ class setPlayerFleetBlocklyCode_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I16, 'pid', None, None, ), # 10
+    (10, TType.I32, 'pid', None, None, ), # 10
     None, # 11
     None, # 12
     None, # 13
@@ -2249,8 +2997,8 @@ class setPlayerFleetBlocklyCode_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I16:
-          self.pid = iprot.readI16();
+        if ftype == TType.I32:
+          self.pid = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 20:
@@ -2269,8 +3017,8 @@ class setPlayerFleetBlocklyCode_args:
       return
     oprot.writeStructBegin('setPlayerFleetBlocklyCode_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I16, 10)
-      oprot.writeI16(self.pid)
+      oprot.writeFieldBegin('pid', TType.I32, 10)
+      oprot.writeI32(self.pid)
       oprot.writeFieldEnd()
     if self.code is not None:
       oprot.writeFieldBegin('code', TType.STRING, 20)
@@ -2354,7 +3102,7 @@ class setPlayerPlanetBlocklyCode_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I16, 'pid', None, None, ), # 10
+    (10, TType.I32, 'pid', None, None, ), # 10
     None, # 11
     None, # 12
     None, # 13
@@ -2381,8 +3129,8 @@ class setPlayerPlanetBlocklyCode_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I16:
-          self.pid = iprot.readI16();
+        if ftype == TType.I32:
+          self.pid = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 20:
@@ -2401,8 +3149,8 @@ class setPlayerPlanetBlocklyCode_args:
       return
     oprot.writeStructBegin('setPlayerPlanetBlocklyCode_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I16, 10)
-      oprot.writeI16(self.pid)
+      oprot.writeFieldBegin('pid', TType.I32, 10)
+      oprot.writeI32(self.pid)
       oprot.writeFieldEnd()
     if self.code is not None:
       oprot.writeFieldBegin('code', TType.STRING, 20)
@@ -2485,7 +3233,7 @@ class getPlayerFleetCode_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I16, 'pid', None, None, ), # 10
+    (10, TType.I32, 'pid', None, None, ), # 10
   )
 
   def __init__(self, pid=None,):
@@ -2501,8 +3249,8 @@ class getPlayerFleetCode_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I16:
-          self.pid = iprot.readI16();
+        if ftype == TType.I32:
+          self.pid = iprot.readI32();
         else:
           iprot.skip(ftype)
       else:
@@ -2516,8 +3264,8 @@ class getPlayerFleetCode_args:
       return
     oprot.writeStructBegin('getPlayerFleetCode_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I16, 10)
-      oprot.writeI16(self.pid)
+      oprot.writeFieldBegin('pid', TType.I32, 10)
+      oprot.writeI32(self.pid)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -2614,7 +3362,7 @@ class getPlayerPlanetCode_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I16, 'pid', None, None, ), # 10
+    (10, TType.I32, 'pid', None, None, ), # 10
   )
 
   def __init__(self, pid=None,):
@@ -2630,8 +3378,8 @@ class getPlayerPlanetCode_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I16:
-          self.pid = iprot.readI16();
+        if ftype == TType.I32:
+          self.pid = iprot.readI32();
         else:
           iprot.skip(ftype)
       else:
@@ -2645,8 +3393,8 @@ class getPlayerPlanetCode_args:
       return
     oprot.writeStructBegin('getPlayerPlanetCode_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I16, 10)
-      oprot.writeI16(self.pid)
+      oprot.writeFieldBegin('pid', TType.I32, 10)
+      oprot.writeI32(self.pid)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -2793,11 +3541,11 @@ class getPlayers_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype146, _size143) = iprot.readListBegin()
-          for _i147 in xrange(_size143):
-            _elem148 = Player()
-            _elem148.read(iprot)
-            self.success.append(_elem148)
+          (_etype160, _size157) = iprot.readListBegin()
+          for _i161 in xrange(_size157):
+            _elem162 = Player()
+            _elem162.read(iprot)
+            self.success.append(_elem162)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -2814,8 +3562,8 @@ class getPlayers_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter149 in self.success:
-        iter149.write(oprot)
+      for iter163 in self.success:
+        iter163.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -2853,7 +3601,7 @@ class getPlayer_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I16, 'pid', None, None, ), # 10
+    (10, TType.I32, 'pid', None, None, ), # 10
   )
 
   def __init__(self, pid=None,):
@@ -2869,8 +3617,8 @@ class getPlayer_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I16:
-          self.pid = iprot.readI16();
+        if ftype == TType.I32:
+          self.pid = iprot.readI32();
         else:
           iprot.skip(ftype)
       else:
@@ -2884,8 +3632,8 @@ class getPlayer_args:
       return
     oprot.writeStructBegin('getPlayer_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I16, 10)
-      oprot.writeI16(self.pid)
+      oprot.writeFieldBegin('pid', TType.I32, 10)
+      oprot.writeI32(self.pid)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -3060,11 +3808,11 @@ class getPlanet_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype153, _size150) = iprot.readListBegin()
-          for _i154 in xrange(_size150):
-            _elem155 = Planet()
-            _elem155.read(iprot)
-            self.success.append(_elem155)
+          (_etype167, _size164) = iprot.readListBegin()
+          for _i168 in xrange(_size164):
+            _elem169 = Planet()
+            _elem169.read(iprot)
+            self.success.append(_elem169)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -3081,8 +3829,8 @@ class getPlanet_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter156 in self.success:
-        iter156.write(oprot)
+      for iter170 in self.success:
+        iter170.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -3400,7 +4148,7 @@ class incrementTutoDisplayed_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I16, 'pid', None, None, ), # 10
+    (10, TType.I32, 'pid', None, None, ), # 10
     None, # 11
     None, # 12
     None, # 13
@@ -3427,8 +4175,8 @@ class incrementTutoDisplayed_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I16:
-          self.pid = iprot.readI16();
+        if ftype == TType.I32:
+          self.pid = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 20:
@@ -3447,8 +4195,8 @@ class incrementTutoDisplayed_args:
       return
     oprot.writeStructBegin('incrementTutoDisplayed_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I16, 10)
-      oprot.writeI16(self.pid)
+      oprot.writeFieldBegin('pid', TType.I32, 10)
+      oprot.writeI32(self.pid)
       oprot.writeFieldEnd()
     if self.tutoName is not None:
       oprot.writeFieldBegin('tutoName', TType.STRING, 20)
@@ -3763,7 +4511,7 @@ class eraseAccount_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I16, 'pid', None, None, ), # 10
+    (10, TType.I32, 'pid', None, None, ), # 10
     None, # 11
     None, # 12
     None, # 13
@@ -3790,8 +4538,8 @@ class eraseAccount_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I16:
-          self.pid = iprot.readI16();
+        if ftype == TType.I32:
+          self.pid = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 20:
@@ -3810,8 +4558,8 @@ class eraseAccount_args:
       return
     oprot.writeStructBegin('eraseAccount_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I16, 10)
-      oprot.writeI16(self.pid)
+      oprot.writeFieldBegin('pid', TType.I32, 10)
+      oprot.writeI32(self.pid)
       oprot.writeFieldEnd()
     if self.password is not None:
       oprot.writeFieldBegin('password', TType.STRING, 20)
@@ -3911,7 +4659,7 @@ class getPlayerEvents_args:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I16, 'pid', None, None, ), # 10
+    (10, TType.I32, 'pid', None, None, ), # 10
   )
 
   def __init__(self, pid=None,):
@@ -3927,8 +4675,8 @@ class getPlayerEvents_args:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I16:
-          self.pid = iprot.readI16();
+        if ftype == TType.I32:
+          self.pid = iprot.readI32();
         else:
           iprot.skip(ftype)
       else:
@@ -3942,8 +4690,8 @@ class getPlayerEvents_args:
       return
     oprot.writeStructBegin('getPlayerEvents_args')
     if self.pid is not None:
-      oprot.writeFieldBegin('pid', TType.I16, 10)
-      oprot.writeI16(self.pid)
+      oprot.writeFieldBegin('pid', TType.I32, 10)
+      oprot.writeI32(self.pid)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -3988,11 +4736,11 @@ class getPlayerEvents_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype160, _size157) = iprot.readListBegin()
-          for _i161 in xrange(_size157):
-            _elem162 = Event()
-            _elem162.read(iprot)
-            self.success.append(_elem162)
+          (_etype174, _size171) = iprot.readListBegin()
+          for _i175 in xrange(_size171):
+            _elem176 = Event()
+            _elem176.read(iprot)
+            self.success.append(_elem176)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -4009,8 +4757,8 @@ class getPlayerEvents_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter163 in self.success:
-        iter163.write(oprot)
+      for iter177 in self.success:
+        iter177.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -4098,11 +4846,11 @@ class getBuildingsInfo_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype167, _size164) = iprot.readListBegin()
-          for _i168 in xrange(_size164):
-            _elem169 = Building()
-            _elem169.read(iprot)
-            self.success.append(_elem169)
+          (_etype181, _size178) = iprot.readListBegin()
+          for _i182 in xrange(_size178):
+            _elem183 = Building()
+            _elem183.read(iprot)
+            self.success.append(_elem183)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -4119,8 +4867,8 @@ class getBuildingsInfo_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter170 in self.success:
-        iter170.write(oprot)
+      for iter184 in self.success:
+        iter184.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -4208,11 +4956,11 @@ class getCannonsInfo_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype174, _size171) = iprot.readListBegin()
-          for _i175 in xrange(_size171):
-            _elem176 = Cannon()
-            _elem176.read(iprot)
-            self.success.append(_elem176)
+          (_etype188, _size185) = iprot.readListBegin()
+          for _i189 in xrange(_size185):
+            _elem190 = Cannon()
+            _elem190.read(iprot)
+            self.success.append(_elem190)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -4229,8 +4977,8 @@ class getCannonsInfo_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter177 in self.success:
-        iter177.write(oprot)
+      for iter191 in self.success:
+        iter191.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -4318,11 +5066,11 @@ class getShipsInfo_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype181, _size178) = iprot.readListBegin()
-          for _i182 in xrange(_size178):
-            _elem183 = Ship()
-            _elem183.read(iprot)
-            self.success.append(_elem183)
+          (_etype195, _size192) = iprot.readListBegin()
+          for _i196 in xrange(_size192):
+            _elem197 = Ship()
+            _elem197.read(iprot)
+            self.success.append(_elem197)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -4339,10 +5087,2012 @@ class getShipsInfo_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter184 in self.success:
-        iter184.write(oprot)
+      for iter198 in self.success:
+        iter198.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class addMessage_args:
+  """
+  Attributes:
+   - sender
+   - recipient
+   - suject
+   - message
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'sender', None, None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.I32, 'recipient', None, None, ), # 20
+    None, # 21
+    None, # 22
+    None, # 23
+    None, # 24
+    None, # 25
+    None, # 26
+    None, # 27
+    None, # 28
+    None, # 29
+    (30, TType.STRING, 'suject', None, None, ), # 30
+    None, # 31
+    None, # 32
+    None, # 33
+    None, # 34
+    None, # 35
+    None, # 36
+    None, # 37
+    None, # 38
+    None, # 39
+    (40, TType.STRING, 'message', None, None, ), # 40
+  )
+
+  def __init__(self, sender=None, recipient=None, suject=None, message=None,):
+    self.sender = sender
+    self.recipient = recipient
+    self.suject = suject
+    self.message = message
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.I32:
+          self.sender = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 20:
+        if ftype == TType.I32:
+          self.recipient = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 30:
+        if ftype == TType.STRING:
+          self.suject = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 40:
+        if ftype == TType.STRING:
+          self.message = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('addMessage_args')
+    if self.sender is not None:
+      oprot.writeFieldBegin('sender', TType.I32, 10)
+      oprot.writeI32(self.sender)
+      oprot.writeFieldEnd()
+    if self.recipient is not None:
+      oprot.writeFieldBegin('recipient', TType.I32, 20)
+      oprot.writeI32(self.recipient)
+      oprot.writeFieldEnd()
+    if self.suject is not None:
+      oprot.writeFieldBegin('suject', TType.STRING, 30)
+      oprot.writeString(self.suject)
+      oprot.writeFieldEnd()
+    if self.message is not None:
+      oprot.writeFieldBegin('message', TType.STRING, 40)
+      oprot.writeString(self.message)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class addMessage_result:
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('addMessage_result')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getMessages_args:
+  """
+  Attributes:
+   - recipient
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'recipient', None, None, ), # 10
+  )
+
+  def __init__(self, recipient=None,):
+    self.recipient = recipient
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.I32:
+          self.recipient = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getMessages_args')
+    if self.recipient is not None:
+      oprot.writeFieldBegin('recipient', TType.I32, 10)
+      oprot.writeI32(self.recipient)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getMessages_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.LIST, 'success', (TType.STRUCT,(Message, Message.thrift_spec)), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.LIST:
+          self.success = []
+          (_etype202, _size199) = iprot.readListBegin()
+          for _i203 in xrange(_size199):
+            _elem204 = Message()
+            _elem204.read(iprot)
+            self.success.append(_elem204)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getMessages_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.LIST, 0)
+      oprot.writeListBegin(TType.STRUCT, len(self.success))
+      for iter205 in self.success:
+        iter205.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class eraseMesage_args:
+  """
+  Attributes:
+   - mid
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'mid', None, None, ), # 10
+  )
+
+  def __init__(self, mid=None,):
+    self.mid = mid
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.I32:
+          self.mid = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('eraseMesage_args')
+    if self.mid is not None:
+      oprot.writeFieldBegin('mid', TType.I32, 10)
+      oprot.writeI32(self.mid)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class eraseMesage_result:
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('eraseMesage_result')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class addFriendshipRequest_args:
+  """
+  Attributes:
+   - playerA
+   - playerB
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'playerA', None, None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.I32, 'playerB', None, None, ), # 20
+  )
+
+  def __init__(self, playerA=None, playerB=None,):
+    self.playerA = playerA
+    self.playerB = playerB
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.I32:
+          self.playerA = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 20:
+        if ftype == TType.I32:
+          self.playerB = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('addFriendshipRequest_args')
+    if self.playerA is not None:
+      oprot.writeFieldBegin('playerA', TType.I32, 10)
+      oprot.writeI32(self.playerA)
+      oprot.writeFieldEnd()
+    if self.playerB is not None:
+      oprot.writeFieldBegin('playerB', TType.I32, 20)
+      oprot.writeI32(self.playerB)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class addFriendshipRequest_result:
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('addFriendshipRequest_result')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class acceptFriendshipRequest_args:
+  """
+  Attributes:
+   - playerA
+   - playerB
+   - accept
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'playerA', None, None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.I32, 'playerB', None, None, ), # 20
+    None, # 21
+    None, # 22
+    None, # 23
+    None, # 24
+    None, # 25
+    None, # 26
+    None, # 27
+    None, # 28
+    None, # 29
+    (30, TType.BOOL, 'accept', None, None, ), # 30
+  )
+
+  def __init__(self, playerA=None, playerB=None, accept=None,):
+    self.playerA = playerA
+    self.playerB = playerB
+    self.accept = accept
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.I32:
+          self.playerA = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 20:
+        if ftype == TType.I32:
+          self.playerB = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 30:
+        if ftype == TType.BOOL:
+          self.accept = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('acceptFriendshipRequest_args')
+    if self.playerA is not None:
+      oprot.writeFieldBegin('playerA', TType.I32, 10)
+      oprot.writeI32(self.playerA)
+      oprot.writeFieldEnd()
+    if self.playerB is not None:
+      oprot.writeFieldBegin('playerB', TType.I32, 20)
+      oprot.writeI32(self.playerB)
+      oprot.writeFieldEnd()
+    if self.accept is not None:
+      oprot.writeFieldBegin('accept', TType.BOOL, 30)
+      oprot.writeBool(self.accept)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class acceptFriendshipRequest_result:
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('acceptFriendshipRequest_result')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class closeFriendship_args:
+  """
+  Attributes:
+   - playerA
+   - playerB
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'playerA', None, None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.I32, 'playerB', None, None, ), # 20
+  )
+
+  def __init__(self, playerA=None, playerB=None,):
+    self.playerA = playerA
+    self.playerB = playerB
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.I32:
+          self.playerA = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 20:
+        if ftype == TType.I32:
+          self.playerB = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('closeFriendship_args')
+    if self.playerA is not None:
+      oprot.writeFieldBegin('playerA', TType.I32, 10)
+      oprot.writeI32(self.playerA)
+      oprot.writeFieldEnd()
+    if self.playerB is not None:
+      oprot.writeFieldBegin('playerB', TType.I32, 20)
+      oprot.writeI32(self.playerB)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class closeFriendship_result:
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('closeFriendship_result')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getFriends_args:
+  """
+  Attributes:
+   - player
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'player', None, None, ), # 10
+  )
+
+  def __init__(self, player=None,):
+    self.player = player
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.I32:
+          self.player = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getFriends_args')
+    if self.player is not None:
+      oprot.writeFieldBegin('player', TType.I32, 10)
+      oprot.writeI32(self.player)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getFriends_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.LIST, 'success', (TType.STRUCT,(Player, Player.thrift_spec)), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.LIST:
+          self.success = []
+          (_etype209, _size206) = iprot.readListBegin()
+          for _i210 in xrange(_size206):
+            _elem211 = Player()
+            _elem211.read(iprot)
+            self.success.append(_elem211)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getFriends_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.LIST, 0)
+      oprot.writeListBegin(TType.STRUCT, len(self.success))
+      for iter212 in self.success:
+        iter212.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getFriendshipRequest_args:
+  """
+  Attributes:
+   - player
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'player', None, None, ), # 10
+  )
+
+  def __init__(self, player=None,):
+    self.player = player
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.I32:
+          self.player = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getFriendshipRequest_args')
+    if self.player is not None:
+      oprot.writeFieldBegin('player', TType.I32, 10)
+      oprot.writeI32(self.player)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getFriendshipRequest_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (FriendshipRequests, FriendshipRequests.thrift_spec), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.STRUCT:
+          self.success = FriendshipRequests()
+          self.success.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getFriendshipRequest_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class addAlliance_args:
+  """
+  Attributes:
+   - pid
+   - name
+   - description
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'pid', None, None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.STRING, 'name', None, None, ), # 20
+    None, # 21
+    None, # 22
+    None, # 23
+    None, # 24
+    None, # 25
+    None, # 26
+    None, # 27
+    None, # 28
+    None, # 29
+    (30, TType.STRING, 'description', None, None, ), # 30
+  )
+
+  def __init__(self, pid=None, name=None, description=None,):
+    self.pid = pid
+    self.name = name
+    self.description = description
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.I32:
+          self.pid = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 20:
+        if ftype == TType.STRING:
+          self.name = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 30:
+        if ftype == TType.STRING:
+          self.description = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('addAlliance_args')
+    if self.pid is not None:
+      oprot.writeFieldBegin('pid', TType.I32, 10)
+      oprot.writeI32(self.pid)
+      oprot.writeFieldEnd()
+    if self.name is not None:
+      oprot.writeFieldBegin('name', TType.STRING, 20)
+      oprot.writeString(self.name)
+      oprot.writeFieldEnd()
+    if self.description is not None:
+      oprot.writeFieldBegin('description', TType.STRING, 30)
+      oprot.writeString(self.description)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class addAlliance_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.I32, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.I32:
+          self.success = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('addAlliance_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.I32, 0)
+      oprot.writeI32(self.success)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getAlliance_args:
+  """
+  Attributes:
+   - aid
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'aid', None, None, ), # 10
+  )
+
+  def __init__(self, aid=None,):
+    self.aid = aid
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.I32:
+          self.aid = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getAlliance_args')
+    if self.aid is not None:
+      oprot.writeFieldBegin('aid', TType.I32, 10)
+      oprot.writeI32(self.aid)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getAlliance_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (Alliance, Alliance.thrift_spec), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.STRUCT:
+          self.success = Alliance()
+          self.success.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getAlliance_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class updateAlliance_args:
+  """
+  Attributes:
+   - alliance
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.STRUCT, 'alliance', (Alliance, Alliance.thrift_spec), None, ), # 10
+  )
+
+  def __init__(self, alliance=None,):
+    self.alliance = alliance
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.STRUCT:
+          self.alliance = Alliance()
+          self.alliance.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('updateAlliance_args')
+    if self.alliance is not None:
+      oprot.writeFieldBegin('alliance', TType.STRUCT, 10)
+      self.alliance.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class updateAlliance_result:
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('updateAlliance_result')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class transfertAlliance_args:
+  """
+  Attributes:
+   - aid
+   - pid
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'aid', None, None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.I32, 'pid', None, None, ), # 20
+  )
+
+  def __init__(self, aid=None, pid=None,):
+    self.aid = aid
+    self.pid = pid
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.I32:
+          self.aid = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 20:
+        if ftype == TType.I32:
+          self.pid = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('transfertAlliance_args')
+    if self.aid is not None:
+      oprot.writeFieldBegin('aid', TType.I32, 10)
+      oprot.writeI32(self.aid)
+      oprot.writeFieldEnd()
+    if self.pid is not None:
+      oprot.writeFieldBegin('pid', TType.I32, 20)
+      oprot.writeI32(self.pid)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class transfertAlliance_result:
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('transfertAlliance_result')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class eraseAlliance_args:
+  """
+  Attributes:
+   - aid
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'aid', None, None, ), # 10
+  )
+
+  def __init__(self, aid=None,):
+    self.aid = aid
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.I32:
+          self.aid = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('eraseAlliance_args')
+    if self.aid is not None:
+      oprot.writeFieldBegin('aid', TType.I32, 10)
+      oprot.writeI32(self.aid)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class eraseAlliance_result:
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('eraseAlliance_result')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class joinAlliance_args:
+  """
+  Attributes:
+   - pid
+   - aid
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'pid', None, None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.I32, 'aid', None, None, ), # 20
+  )
+
+  def __init__(self, pid=None, aid=None,):
+    self.pid = pid
+    self.aid = aid
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.I32:
+          self.pid = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 20:
+        if ftype == TType.I32:
+          self.aid = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('joinAlliance_args')
+    if self.pid is not None:
+      oprot.writeFieldBegin('pid', TType.I32, 10)
+      oprot.writeI32(self.pid)
+      oprot.writeFieldEnd()
+    if self.aid is not None:
+      oprot.writeFieldBegin('aid', TType.I32, 20)
+      oprot.writeI32(self.aid)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class joinAlliance_result:
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('joinAlliance_result')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class quitAlliance_args:
+  """
+  Attributes:
+   - pid
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'pid', None, None, ), # 10
+  )
+
+  def __init__(self, pid=None,):
+    self.pid = pid
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.I32:
+          self.pid = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('quitAlliance_args')
+    if self.pid is not None:
+      oprot.writeFieldBegin('pid', TType.I32, 10)
+      oprot.writeI32(self.pid)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class quitAlliance_result:
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('quitAlliance_result')
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 

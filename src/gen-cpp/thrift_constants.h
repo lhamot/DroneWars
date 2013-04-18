@@ -17,6 +17,7 @@ class thriftConstants
 public:
 	thriftConstants();
 
+	Alliance_ID Alliance_NoId;
 	Player_ID Player_NoId;
 	int32_t Universe_MapSizeX;
 	int32_t Universe_MapSizeY;

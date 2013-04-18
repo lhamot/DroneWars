@@ -41,6 +41,21 @@ public:
 	virtual void getBuildingsInfo(std::vector<Building>& _return) = 0;
 	virtual void getCannonsInfo(std::vector<Cannon>& _return) = 0;
 	virtual void getShipsInfo(std::vector<Ship>& _return) = 0;
+	virtual void addMessage(const Player_ID sender, const Player_ID recipient, const std::string& suject, const std::string& message) = 0;
+	virtual void getMessages(std::vector<Message>& _return, const Player_ID recipient) = 0;
+	virtual void eraseMesage(const Message_ID mid) = 0;
+	virtual void addFriendshipRequest(const Player_ID playerA, const Player_ID playerB) = 0;
+	virtual void acceptFriendshipRequest(const Player_ID playerA, const Player_ID playerB, const bool accept) = 0;
+	virtual void closeFriendship(const Player_ID playerA, const Player_ID playerB) = 0;
+	virtual void getFriends(std::vector<Player>& _return, const Player_ID player) = 0;
+	virtual void getFriendshipRequest(FriendshipRequests& _return, const Player_ID player) = 0;
+	virtual Alliance_ID addAlliance(const Player_ID pid, const std::string& name, const std::string& description) = 0;
+	virtual void getAlliance(Alliance& _return, const Alliance_ID aid) = 0;
+	virtual void updateAlliance(const Alliance& alliance) = 0;
+	virtual void transfertAlliance(const Alliance_ID aid, const Player_ID pid) = 0;
+	virtual void eraseAlliance(const Alliance_ID aid) = 0;
+	virtual void joinAlliance(const Player_ID pid, const Alliance_ID aid) = 0;
+	virtual void quitAlliance(const Player_ID pid) = 0;
 };
 
 class EngineServerIfFactory
@@ -169,6 +184,67 @@ public:
 		return;
 	}
 	void getShipsInfo(std::vector<Ship>& /* _return */)
+	{
+		return;
+	}
+	void addMessage(const Player_ID /* sender */, const Player_ID /* recipient */, const std::string& /* suject */, const std::string& /* message */)
+	{
+		return;
+	}
+	void getMessages(std::vector<Message>& /* _return */, const Player_ID /* recipient */)
+	{
+		return;
+	}
+	void eraseMesage(const Message_ID /* mid */)
+	{
+		return;
+	}
+	void addFriendshipRequest(const Player_ID /* playerA */, const Player_ID /* playerB */)
+	{
+		return;
+	}
+	void acceptFriendshipRequest(const Player_ID /* playerA */, const Player_ID /* playerB */, const bool /* accept */)
+	{
+		return;
+	}
+	void closeFriendship(const Player_ID /* playerA */, const Player_ID /* playerB */)
+	{
+		return;
+	}
+	void getFriends(std::vector<Player>& /* _return */, const Player_ID /* player */)
+	{
+		return;
+	}
+	void getFriendshipRequest(FriendshipRequests& /* _return */, const Player_ID /* player */)
+	{
+		return;
+	}
+	Alliance_ID addAlliance(const Player_ID /* pid */, const std::string& /* name */, const std::string& /* description */)
+	{
+		Alliance_ID _return = 0;
+		return _return;
+	}
+	void getAlliance(Alliance& /* _return */, const Alliance_ID /* aid */)
+	{
+		return;
+	}
+	void updateAlliance(const Alliance& /* alliance */)
+	{
+		return;
+	}
+	void transfertAlliance(const Alliance_ID /* aid */, const Player_ID /* pid */)
+	{
+		return;
+	}
+	void eraseAlliance(const Alliance_ID /* aid */)
+	{
+		return;
+	}
+	void joinAlliance(const Player_ID /* pid */, const Alliance_ID /* aid */)
+	{
+		return;
+	}
+	void quitAlliance(const Player_ID /* pid */)
 	{
 		return;
 	}
@@ -2965,6 +3041,1701 @@ public:
 
 };
 
+typedef struct _EngineServer_addMessage_args__isset
+{
+	_EngineServer_addMessage_args__isset() : sender(false), recipient(false), suject(false), message(false) {}
+	bool sender;
+	bool recipient;
+	bool suject;
+	bool message;
+} _EngineServer_addMessage_args__isset;
+
+class EngineServer_addMessage_args
+{
+public:
+
+	EngineServer_addMessage_args() : sender(0), recipient(0), suject(), message()
+	{
+	}
+
+	virtual ~EngineServer_addMessage_args() throw() {}
+
+	Player_ID sender;
+	Player_ID recipient;
+	std::string suject;
+	std::string message;
+
+	_EngineServer_addMessage_args__isset __isset;
+
+	void __set_sender(const Player_ID val)
+	{
+		sender = val;
+	}
+
+	void __set_recipient(const Player_ID val)
+	{
+		recipient = val;
+	}
+
+	void __set_suject(const std::string& val)
+	{
+		suject = val;
+	}
+
+	void __set_message(const std::string& val)
+	{
+		message = val;
+	}
+
+	bool operator == (const EngineServer_addMessage_args& rhs) const
+	{
+		if(!(sender == rhs.sender))
+			return false;
+		if(!(recipient == rhs.recipient))
+			return false;
+		if(!(suject == rhs.suject))
+			return false;
+		if(!(message == rhs.message))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_addMessage_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_addMessage_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_addMessage_pargs
+{
+public:
+
+
+	virtual ~EngineServer_addMessage_pargs() throw() {}
+
+	const Player_ID* sender;
+	const Player_ID* recipient;
+	const std::string* suject;
+	const std::string* message;
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_addMessage_result
+{
+public:
+
+	EngineServer_addMessage_result()
+	{
+	}
+
+	virtual ~EngineServer_addMessage_result() throw() {}
+
+
+	bool operator == (const EngineServer_addMessage_result& /* rhs */) const
+	{
+		return true;
+	}
+	bool operator != (const EngineServer_addMessage_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_addMessage_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_addMessage_presult
+{
+public:
+
+
+	virtual ~EngineServer_addMessage_presult() throw() {}
+
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+typedef struct _EngineServer_getMessages_args__isset
+{
+	_EngineServer_getMessages_args__isset() : recipient(false) {}
+	bool recipient;
+} _EngineServer_getMessages_args__isset;
+
+class EngineServer_getMessages_args
+{
+public:
+
+	EngineServer_getMessages_args() : recipient(0)
+	{
+	}
+
+	virtual ~EngineServer_getMessages_args() throw() {}
+
+	Player_ID recipient;
+
+	_EngineServer_getMessages_args__isset __isset;
+
+	void __set_recipient(const Player_ID val)
+	{
+		recipient = val;
+	}
+
+	bool operator == (const EngineServer_getMessages_args& rhs) const
+	{
+		if(!(recipient == rhs.recipient))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_getMessages_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_getMessages_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_getMessages_pargs
+{
+public:
+
+
+	virtual ~EngineServer_getMessages_pargs() throw() {}
+
+	const Player_ID* recipient;
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_getMessages_result__isset
+{
+	_EngineServer_getMessages_result__isset() : success(false) {}
+	bool success;
+} _EngineServer_getMessages_result__isset;
+
+class EngineServer_getMessages_result
+{
+public:
+
+	EngineServer_getMessages_result()
+	{
+	}
+
+	virtual ~EngineServer_getMessages_result() throw() {}
+
+	std::vector<Message>  success;
+
+	_EngineServer_getMessages_result__isset __isset;
+
+	void __set_success(const std::vector<Message>& val)
+	{
+		success = val;
+	}
+
+	bool operator == (const EngineServer_getMessages_result& rhs) const
+	{
+		if(!(success == rhs.success))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_getMessages_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_getMessages_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_getMessages_presult__isset
+{
+	_EngineServer_getMessages_presult__isset() : success(false) {}
+	bool success;
+} _EngineServer_getMessages_presult__isset;
+
+class EngineServer_getMessages_presult
+{
+public:
+
+
+	virtual ~EngineServer_getMessages_presult() throw() {}
+
+	std::vector<Message>* success;
+
+	_EngineServer_getMessages_presult__isset __isset;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+typedef struct _EngineServer_eraseMesage_args__isset
+{
+	_EngineServer_eraseMesage_args__isset() : mid(false) {}
+	bool mid;
+} _EngineServer_eraseMesage_args__isset;
+
+class EngineServer_eraseMesage_args
+{
+public:
+
+	EngineServer_eraseMesage_args() : mid(0)
+	{
+	}
+
+	virtual ~EngineServer_eraseMesage_args() throw() {}
+
+	Message_ID mid;
+
+	_EngineServer_eraseMesage_args__isset __isset;
+
+	void __set_mid(const Message_ID val)
+	{
+		mid = val;
+	}
+
+	bool operator == (const EngineServer_eraseMesage_args& rhs) const
+	{
+		if(!(mid == rhs.mid))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_eraseMesage_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_eraseMesage_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_eraseMesage_pargs
+{
+public:
+
+
+	virtual ~EngineServer_eraseMesage_pargs() throw() {}
+
+	const Message_ID* mid;
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_eraseMesage_result
+{
+public:
+
+	EngineServer_eraseMesage_result()
+	{
+	}
+
+	virtual ~EngineServer_eraseMesage_result() throw() {}
+
+
+	bool operator == (const EngineServer_eraseMesage_result& /* rhs */) const
+	{
+		return true;
+	}
+	bool operator != (const EngineServer_eraseMesage_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_eraseMesage_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_eraseMesage_presult
+{
+public:
+
+
+	virtual ~EngineServer_eraseMesage_presult() throw() {}
+
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+typedef struct _EngineServer_addFriendshipRequest_args__isset
+{
+	_EngineServer_addFriendshipRequest_args__isset() : playerA(false), playerB(false) {}
+	bool playerA;
+	bool playerB;
+} _EngineServer_addFriendshipRequest_args__isset;
+
+class EngineServer_addFriendshipRequest_args
+{
+public:
+
+	EngineServer_addFriendshipRequest_args() : playerA(0), playerB(0)
+	{
+	}
+
+	virtual ~EngineServer_addFriendshipRequest_args() throw() {}
+
+	Player_ID playerA;
+	Player_ID playerB;
+
+	_EngineServer_addFriendshipRequest_args__isset __isset;
+
+	void __set_playerA(const Player_ID val)
+	{
+		playerA = val;
+	}
+
+	void __set_playerB(const Player_ID val)
+	{
+		playerB = val;
+	}
+
+	bool operator == (const EngineServer_addFriendshipRequest_args& rhs) const
+	{
+		if(!(playerA == rhs.playerA))
+			return false;
+		if(!(playerB == rhs.playerB))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_addFriendshipRequest_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_addFriendshipRequest_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_addFriendshipRequest_pargs
+{
+public:
+
+
+	virtual ~EngineServer_addFriendshipRequest_pargs() throw() {}
+
+	const Player_ID* playerA;
+	const Player_ID* playerB;
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_addFriendshipRequest_result
+{
+public:
+
+	EngineServer_addFriendshipRequest_result()
+	{
+	}
+
+	virtual ~EngineServer_addFriendshipRequest_result() throw() {}
+
+
+	bool operator == (const EngineServer_addFriendshipRequest_result& /* rhs */) const
+	{
+		return true;
+	}
+	bool operator != (const EngineServer_addFriendshipRequest_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_addFriendshipRequest_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_addFriendshipRequest_presult
+{
+public:
+
+
+	virtual ~EngineServer_addFriendshipRequest_presult() throw() {}
+
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+typedef struct _EngineServer_acceptFriendshipRequest_args__isset
+{
+	_EngineServer_acceptFriendshipRequest_args__isset() : playerA(false), playerB(false), accept(false) {}
+	bool playerA;
+	bool playerB;
+	bool accept;
+} _EngineServer_acceptFriendshipRequest_args__isset;
+
+class EngineServer_acceptFriendshipRequest_args
+{
+public:
+
+	EngineServer_acceptFriendshipRequest_args() : playerA(0), playerB(0), accept(0)
+	{
+	}
+
+	virtual ~EngineServer_acceptFriendshipRequest_args() throw() {}
+
+	Player_ID playerA;
+	Player_ID playerB;
+	bool accept;
+
+	_EngineServer_acceptFriendshipRequest_args__isset __isset;
+
+	void __set_playerA(const Player_ID val)
+	{
+		playerA = val;
+	}
+
+	void __set_playerB(const Player_ID val)
+	{
+		playerB = val;
+	}
+
+	void __set_accept(const bool val)
+	{
+		accept = val;
+	}
+
+	bool operator == (const EngineServer_acceptFriendshipRequest_args& rhs) const
+	{
+		if(!(playerA == rhs.playerA))
+			return false;
+		if(!(playerB == rhs.playerB))
+			return false;
+		if(!(accept == rhs.accept))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_acceptFriendshipRequest_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_acceptFriendshipRequest_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_acceptFriendshipRequest_pargs
+{
+public:
+
+
+	virtual ~EngineServer_acceptFriendshipRequest_pargs() throw() {}
+
+	const Player_ID* playerA;
+	const Player_ID* playerB;
+	const bool* accept;
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_acceptFriendshipRequest_result
+{
+public:
+
+	EngineServer_acceptFriendshipRequest_result()
+	{
+	}
+
+	virtual ~EngineServer_acceptFriendshipRequest_result() throw() {}
+
+
+	bool operator == (const EngineServer_acceptFriendshipRequest_result& /* rhs */) const
+	{
+		return true;
+	}
+	bool operator != (const EngineServer_acceptFriendshipRequest_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_acceptFriendshipRequest_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_acceptFriendshipRequest_presult
+{
+public:
+
+
+	virtual ~EngineServer_acceptFriendshipRequest_presult() throw() {}
+
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+typedef struct _EngineServer_closeFriendship_args__isset
+{
+	_EngineServer_closeFriendship_args__isset() : playerA(false), playerB(false) {}
+	bool playerA;
+	bool playerB;
+} _EngineServer_closeFriendship_args__isset;
+
+class EngineServer_closeFriendship_args
+{
+public:
+
+	EngineServer_closeFriendship_args() : playerA(0), playerB(0)
+	{
+	}
+
+	virtual ~EngineServer_closeFriendship_args() throw() {}
+
+	Player_ID playerA;
+	Player_ID playerB;
+
+	_EngineServer_closeFriendship_args__isset __isset;
+
+	void __set_playerA(const Player_ID val)
+	{
+		playerA = val;
+	}
+
+	void __set_playerB(const Player_ID val)
+	{
+		playerB = val;
+	}
+
+	bool operator == (const EngineServer_closeFriendship_args& rhs) const
+	{
+		if(!(playerA == rhs.playerA))
+			return false;
+		if(!(playerB == rhs.playerB))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_closeFriendship_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_closeFriendship_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_closeFriendship_pargs
+{
+public:
+
+
+	virtual ~EngineServer_closeFriendship_pargs() throw() {}
+
+	const Player_ID* playerA;
+	const Player_ID* playerB;
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_closeFriendship_result
+{
+public:
+
+	EngineServer_closeFriendship_result()
+	{
+	}
+
+	virtual ~EngineServer_closeFriendship_result() throw() {}
+
+
+	bool operator == (const EngineServer_closeFriendship_result& /* rhs */) const
+	{
+		return true;
+	}
+	bool operator != (const EngineServer_closeFriendship_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_closeFriendship_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_closeFriendship_presult
+{
+public:
+
+
+	virtual ~EngineServer_closeFriendship_presult() throw() {}
+
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+typedef struct _EngineServer_getFriends_args__isset
+{
+	_EngineServer_getFriends_args__isset() : player(false) {}
+	bool player;
+} _EngineServer_getFriends_args__isset;
+
+class EngineServer_getFriends_args
+{
+public:
+
+	EngineServer_getFriends_args() : player(0)
+	{
+	}
+
+	virtual ~EngineServer_getFriends_args() throw() {}
+
+	Player_ID player;
+
+	_EngineServer_getFriends_args__isset __isset;
+
+	void __set_player(const Player_ID val)
+	{
+		player = val;
+	}
+
+	bool operator == (const EngineServer_getFriends_args& rhs) const
+	{
+		if(!(player == rhs.player))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_getFriends_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_getFriends_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_getFriends_pargs
+{
+public:
+
+
+	virtual ~EngineServer_getFriends_pargs() throw() {}
+
+	const Player_ID* player;
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_getFriends_result__isset
+{
+	_EngineServer_getFriends_result__isset() : success(false) {}
+	bool success;
+} _EngineServer_getFriends_result__isset;
+
+class EngineServer_getFriends_result
+{
+public:
+
+	EngineServer_getFriends_result()
+	{
+	}
+
+	virtual ~EngineServer_getFriends_result() throw() {}
+
+	std::vector<Player>  success;
+
+	_EngineServer_getFriends_result__isset __isset;
+
+	void __set_success(const std::vector<Player>& val)
+	{
+		success = val;
+	}
+
+	bool operator == (const EngineServer_getFriends_result& rhs) const
+	{
+		if(!(success == rhs.success))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_getFriends_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_getFriends_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_getFriends_presult__isset
+{
+	_EngineServer_getFriends_presult__isset() : success(false) {}
+	bool success;
+} _EngineServer_getFriends_presult__isset;
+
+class EngineServer_getFriends_presult
+{
+public:
+
+
+	virtual ~EngineServer_getFriends_presult() throw() {}
+
+	std::vector<Player>* success;
+
+	_EngineServer_getFriends_presult__isset __isset;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+typedef struct _EngineServer_getFriendshipRequest_args__isset
+{
+	_EngineServer_getFriendshipRequest_args__isset() : player(false) {}
+	bool player;
+} _EngineServer_getFriendshipRequest_args__isset;
+
+class EngineServer_getFriendshipRequest_args
+{
+public:
+
+	EngineServer_getFriendshipRequest_args() : player(0)
+	{
+	}
+
+	virtual ~EngineServer_getFriendshipRequest_args() throw() {}
+
+	Player_ID player;
+
+	_EngineServer_getFriendshipRequest_args__isset __isset;
+
+	void __set_player(const Player_ID val)
+	{
+		player = val;
+	}
+
+	bool operator == (const EngineServer_getFriendshipRequest_args& rhs) const
+	{
+		if(!(player == rhs.player))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_getFriendshipRequest_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_getFriendshipRequest_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_getFriendshipRequest_pargs
+{
+public:
+
+
+	virtual ~EngineServer_getFriendshipRequest_pargs() throw() {}
+
+	const Player_ID* player;
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_getFriendshipRequest_result__isset
+{
+	_EngineServer_getFriendshipRequest_result__isset() : success(false) {}
+	bool success;
+} _EngineServer_getFriendshipRequest_result__isset;
+
+class EngineServer_getFriendshipRequest_result
+{
+public:
+
+	EngineServer_getFriendshipRequest_result()
+	{
+	}
+
+	virtual ~EngineServer_getFriendshipRequest_result() throw() {}
+
+	FriendshipRequests success;
+
+	_EngineServer_getFriendshipRequest_result__isset __isset;
+
+	void __set_success(const FriendshipRequests& val)
+	{
+		success = val;
+	}
+
+	bool operator == (const EngineServer_getFriendshipRequest_result& rhs) const
+	{
+		if(!(success == rhs.success))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_getFriendshipRequest_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_getFriendshipRequest_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_getFriendshipRequest_presult__isset
+{
+	_EngineServer_getFriendshipRequest_presult__isset() : success(false) {}
+	bool success;
+} _EngineServer_getFriendshipRequest_presult__isset;
+
+class EngineServer_getFriendshipRequest_presult
+{
+public:
+
+
+	virtual ~EngineServer_getFriendshipRequest_presult() throw() {}
+
+	FriendshipRequests* success;
+
+	_EngineServer_getFriendshipRequest_presult__isset __isset;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+typedef struct _EngineServer_addAlliance_args__isset
+{
+	_EngineServer_addAlliance_args__isset() : pid(false), name(false), description(false) {}
+	bool pid;
+	bool name;
+	bool description;
+} _EngineServer_addAlliance_args__isset;
+
+class EngineServer_addAlliance_args
+{
+public:
+
+	EngineServer_addAlliance_args() : pid(0), name(), description()
+	{
+	}
+
+	virtual ~EngineServer_addAlliance_args() throw() {}
+
+	Player_ID pid;
+	std::string name;
+	std::string description;
+
+	_EngineServer_addAlliance_args__isset __isset;
+
+	void __set_pid(const Player_ID val)
+	{
+		pid = val;
+	}
+
+	void __set_name(const std::string& val)
+	{
+		name = val;
+	}
+
+	void __set_description(const std::string& val)
+	{
+		description = val;
+	}
+
+	bool operator == (const EngineServer_addAlliance_args& rhs) const
+	{
+		if(!(pid == rhs.pid))
+			return false;
+		if(!(name == rhs.name))
+			return false;
+		if(!(description == rhs.description))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_addAlliance_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_addAlliance_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_addAlliance_pargs
+{
+public:
+
+
+	virtual ~EngineServer_addAlliance_pargs() throw() {}
+
+	const Player_ID* pid;
+	const std::string* name;
+	const std::string* description;
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_addAlliance_result__isset
+{
+	_EngineServer_addAlliance_result__isset() : success(false) {}
+	bool success;
+} _EngineServer_addAlliance_result__isset;
+
+class EngineServer_addAlliance_result
+{
+public:
+
+	EngineServer_addAlliance_result() : success(0)
+	{
+	}
+
+	virtual ~EngineServer_addAlliance_result() throw() {}
+
+	Alliance_ID success;
+
+	_EngineServer_addAlliance_result__isset __isset;
+
+	void __set_success(const Alliance_ID val)
+	{
+		success = val;
+	}
+
+	bool operator == (const EngineServer_addAlliance_result& rhs) const
+	{
+		if(!(success == rhs.success))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_addAlliance_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_addAlliance_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_addAlliance_presult__isset
+{
+	_EngineServer_addAlliance_presult__isset() : success(false) {}
+	bool success;
+} _EngineServer_addAlliance_presult__isset;
+
+class EngineServer_addAlliance_presult
+{
+public:
+
+
+	virtual ~EngineServer_addAlliance_presult() throw() {}
+
+	Alliance_ID* success;
+
+	_EngineServer_addAlliance_presult__isset __isset;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+typedef struct _EngineServer_getAlliance_args__isset
+{
+	_EngineServer_getAlliance_args__isset() : aid(false) {}
+	bool aid;
+} _EngineServer_getAlliance_args__isset;
+
+class EngineServer_getAlliance_args
+{
+public:
+
+	EngineServer_getAlliance_args() : aid(0)
+	{
+	}
+
+	virtual ~EngineServer_getAlliance_args() throw() {}
+
+	Alliance_ID aid;
+
+	_EngineServer_getAlliance_args__isset __isset;
+
+	void __set_aid(const Alliance_ID val)
+	{
+		aid = val;
+	}
+
+	bool operator == (const EngineServer_getAlliance_args& rhs) const
+	{
+		if(!(aid == rhs.aid))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_getAlliance_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_getAlliance_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_getAlliance_pargs
+{
+public:
+
+
+	virtual ~EngineServer_getAlliance_pargs() throw() {}
+
+	const Alliance_ID* aid;
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_getAlliance_result__isset
+{
+	_EngineServer_getAlliance_result__isset() : success(false) {}
+	bool success;
+} _EngineServer_getAlliance_result__isset;
+
+class EngineServer_getAlliance_result
+{
+public:
+
+	EngineServer_getAlliance_result()
+	{
+	}
+
+	virtual ~EngineServer_getAlliance_result() throw() {}
+
+	Alliance success;
+
+	_EngineServer_getAlliance_result__isset __isset;
+
+	void __set_success(const Alliance& val)
+	{
+		success = val;
+	}
+
+	bool operator == (const EngineServer_getAlliance_result& rhs) const
+	{
+		if(!(success == rhs.success))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_getAlliance_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_getAlliance_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_getAlliance_presult__isset
+{
+	_EngineServer_getAlliance_presult__isset() : success(false) {}
+	bool success;
+} _EngineServer_getAlliance_presult__isset;
+
+class EngineServer_getAlliance_presult
+{
+public:
+
+
+	virtual ~EngineServer_getAlliance_presult() throw() {}
+
+	Alliance* success;
+
+	_EngineServer_getAlliance_presult__isset __isset;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+typedef struct _EngineServer_updateAlliance_args__isset
+{
+	_EngineServer_updateAlliance_args__isset() : alliance(false) {}
+	bool alliance;
+} _EngineServer_updateAlliance_args__isset;
+
+class EngineServer_updateAlliance_args
+{
+public:
+
+	EngineServer_updateAlliance_args()
+	{
+	}
+
+	virtual ~EngineServer_updateAlliance_args() throw() {}
+
+	Alliance alliance;
+
+	_EngineServer_updateAlliance_args__isset __isset;
+
+	void __set_alliance(const Alliance& val)
+	{
+		alliance = val;
+	}
+
+	bool operator == (const EngineServer_updateAlliance_args& rhs) const
+	{
+		if(!(alliance == rhs.alliance))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_updateAlliance_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_updateAlliance_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_updateAlliance_pargs
+{
+public:
+
+
+	virtual ~EngineServer_updateAlliance_pargs() throw() {}
+
+	const Alliance* alliance;
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_updateAlliance_result
+{
+public:
+
+	EngineServer_updateAlliance_result()
+	{
+	}
+
+	virtual ~EngineServer_updateAlliance_result() throw() {}
+
+
+	bool operator == (const EngineServer_updateAlliance_result& /* rhs */) const
+	{
+		return true;
+	}
+	bool operator != (const EngineServer_updateAlliance_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_updateAlliance_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_updateAlliance_presult
+{
+public:
+
+
+	virtual ~EngineServer_updateAlliance_presult() throw() {}
+
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+typedef struct _EngineServer_transfertAlliance_args__isset
+{
+	_EngineServer_transfertAlliance_args__isset() : aid(false), pid(false) {}
+	bool aid;
+	bool pid;
+} _EngineServer_transfertAlliance_args__isset;
+
+class EngineServer_transfertAlliance_args
+{
+public:
+
+	EngineServer_transfertAlliance_args() : aid(0), pid(0)
+	{
+	}
+
+	virtual ~EngineServer_transfertAlliance_args() throw() {}
+
+	Alliance_ID aid;
+	Player_ID pid;
+
+	_EngineServer_transfertAlliance_args__isset __isset;
+
+	void __set_aid(const Alliance_ID val)
+	{
+		aid = val;
+	}
+
+	void __set_pid(const Player_ID val)
+	{
+		pid = val;
+	}
+
+	bool operator == (const EngineServer_transfertAlliance_args& rhs) const
+	{
+		if(!(aid == rhs.aid))
+			return false;
+		if(!(pid == rhs.pid))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_transfertAlliance_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_transfertAlliance_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_transfertAlliance_pargs
+{
+public:
+
+
+	virtual ~EngineServer_transfertAlliance_pargs() throw() {}
+
+	const Alliance_ID* aid;
+	const Player_ID* pid;
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_transfertAlliance_result
+{
+public:
+
+	EngineServer_transfertAlliance_result()
+	{
+	}
+
+	virtual ~EngineServer_transfertAlliance_result() throw() {}
+
+
+	bool operator == (const EngineServer_transfertAlliance_result& /* rhs */) const
+	{
+		return true;
+	}
+	bool operator != (const EngineServer_transfertAlliance_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_transfertAlliance_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_transfertAlliance_presult
+{
+public:
+
+
+	virtual ~EngineServer_transfertAlliance_presult() throw() {}
+
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+typedef struct _EngineServer_eraseAlliance_args__isset
+{
+	_EngineServer_eraseAlliance_args__isset() : aid(false) {}
+	bool aid;
+} _EngineServer_eraseAlliance_args__isset;
+
+class EngineServer_eraseAlliance_args
+{
+public:
+
+	EngineServer_eraseAlliance_args() : aid(0)
+	{
+	}
+
+	virtual ~EngineServer_eraseAlliance_args() throw() {}
+
+	Alliance_ID aid;
+
+	_EngineServer_eraseAlliance_args__isset __isset;
+
+	void __set_aid(const Alliance_ID val)
+	{
+		aid = val;
+	}
+
+	bool operator == (const EngineServer_eraseAlliance_args& rhs) const
+	{
+		if(!(aid == rhs.aid))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_eraseAlliance_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_eraseAlliance_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_eraseAlliance_pargs
+{
+public:
+
+
+	virtual ~EngineServer_eraseAlliance_pargs() throw() {}
+
+	const Alliance_ID* aid;
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_eraseAlliance_result
+{
+public:
+
+	EngineServer_eraseAlliance_result()
+	{
+	}
+
+	virtual ~EngineServer_eraseAlliance_result() throw() {}
+
+
+	bool operator == (const EngineServer_eraseAlliance_result& /* rhs */) const
+	{
+		return true;
+	}
+	bool operator != (const EngineServer_eraseAlliance_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_eraseAlliance_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_eraseAlliance_presult
+{
+public:
+
+
+	virtual ~EngineServer_eraseAlliance_presult() throw() {}
+
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+typedef struct _EngineServer_joinAlliance_args__isset
+{
+	_EngineServer_joinAlliance_args__isset() : pid(false), aid(false) {}
+	bool pid;
+	bool aid;
+} _EngineServer_joinAlliance_args__isset;
+
+class EngineServer_joinAlliance_args
+{
+public:
+
+	EngineServer_joinAlliance_args() : pid(0), aid(0)
+	{
+	}
+
+	virtual ~EngineServer_joinAlliance_args() throw() {}
+
+	Player_ID pid;
+	Alliance_ID aid;
+
+	_EngineServer_joinAlliance_args__isset __isset;
+
+	void __set_pid(const Player_ID val)
+	{
+		pid = val;
+	}
+
+	void __set_aid(const Alliance_ID val)
+	{
+		aid = val;
+	}
+
+	bool operator == (const EngineServer_joinAlliance_args& rhs) const
+	{
+		if(!(pid == rhs.pid))
+			return false;
+		if(!(aid == rhs.aid))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_joinAlliance_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_joinAlliance_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_joinAlliance_pargs
+{
+public:
+
+
+	virtual ~EngineServer_joinAlliance_pargs() throw() {}
+
+	const Player_ID* pid;
+	const Alliance_ID* aid;
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_joinAlliance_result
+{
+public:
+
+	EngineServer_joinAlliance_result()
+	{
+	}
+
+	virtual ~EngineServer_joinAlliance_result() throw() {}
+
+
+	bool operator == (const EngineServer_joinAlliance_result& /* rhs */) const
+	{
+		return true;
+	}
+	bool operator != (const EngineServer_joinAlliance_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_joinAlliance_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_joinAlliance_presult
+{
+public:
+
+
+	virtual ~EngineServer_joinAlliance_presult() throw() {}
+
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+typedef struct _EngineServer_quitAlliance_args__isset
+{
+	_EngineServer_quitAlliance_args__isset() : pid(false) {}
+	bool pid;
+} _EngineServer_quitAlliance_args__isset;
+
+class EngineServer_quitAlliance_args
+{
+public:
+
+	EngineServer_quitAlliance_args() : pid(0)
+	{
+	}
+
+	virtual ~EngineServer_quitAlliance_args() throw() {}
+
+	Player_ID pid;
+
+	_EngineServer_quitAlliance_args__isset __isset;
+
+	void __set_pid(const Player_ID val)
+	{
+		pid = val;
+	}
+
+	bool operator == (const EngineServer_quitAlliance_args& rhs) const
+	{
+		if(!(pid == rhs.pid))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_quitAlliance_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_quitAlliance_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_quitAlliance_pargs
+{
+public:
+
+
+	virtual ~EngineServer_quitAlliance_pargs() throw() {}
+
+	const Player_ID* pid;
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_quitAlliance_result
+{
+public:
+
+	EngineServer_quitAlliance_result()
+	{
+	}
+
+	virtual ~EngineServer_quitAlliance_result() throw() {}
+
+
+	bool operator == (const EngineServer_quitAlliance_result& /* rhs */) const
+	{
+		return true;
+	}
+	bool operator != (const EngineServer_quitAlliance_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_quitAlliance_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_quitAlliance_presult
+{
+public:
+
+
+	virtual ~EngineServer_quitAlliance_presult() throw() {}
+
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
 class EngineServerClient : virtual public EngineServerIf
 {
 public:
@@ -3062,6 +4833,51 @@ public:
 	void getShipsInfo(std::vector<Ship>& _return);
 	void send_getShipsInfo();
 	void recv_getShipsInfo(std::vector<Ship>& _return);
+	void addMessage(const Player_ID sender, const Player_ID recipient, const std::string& suject, const std::string& message);
+	void send_addMessage(const Player_ID sender, const Player_ID recipient, const std::string& suject, const std::string& message);
+	void recv_addMessage();
+	void getMessages(std::vector<Message>& _return, const Player_ID recipient);
+	void send_getMessages(const Player_ID recipient);
+	void recv_getMessages(std::vector<Message>& _return);
+	void eraseMesage(const Message_ID mid);
+	void send_eraseMesage(const Message_ID mid);
+	void recv_eraseMesage();
+	void addFriendshipRequest(const Player_ID playerA, const Player_ID playerB);
+	void send_addFriendshipRequest(const Player_ID playerA, const Player_ID playerB);
+	void recv_addFriendshipRequest();
+	void acceptFriendshipRequest(const Player_ID playerA, const Player_ID playerB, const bool accept);
+	void send_acceptFriendshipRequest(const Player_ID playerA, const Player_ID playerB, const bool accept);
+	void recv_acceptFriendshipRequest();
+	void closeFriendship(const Player_ID playerA, const Player_ID playerB);
+	void send_closeFriendship(const Player_ID playerA, const Player_ID playerB);
+	void recv_closeFriendship();
+	void getFriends(std::vector<Player>& _return, const Player_ID player);
+	void send_getFriends(const Player_ID player);
+	void recv_getFriends(std::vector<Player>& _return);
+	void getFriendshipRequest(FriendshipRequests& _return, const Player_ID player);
+	void send_getFriendshipRequest(const Player_ID player);
+	void recv_getFriendshipRequest(FriendshipRequests& _return);
+	Alliance_ID addAlliance(const Player_ID pid, const std::string& name, const std::string& description);
+	void send_addAlliance(const Player_ID pid, const std::string& name, const std::string& description);
+	Alliance_ID recv_addAlliance();
+	void getAlliance(Alliance& _return, const Alliance_ID aid);
+	void send_getAlliance(const Alliance_ID aid);
+	void recv_getAlliance(Alliance& _return);
+	void updateAlliance(const Alliance& alliance);
+	void send_updateAlliance(const Alliance& alliance);
+	void recv_updateAlliance();
+	void transfertAlliance(const Alliance_ID aid, const Player_ID pid);
+	void send_transfertAlliance(const Alliance_ID aid, const Player_ID pid);
+	void recv_transfertAlliance();
+	void eraseAlliance(const Alliance_ID aid);
+	void send_eraseAlliance(const Alliance_ID aid);
+	void recv_eraseAlliance();
+	void joinAlliance(const Player_ID pid, const Alliance_ID aid);
+	void send_joinAlliance(const Player_ID pid, const Alliance_ID aid);
+	void recv_joinAlliance();
+	void quitAlliance(const Player_ID pid);
+	void send_quitAlliance(const Player_ID pid);
+	void recv_quitAlliance();
 protected:
 	boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
 	boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -3102,6 +4918,21 @@ private:
 	void process_getBuildingsInfo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_getCannonsInfo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_getShipsInfo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_addMessage(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_getMessages(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_eraseMesage(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_addFriendshipRequest(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_acceptFriendshipRequest(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_closeFriendship(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_getFriends(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_getFriendshipRequest(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_addAlliance(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_getAlliance(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_updateAlliance(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_transfertAlliance(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_eraseAlliance(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_joinAlliance(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_quitAlliance(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 public:
 	EngineServerProcessor(boost::shared_ptr<EngineServerIf> iface) :
 		iface_(iface)
@@ -3130,6 +4961,21 @@ public:
 		processMap_["getBuildingsInfo"] = &EngineServerProcessor::process_getBuildingsInfo;
 		processMap_["getCannonsInfo"] = &EngineServerProcessor::process_getCannonsInfo;
 		processMap_["getShipsInfo"] = &EngineServerProcessor::process_getShipsInfo;
+		processMap_["addMessage"] = &EngineServerProcessor::process_addMessage;
+		processMap_["getMessages"] = &EngineServerProcessor::process_getMessages;
+		processMap_["eraseMesage"] = &EngineServerProcessor::process_eraseMesage;
+		processMap_["addFriendshipRequest"] = &EngineServerProcessor::process_addFriendshipRequest;
+		processMap_["acceptFriendshipRequest"] = &EngineServerProcessor::process_acceptFriendshipRequest;
+		processMap_["closeFriendship"] = &EngineServerProcessor::process_closeFriendship;
+		processMap_["getFriends"] = &EngineServerProcessor::process_getFriends;
+		processMap_["getFriendshipRequest"] = &EngineServerProcessor::process_getFriendshipRequest;
+		processMap_["addAlliance"] = &EngineServerProcessor::process_addAlliance;
+		processMap_["getAlliance"] = &EngineServerProcessor::process_getAlliance;
+		processMap_["updateAlliance"] = &EngineServerProcessor::process_updateAlliance;
+		processMap_["transfertAlliance"] = &EngineServerProcessor::process_transfertAlliance;
+		processMap_["eraseAlliance"] = &EngineServerProcessor::process_eraseAlliance;
+		processMap_["joinAlliance"] = &EngineServerProcessor::process_joinAlliance;
+		processMap_["quitAlliance"] = &EngineServerProcessor::process_quitAlliance;
 	}
 
 	virtual ~EngineServerProcessor() {}
@@ -3439,6 +5285,175 @@ public:
 		}
 		ifaces_[i]->getShipsInfo(_return);
 		return;
+	}
+
+	void addMessage(const Player_ID sender, const Player_ID recipient, const std::string& suject, const std::string& message)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->addMessage(sender, recipient, suject, message);
+		}
+		ifaces_[i]->addMessage(sender, recipient, suject, message);
+	}
+
+	void getMessages(std::vector<Message>& _return, const Player_ID recipient)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->getMessages(_return, recipient);
+		}
+		ifaces_[i]->getMessages(_return, recipient);
+		return;
+	}
+
+	void eraseMesage(const Message_ID mid)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->eraseMesage(mid);
+		}
+		ifaces_[i]->eraseMesage(mid);
+	}
+
+	void addFriendshipRequest(const Player_ID playerA, const Player_ID playerB)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->addFriendshipRequest(playerA, playerB);
+		}
+		ifaces_[i]->addFriendshipRequest(playerA, playerB);
+	}
+
+	void acceptFriendshipRequest(const Player_ID playerA, const Player_ID playerB, const bool accept)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->acceptFriendshipRequest(playerA, playerB, accept);
+		}
+		ifaces_[i]->acceptFriendshipRequest(playerA, playerB, accept);
+	}
+
+	void closeFriendship(const Player_ID playerA, const Player_ID playerB)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->closeFriendship(playerA, playerB);
+		}
+		ifaces_[i]->closeFriendship(playerA, playerB);
+	}
+
+	void getFriends(std::vector<Player>& _return, const Player_ID player)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->getFriends(_return, player);
+		}
+		ifaces_[i]->getFriends(_return, player);
+		return;
+	}
+
+	void getFriendshipRequest(FriendshipRequests& _return, const Player_ID player)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->getFriendshipRequest(_return, player);
+		}
+		ifaces_[i]->getFriendshipRequest(_return, player);
+		return;
+	}
+
+	Alliance_ID addAlliance(const Player_ID pid, const std::string& name, const std::string& description)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->addAlliance(pid, name, description);
+		}
+		return ifaces_[i]->addAlliance(pid, name, description);
+	}
+
+	void getAlliance(Alliance& _return, const Alliance_ID aid)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->getAlliance(_return, aid);
+		}
+		ifaces_[i]->getAlliance(_return, aid);
+		return;
+	}
+
+	void updateAlliance(const Alliance& alliance)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->updateAlliance(alliance);
+		}
+		ifaces_[i]->updateAlliance(alliance);
+	}
+
+	void transfertAlliance(const Alliance_ID aid, const Player_ID pid)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->transfertAlliance(aid, pid);
+		}
+		ifaces_[i]->transfertAlliance(aid, pid);
+	}
+
+	void eraseAlliance(const Alliance_ID aid)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->eraseAlliance(aid);
+		}
+		ifaces_[i]->eraseAlliance(aid);
+	}
+
+	void joinAlliance(const Player_ID pid, const Alliance_ID aid)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->joinAlliance(pid, aid);
+		}
+		ifaces_[i]->joinAlliance(pid, aid);
+	}
+
+	void quitAlliance(const Player_ID pid)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->quitAlliance(pid);
+		}
+		ifaces_[i]->quitAlliance(pid);
 	}
 
 };

@@ -300,9 +300,36 @@ class Coord:
 
   thrift_spec = (
     None, # 0
-    (1, TType.I16, 'X', None, None, ), # 1
-    (2, TType.I16, 'Y', None, None, ), # 2
-    (3, TType.I16, 'Z', None, None, ), # 3
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I16, 'X', None, None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.I16, 'Y', None, None, ), # 20
+    None, # 21
+    None, # 22
+    None, # 23
+    None, # 24
+    None, # 25
+    None, # 26
+    None, # 27
+    None, # 28
+    None, # 29
+    (30, TType.I16, 'Z', None, None, ), # 30
   )
 
   def __init__(self, X=None, Y=None, Z=None,):
@@ -319,17 +346,17 @@ class Coord:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
+      if fid == 10:
         if ftype == TType.I16:
           self.X = iprot.readI16();
         else:
           iprot.skip(ftype)
-      elif fid == 2:
+      elif fid == 20:
         if ftype == TType.I16:
           self.Y = iprot.readI16();
         else:
           iprot.skip(ftype)
-      elif fid == 3:
+      elif fid == 30:
         if ftype == TType.I16:
           self.Z = iprot.readI16();
         else:
@@ -345,15 +372,15 @@ class Coord:
       return
     oprot.writeStructBegin('Coord')
     if self.X is not None:
-      oprot.writeFieldBegin('X', TType.I16, 1)
+      oprot.writeFieldBegin('X', TType.I16, 10)
       oprot.writeI16(self.X)
       oprot.writeFieldEnd()
     if self.Y is not None:
-      oprot.writeFieldBegin('Y', TType.I16, 2)
+      oprot.writeFieldBegin('Y', TType.I16, 20)
       oprot.writeI16(self.Y)
       oprot.writeFieldEnd()
     if self.Z is not None:
-      oprot.writeFieldBegin('Z', TType.I16, 3)
+      oprot.writeFieldBegin('Z', TType.I16, 30)
       oprot.writeI16(self.Z)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -387,12 +414,66 @@ class Event:
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'id', None, None, ), # 1
-    (2, TType.I32, 'time', None, None, ), # 2
-    (3, TType.I32, 'type', None, None, ), # 3
-    (4, TType.STRING, 'comment', None, None, ), # 4
-    (5, TType.I32, 'value', None, None, ), # 5
-    (6, TType.BOOL, 'viewed', None, None, ), # 6
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'id', None, None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.I32, 'time', None, None, ), # 20
+    None, # 21
+    None, # 22
+    None, # 23
+    None, # 24
+    None, # 25
+    None, # 26
+    None, # 27
+    None, # 28
+    None, # 29
+    (30, TType.I32, 'type', None, None, ), # 30
+    None, # 31
+    None, # 32
+    None, # 33
+    None, # 34
+    None, # 35
+    None, # 36
+    None, # 37
+    None, # 38
+    None, # 39
+    (40, TType.STRING, 'comment', None, None, ), # 40
+    None, # 41
+    None, # 42
+    None, # 43
+    None, # 44
+    None, # 45
+    None, # 46
+    None, # 47
+    None, # 48
+    None, # 49
+    (50, TType.I32, 'value', None, None, ), # 50
+    None, # 51
+    None, # 52
+    None, # 53
+    None, # 54
+    None, # 55
+    None, # 56
+    None, # 57
+    None, # 58
+    None, # 59
+    (60, TType.BOOL, 'viewed', None, None, ), # 60
   )
 
   def __init__(self, id=None, time=None, type=None, comment=None, value=None, viewed=None,):
@@ -412,32 +493,32 @@ class Event:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
+      if fid == 10:
         if ftype == TType.I32:
           self.id = iprot.readI32();
         else:
           iprot.skip(ftype)
-      elif fid == 2:
+      elif fid == 20:
         if ftype == TType.I32:
           self.time = iprot.readI32();
         else:
           iprot.skip(ftype)
-      elif fid == 3:
+      elif fid == 30:
         if ftype == TType.I32:
           self.type = iprot.readI32();
         else:
           iprot.skip(ftype)
-      elif fid == 4:
+      elif fid == 40:
         if ftype == TType.STRING:
           self.comment = iprot.readString();
         else:
           iprot.skip(ftype)
-      elif fid == 5:
+      elif fid == 50:
         if ftype == TType.I32:
           self.value = iprot.readI32();
         else:
           iprot.skip(ftype)
-      elif fid == 6:
+      elif fid == 60:
         if ftype == TType.BOOL:
           self.viewed = iprot.readBool();
         else:
@@ -453,27 +534,27 @@ class Event:
       return
     oprot.writeStructBegin('Event')
     if self.id is not None:
-      oprot.writeFieldBegin('id', TType.I32, 1)
+      oprot.writeFieldBegin('id', TType.I32, 10)
       oprot.writeI32(self.id)
       oprot.writeFieldEnd()
     if self.time is not None:
-      oprot.writeFieldBegin('time', TType.I32, 2)
+      oprot.writeFieldBegin('time', TType.I32, 20)
       oprot.writeI32(self.time)
       oprot.writeFieldEnd()
     if self.type is not None:
-      oprot.writeFieldBegin('type', TType.I32, 3)
+      oprot.writeFieldBegin('type', TType.I32, 30)
       oprot.writeI32(self.type)
       oprot.writeFieldEnd()
     if self.comment is not None:
-      oprot.writeFieldBegin('comment', TType.STRING, 4)
+      oprot.writeFieldBegin('comment', TType.STRING, 40)
       oprot.writeString(self.comment)
       oprot.writeFieldEnd()
     if self.value is not None:
-      oprot.writeFieldBegin('value', TType.I32, 5)
+      oprot.writeFieldBegin('value', TType.I32, 50)
       oprot.writeI32(self.value)
       oprot.writeFieldEnd()
     if self.viewed is not None:
-      oprot.writeFieldBegin('viewed', TType.BOOL, 6)
+      oprot.writeFieldBegin('viewed', TType.BOOL, 60)
       oprot.writeBool(self.viewed)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -504,10 +585,36 @@ class CodeData:
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'blocklyCode', None, None, ), # 1
-    (2, TType.STRING, 'code', None, None, ), # 2
+    None, # 1
+    None, # 2
     None, # 3
-    (4, TType.STRING, 'lastError', None, None, ), # 4
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.STRING, 'blocklyCode', None, None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.STRING, 'code', None, None, ), # 20
+    None, # 21
+    None, # 22
+    None, # 23
+    None, # 24
+    None, # 25
+    None, # 26
+    None, # 27
+    None, # 28
+    None, # 29
+    (30, TType.STRING, 'lastError', None, None, ), # 30
   )
 
   def __init__(self, blocklyCode=None, code=None, lastError=None,):
@@ -524,17 +631,17 @@ class CodeData:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
+      if fid == 10:
         if ftype == TType.STRING:
           self.blocklyCode = iprot.readString();
         else:
           iprot.skip(ftype)
-      elif fid == 2:
+      elif fid == 20:
         if ftype == TType.STRING:
           self.code = iprot.readString();
         else:
           iprot.skip(ftype)
-      elif fid == 4:
+      elif fid == 30:
         if ftype == TType.STRING:
           self.lastError = iprot.readString();
         else:
@@ -550,16 +657,169 @@ class CodeData:
       return
     oprot.writeStructBegin('CodeData')
     if self.blocklyCode is not None:
-      oprot.writeFieldBegin('blocklyCode', TType.STRING, 1)
+      oprot.writeFieldBegin('blocklyCode', TType.STRING, 10)
       oprot.writeString(self.blocklyCode)
       oprot.writeFieldEnd()
     if self.code is not None:
-      oprot.writeFieldBegin('code', TType.STRING, 2)
+      oprot.writeFieldBegin('code', TType.STRING, 20)
       oprot.writeString(self.code)
       oprot.writeFieldEnd()
     if self.lastError is not None:
-      oprot.writeFieldBegin('lastError', TType.STRING, 4)
+      oprot.writeFieldBegin('lastError', TType.STRING, 30)
       oprot.writeString(self.lastError)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class Alliance:
+  """
+  Attributes:
+   - id
+   - masterID
+   - name
+   - description
+   - masterLogin
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'id', None, None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.I32, 'masterID', None, None, ), # 20
+    None, # 21
+    None, # 22
+    None, # 23
+    None, # 24
+    None, # 25
+    None, # 26
+    None, # 27
+    None, # 28
+    None, # 29
+    (30, TType.STRING, 'name', None, None, ), # 30
+    None, # 31
+    None, # 32
+    None, # 33
+    None, # 34
+    None, # 35
+    None, # 36
+    None, # 37
+    None, # 38
+    None, # 39
+    (40, TType.STRING, 'description', None, None, ), # 40
+    None, # 41
+    None, # 42
+    None, # 43
+    None, # 44
+    None, # 45
+    None, # 46
+    None, # 47
+    None, # 48
+    None, # 49
+    (50, TType.STRING, 'masterLogin', None, None, ), # 50
+  )
+
+  def __init__(self, id=None, masterID=None, name=None, description=None, masterLogin=None,):
+    self.id = id
+    self.masterID = masterID
+    self.name = name
+    self.description = description
+    self.masterLogin = masterLogin
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.I32:
+          self.id = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 20:
+        if ftype == TType.I32:
+          self.masterID = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 30:
+        if ftype == TType.STRING:
+          self.name = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 40:
+        if ftype == TType.STRING:
+          self.description = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 50:
+        if ftype == TType.STRING:
+          self.masterLogin = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('Alliance')
+    if self.id is not None:
+      oprot.writeFieldBegin('id', TType.I32, 10)
+      oprot.writeI32(self.id)
+      oprot.writeFieldEnd()
+    if self.masterID is not None:
+      oprot.writeFieldBegin('masterID', TType.I32, 20)
+      oprot.writeI32(self.masterID)
+      oprot.writeFieldEnd()
+    if self.name is not None:
+      oprot.writeFieldBegin('name', TType.STRING, 30)
+      oprot.writeString(self.name)
+      oprot.writeFieldEnd()
+    if self.description is not None:
+      oprot.writeFieldBegin('description', TType.STRING, 40)
+      oprot.writeString(self.description)
+      oprot.writeFieldEnd()
+    if self.masterLogin is not None:
+      oprot.writeFieldBegin('masterLogin', TType.STRING, 50)
+      oprot.writeString(self.masterLogin)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -590,22 +850,125 @@ class Player:
    - tutoDisplayed
    - mainPlanet
    - score
+   - allianceID
+   - allianceName
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.I16, 'id', None, None, ), # 1
-    (2, TType.STRING, 'login', None, None, ), # 2
-    (3, TType.STRING, 'password', None, None, ), # 3
-    (4, TType.STRUCT, 'fleetsCode', (CodeData, CodeData.thrift_spec), None, ), # 4
-    (5, TType.STRUCT, 'planetsCode', (CodeData, CodeData.thrift_spec), None, ), # 5
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
     None, # 6
-    (7, TType.MAP, 'tutoDisplayed', (TType.STRING,None,TType.I32,None), None, ), # 7
-    (8, TType.STRUCT, 'mainPlanet', (Coord, Coord.thrift_spec), None, ), # 8
-    (9, TType.I64, 'score', None, 0, ), # 9
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'id', None, None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.STRING, 'login', None, None, ), # 20
+    None, # 21
+    None, # 22
+    None, # 23
+    None, # 24
+    None, # 25
+    None, # 26
+    None, # 27
+    None, # 28
+    None, # 29
+    (30, TType.STRING, 'password', None, None, ), # 30
+    None, # 31
+    None, # 32
+    None, # 33
+    None, # 34
+    None, # 35
+    None, # 36
+    None, # 37
+    None, # 38
+    None, # 39
+    (40, TType.STRUCT, 'fleetsCode', (CodeData, CodeData.thrift_spec), None, ), # 40
+    None, # 41
+    None, # 42
+    None, # 43
+    None, # 44
+    None, # 45
+    None, # 46
+    None, # 47
+    None, # 48
+    None, # 49
+    (50, TType.STRUCT, 'planetsCode', (CodeData, CodeData.thrift_spec), None, ), # 50
+    None, # 51
+    None, # 52
+    None, # 53
+    None, # 54
+    None, # 55
+    None, # 56
+    None, # 57
+    None, # 58
+    None, # 59
+    None, # 60
+    None, # 61
+    None, # 62
+    None, # 63
+    None, # 64
+    None, # 65
+    None, # 66
+    None, # 67
+    None, # 68
+    None, # 69
+    (70, TType.MAP, 'tutoDisplayed', (TType.STRING,None,TType.I32,None), None, ), # 70
+    None, # 71
+    None, # 72
+    None, # 73
+    None, # 74
+    None, # 75
+    None, # 76
+    None, # 77
+    None, # 78
+    None, # 79
+    (80, TType.STRUCT, 'mainPlanet', (Coord, Coord.thrift_spec), None, ), # 80
+    None, # 81
+    None, # 82
+    None, # 83
+    None, # 84
+    None, # 85
+    None, # 86
+    None, # 87
+    None, # 88
+    None, # 89
+    (90, TType.I64, 'score', None, 0, ), # 90
+    None, # 91
+    None, # 92
+    None, # 93
+    None, # 94
+    None, # 95
+    None, # 96
+    None, # 97
+    None, # 98
+    None, # 99
+    (100, TType.I32, 'allianceID', None, None, ), # 100
+    None, # 101
+    None, # 102
+    None, # 103
+    None, # 104
+    None, # 105
+    None, # 106
+    None, # 107
+    None, # 108
+    None, # 109
+    (110, TType.STRING, 'allianceName', None, None, ), # 110
   )
 
-  def __init__(self, id=None, login=None, password=None, fleetsCode=None, planetsCode=None, tutoDisplayed=None, mainPlanet=None, score=thrift_spec[9][4],):
+  def __init__(self, id=None, login=None, password=None, fleetsCode=None, planetsCode=None, tutoDisplayed=None, mainPlanet=None, score=thrift_spec[90][4], allianceID=None, allianceName=None,):
     self.id = id
     self.login = login
     self.password = password
@@ -614,6 +977,8 @@ class Player:
     self.tutoDisplayed = tutoDisplayed
     self.mainPlanet = mainPlanet
     self.score = score
+    self.allianceID = allianceID
+    self.allianceName = allianceName
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -624,34 +989,34 @@ class Player:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
-        if ftype == TType.I16:
-          self.id = iprot.readI16();
+      if fid == 10:
+        if ftype == TType.I32:
+          self.id = iprot.readI32();
         else:
           iprot.skip(ftype)
-      elif fid == 2:
+      elif fid == 20:
         if ftype == TType.STRING:
           self.login = iprot.readString();
         else:
           iprot.skip(ftype)
-      elif fid == 3:
+      elif fid == 30:
         if ftype == TType.STRING:
           self.password = iprot.readString();
         else:
           iprot.skip(ftype)
-      elif fid == 4:
+      elif fid == 40:
         if ftype == TType.STRUCT:
           self.fleetsCode = CodeData()
           self.fleetsCode.read(iprot)
         else:
           iprot.skip(ftype)
-      elif fid == 5:
+      elif fid == 50:
         if ftype == TType.STRUCT:
           self.planetsCode = CodeData()
           self.planetsCode.read(iprot)
         else:
           iprot.skip(ftype)
-      elif fid == 7:
+      elif fid == 70:
         if ftype == TType.MAP:
           self.tutoDisplayed = {}
           (_ktype1, _vtype2, _size0 ) = iprot.readMapBegin() 
@@ -662,15 +1027,25 @@ class Player:
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
-      elif fid == 8:
+      elif fid == 80:
         if ftype == TType.STRUCT:
           self.mainPlanet = Coord()
           self.mainPlanet.read(iprot)
         else:
           iprot.skip(ftype)
-      elif fid == 9:
+      elif fid == 90:
         if ftype == TType.I64:
           self.score = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 100:
+        if ftype == TType.I32:
+          self.allianceID = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 110:
+        if ftype == TType.STRING:
+          self.allianceName = iprot.readString();
         else:
           iprot.skip(ftype)
       else:
@@ -684,27 +1059,27 @@ class Player:
       return
     oprot.writeStructBegin('Player')
     if self.id is not None:
-      oprot.writeFieldBegin('id', TType.I16, 1)
-      oprot.writeI16(self.id)
+      oprot.writeFieldBegin('id', TType.I32, 10)
+      oprot.writeI32(self.id)
       oprot.writeFieldEnd()
     if self.login is not None:
-      oprot.writeFieldBegin('login', TType.STRING, 2)
+      oprot.writeFieldBegin('login', TType.STRING, 20)
       oprot.writeString(self.login)
       oprot.writeFieldEnd()
     if self.password is not None:
-      oprot.writeFieldBegin('password', TType.STRING, 3)
+      oprot.writeFieldBegin('password', TType.STRING, 30)
       oprot.writeString(self.password)
       oprot.writeFieldEnd()
     if self.fleetsCode is not None:
-      oprot.writeFieldBegin('fleetsCode', TType.STRUCT, 4)
+      oprot.writeFieldBegin('fleetsCode', TType.STRUCT, 40)
       self.fleetsCode.write(oprot)
       oprot.writeFieldEnd()
     if self.planetsCode is not None:
-      oprot.writeFieldBegin('planetsCode', TType.STRUCT, 5)
+      oprot.writeFieldBegin('planetsCode', TType.STRUCT, 50)
       self.planetsCode.write(oprot)
       oprot.writeFieldEnd()
     if self.tutoDisplayed is not None:
-      oprot.writeFieldBegin('tutoDisplayed', TType.MAP, 7)
+      oprot.writeFieldBegin('tutoDisplayed', TType.MAP, 70)
       oprot.writeMapBegin(TType.STRING, TType.I32, len(self.tutoDisplayed))
       for kiter7,viter8 in self.tutoDisplayed.items():
         oprot.writeString(kiter7)
@@ -712,12 +1087,20 @@ class Player:
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     if self.mainPlanet is not None:
-      oprot.writeFieldBegin('mainPlanet', TType.STRUCT, 8)
+      oprot.writeFieldBegin('mainPlanet', TType.STRUCT, 80)
       self.mainPlanet.write(oprot)
       oprot.writeFieldEnd()
     if self.score is not None:
-      oprot.writeFieldBegin('score', TType.I64, 9)
+      oprot.writeFieldBegin('score', TType.I64, 90)
       oprot.writeI64(self.score)
+      oprot.writeFieldEnd()
+    if self.allianceID is not None:
+      oprot.writeFieldBegin('allianceID', TType.I32, 100)
+      oprot.writeI32(self.allianceID)
+      oprot.writeFieldEnd()
+    if self.allianceName is not None:
+      oprot.writeFieldBegin('allianceName', TType.STRING, 110)
+      oprot.writeString(self.allianceName)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -1442,7 +1825,7 @@ class Planet:
     None, # 0
     (1, TType.STRING, 'name', None, None, ), # 1
     (2, TType.STRUCT, 'coord', (Coord, Coord.thrift_spec), None, ), # 2
-    (3, TType.I16, 'playerId', None, None, ), # 3
+    (3, TType.I32, 'playerId', None, None, ), # 3
     (4, TType.LIST, 'buildingList', (TType.I32,None), None, ), # 4
     (5, TType.LIST, 'taskQueue', (TType.STRUCT,(PlanetTask, PlanetTask.thrift_spec)), None, ), # 5
     (6, TType.STRUCT, 'ressourceSet', (RessourceSet, RessourceSet.thrift_spec), None, ), # 6
@@ -1481,8 +1864,8 @@ class Planet:
         else:
           iprot.skip(ftype)
       elif fid == 3:
-        if ftype == TType.I16:
-          self.playerId = iprot.readI16();
+        if ftype == TType.I32:
+          self.playerId = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 4:
@@ -1552,8 +1935,8 @@ class Planet:
       self.coord.write(oprot)
       oprot.writeFieldEnd()
     if self.playerId is not None:
-      oprot.writeFieldBegin('playerId', TType.I16, 3)
-      oprot.writeI16(self.playerId)
+      oprot.writeFieldBegin('playerId', TType.I32, 3)
+      oprot.writeI32(self.playerId)
       oprot.writeFieldEnd()
     if self.buildingList is not None:
       oprot.writeFieldBegin('buildingList', TType.LIST, 4)
@@ -1640,7 +2023,7 @@ class Fleet:
     None, # 17
     None, # 18
     None, # 19
-    (20, TType.I16, 'playerId', None, None, ), # 20
+    (20, TType.I32, 'playerId', None, None, ), # 20
     None, # 21
     None, # 22
     None, # 23
@@ -1739,8 +2122,8 @@ class Fleet:
         else:
           iprot.skip(ftype)
       elif fid == 20:
-        if ftype == TType.I16:
-          self.playerId = iprot.readI16();
+        if ftype == TType.I32:
+          self.playerId = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 30:
@@ -1813,8 +2196,8 @@ class Fleet:
       oprot.writeI64(self.id)
       oprot.writeFieldEnd()
     if self.playerId is not None:
-      oprot.writeFieldBegin('playerId', TType.I16, 20)
-      oprot.writeI16(self.playerId)
+      oprot.writeFieldBegin('playerId', TType.I32, 20)
+      oprot.writeI32(self.playerId)
       oprot.writeFieldEnd()
     if self.coord is not None:
       oprot.writeFieldBegin('coord', TType.STRUCT, 30)
@@ -2545,11 +2928,11 @@ class Universe:
 
   thrift_spec = (
     None, # 0
-    (1, TType.MAP, 'playerMap', (TType.I16,None,TType.STRUCT,(Player, Player.thrift_spec)), None, ), # 1
+    (1, TType.MAP, 'playerMap', (TType.I32,None,TType.STRUCT,(Player, Player.thrift_spec)), None, ), # 1
     (2, TType.MAP, 'planetMap', (TType.STRUCT,(Coord, Coord.thrift_spec),TType.STRUCT,(Planet, Planet.thrift_spec)), None, ), # 2
     (3, TType.MAP, 'fleetMap', (TType.I64,None,TType.STRUCT,(Fleet, Fleet.thrift_spec)), None, ), # 3
     (4, TType.MAP, 'reportMap', (TType.I32,None,TType.STRUCT,(FightReport, FightReport.thrift_spec)), None, ), # 4
-    (5, TType.I16, 'nextPlayerID', None, None, ), # 5
+    (5, TType.I32, 'nextPlayerID', None, None, ), # 5
     (6, TType.I64, 'nextFleetID', None, None, ), # 6
     (7, TType.I32, 'time', None, None, ), # 7
   )
@@ -2577,7 +2960,7 @@ class Universe:
           self.playerMap = {}
           (_ktype87, _vtype88, _size86 ) = iprot.readMapBegin() 
           for _i90 in xrange(_size86):
-            _key91 = iprot.readI16();
+            _key91 = iprot.readI32();
             _val92 = Player()
             _val92.read(iprot)
             self.playerMap[_key91] = _val92
@@ -2622,8 +3005,8 @@ class Universe:
         else:
           iprot.skip(ftype)
       elif fid == 5:
-        if ftype == TType.I16:
-          self.nextPlayerID = iprot.readI16();
+        if ftype == TType.I32:
+          self.nextPlayerID = iprot.readI32();
         else:
           iprot.skip(ftype)
       elif fid == 6:
@@ -2648,9 +3031,9 @@ class Universe:
     oprot.writeStructBegin('Universe')
     if self.playerMap is not None:
       oprot.writeFieldBegin('playerMap', TType.MAP, 1)
-      oprot.writeMapBegin(TType.I16, TType.STRUCT, len(self.playerMap))
+      oprot.writeMapBegin(TType.I32, TType.STRUCT, len(self.playerMap))
       for kiter114,viter115 in self.playerMap.items():
-        oprot.writeI16(kiter114)
+        oprot.writeI32(kiter114)
         viter115.write(oprot)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
@@ -2679,8 +3062,8 @@ class Universe:
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     if self.nextPlayerID is not None:
-      oprot.writeFieldBegin('nextPlayerID', TType.I16, 5)
-      oprot.writeI16(self.nextPlayerID)
+      oprot.writeFieldBegin('nextPlayerID', TType.I32, 5)
+      oprot.writeI32(self.nextPlayerID)
       oprot.writeFieldEnd()
     if self.nextFleetID is not None:
       oprot.writeFieldBegin('nextFleetID', TType.I64, 6)
@@ -3068,6 +3451,309 @@ class PlanetList:
     if self.planetCount is not None:
       oprot.writeFieldBegin('planetCount', TType.I32, 20)
       oprot.writeI32(self.planetCount)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class Message:
+  """
+  Attributes:
+   - id
+   - sender
+   - recipient
+   - time
+   - subject
+   - message
+   - senderLogin
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.I32, 'id', None, None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.I32, 'sender', None, None, ), # 20
+    None, # 21
+    None, # 22
+    None, # 23
+    None, # 24
+    None, # 25
+    None, # 26
+    None, # 27
+    None, # 28
+    None, # 29
+    (30, TType.I32, 'recipient', None, None, ), # 30
+    None, # 31
+    None, # 32
+    None, # 33
+    None, # 34
+    None, # 35
+    None, # 36
+    None, # 37
+    None, # 38
+    None, # 39
+    (40, TType.I32, 'time', None, None, ), # 40
+    None, # 41
+    None, # 42
+    None, # 43
+    None, # 44
+    None, # 45
+    None, # 46
+    None, # 47
+    None, # 48
+    None, # 49
+    (50, TType.STRING, 'subject', None, None, ), # 50
+    None, # 51
+    None, # 52
+    None, # 53
+    None, # 54
+    None, # 55
+    None, # 56
+    None, # 57
+    None, # 58
+    None, # 59
+    (60, TType.STRING, 'message', None, None, ), # 60
+    None, # 61
+    None, # 62
+    None, # 63
+    None, # 64
+    None, # 65
+    None, # 66
+    None, # 67
+    None, # 68
+    None, # 69
+    (70, TType.STRING, 'senderLogin', None, None, ), # 70
+  )
+
+  def __init__(self, id=None, sender=None, recipient=None, time=None, subject=None, message=None, senderLogin=None,):
+    self.id = id
+    self.sender = sender
+    self.recipient = recipient
+    self.time = time
+    self.subject = subject
+    self.message = message
+    self.senderLogin = senderLogin
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.I32:
+          self.id = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 20:
+        if ftype == TType.I32:
+          self.sender = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 30:
+        if ftype == TType.I32:
+          self.recipient = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 40:
+        if ftype == TType.I32:
+          self.time = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 50:
+        if ftype == TType.STRING:
+          self.subject = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 60:
+        if ftype == TType.STRING:
+          self.message = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 70:
+        if ftype == TType.STRING:
+          self.senderLogin = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('Message')
+    if self.id is not None:
+      oprot.writeFieldBegin('id', TType.I32, 10)
+      oprot.writeI32(self.id)
+      oprot.writeFieldEnd()
+    if self.sender is not None:
+      oprot.writeFieldBegin('sender', TType.I32, 20)
+      oprot.writeI32(self.sender)
+      oprot.writeFieldEnd()
+    if self.recipient is not None:
+      oprot.writeFieldBegin('recipient', TType.I32, 30)
+      oprot.writeI32(self.recipient)
+      oprot.writeFieldEnd()
+    if self.time is not None:
+      oprot.writeFieldBegin('time', TType.I32, 40)
+      oprot.writeI32(self.time)
+      oprot.writeFieldEnd()
+    if self.subject is not None:
+      oprot.writeFieldBegin('subject', TType.STRING, 50)
+      oprot.writeString(self.subject)
+      oprot.writeFieldEnd()
+    if self.message is not None:
+      oprot.writeFieldBegin('message', TType.STRING, 60)
+      oprot.writeString(self.message)
+      oprot.writeFieldEnd()
+    if self.senderLogin is not None:
+      oprot.writeFieldBegin('senderLogin', TType.STRING, 70)
+      oprot.writeString(self.senderLogin)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class FriendshipRequests:
+  """
+  Attributes:
+   - sent
+   - received
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.LIST, 'sent', (TType.STRUCT,(Player, Player.thrift_spec)), None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.LIST, 'received', (TType.STRUCT,(Player, Player.thrift_spec)), None, ), # 20
+  )
+
+  def __init__(self, sent=None, received=None,):
+    self.sent = sent
+    self.received = received
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.LIST:
+          self.sent = []
+          (_etype146, _size143) = iprot.readListBegin()
+          for _i147 in xrange(_size143):
+            _elem148 = Player()
+            _elem148.read(iprot)
+            self.sent.append(_elem148)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 20:
+        if ftype == TType.LIST:
+          self.received = []
+          (_etype152, _size149) = iprot.readListBegin()
+          for _i153 in xrange(_size149):
+            _elem154 = Player()
+            _elem154.read(iprot)
+            self.received.append(_elem154)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('FriendshipRequests')
+    if self.sent is not None:
+      oprot.writeFieldBegin('sent', TType.LIST, 10)
+      oprot.writeListBegin(TType.STRUCT, len(self.sent))
+      for iter155 in self.sent:
+        iter155.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.received is not None:
+      oprot.writeFieldBegin('received', TType.LIST, 20)
+      oprot.writeListBegin(TType.STRUCT, len(self.received))
+      for iter156 in self.received:
+        iter156.write(oprot)
+      oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

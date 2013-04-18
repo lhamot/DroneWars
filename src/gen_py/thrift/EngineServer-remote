@@ -47,6 +47,21 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '   getBuildingsInfo()'
   print '   getCannonsInfo()'
   print '   getShipsInfo()'
+  print '  void addMessage(Player_ID sender, Player_ID recipient, string suject, string message)'
+  print '   getMessages(Player_ID recipient)'
+  print '  void eraseMesage(Message_ID mid)'
+  print '  void addFriendshipRequest(Player_ID playerA, Player_ID playerB)'
+  print '  void acceptFriendshipRequest(Player_ID playerA, Player_ID playerB, bool accept)'
+  print '  void closeFriendship(Player_ID playerA, Player_ID playerB)'
+  print '   getFriends(Player_ID player)'
+  print '  FriendshipRequests getFriendshipRequest(Player_ID player)'
+  print '  Alliance_ID addAlliance(Player_ID pid, string name, string description)'
+  print '  Alliance getAlliance(Alliance_ID aid)'
+  print '  void updateAlliance(Alliance alliance)'
+  print '  void transfertAlliance(Alliance_ID aid, Player_ID pid)'
+  print '  void eraseAlliance(Alliance_ID aid)'
+  print '  void joinAlliance(Player_ID pid, Alliance_ID aid)'
+  print '  void quitAlliance(Player_ID pid)'
   print ''
   sys.exit(0)
 
@@ -241,6 +256,96 @@ elif cmd == 'getShipsInfo':
     print 'getShipsInfo requires 0 args'
     sys.exit(1)
   pp.pprint(client.getShipsInfo())
+
+elif cmd == 'addMessage':
+  if len(args) != 4:
+    print 'addMessage requires 4 args'
+    sys.exit(1)
+  pp.pprint(client.addMessage(eval(args[0]),eval(args[1]),args[2],args[3],))
+
+elif cmd == 'getMessages':
+  if len(args) != 1:
+    print 'getMessages requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.getMessages(eval(args[0]),))
+
+elif cmd == 'eraseMesage':
+  if len(args) != 1:
+    print 'eraseMesage requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.eraseMesage(eval(args[0]),))
+
+elif cmd == 'addFriendshipRequest':
+  if len(args) != 2:
+    print 'addFriendshipRequest requires 2 args'
+    sys.exit(1)
+  pp.pprint(client.addFriendshipRequest(eval(args[0]),eval(args[1]),))
+
+elif cmd == 'acceptFriendshipRequest':
+  if len(args) != 3:
+    print 'acceptFriendshipRequest requires 3 args'
+    sys.exit(1)
+  pp.pprint(client.acceptFriendshipRequest(eval(args[0]),eval(args[1]),eval(args[2]),))
+
+elif cmd == 'closeFriendship':
+  if len(args) != 2:
+    print 'closeFriendship requires 2 args'
+    sys.exit(1)
+  pp.pprint(client.closeFriendship(eval(args[0]),eval(args[1]),))
+
+elif cmd == 'getFriends':
+  if len(args) != 1:
+    print 'getFriends requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.getFriends(eval(args[0]),))
+
+elif cmd == 'getFriendshipRequest':
+  if len(args) != 1:
+    print 'getFriendshipRequest requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.getFriendshipRequest(eval(args[0]),))
+
+elif cmd == 'addAlliance':
+  if len(args) != 3:
+    print 'addAlliance requires 3 args'
+    sys.exit(1)
+  pp.pprint(client.addAlliance(eval(args[0]),args[1],args[2],))
+
+elif cmd == 'getAlliance':
+  if len(args) != 1:
+    print 'getAlliance requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.getAlliance(eval(args[0]),))
+
+elif cmd == 'updateAlliance':
+  if len(args) != 1:
+    print 'updateAlliance requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.updateAlliance(eval(args[0]),))
+
+elif cmd == 'transfertAlliance':
+  if len(args) != 2:
+    print 'transfertAlliance requires 2 args'
+    sys.exit(1)
+  pp.pprint(client.transfertAlliance(eval(args[0]),eval(args[1]),))
+
+elif cmd == 'eraseAlliance':
+  if len(args) != 1:
+    print 'eraseAlliance requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.eraseAlliance(eval(args[0]),))
+
+elif cmd == 'joinAlliance':
+  if len(args) != 2:
+    print 'joinAlliance requires 2 args'
+    sys.exit(1)
+  pp.pprint(client.joinAlliance(eval(args[0]),eval(args[1]),))
+
+elif cmd == 'quitAlliance':
+  if len(args) != 1:
+    print 'quitAlliance requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.quitAlliance(eval(args[0]),))
 
 else:
   print 'Unrecognized method %s' % cmd

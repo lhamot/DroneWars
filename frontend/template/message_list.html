@@ -1,0 +1,32 @@
+{% extends "ingame_base.html" %}
+
+{% load i18n %}
+
+{% load tmp_filters %}
+
+{% block content %}
+
+<div class="container">
+
+<div class="row">
+<div class="span8 offset2">
+<table class="table">
+	{% for message in messages %}
+	<tr>
+		<th>{% trans "Send by"%}</th>
+		<td>{{message.sender|playerlink:message.senderLogin|safe}}</td>
+	</tr>
+	<tr>
+		<th>{% trans "Subject"%}</th>
+		<td>{{message.subject}}</td>
+	</tr>
+	<tr>
+		<td colspan="2">{{message.message}}</td>
+	</tr>
+	{% endfor %}
+</table>
+</div>
+</div>
+</div>
+
+{% endblock %}

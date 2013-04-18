@@ -33,6 +33,13 @@ urlpatterns = patterns('',
     url(r'^ingame/cannons.html', 'Game.info_views.CannonsView'),
     url(r'^ingame/ships.html', 'Game.info_views.ShipsView'),
     
+    url(r'^ingame/messages.html', 'Game.community_views.MessagesView'),
+    url(r'^ingame/create_message.html', 'Game.community_views.CreateMessageView'),
+    
+    url(r'^ingame/friends.html', 'Game.community_views.FriendsView'),
+    
+    url(r'^ingame/alliance.html', 'Game.community_views.AllianceView'),
+    
     #url(r'^ingame/ticket_list.html', ListView.as_view(model=Ticket)),
     #url(r'^ingame/add_ticket.html', CreateView.as_view(model=Ticket, success_url="/ingame/ticket_list.html")),
     #url(r'^ingame/view_ticket.html/(?P<pk>\d+)', UpdateView.as_view(model=Ticket, success_url="/ingame/ticket_list.html")),

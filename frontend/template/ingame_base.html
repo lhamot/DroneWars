@@ -11,7 +11,6 @@
 			</header>
 			<div class="navbar navbar-inverse navbar-static-top">
 				<div class="navbar-inner">
-					<a class="brand" href="http://www.nogane.net/redmine/projects/dronewars">nogane.net</a>
 					<div class="container">
 						<ul class="nav">
 							<li class="{% block codes_class %}tab{% endblock %}"><a href="/ingame/codes.html">{% trans "Command" %}</a></li>
@@ -19,7 +18,7 @@
 							<li class="{% block fleets_class %}tab{% endblock %}"><a href="/ingame/fleetlist.html">{% trans "Fleets" %}</a></li>
 							<li class="{% block reports_class %}tab{% endblock %}"><a href="/ingame/reports.html">{% trans "Reports" %}</a></li>
 							<li class="{% block score_class %}tab{% endblock %}"><a href="/ingame/score.html">{% trans "Score" %}</a></li>
-							<li class="{% block account_class %}tab{% endblock %}"><a href="/ingame/account.html">{% trans "Account" %}</a></li>
+							<!--<li class="{% block account_class %}tab{% endblock %}"><a href="/ingame/account.html">{% trans "Account" %}</a></li>-->
 							<li class="dropdown">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Informations" %}<b class="caret"></b></a>
 								<ul class="dropdown-menu">
@@ -28,8 +27,19 @@
 									<li><a href="/ingame/ships.html">{% trans "Ships" %}</a></li>
 								</ul>
 							</li>
-							<li class="divider-vertical"> </li>
-							<li><a href="/" class="tab">{% trans "Log out" %}</a></li>
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Community" %}<b class="caret"></b></a>
+								<ul class="dropdown-menu">
+									<li><a href="http://www.nogane.net/redmine/projects/dronewars">nogane.net</a></li>
+									<li><a href="/ingame/messages.html">{% trans "Messages" %}</a></li>
+									<li><a href="/ingame/friends.html">{% trans "Friends" %}</a></li>
+									<li><a href="/ingame/alliance.html">{% trans "Alliance" %}</a></li>
+								</ul>
+							</li>
+							<li class="divider-vertical"></li>
+							<li><a href="/ingame/account.html" class="tab"><i class="icon-user"></i></a></li>
+							<li><a href="/" class="tab"><i class="icon-off"></i></a></li>
+							<li class="divider-vertical"></li>
 							{% if timeInfo %}
 							<li><p class="navbar-text">{% trans "Next round :" %} 
 								<span id="roundleft" title="{{timeInfo|roundtimeleft|unlocalize}}">0</span>

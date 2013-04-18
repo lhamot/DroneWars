@@ -30,6 +30,11 @@ using namespace boost;
 using namespace std;
 
 
+std::string toString(BLOB const& blob)
+{
+	return std::string(blob.begin(), blob.end());
+}
+
 class Transaction : private boost::noncopyable
 {
 	Session& session_;
@@ -89,12 +94,14 @@ try
 	            "if not exists "
 	            "Player ("
 	            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-	            "  login VARCHAR(30) unique NOT NULL,"
+	            "  login VARCHAR(30) UNIQUE NOT NULL,"
 	            "  password VARCHAR(30) NOT NULL,"
 	            "  score INTEGER NOT NULL,"
 	            "  planetCoordX INTEGER NOT NULL,"
 	            "  planetCoordY INTEGER NOT NULL,"
-	            "  planetCoordZ INTEGER NOT NULL"
+	            "  planetCoordZ INTEGER NOT NULL,"
+	            "  allianceID INTEGER"
+	            //"  FOREIGN KEY (allianceID) REFERENCES Alliance(id) "
 	            ")", now;
 
 	(*session_) <<
@@ -168,6 +175,65 @@ try
 	            "  INDEX (playerID), "
 	            "  INDEX PlayerTag (playerID, tag)"
 	            ")", now;
+
+	(*session_) <<
+	            "CREATE TABLE "
+	            "if not exists "
+	            "Message ("
+	            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+	            "  sender INTEGER NOT NULL,"
+	            "  recipient INTEGER NOT NULL,"
+	            "  time INTEGER NOT NULL,"
+	            "  suject varchar(80) NOT NULL,"
+	            "  message TEXT NOT NULL,"
+	            "  FOREIGN KEY (sender) REFERENCES Player(id) "
+	            "    ON DELETE CASCADE, "
+	            "  FOREIGN KEY (recipient) REFERENCES Player(id) "
+	            "    ON DELETE CASCADE "
+	            ")", now;
+
+	(*session_) <<
+	            "CREATE TABLE "
+	            "if not exists "
+	            "FriendshipRequest ("
+	            "  sender INTEGER NOT NULL,"
+	            "  recipient INTEGER NOT NULL,"
+	            "  FOREIGN KEY (sender) REFERENCES Player(id) "
+	            "    ON DELETE CASCADE, "
+	            "  FOREIGN KEY (recipient) REFERENCES Player(id) "
+	            "    ON DELETE CASCADE, "
+	            "  UNIQUE (sender, recipient) "
+	            ")", now;
+
+	(*session_) <<
+	            "CREATE TABLE "
+	            "if not exists "
+	            "Friendship ("
+	            "  friend_a INTEGER NOT NULL,"
+	            "  friend_b INTEGER NOT NULL,"
+	            "  FOREIGN KEY (friend_a) REFERENCES Player(id) "
+	            "    ON DELETE CASCADE, "
+	            "  FOREIGN KEY (friend_b) REFERENCES Player(id) "
+	            "    ON DELETE CASCADE, "
+	            "  UNIQUE (friend_a, friend_b) "
+	            ")", now;
+
+	(*session_) <<
+	            "CREATE TABLE "
+	            "if not exists "
+	            "Alliance ("
+	            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+	            "  masterID INTEGER UNIQUE NOT NULL,"
+	            "  name VARCHAR(30) UNIQUE NOT NULL,"
+	            "  description TEXT NOT NULL,"
+	            "  FOREIGN KEY (masterID) REFERENCES Player(id) "
+	            ")", now;
+
+	(*session_) <<
+	            "ALTER TABLE Player "
+	            "ADD CONSTRAINT FOREIGN KEY (allianceID) REFERENCES Alliance(id) "
+	            "ON DELETE SET NULL ",
+	            now;
 }
 DB_CATCH
 
@@ -270,7 +336,7 @@ DB_CATCH
 
 
 typedef Tuple < Player::ID, std::string, std::string, uint64_t,
-        Coord::Value, Coord::Value, Coord::Value > PlayerTmp;
+        Coord::Value, Coord::Value, Coord::Value, Alliance::ID, std::string > PlayerTmp;
 Player playerFromTuple(PlayerTmp const& playerTup)
 {
 	Player player(playerTup.get<0>(), playerTup.get<1>(), playerTup.get<2>());
@@ -278,9 +344,15 @@ Player playerFromTuple(PlayerTmp const& playerTup)
 	player.mainPlanet.X = playerTup.get<4>();
 	player.mainPlanet.Y = playerTup.get<5>();
 	player.mainPlanet.Z = playerTup.get<6>();
+	player.allianceID = playerTup.get<7>();
+	player.allianceName = playerTup.get<8>();
 	return player;
 }
 
+static char const* const GetPlayerRequest =
+  "SELECT Player.*, Alliance.name FROM Player "
+  "LEFT OUTER JOIN Alliance "
+  "ON Player.allianceID = Alliance.id ";
 
 boost::optional<Player> DataBase::getPlayer(
   std::string const& login,
@@ -289,7 +361,8 @@ try
 {
 	std::vector<PlayerTmp> playerList;
 	(*session_) <<
-	            "SELECT * FROM Player WHERE login = ? AND password = ?",
+	            GetPlayerRequest <<
+	            "WHERE login = ? AND password = ?",
 	            into(playerList), use(login), use(password), now;
 	if(playerList.size() != 1)
 		return boost::optional<Player>();
@@ -303,9 +376,7 @@ std::vector<Player> DataBase::getPlayers() const
 try
 {
 	std::vector<PlayerTmp> playerList;
-	(*session_) <<
-	            "SELECT * FROM Player",
-	            into(playerList), now;
+	(*session_) << GetPlayerRequest, into(playerList), now;
 	std::vector<Player> outPlayerList;
 	outPlayerList.reserve(playerList.size());
 	boost::transform(
@@ -319,7 +390,7 @@ Player DataBase::getPlayer(Player::ID id) const
 try
 {
 	std::vector<PlayerTmp> playerList;
-	(*session_) << "SELECT * FROM Player WHERE id = ?",
+	(*session_) << GetPlayerRequest << "WHERE Player.id = ?",
 	            into(playerList), use(id), now;
 	if(playerList.size() != 1)
 		BOOST_THROW_EXCEPTION(
@@ -661,7 +732,7 @@ public:
 		poco_assert_dbg(pExt != 0);
 		std::string message;
 		size_t codeID = 0;
-		TypeHandler<std::string>::extract(pos++, message, defVal.message, pExt);
+		TypeHandler<string>::extract(pos++, message, defVal.message, pExt);
 		TypeHandler<size_t>::extract(pos++, codeID, defVal.codeDataId, pExt);
 		obj.message = message;
 		obj.codeDataId = codeID;
@@ -718,9 +789,9 @@ try
 	res.id = scrData.get<0>();
 	res.playerId = pid;
 	res.target = target;
-	res.code.assign(scrData.get<4>().begin(), scrData.get<4>().end());
-	res.blocklyCode.assign(bloData.get<4>().begin(), bloData.get<4>().end());
-	res.lastError.assign(scrData.get<5>().begin(), scrData.get<5>().end());
+	res.code = toString(scrData.get<4>());
+	res.blocklyCode = toString(bloData.get<4>());
+	res.lastError = toString(scrData.get<5>());
 	return res;
 }
 DB_CATCH
@@ -823,6 +894,331 @@ try
 		scoreVect.push_back(ScoreTuple(nvp.second, nvp.first));
 	(*session_) << "UPDATE Player SET score = ? WHERE id = ?",
 	            use(scoreVect), now;
+	trans.commit();
+}
+DB_CATCH
+
+
+//***************************  Messages  **********************************
+
+void DataBase::addMessage(Player::ID sender,
+                          Player::ID recip,
+                          std::string const& obj,
+                          std::string const& mes)
+try
+{
+	(*session_) <<
+	            "INSERT INTO Message "
+	            "(sender, recipient, time, suject, message) "
+	            "VALUES(?, ?, ?, ?, ?)",
+	            use(sender), use(recip), use(time(0)), use(obj), use(mes), now;
+}
+DB_CATCH
+
+
+std::vector<Message> DataBase::getMessages(Player::ID recipient)
+try
+{
+	typedef Tuple < Message::ID, Player::ID, Player::ID, time_t, std::string,
+	        BLOB, std::string > MessageTup;
+	std::vector<MessageTup> messages;
+	messages.reserve(100);
+	(*session_) <<
+	            "SELECT Message.*, Player.login FROM Message "
+	            "INNER JOIN Player "
+	            "ON sender = Player.id "
+	            "WHERE recipient = ? ",
+	            into(messages), use(recipient), now;
+	std::vector<Message> result;
+	result.reserve(messages.size());
+	for(MessageTup const & messTup: messages)
+	{
+		Message message(messTup.get<0>(),
+		                messTup.get<1>(),
+		                messTup.get<2>(),
+		                messTup.get<3>(),
+		                messTup.get<4>(),
+		                toString(messTup.get<5>()),
+		                messTup.get<6>());
+		result.push_back(message);
+	}
+	return result;
+}
+DB_CATCH
+
+
+void DataBase::eraseMesage(Message::ID mid)
+try
+{
+	(*session_) << "DELETE FROM Message WHERE id = ?", use(mid), now;
+}
+DB_CATCH
+
+
+//***************************  Friendship  ********************************
+
+
+void order(Player::ID& playerA, Player::ID& playerB)
+{
+	if(playerA > playerB)
+		std::swap(playerA, playerB);
+}
+
+
+void DataBase::addFriendshipRequest(Player::ID sender, Player::ID recipient)
+try
+{
+	//Si c'est le meme on ne fait rien
+	if(sender == recipient)
+		return;
+	Transaction trans(*session_);
+	//! Y a t'il eu une requete dans l'autre sens?
+	size_t rowCount = 0;
+	(*session_) <<
+	            "SELECT COUNT(*) FROM FriendshipRequest "
+	            "WHERE sender = ? AND recipient = ? ",
+	            into(rowCount), use(recipient), use(sender), now;
+	//! Dans on le considère comme une validation
+	if(rowCount)
+	{
+		Player::ID playerA = sender;
+		Player::ID playerB = recipient;
+		order(playerA, playerB);
+		(*session_) <<
+		            "INSERT IGNORE INTO Friendship "
+		            "(friend_a, friend_b) "
+		            "VALUES(?, ?)", use(playerA), use(playerB), now;
+		(*session_) <<
+		            "DELETE FROM FriendshipRequest "
+		            "WHERE sender = ? AND recipient = ? ",
+		            use(recipient), use(sender), now;
+	}
+	//! Sinon on insert la demande (sauf si il en as déja une identique)
+	else
+	{
+		(*session_) <<
+		            "INSERT IGNORE INTO FriendshipRequest "
+		            "(sender, recipient) "
+		            "VALUES(?, ?)",
+		            use(sender), use(recipient), now;
+	}
+	trans.commit();
+}
+DB_CATCH
+
+
+void DataBase::acceptFriendshipRequest(Player::ID sender, Player::ID recipient, bool accept)
+try
+{
+	//Si c'est le meme joueur(ce qui ne devrait pas arriver) on supprime la demande
+	if(sender == recipient)
+		accept = false;
+	Transaction trans(*session_);
+	//! Si le joueur accepte
+	if(accept)
+	{
+		//! - On verifie que la requete est bien là
+		size_t rowCount = 0;
+		(*session_) <<
+		            "SELECT COUNT(*) FROM FriendshipRequest "
+		            "WHERE sender = ? AND recipient = ? ",
+		            into(rowCount), use(sender), use(recipient), now;
+		//! - Dans ce cas on ajoute l'amitiée dans la base
+		if(rowCount)
+		{
+			Player::ID playerA = sender;
+			Player::ID playerB = recipient;
+			order(playerA, playerB);
+			(*session_) <<
+			            "INSERT IGNORE INTO Friendship "
+			            "(friend_a, friend_b) "
+			            "VALUES(?, ?)", use(playerA), use(playerB), now;
+		}
+	}
+	//! Dans tout les cas on supprime la requete
+	(*session_) <<
+	            "DELETE FROM FriendshipRequest "
+	            "WHERE sender = ? AND recipient = ? ",
+	            use(sender), use(recipient), now;
+	trans.commit();
+}
+DB_CATCH
+
+
+void DataBase::closeFriendship(Player::ID playerA, Player::ID playerB)
+try
+{
+	order(playerA, playerB);
+	(*session_) <<
+	            "DELETE FROM Friendship "
+	            "WHERE friend_a = ? AND friend_b = ? ",
+	            use(playerA), use(playerB), now;
+}
+DB_CATCH
+
+
+std::vector<Player> DataBase::getFriends(Player::ID player) const
+try
+{
+	std::vector<PlayerTmp> friends;
+	friends.reserve(100);
+	(*session_) <<
+	            GetPlayerRequest <<
+	            "JOIN Friendship "
+	            "ON (friend_a = Player.id AND friend_b = ?) "
+	            "  OR (friend_b = Player.id AND friend_a = ?)",
+	            into(friends), use(player), use(player), now;
+	std::vector<Player> result;
+	result.reserve(friends.size());
+	for(PlayerTmp const & fr: friends)
+	{
+		if(fr.get<0>() != player)
+			result.push_back(playerFromTuple(fr));
+	}
+	return result;
+}
+DB_CATCH
+
+
+FriendshipRequests DataBase::getFriendshipRequest(Player::ID player) const
+try
+{
+	FriendshipRequests result;
+	{
+		std::vector<PlayerTmp> received;
+		received.reserve(100);
+		(*session_) <<
+		            GetPlayerRequest <<
+		            "JOIN FriendshipRequest "
+		            "ON sender = Player.id AND recipient = ? ",
+		            into(received), use(player), now;
+		result.received.reserve(received.size());
+		for(PlayerTmp const & fr: received)
+			result.received.push_back(playerFromTuple(fr));
+	}
+	{
+		std::vector<PlayerTmp> sent;
+		sent.reserve(100);
+		(*session_) <<
+		            GetPlayerRequest <<
+		            "JOIN FriendshipRequest "
+		            "ON sender = ? AND recipient = Player.id ",
+		            into(sent), use(player), now;
+		result.sent.reserve(sent.size());
+		for(PlayerTmp const & fr: sent)
+			result.sent.push_back(playerFromTuple(fr));
+	}
+	return result;
+}
+DB_CATCH
+
+
+//***************************  Alliance  **********************************
+
+Alliance::ID DataBase::addAlliance(Player::ID pid,
+                                   std::string const& name,
+                                   std::string const& description)
+try
+{
+	Transaction trans(*session_);
+	(*session_) <<
+	            "INSERT IGNORE INTO Alliance "
+	            "(masterID, name, description) "
+	            "VALUES(?, ?, ?)",
+	            use(pid), use(name), use(description), now;
+	size_t rowCount;
+	(*session_) << "SELECT ROW_COUNT() ", into(rowCount), now;
+	if(rowCount == 0)
+		return Alliance::NoId;
+
+	Alliance::ID id = 0;
+	(*session_) << "SELECT LAST_INSERT_ID() ", into(id), now;
+	(*session_) <<
+	            "UPDATE Player SET allianceID = ? WHERE id = ?",
+	            use(id), use(pid), now;
+	trans.commit();
+	return id;
+}
+DB_CATCH
+
+
+Alliance DataBase::getAlliance(Alliance::ID aid)
+try
+{
+	Alliance al;
+	BLOB description;
+	(*session_) <<
+	            "SELECT Alliance.*, Player.login FROM Alliance "
+	            "INNER JOIN Player "
+	            "ON masterID = Player.id "
+	            "WHERE Alliance.id = ? ",
+	            into(al.id),
+	            into(al.masterID),
+	            into(al.name),
+	            into(description),
+	            into(al.masterLogin),
+	            use(aid), now;
+	al.description = toString(description);
+	return al;
+}
+DB_CATCH
+
+
+void DataBase::updateAlliance(Alliance const& al)
+try
+{
+	(*session_) <<
+	            "UPDATE Alliance SET "
+	            "  name = ?, description = ? "
+	            "WHERE id = ?",
+	            use(al.name), use(al.description), use(al.id), now;
+}
+DB_CATCH
+
+void DataBase::transfertAlliance(Alliance::ID aid, Player::ID pid)
+try
+{
+	Transaction trans(*session_);
+	Player player = getPlayer(pid);
+	if(player.allianceID != aid)
+		return;
+	(*session_) <<
+	            "UPDATE Alliance SET masterID = ? WHERE id = ?",
+	            use(pid), use(aid), now;
+	trans.commit();
+}
+DB_CATCH
+
+
+void DataBase::eraseAlliance(Alliance::ID aid)
+try
+{
+	(*session_) << "DELETE FROM Alliance WHERE id = ? ", use(aid), now;
+}
+DB_CATCH
+
+
+void DataBase::joinAlliance(Player::ID pid, Alliance::ID aid)
+try
+{
+	(*session_) <<
+	            "UPDATE Player SET allianceID = ? WHERE id = ?",
+	            use(aid), use(pid), now;
+}
+DB_CATCH
+
+
+void DataBase::quitAlliance(Player::ID pid)
+try
+{
+	Transaction trans(*session_);
+	Player player = getPlayer(pid);
+	Alliance alliance = getAlliance(player.allianceID);
+	(*session_) <<
+	            "UPDATE Player SET allianceID = NULL WHERE id = ?",
+	            use(pid), now;
+	if(alliance.masterID == pid)
+		eraseAlliance(alliance.id);
 	trans.commit();
 }
 DB_CATCH

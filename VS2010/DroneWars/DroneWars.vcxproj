@@ -270,6 +270,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>I:\C_libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories);I:\C_libs\thrift\lib\cpp\$(Platform)\$(Configuration);I:\C_libs\log4cplus-1.1.0_VS2012_$(Platform)\src\$(Configuration);I:\C_libs\poco-1.4.6p1-all\lib64</AdditionalLibraryDirectories>
       <AdditionalDependencies>libthrift.lib;lua.lib;luabind.lib;log4cplus.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -293,6 +294,7 @@
       <AdditionalLibraryDirectories>I:\C_libs\boost_1_49_0\stage\$(Platform)\lib;$(SolutionDir)$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories);I:\C_libs\thrift\lib\cpp\$(Platform)\$(Configuration);I:\C_libs\log4cplus-1.1.0_VS2012_$(Platform)\src\$(Configuration);I:\C_libs\poco-1.4.6p1-all\lib64</AdditionalLibraryDirectories>
       <AdditionalDependencies>libthrift.lib;lua.lib;luabind.lib;log4cplus.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/LTCG %(AdditionalOptions)</AdditionalOptions>
+      <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -7,6 +7,42 @@
 
 namespace Poco {namespace Data {class Session;}}
 
+struct Message
+{
+	typedef uint32_t ID;
+	ID id;
+	Player::ID sender;
+	Player::ID recipient;
+	time_t time;
+	std::string subject;
+	std::string message;
+	std::string senderLogin;
+
+	Message(uint32_t id,
+	        Player::ID sender,
+	        Player::ID recipient,
+	        time_t time,
+	        std::string const& subject,
+	        std::string const& message,
+	        std::string const& senderLogin):
+		id(id),
+		sender(sender),
+		recipient(recipient),
+		time(time),
+		subject(subject),
+		message(message),
+		senderLogin(senderLogin)
+	{
+	}
+};
+
+struct FriendshipRequests
+{
+	std::vector<Player> sent;
+	std::vector<Player> received;
+};
+
+
 class DataBase
 {
 	std::unique_ptr<Poco::Data::Session> session_;
@@ -29,6 +65,8 @@ public:
 	DataBase();
 	~DataBase();
 
+	//***************************  Player  ************************************
+
 	Player::ID addPlayer(std::string const& login,
 	                     std::string const& password,
 	                     std::vector<std::string> const& codes);
@@ -42,6 +80,12 @@ public:
 
 	std::vector<Player> getPlayers() const;
 
+	void eraseAccount(Player::ID pid);
+
+	void updateScore(std::map<Player::ID, uint64_t> const& scoreMap);
+
+	//***************************  Event  *************************************
+
 	void addEvents(std::vector<Event> const& events);
 
 	std::vector<Event> getPlayerEvents(Player::ID pid) const;
@@ -53,6 +97,8 @@ public:
 	void resetPlanetEvents(Coord pcoord);
 
 	void removeOldEvents();
+
+	//***************************  Script  ************************************
 
 	size_t addScript(Player::ID pid,
 	                 CodeData::Target target,
@@ -71,13 +117,15 @@ public:
 	};
 	void addCodeErrors(std::vector<CodeError> const& errors);
 
+	//***************************  FightReport  *******************************
+
 	size_t addFightReport(FightReport const& report);
 
 	void addFightReports(std::vector<FightReport> const& reports);
 
 	FightReport getFightReport(size_t reportID);
 
-	void eraseAccount(Player::ID pid);
+	//***************************  Tutos  *************************************
 
 	void incrementTutoDisplayed(std::vector<Player::ID> const& pid,
 	                            std::string const& tutoName);
@@ -89,7 +137,46 @@ public:
 
 	std::map<Player::ID, PlayerTutoMap> getAllTutoDisplayed() const;
 
-	void updateScore(std::map<Player::ID, uint64_t> const& scoreMap);
+	//***************************  Messages  **********************************
+
+	void addMessage(Player::ID sender,
+	                Player::ID recipient,
+	                std::string const& suject,
+	                std::string const& message);
+
+	std::vector<Message> getMessages(Player::ID recipient);
+
+	void eraseMesage(Message::ID mid);
+
+	//***************************  Friendship  ********************************
+
+	void addFriendshipRequest(Player::ID sender, Player::ID recipient);
+
+	void acceptFriendshipRequest(Player::ID sender, Player::ID recipient, bool accept);
+
+	void closeFriendship(Player::ID playerA, Player::ID playerB);
+
+	std::vector<Player> getFriends(Player::ID player) const;
+
+	FriendshipRequests getFriendshipRequest(Player::ID player) const;
+
+	//***************************  Alliance  **********************************
+
+	Alliance::ID addAlliance(Player::ID pid,
+	                         std::string const& name,
+	                         std::string const& description);
+
+	Alliance getAlliance(Alliance::ID aid);
+
+	void updateAlliance(Alliance const& alliance);
+
+	void transfertAlliance(Alliance::ID aid, Player::ID pid);
+
+	void eraseAlliance(Alliance::ID aid);
+
+	void joinAlliance(Player::ID pid, Alliance::ID aid);
+
+	void quitAlliance(Player::ID pid);
 };
 
 #endif //__DRONEWARS_DATABASE__

@@ -13,7 +13,9 @@ const thriftConstants g_thrift_constants;
 
 thriftConstants::thriftConstants()
 {
-	Player_NoId = -1;
+	Alliance_NoId = 0;
+
+	Player_NoId = 0;
 
 	Universe_MapSizeX = 100;
 

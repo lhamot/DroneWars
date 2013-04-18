@@ -73,4 +73,50 @@ public:
 	void getCannonsInfo(std::vector<ndw::Cannon>& _return);
 
 	void getShipsInfo(std::vector<ndw::Ship>& _return);
+
+	//***************************  Messages  **********************************
+
+	void addMessage(const ndw::Player_ID sender,
+	                const ndw::Player_ID recipient,
+	                const std::string& suject,
+	                const std::string& message);
+
+	void getMessages(std::vector<ndw::Message>& _return,
+	                 const ndw::Player_ID recipient);
+
+	void eraseMesage(const ndw::Message_ID mid);
+
+	//***************************  Friendship  ********************************
+
+	void addFriendshipRequest(const ndw::Player_ID playerA,
+	                          const ndw::Player_ID playerB);
+
+	void acceptFriendshipRequest(const ndw::Player_ID playerA,
+	                             const ndw::Player_ID playerB,
+	                             const bool accept);
+
+	void closeFriendship(const ndw::Player_ID playerA,
+	                     const ndw::Player_ID playerB);
+
+	void getFriends(std::vector<ndw::Player>& _return,
+	                const ndw::Player_ID player);
+
+	void getFriendshipRequest(ndw::FriendshipRequests& _return,
+	                          const ndw::Player_ID player);
+
+	//***************************  Alliance  **********************************
+
+	ndw::Alliance_ID addAlliance(const ndw::Player_ID pid, const std::string& name, const std::string& description);
+
+	void getAlliance(ndw::Alliance& _return, const ndw::Alliance_ID aid);
+
+	void updateAlliance(const ndw::Alliance& alliance);
+
+	void transfertAlliance(const ndw::Alliance_ID aid, const ndw::Player_ID pid);
+
+	void eraseAlliance(const ndw::Alliance_ID aid);
+
+	void joinAlliance(const ndw::Player_ID pid, const ndw::Alliance_ID aid);
+
+	void quitAlliance(const ndw::Player_ID pid);
 };

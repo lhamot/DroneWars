@@ -1,0 +1,54 @@
+{% extends "ingame_base.html" %}
+
+{% load i18n %}
+
+{% load tmp_filters %}
+
+{% block content %}
+
+<div class="container">
+	<div class="row">
+		<div class="span8 offset2">
+			<table class="table">
+				{% for player in requests.received %}
+				<tr>
+					<th>{% trans "Friendship request received"%}</th>
+					<td>{{player.id|playerlink:player.login|safe}}</td>
+					<td>
+						<a href="friends.html?accept=True&sender={{player.id}}">{% trans "Accept" %}</a>
+						<a href="friends.html?accept=False&sender={{player.id}}">{% trans "Reject" %}</a>
+					</td>
+				</tr>
+				{% endfor %}
+			</table>
+			<table class="table">
+				{% for player in requests.sent %}
+				<tr>
+					<th>{% trans "Friendship request sent"%}</th>
+					<td>{{player.id|playerlink:player.login|safe}}</td>
+					<td>
+						<a href="friends.html?cancel&recipientID={{player.id}}">{% trans "Close" %}</a>
+					</td>
+				</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
+	<div class="row">
+		<div class="span8 offset2">
+			<table class="table">
+				{% for player in frienships %}
+				<tr>
+					<th>{% trans "Friendship with"%}</th>
+					<td>{{player.id|playerlink:player.login|safe}}</td>
+					<td>
+						<a href="friends.html?close&friend={{player.id}}">{% trans "Close" %}</a>
+					</td>
+				</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

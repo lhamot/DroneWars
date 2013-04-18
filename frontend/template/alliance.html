@@ -1,0 +1,73 @@
+{% extends "ingame_base.html" %}
+
+{% load i18n %}
+
+{% load tmp_filters %}
+
+{% block content %}
+
+<div class="container">
+	<div class="row">
+		<div class="span8 offset2">
+			{% if alliance.id %}
+			<table class="table">
+				<tr>
+					<th>{% trans "Name" %}</th><td>{{alliance.name}}</td>
+				</tr>
+				<tr>
+					<th>{% trans "Master" %}</th>
+					<td>{{alliance.masterID|playerlink:alliance.masterLogin|safe}}</td>
+				</tr>
+				<tr>
+					<td colspan="2">{{alliance.description|bbcode|safe}}</td>
+				</tr>
+				{% if player.allianceID = alliance.id %}
+				<tr>
+				{% if player.id = alliance.masterID %}
+					<td colspan="2"><center><a class="btn btn-danger" href="?quit">{% trans "Destroy" %}</a></center></td>
+				{% else %}
+					<td colspan="2"><center><a class="btn btn-danger" href="?quit">{% trans "Quit" %}</a></center></td>
+				{% endif %}
+				</tr>
+				{% else %}
+				<tr>
+					<td colspan="2"><center><a class="btn btn-primary" href="?join={{alliance.id}}">{% trans "Join" %}</a></center></td>
+				</tr>
+				{% endif %}
+			</table>
+			{% if player.id = alliance.masterID %}
+			<form method="post">
+				{% csrf_token %}
+				<fieldset>
+				<legend>{% trans "Change alliance" %}</legend>
+				{{form.as_p}}
+				<input type="hidden" name="allianceID" value="{{alliance.id}}"/>
+				<p><center><input class="btn btn-success" type="submit" name="update" value="{% trans "Update" %}" /></center></p>
+				</fieldset>
+			</form>
+			{% endif %}
+			{% else %}
+			<form method="post">
+				{% csrf_token %}
+				<fieldset>
+				<legend>{% trans "Create alliance" %}</legend>
+				{{form.as_p}}
+				<p><center><input class="btn btn-success" type="submit" name="create" value="{% trans "Create" %}" /></center></p>
+				</fieldset>
+			</form>
+			{% endif %}
+		</div>
+	</div>
+	{% if alert %}
+	<div class="row">
+		<div class="span8 offset2">
+			<div class="alert text-success span10">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+				<strong>{{alert|safe}}</strong>
+			</div>
+		</div>
+	</div>
+	{% endif %}
+</div>
+
+{% endblock %}

@@ -9,7 +9,8 @@
 from thrift.Thrift import TType, TMessageType, TException, TApplicationException
 from ttypes import *
 
-Player_NoId = -1
+Alliance_NoId = 0
+Player_NoId = 0
 Universe_MapSizeX = 100
 Universe_MapSizeY = 100
 Universe_MapSizeZ = 100

@@ -1,0 +1,56 @@
+{% extends "ingame_base.html" %}
+
+{% load i18n %}
+
+{% load tmp_filters %}
+
+{% block content %}
+
+<div class="container">
+	<div class="row">
+		<div class="span8 offset2">
+			<form method="post">
+				{% csrf_token %}
+				<fieldset>
+				<legend>{% trans "Message" %}</legend>
+				<p><label>{% trans "Recipient" %}</label>{{recipientLogin}}</p>
+				{{messForm.as_p}}
+				<input type="hidden" name="senderID" value="{{senderID}}">
+				<input type="hidden" name="recipientID" value="{{recipientID}}">
+				<input type="hidden" name="recipientLogin" value="{{recipientLogin}}">
+				<p><input class="btn btn-success" type="submit" name="send_message" value="{% trans "Send message" %}" /></p>
+				</fieldset>
+			</form>
+			{% if senderID != recipientID %}
+			<form method="post">
+				{% csrf_token %}
+				<fieldset>
+				<!--<legend>{% trans "Send friendship request" %}</legend>-->
+				<!--<p><label>{% trans "Recipient" %}</label>{{recipientLogin}}</p>-->
+				<input type="hidden" name="senderID" value="{{senderID}}">
+				<input type="hidden" name="recipientID" value="{{recipientID}}">
+				<input type="hidden" name="recipientLogin" value="{{recipientLogin}}">
+				<p>
+					<input class="btn btn-success" type="submit" name="send_friendship_request" value="{% trans "Send friendship request" %}" />
+					{% if player.id == alliance.masterID and inspectedPlayer.allianceID == alliance.id %}
+					<input class="btn btn-success" type="submit" name="transfert_alliance" value="{% trans "Transfert alliance" %}" />
+					{% endif %}
+				</p>
+				</fieldset>
+			</form>
+			{% endif %}
+		</div>
+	</div>
+	{% if alert %}
+	<div class="row">
+		<div class="span8 offset2">
+			<div class="alert text-success span10">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+				<strong>{{alert|safe}}</strong>
+			</div>
+		</div>
+	</div>
+	{% endif %}
+</div>
+
+{% endblock %}

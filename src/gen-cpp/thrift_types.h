@@ -169,7 +169,9 @@ typedef int16_t Coord_Value;
 
 typedef int32_t Event_ID;
 
-typedef int16_t Player_ID;
+typedef int32_t Alliance_ID;
+
+typedef int32_t Player_ID;
 
 typedef std::vector<int32_t>  BuildingTab;
 
@@ -185,6 +187,8 @@ typedef std::map<class Coord, class Planet>  Universe_PlanetMap;
 
 typedef std::map<int32_t, class FightReport>  ReportMap;
 
+typedef int32_t Message_ID;
+
 typedef struct _Coord__isset
 {
 	_Coord__isset() : X(false), Y(false), Z(false) {}
@@ -197,8 +201,8 @@ class Coord
 {
 public:
 
-	static const char* ascii_fingerprint; // = "EEBEE5F2DAE75B1AB615147C163DCA93";
-	static const uint8_t binary_fingerprint[16]; // = {0xEE,0xBE,0xE5,0xF2,0xDA,0xE7,0x5B,0x1A,0xB6,0x15,0x14,0x7C,0x16,0x3D,0xCA,0x93};
+	static const char* ascii_fingerprint; // = "CA961494BB2E3F092A20C7271AA01847";
+	static const uint8_t binary_fingerprint[16]; // = {0xCA,0x96,0x14,0x94,0xBB,0x2E,0x3F,0x09,0x2A,0x20,0xC7,0x27,0x1A,0xA0,0x18,0x47};
 
 	Coord() : X(0), Y(0), Z(0)
 	{
@@ -266,8 +270,8 @@ class Event
 {
 public:
 
-	static const char* ascii_fingerprint; // = "9C6D5D1EFAEA56027D176F213E40700B";
-	static const uint8_t binary_fingerprint[16]; // = {0x9C,0x6D,0x5D,0x1E,0xFA,0xEA,0x56,0x02,0x7D,0x17,0x6F,0x21,0x3E,0x40,0x70,0x0B};
+	static const char* ascii_fingerprint; // = "F2E98935606383590C6DE879E1EBD28D";
+	static const uint8_t binary_fingerprint[16]; // = {0xF2,0xE9,0x89,0x35,0x60,0x63,0x83,0x59,0x0C,0x6D,0xE8,0x79,0xE1,0xEB,0xD2,0x8D};
 
 	Event() : id(0), time(0), type((Event_Type::type)0), comment(), value(0), viewed(0)
 	{
@@ -356,8 +360,8 @@ class CodeData
 {
 public:
 
-	static const char* ascii_fingerprint; // = "8C927FC383653B5F72B71AAB46CCBF55";
-	static const uint8_t binary_fingerprint[16]; // = {0x8C,0x92,0x7F,0xC3,0x83,0x65,0x3B,0x5F,0x72,0xB7,0x1A,0xAB,0x46,0xCC,0xBF,0x55};
+	static const char* ascii_fingerprint; // = "2F7AE0E87A4ACA5D4DC3B9EB4C49DBEE";
+	static const uint8_t binary_fingerprint[16]; // = {0x2F,0x7A,0xE0,0xE8,0x7A,0x4A,0xCA,0x5D,0x4D,0xC3,0xB9,0xEB,0x4C,0x49,0xDB,0xEE};
 
 	CodeData() : blocklyCode(), code(), lastError()
 	{
@@ -410,9 +414,93 @@ public:
 
 void swap(CodeData& a, CodeData& b);
 
+typedef struct _Alliance__isset
+{
+	_Alliance__isset() : id(false), masterID(false), name(false), description(false), masterLogin(false) {}
+	bool id;
+	bool masterID;
+	bool name;
+	bool description;
+	bool masterLogin;
+} _Alliance__isset;
+
+class Alliance
+{
+public:
+
+	static const char* ascii_fingerprint; // = "D053B794D972C573CD6C2B05D5062B3A";
+	static const uint8_t binary_fingerprint[16]; // = {0xD0,0x53,0xB7,0x94,0xD9,0x72,0xC5,0x73,0xCD,0x6C,0x2B,0x05,0xD5,0x06,0x2B,0x3A};
+
+	Alliance() : id(0), masterID(0), name(), description(), masterLogin()
+	{
+	}
+
+	virtual ~Alliance() throw() {}
+
+	Alliance_ID id;
+	Player_ID masterID;
+	std::string name;
+	std::string description;
+	std::string masterLogin;
+
+	_Alliance__isset __isset;
+
+	void __set_id(const Alliance_ID val)
+	{
+		id = val;
+	}
+
+	void __set_masterID(const Player_ID val)
+	{
+		masterID = val;
+	}
+
+	void __set_name(const std::string& val)
+	{
+		name = val;
+	}
+
+	void __set_description(const std::string& val)
+	{
+		description = val;
+	}
+
+	void __set_masterLogin(const std::string& val)
+	{
+		masterLogin = val;
+	}
+
+	bool operator == (const Alliance& rhs) const
+	{
+		if(!(id == rhs.id))
+			return false;
+		if(!(masterID == rhs.masterID))
+			return false;
+		if(!(name == rhs.name))
+			return false;
+		if(!(description == rhs.description))
+			return false;
+		if(!(masterLogin == rhs.masterLogin))
+			return false;
+		return true;
+	}
+	bool operator != (const Alliance& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const Alliance&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+void swap(Alliance& a, Alliance& b);
+
 typedef struct _Player__isset
 {
-	_Player__isset() : id(false), login(false), password(false), fleetsCode(false), planetsCode(false), tutoDisplayed(false), mainPlanet(false), score(true) {}
+	_Player__isset() : id(false), login(false), password(false), fleetsCode(false), planetsCode(false), tutoDisplayed(false), mainPlanet(false), score(true), allianceID(false), allianceName(false) {}
 	bool id;
 	bool login;
 	bool password;
@@ -421,16 +509,18 @@ typedef struct _Player__isset
 	bool tutoDisplayed;
 	bool mainPlanet;
 	bool score;
+	bool allianceID;
+	bool allianceName;
 } _Player__isset;
 
 class Player
 {
 public:
 
-	static const char* ascii_fingerprint; // = "67593A378FA44DAEC1C617C5B275E3E5";
-	static const uint8_t binary_fingerprint[16]; // = {0x67,0x59,0x3A,0x37,0x8F,0xA4,0x4D,0xAE,0xC1,0xC6,0x17,0xC5,0xB2,0x75,0xE3,0xE5};
+	static const char* ascii_fingerprint; // = "0A6A0C74389D274DB3E61DA316F4577B";
+	static const uint8_t binary_fingerprint[16]; // = {0x0A,0x6A,0x0C,0x74,0x38,0x9D,0x27,0x4D,0xB3,0xE6,0x1D,0xA3,0x16,0xF4,0x57,0x7B};
 
-	Player() : id(0), login(), password(), score(0LL)
+	Player() : id(0), login(), password(), score(0LL), allianceID(0), allianceName()
 	{
 	}
 
@@ -444,6 +534,8 @@ public:
 	std::map<std::string, int32_t>  tutoDisplayed;
 	Coord mainPlanet;
 	int64_t score;
+	Alliance_ID allianceID;
+	std::string allianceName;
 
 	_Player__isset __isset;
 
@@ -487,6 +579,16 @@ public:
 		score = val;
 	}
 
+	void __set_allianceID(const Alliance_ID val)
+	{
+		allianceID = val;
+	}
+
+	void __set_allianceName(const std::string& val)
+	{
+		allianceName = val;
+	}
+
 	bool operator == (const Player& rhs) const
 	{
 		if(!(id == rhs.id))
@@ -504,6 +606,10 @@ public:
 		if(!(mainPlanet == rhs.mainPlanet))
 			return false;
 		if(!(score == rhs.score))
+			return false;
+		if(!(allianceID == rhs.allianceID))
+			return false;
+		if(!(allianceName == rhs.allianceName))
 			return false;
 		return true;
 	}
@@ -903,8 +1009,8 @@ class FleetTask
 {
 public:
 
-	static const char* ascii_fingerprint; // = "F3DE57592C8E268CB1D6AAADCE6925AA";
-	static const uint8_t binary_fingerprint[16]; // = {0xF3,0xDE,0x57,0x59,0x2C,0x8E,0x26,0x8C,0xB1,0xD6,0xAA,0xAD,0xCE,0x69,0x25,0xAA};
+	static const char* ascii_fingerprint; // = "143BF505F8C7FC02D011519505B27DD1";
+	static const uint8_t binary_fingerprint[16]; // = {0x14,0x3B,0xF5,0x05,0xF8,0xC7,0xFC,0x02,0xD0,0x11,0x51,0x95,0x05,0xB2,0x7D,0xD1};
 
 	FleetTask() : type((FleetTask_Enum::type)0), lauchTime(0), duration(0), expired(0)
 	{
@@ -990,8 +1096,8 @@ class Planet
 {
 public:
 
-	static const char* ascii_fingerprint; // = "560CAE52B65F11EE9778A7D15AD555A8";
-	static const uint8_t binary_fingerprint[16]; // = {0x56,0x0C,0xAE,0x52,0xB6,0x5F,0x11,0xEE,0x97,0x78,0xA7,0xD1,0x5A,0xD5,0x55,0xA8};
+	static const char* ascii_fingerprint; // = "859F5C6364FF69C5CA100E1D4BBFB353";
+	static const uint8_t binary_fingerprint[16]; // = {0x85,0x9F,0x5C,0x63,0x64,0xFF,0x69,0xC5,0xCA,0x10,0x0E,0x1D,0x4B,0xBF,0xB3,0x53};
 
 	Planet() : name(), playerId(0)
 	{
@@ -1102,8 +1208,8 @@ class Fleet
 {
 public:
 
-	static const char* ascii_fingerprint; // = "1E027A315C332828B9396146C6AB22C3";
-	static const uint8_t binary_fingerprint[16]; // = {0x1E,0x02,0x7A,0x31,0x5C,0x33,0x28,0x28,0xB9,0x39,0x61,0x46,0xC6,0xAB,0x22,0xC3};
+	static const char* ascii_fingerprint; // = "C5FFEB52567B996432D756F584D1CB5E";
+	static const uint8_t binary_fingerprint[16]; // = {0xC5,0xFF,0xEB,0x52,0x56,0x7B,0x99,0x64,0x32,0xD7,0x56,0xF5,0x84,0xD1,0xCB,0x5E};
 
 	Fleet() : id(0), playerId(0), name()
 	{
@@ -1215,8 +1321,8 @@ class FleetAction
 {
 public:
 
-	static const char* ascii_fingerprint; // = "E02E0C7B9F835F33C70A6025484AC02C";
-	static const uint8_t binary_fingerprint[16]; // = {0xE0,0x2E,0x0C,0x7B,0x9F,0x83,0x5F,0x33,0xC7,0x0A,0x60,0x25,0x48,0x4A,0xC0,0x2C};
+	static const char* ascii_fingerprint; // = "F6EF2A530E978464FF841B86E72EEFE1";
+	static const uint8_t binary_fingerprint[16]; // = {0xF6,0xEF,0x2A,0x53,0x0E,0x97,0x84,0x64,0xFF,0x84,0x1B,0x86,0xE7,0x2E,0xEF,0xE1};
 
 	FleetAction() : action((FleetAction_Type::type)0)
 	{
@@ -1272,8 +1378,8 @@ class FleetFightInfo
 {
 public:
 
-	static const char* ascii_fingerprint; // = "B08C764F998421560B49353B93F9527B";
-	static const uint8_t binary_fingerprint[16]; // = {0xB0,0x8C,0x76,0x4F,0x99,0x84,0x21,0x56,0x0B,0x49,0x35,0x3B,0x93,0xF9,0x52,0x7B};
+	static const char* ascii_fingerprint; // = "230D47CFE5714B9C5F46C8B28E57AD53";
+	static const uint8_t binary_fingerprint[16]; // = {0x23,0x0D,0x47,0xCF,0xE5,0x71,0x4B,0x9C,0x5F,0x46,0xC8,0xB2,0x8E,0x57,0xAD,0x53};
 
 	FleetFightInfo()
 	{
@@ -1331,8 +1437,8 @@ class FleetReport
 {
 public:
 
-	static const char* ascii_fingerprint; // = "309EAA3F305F16C492440FF816CB3BA4";
-	static const uint8_t binary_fingerprint[16]; // = {0x30,0x9E,0xAA,0x3F,0x30,0x5F,0x16,0xC4,0x92,0x44,0x0F,0xF8,0x16,0xCB,0x3B,0xA4};
+	static const char* ascii_fingerprint; // = "481453DA9CBE7BE529CA25C03DE5F1DD";
+	static const uint8_t binary_fingerprint[16]; // = {0x48,0x14,0x53,0xDA,0x9C,0xBE,0x7B,0xE5,0x29,0xCA,0x25,0xC0,0x3D,0xE5,0xF1,0xDD};
 
 	FleetReport() : isDead(0), hasFight(0)
 	{
@@ -1404,8 +1510,8 @@ class PlanetFightInfo
 {
 public:
 
-	static const char* ascii_fingerprint; // = "590D9490C233717AC2BB7CA99D14B578";
-	static const uint8_t binary_fingerprint[16]; // = {0x59,0x0D,0x94,0x90,0xC2,0x33,0x71,0x7A,0xC2,0xBB,0x7C,0xA9,0x9D,0x14,0xB5,0x78};
+	static const char* ascii_fingerprint; // = "FD6C8B0CDB7DA7C7FC2DD7B23A703EDF";
+	static const uint8_t binary_fingerprint[16]; // = {0xFD,0x6C,0x8B,0x0C,0xDB,0x7D,0xA7,0xC7,0xFC,0x2D,0xD7,0xB2,0x3A,0x70,0x3E,0xDF};
 
 	PlanetFightInfo()
 	{
@@ -1463,8 +1569,8 @@ class PlanetReport
 {
 public:
 
-	static const char* ascii_fingerprint; // = "C8BCC014EC30D94983D9F1720F1815F7";
-	static const uint8_t binary_fingerprint[16]; // = {0xC8,0xBC,0xC0,0x14,0xEC,0x30,0xD9,0x49,0x83,0xD9,0xF1,0x72,0x0F,0x18,0x15,0xF7};
+	static const char* ascii_fingerprint; // = "6AF944E886CBE8BFA5F45D23F6D577DF";
+	static const uint8_t binary_fingerprint[16]; // = {0x6A,0xF9,0x44,0xE8,0x86,0xCB,0xE8,0xBF,0xA5,0xF4,0x5D,0x23,0xF6,0xD5,0x77,0xDF};
 
 	PlanetReport() : isDead(0), hasFight(0)
 	{
@@ -1537,8 +1643,8 @@ class FightReport
 {
 public:
 
-	static const char* ascii_fingerprint; // = "84E63781216FC4B4EEFC4A94729A3C12";
-	static const uint8_t binary_fingerprint[16]; // = {0x84,0xE6,0x37,0x81,0x21,0x6F,0xC4,0xB4,0xEE,0xFC,0x4A,0x94,0x72,0x9A,0x3C,0x12};
+	static const char* ascii_fingerprint; // = "7E14E06B907EB37A467E17B53CBE0F4B";
+	static const uint8_t binary_fingerprint[16]; // = {0x7E,0x14,0xE0,0x6B,0x90,0x7E,0xB3,0x7A,0x46,0x7E,0x17,0xB5,0x3C,0xBE,0x0F,0x4B};
 
 	FightReport() : hasPlanet(0)
 	{
@@ -1610,8 +1716,8 @@ class Universe
 {
 public:
 
-	static const char* ascii_fingerprint; // = "5B909131C46939FA526DA5FBEA36CC66";
-	static const uint8_t binary_fingerprint[16]; // = {0x5B,0x90,0x91,0x31,0xC4,0x69,0x39,0xFA,0x52,0x6D,0xA5,0xFB,0xEA,0x36,0xCC,0x66};
+	static const char* ascii_fingerprint; // = "DF0D3401606BD308FC9DD99D8653E1D9";
+	static const uint8_t binary_fingerprint[16]; // = {0xDF,0x0D,0x34,0x01,0x60,0x6B,0xD3,0x08,0xFC,0x9D,0xD9,0x9D,0x86,0x53,0xE1,0xD9};
 
 	Universe() : nextPlayerID(0), nextFleetID(0), time(0)
 	{
@@ -1706,8 +1812,8 @@ class OptionalPlayer
 {
 public:
 
-	static const char* ascii_fingerprint; // = "CBEE300B8A9555F635C3598C0D67C194";
-	static const uint8_t binary_fingerprint[16]; // = {0xCB,0xEE,0x30,0x0B,0x8A,0x95,0x55,0xF6,0x35,0xC3,0x59,0x8C,0x0D,0x67,0xC1,0x94};
+	static const char* ascii_fingerprint; // = "5AD3F23599E55E59CA550ED99EDB79B6";
+	static const uint8_t binary_fingerprint[16]; // = {0x5A,0xD3,0xF2,0x35,0x99,0xE5,0x5E,0x59,0xCA,0x55,0x0E,0xD9,0x9E,0xDB,0x79,0xB6};
 
 	OptionalPlayer()
 	{
@@ -1816,8 +1922,8 @@ class FleetList
 {
 public:
 
-	static const char* ascii_fingerprint; // = "2B87B5A1451327ACB77B9D482546B146";
-	static const uint8_t binary_fingerprint[16]; // = {0x2B,0x87,0xB5,0xA1,0x45,0x13,0x27,0xAC,0xB7,0x7B,0x9D,0x48,0x25,0x46,0xB1,0x46};
+	static const char* ascii_fingerprint; // = "5B491EC71CC5C7C8DC607E81C2289352";
+	static const uint8_t binary_fingerprint[16]; // = {0x5B,0x49,0x1E,0xC7,0x1C,0xC5,0xC7,0xC8,0xDC,0x60,0x7E,0x81,0xC2,0x28,0x93,0x52};
 
 	FleetList() : fleetCount(0)
 	{
@@ -1881,8 +1987,8 @@ class PlanetList
 {
 public:
 
-	static const char* ascii_fingerprint; // = "FF38D462119F05B7CE38376ECE3D8235";
-	static const uint8_t binary_fingerprint[16]; // = {0xFF,0x38,0xD4,0x62,0x11,0x9F,0x05,0xB7,0xCE,0x38,0x37,0x6E,0xCE,0x3D,0x82,0x35};
+	static const char* ascii_fingerprint; // = "7A0DABFE1A8EE24C3E25D766AAEAA4D3";
+	static const uint8_t binary_fingerprint[16]; // = {0x7A,0x0D,0xAB,0xFE,0x1A,0x8E,0xE2,0x4C,0x3E,0x25,0xD7,0x66,0xAA,0xEA,0xA4,0xD3};
 
 	PlanetList() : planetCount(0)
 	{
@@ -1926,6 +2032,165 @@ public:
 };
 
 void swap(PlanetList& a, PlanetList& b);
+
+typedef struct _Message__isset
+{
+	_Message__isset() : id(false), sender(false), recipient(false), time(false), subject(false), message(false), senderLogin(false) {}
+	bool id;
+	bool sender;
+	bool recipient;
+	bool time;
+	bool subject;
+	bool message;
+	bool senderLogin;
+} _Message__isset;
+
+class Message
+{
+public:
+
+	static const char* ascii_fingerprint; // = "5CC9038C07BF78A8A3E0F4D71F63E8A0";
+	static const uint8_t binary_fingerprint[16]; // = {0x5C,0xC9,0x03,0x8C,0x07,0xBF,0x78,0xA8,0xA3,0xE0,0xF4,0xD7,0x1F,0x63,0xE8,0xA0};
+
+	Message() : id(0), sender(0), recipient(0), time(0), subject(), message(), senderLogin()
+	{
+	}
+
+	virtual ~Message() throw() {}
+
+	Message_ID id;
+	Player_ID sender;
+	Player_ID recipient;
+	int32_t time;
+	std::string subject;
+	std::string message;
+	std::string senderLogin;
+
+	_Message__isset __isset;
+
+	void __set_id(const Message_ID val)
+	{
+		id = val;
+	}
+
+	void __set_sender(const Player_ID val)
+	{
+		sender = val;
+	}
+
+	void __set_recipient(const Player_ID val)
+	{
+		recipient = val;
+	}
+
+	void __set_time(const int32_t val)
+	{
+		time = val;
+	}
+
+	void __set_subject(const std::string& val)
+	{
+		subject = val;
+	}
+
+	void __set_message(const std::string& val)
+	{
+		message = val;
+	}
+
+	void __set_senderLogin(const std::string& val)
+	{
+		senderLogin = val;
+	}
+
+	bool operator == (const Message& rhs) const
+	{
+		if(!(id == rhs.id))
+			return false;
+		if(!(sender == rhs.sender))
+			return false;
+		if(!(recipient == rhs.recipient))
+			return false;
+		if(!(time == rhs.time))
+			return false;
+		if(!(subject == rhs.subject))
+			return false;
+		if(!(message == rhs.message))
+			return false;
+		if(!(senderLogin == rhs.senderLogin))
+			return false;
+		return true;
+	}
+	bool operator != (const Message& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const Message&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+void swap(Message& a, Message& b);
+
+typedef struct _FriendshipRequests__isset
+{
+	_FriendshipRequests__isset() : sent(false), received(false) {}
+	bool sent;
+	bool received;
+} _FriendshipRequests__isset;
+
+class FriendshipRequests
+{
+public:
+
+	static const char* ascii_fingerprint; // = "8002AC3C64B46AE57394DD9071BAE6BF";
+	static const uint8_t binary_fingerprint[16]; // = {0x80,0x02,0xAC,0x3C,0x64,0xB4,0x6A,0xE5,0x73,0x94,0xDD,0x90,0x71,0xBA,0xE6,0xBF};
+
+	FriendshipRequests()
+	{
+	}
+
+	virtual ~FriendshipRequests() throw() {}
+
+	std::vector<Player>  sent;
+	std::vector<Player>  received;
+
+	_FriendshipRequests__isset __isset;
+
+	void __set_sent(const std::vector<Player>& val)
+	{
+		sent = val;
+	}
+
+	void __set_received(const std::vector<Player>& val)
+	{
+		received = val;
+	}
+
+	bool operator == (const FriendshipRequests& rhs) const
+	{
+		if(!(sent == rhs.sent))
+			return false;
+		if(!(received == rhs.received))
+			return false;
+		return true;
+	}
+	bool operator != (const FriendshipRequests& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const FriendshipRequests&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+void swap(FriendshipRequests& a, FriendshipRequests& b);
 
 } // namespace
 

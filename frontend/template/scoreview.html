@@ -15,13 +15,15 @@
 	<tr>
 		<th>{% trans "Index" %}</th>
 		<th><a href="?sort_order=login&asc={{asc}}">{% trans "Name" %}</a></th>
+		<th>{% trans "Alliance" %}</th>
 		<th><a href="?sort_order=score&asc={{asc}}">{% trans "Score" %}</a></th>
 		<th>{% trans "State" %}</th>
 	</tr>
 	{% for player in players %}
 	<tr>
 		<td>{{forloop.counter}}</td>
-		<td>{{player.login}}</td>
+		<td>{{player.id|playerlink:player.login|safe}}</td>
+		<td>{{player.allianceID|alliancelink:player.allianceName|safe}}</td>
 		<td>{{player.score}}</td>
 		<td>
 			{% if player.logged %}
