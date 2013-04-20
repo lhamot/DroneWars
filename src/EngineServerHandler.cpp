@@ -71,7 +71,7 @@ ndw::RessourceSet ressourceToThrift(RessourceSet const& ress)
 {
 	ndw::RessourceSet res;
 	res.tab.reserve(ress.tab.size());
-	for(size_t value: ress.tab)
+	for(size_t value : ress.tab)
 		res.tab.push_back(numCast(value));
 	return res;
 }
@@ -125,13 +125,13 @@ ndw::Fleet fleetToThrift(Fleet const& fleet)
 	result.name = fleet.name;
 
 	result.shipList.reserve(fleet.shipList.size());
-	for(size_t value: fleet.shipList)
+	for(size_t value : fleet.shipList)
 		result.shipList.push_back(numCast(value));
 
 	result.ressourceSet = ressourceToThrift(fleet.ressourceSet);
 
 	result.taskQueue.reserve(fleet.taskQueue.size());
-	for(FleetTask const & task: fleet.taskQueue)
+	for(FleetTask const & task : fleet.taskQueue)
 		result.taskQueue.push_back(fleetTaskToThrift(task));
 
 	return result;
@@ -146,7 +146,7 @@ ndw::Planet planetToThrift(Planet const& planet)
 	res.coord = coordToThrift(planet.coord);
 	res.playerId = numCast(planet.playerId);
 	res.buildingList.reserve(planet.buildingList.size());
-	for(size_t value: planet.buildingList)
+	for(size_t value : planet.buildingList)
 		res.buildingList.push_back(numCast(value));
 	res.taskQueue.reserve(planet.taskQueue.size());
 	transform(planet.taskQueue,
@@ -154,7 +154,7 @@ ndw::Planet planetToThrift(Planet const& planet)
 	          planetTaskToThrift);
 	res.ressourceSet = ressourceToThrift(planet.ressourceSet);
 	res.cannonTab.reserve(planet.cannonTab.size());
-	for(size_t value: planet.cannonTab)
+	for(size_t value : planet.cannonTab)
 		res.cannonTab.push_back(numCast(value));
 
 	return res;
@@ -188,7 +188,7 @@ ndw::FleetReport fleetReportToThrift(Report<Fleet> const& fleetReport)
 	ndw::FleetReport result;
 	result.isDead = fleetReport.isDead;
 	result.hasFight = fleetReport.hasFight;
-	for(intptr_t id: fleetReport.enemySet)
+	for(intptr_t id : fleetReport.enemySet)
 		result.enemySet.insert(numeric_cast<int32_t>(id));
 	result.fightInfo.before = fleetToThrift(fleetReport.fightInfo.before);
 	result.fightInfo.after = fleetToThrift(fleetReport.fightInfo.after);
@@ -201,7 +201,7 @@ ndw::PlanetReport planetReportToThrift(Report<Planet> const& planetReport)
 	ndw::PlanetReport result;
 	result.isDead = planetReport.isDead;
 	result.hasFight = planetReport.hasFight;
-	for(intptr_t id: planetReport.enemySet)
+	for(intptr_t id : planetReport.enemySet)
 		result.enemySet.insert(numeric_cast<int32_t>(id));
 	result.fightInfo.before = planetToThrift(planetReport.fightInfo.before);
 	result.fightInfo.after = planetToThrift(planetReport.fightInfo.after);
@@ -213,7 +213,7 @@ ndw::FightReport fightReportToThrift(FightReport const& report)
 {
 	ndw::FightReport result;
 	result.fleetList.reserve(report.fleetList.size());
-	for(Report<Fleet> const & fleetRep: report.fleetList)
+	for(Report<Fleet> const & fleetRep : report.fleetList)
 		result.fleetList.push_back(fleetReportToThrift(fleetRep));
 	result.hasPlanet = report.hasPlanet;
 	if(result.hasPlanet != bool(report.planet))
@@ -285,31 +285,31 @@ RandomAccessRange& sortOnAttr(RandomAccessRange& rng, bool asc, Attribute attr)
 
 
 template<typename Range>
-void sortOnType(Range& range, ndw::Sort_Type::type sortType, const bool asc)
+void sortOnType(Range& rg, ndw::Sort_Type::type sortType, const bool asc)
 {
 	typedef typename Range::value_type FoP; //FleetOrPlanet
 	switch(sortType)
 	{
 	case ndw::Sort_Type::Name:
-		sortOnAttr(range, asc, [](FoP const & elt) {return elt.name;});
+		sortOnAttr(rg, asc, [](FoP const & elt) {return elt.name;});
 		break;
 	case ndw::Sort_Type::X:
-		sortOnAttr(range, asc, [](FoP const & elt) {return elt.coord.X;});
+		sortOnAttr(rg, asc, [](FoP const & elt) {return elt.coord.X;});
 		break;
 	case ndw::Sort_Type::Y:
-		sortOnAttr(range, asc, [](FoP const & elt) {return elt.coord.Y;});
+		sortOnAttr(rg, asc, [](FoP const & elt) {return elt.coord.Y;});
 		break;
 	case ndw::Sort_Type::Z:
-		sortOnAttr(range, asc, [](FoP const & elt) {return elt.coord.Z;});
+		sortOnAttr(rg, asc, [](FoP const & elt) {return elt.coord.Z;});
 		break;
 	case ndw::Sort_Type::M:
-		sortOnAttr(range, asc, [](FoP const & elt) {return elt.ressourceSet.tab[0];});
+		sortOnAttr(rg, asc, [](FoP const & e) {return e.ressourceSet.tab[0];});
 		break;
 	case ndw::Sort_Type::C:
-		sortOnAttr(range, asc, [](FoP const & elt) {return elt.ressourceSet.tab[1];});
+		sortOnAttr(rg, asc, [](FoP const & e) {return e.ressourceSet.tab[1];});
 		break;
 	case ndw::Sort_Type::L:
-		sortOnAttr(range, asc, [](FoP const & elt) {return elt.ressourceSet.tab[2];});
+		sortOnAttr(rg, asc, [](FoP const & e) {return e.ressourceSet.tab[2];});
 		break;
 	default:
 		BOOST_THROW_EXCEPTION(runtime_error("Unconsistent Sort_Type"));
@@ -351,14 +351,14 @@ void EngineServerHandler::getPlayerFleets(
 	auto pageRange = make_iterator_range(fleetList.begin() + beginIndex,
 	                                     fleetList.begin() + endIndex);
 	set<Coord, CompCoord> fleetCoordSet;
-	for(Fleet const & fleet: pageRange)
+	for(Fleet const & fleet : pageRange)
 	{
 		_return.fleetList.push_back(fleetToThrift(fleet));
 		fleetCoordSet.insert(fleet.coord);
 	}
 	vector<Coord> fleetCoordVect(fleetCoordSet.begin(), fleetCoordSet.end());
 	auto planetList = engine_.getPlanets(fleetCoordVect);
-	for(Planet const & planet: planetList)
+	for(Planet const & planet : planetList)
 		_return.planetList.push_back(planetToThrift(planet));
 
 	_return.fleetCount = numCast(fleetList.size());
@@ -399,7 +399,7 @@ void EngineServerHandler::getPlayerPlanets(
 	_return.planetList.reserve(endIndex - beginIndex);
 	auto pageRange = make_iterator_range(planetList.begin() + beginIndex,
 	                                     planetList.begin() + endIndex);
-	for(Planet const & planet: pageRange)
+	for(Planet const & planet : pageRange)
 		_return.planetList.push_back(planetToThrift(planet));
 	_return.planetCount = numCast(planetList.size());
 	LOG4CPLUS_TRACE(logger, "exit");
@@ -491,7 +491,7 @@ void EngineServerHandler::getPlayer(ndw::Player& outPlayer,
 	CodeData const planetCode = database_.getPlayerCode(pid, CodeData::Planet);
 	codeDataCppToThrift(planetCode, outPlayer.planetsCode);
 	map<string, size_t> const levelMap = database_.getTutoDisplayed(pid);
-	for(auto tutoNVP: levelMap)
+	for(auto tutoNVP : levelMap)
 		outPlayer.tutoDisplayed[tutoNVP.first] = numCast(tutoNVP.second);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
@@ -512,7 +512,7 @@ void EngineServerHandler::getPlanet(vector<ndw::Planet>& _return,
 		vector<Event> events =
 		  database_.getPlanetEvents(planet->playerId, coord);
 		_return.front().eventList.reserve(events.size());
-		for(Event const & ev: events)
+		for(Event const & ev : events)
 			_return.front().eventList.push_back(eventToThrift(ev));
 	}
 	LOG4CPLUS_TRACE(logger, "exit");
@@ -527,7 +527,7 @@ void EngineServerHandler::getFleet(ndw::Fleet& _return,
 
 	vector<Event> events = database_.getFleetEvents(_return.playerId, fid);
 	_return.eventList.reserve(events.size());
-	for(Event const & ev: events)
+	for(Event const & ev : events)
 		_return.eventList.push_back(eventToThrift(ev));
 
 	LOG4CPLUS_TRACE(logger, "exit");
@@ -550,7 +550,7 @@ void EngineServerHandler::logPlayer(ndw::OptionalPlayer& _return,
 		CodeData const planetCode =
 		  database_.getPlayerCode(_return.player.id, CodeData::Planet);
 		codeDataCppToThrift(planetCode, outPlayer.planetsCode);
-		for(auto tutoNVP: database_.getTutoDisplayed(outPlayer.id))
+		for(auto tutoNVP : database_.getTutoDisplayed(outPlayer.id))
 			outPlayer.tutoDisplayed[tutoNVP.first] = numCast(tutoNVP.second);
 	}
 	LOG4CPLUS_TRACE(logger, "exit");
@@ -622,7 +622,7 @@ void EngineServerHandler::getBuildingsInfo(vector<ndw::Building>& _return)
 	LOG4CPLUS_TRACE(logger, "enter");
 	_return.reserve(Building::Count);
 	int32_t index = 0;
-	for(Building const & b: Building::List)
+	for(Building const & b : Building::List)
 	{
 		ndw::Building newBu;
 		newBu.index = index++;
@@ -639,7 +639,7 @@ void EngineServerHandler::getCannonsInfo(vector<ndw::Cannon>& _return)
 	LOG4CPLUS_TRACE(logger, "enter");
 	_return.reserve(Cannon::Count);
 	int32_t index = 0;
-	for(Cannon const & c: Cannon::List)
+	for(Cannon const & c : Cannon::List)
 	{
 		ndw::Cannon newCa;
 		newCa.index = index++;
@@ -657,7 +657,7 @@ void EngineServerHandler::getShipsInfo(vector<ndw::Ship>& _return)
 	LOG4CPLUS_TRACE(logger, "enter");
 	_return.reserve(Ship::Count);
 	int32_t index = 0;
-	for(Ship const & s: Ship::List)
+	for(Ship const & s : Ship::List)
 	{
 		ndw::Ship newSh;
 		newSh.index = index++;
@@ -670,7 +670,7 @@ void EngineServerHandler::getShipsInfo(vector<ndw::Ship>& _return)
 }
 
 
-//***************************  Messages  **********************************
+//*******************************  Messages  **********************************
 
 void EngineServerHandler::addMessage(
   const ndw::Player_ID sender,
@@ -694,7 +694,7 @@ void EngineServerHandler::getMessages(
 	LOG4CPLUS_TRACE(logger, "recipient:" << recipient);
 	std::vector<Message> messages = database_.getMessages(recipient);
 	_return.reserve(messages.size());
-	for(Message const & message: messages)
+	for(Message const & message : messages)
 	{
 		ndw::Message newMess;
 		newMess.id = message.id;
@@ -724,7 +724,7 @@ void EngineServerHandler::eraseMesage(const ndw::Message_ID mid)
 }
 
 
-//***************************  Friendship  ********************************
+//*****************************  Friendship  **********************************
 
 void EngineServerHandler::addFriendshipRequest(
   const ndw::Player_ID playerA,
@@ -783,7 +783,7 @@ void EngineServerHandler::getFriendshipRequest(
 }
 
 
-//***************************  Alliance  **********************************
+//*****************************  Alliance  ************************************
 
 
 ndw::Alliance_ID EngineServerHandler::addAlliance(
@@ -820,7 +820,9 @@ void EngineServerHandler::updateAlliance(const ndw::Alliance& al)
 }
 
 
-void EngineServerHandler::transfertAlliance(const ndw::Alliance_ID aid, const ndw::Player_ID pid)
+void EngineServerHandler::transfertAlliance(
+  const ndw::Alliance_ID aid,
+  const ndw::Player_ID pid)
 {
 	database_.transfertAlliance(aid, pid);
 }

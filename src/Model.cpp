@@ -611,7 +611,7 @@ void planetRound(Universe& univ,
                  Planet& planet,
                  std::vector<Event>& events)
 {
-	for(PlanetTask & task: planet.taskQueue)
+	for(PlanetTask & task : planet.taskQueue)
 		execTask(univ, planet, task, events);
 
 	remove_erase_if(planet.taskQueue, boost::bind(&PlanetTask::expired, _1));
@@ -628,7 +628,7 @@ void planetRound(Universe& univ,
 	}
 
 	//Limitation des ressources à un milliard
-	for(auto & val: planet.ressourceSet.tab)
+	for(auto & val : planet.ressourceSet.tab)
 		val = std::min(val, uint32_t(1000000000));
 }
 
@@ -638,13 +638,13 @@ void fleetRound(Universe& univ,
                 std::vector<Event>& events,
                 std::map<Player::ID, size_t> const& playersPlanetCount)
 {
-	for(FleetTask & task: fleet.taskQueue)
+	for(FleetTask & task : fleet.taskQueue)
 		execTask(univ, fleet, task, events, playersPlanetCount);
 
 	remove_erase_if(fleet.taskQueue, boost::bind(&FleetTask::expired, _1));
 
 	//Limitation des ressources à un milliard
-	for(auto & val: fleet.ressourceSet.tab)
+	for(auto & val : fleet.ressourceSet.tab)
 		val = std::min(val, uint32_t(1000000000));
 }
 

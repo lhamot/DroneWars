@@ -152,7 +152,8 @@ public:
 
 	void addFriendshipRequest(Player::ID sender, Player::ID recipient);
 
-	void acceptFriendshipRequest(Player::ID sender, Player::ID recipient, bool accept);
+	void acceptFriendshipRequest(
+	  Player::ID sender, Player::ID recipient, bool accept);
 
 	void closeFriendship(Player::ID playerA, Player::ID playerB);
 

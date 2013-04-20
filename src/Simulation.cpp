@@ -425,7 +425,7 @@ void Simulation::updatePlayersCode(LuaTools::LuaEngine& luaEngine,
 	LOG4CPLUS_TRACE(logger, "enter");
 
 	UniqueLock lockReload(reloadPlayerMutex_);
-	for(Player::ID pid: playerToReload_)
+	for(Player::ID pid : playerToReload_)
 	{
 		CodeData const fleetsCode = database_.getPlayerCode(pid, CodeData::Fleet);
 		CodeData const planetsCode = database_.getPlayerCode(pid, CodeData::Planet);
@@ -450,12 +450,12 @@ void execPlanets(Universe& univ_,
 
 	UpgradeLock lockPlanet(univ_.planetsFleetsReportsmutex);
 	FleetCoordMap fleetMap;
-	for(Fleet const & fleet: univ_.fleetMap | boost::adaptors::map_values)
+	for(Fleet const & fleet : univ_.fleetMap | boost::adaptors::map_values)
 		fleetMap.insert(make_pair(fleet.coord, fleet));
 
 	//Les planètes
 	std::vector<Fleet const*> fleetList;
-	for(Universe::PlanetMap::value_type & planetNVP: univ_.planetMap)
+	for(Universe::PlanetMap::value_type & planetNVP : univ_.planetMap)
 	{
 		lockPlanet.unlock();//On peut deverouiller temporairement car on sait que
 		lockPlanet.lock();  //   l'autre thread ne fera que lire les planètes(pas d'ajout)
@@ -495,7 +495,7 @@ void execFights(Universe& univ_,
 	static FleetCoordMultimap fleetMultimap;
 
 	if(fleetMultimap.empty())
-		for(Planet & planet: univ_.planetMap | boost::adaptors::map_values)
+		for(Planet & planet : univ_.planetMap | boost::adaptors::map_values)
 			fleetMultimap.insert(make_pair(planet.coord, FighterPtr(&planet)));
 	else
 	{
@@ -507,7 +507,7 @@ void execFights(Universe& univ_,
 	}
 
 	//! Remplissage de la multimap de flote Coord=>flote
-	for(Fleet & fleet: univ_.fleetMap | boost::adaptors::map_values)
+	for(Fleet & fleet : univ_.fleetMap | boost::adaptors::map_values)
 		fleetMultimap.insert(make_pair(fleet.coord, FighterPtr(&fleet)));
 
 	/*typedef std::vector<std::pair<Coord, FighterPtr> > FleetCoordMultimap;
@@ -553,7 +553,7 @@ void execFights(Universe& univ_,
 		auto fleetRange = make_pair(iter1, iter2);
 		fleetVect.clear();
 		Planet* planetPtr = nullptr;
-		for(FighterPtr const & fighterPtr: fleetRange | boost::adaptors::map_values)
+		for(FighterPtr const & fighterPtr : fleetRange | boost::adaptors::map_values)
 		{
 			if(fighterPtr.isPlanet())
 				planetPtr = fighterPtr.getPlanet();
@@ -569,7 +569,7 @@ void execFights(Universe& univ_,
 		fight(fleetVect, planetPtr, fightReport);
 		bool hasFight = false;
 		auto range = make_zip_range(fleetVect, fightReport.fleetList);
-		for(auto fleetReportPair: range)
+		for(auto fleetReportPair : range)
 		{
 			Report<Fleet> const& report = fleetReportPair.get<1>();
 			if(report.hasFight)
@@ -590,7 +590,7 @@ void execFights(Universe& univ_,
 
 		//! - On ajoute les evenement/message dans les flottes/joueur
 		std::set<Player::ID> informedPlayer;
-		for(auto fleetReportPair: range)
+		for(auto fleetReportPair : range)
 		{
 			//! --Pour les flotes
 			Fleet* fleetPtr = fleetReportPair.get<0>();
@@ -645,14 +645,14 @@ void execFights(Universe& univ_,
 	std::unordered_map<Coord, Coord> newParentMap;
 	std::vector<Player> players = database.getPlayers();
 	std::map<size_t, Player> playerMap;
-	for(Player const & player: players)
+	for(Player const & player : players)
 		playerMap.insert(make_pair(player.id, player));
-	for(Coord planetCoord: lostPlanets)
+	for(Coord planetCoord : lostPlanets)
 		onPlanetLose(planetCoord, univ_, playerMap, newParentMap);
 
 	//! Les planètes et flottes orpheline sont réasigné a leurs grand-parents
 	auto newParentMapEnd = newParentMap.end();
-	for(Fleet & fleet: univ_.fleetMap | boost::adaptors::map_values)
+	for(Fleet & fleet : univ_.fleetMap | boost::adaptors::map_values)
 	{
 		while(true)
 		{
@@ -663,7 +663,7 @@ void execFights(Universe& univ_,
 				break;
 		}
 	}
-	for(Planet & planet: univ_.planetMap | boost::adaptors::map_values)
+	for(Planet & planet : univ_.planetMap | boost::adaptors::map_values)
 	{
 		if(planet.playerId == Player::NoId)
 			continue;
@@ -678,7 +678,7 @@ void execFights(Universe& univ_,
 	}
 
 	//! Suppression de toute les flottes mortes
-	for(Fleet::ID fleetID: deadFleets)
+	for(Fleet::ID fleetID : deadFleets)
 		univ_.fleetMap.erase(fleetID);
 
 	LOG4CPLUS_TRACE(logger, "exit");
@@ -696,11 +696,11 @@ void execFleets(
 	UpgradeLock lockFleets(univ_.planetsFleetsReportsmutex);
 
 	FleetCoordMap fleetMap;
-	for(Fleet & fleet: univ_.fleetMap | boost::adaptors::map_values)
+	for(Fleet & fleet : univ_.fleetMap | boost::adaptors::map_values)
 		fleetMap.insert(make_pair(fleet.coord, fleet));
 
 	std::map<Player::ID, size_t> playersPlanetCount;
-	for(Planet const & planet: univ_.planetMap | boost::adaptors::map_values)
+	for(Planet const & planet : univ_.planetMap | boost::adaptors::map_values)
 		++playersPlanetCount[planet.playerId];
 
 	auto iter = fleetMap.begin();
@@ -730,7 +730,7 @@ void execFleets(
 	}
 
 	std::map<Fleet::ID, Fleet> newFleetMap;
-	for(Fleet & fleet: fleetMap | boost::adaptors::map_values)
+	for(Fleet & fleet : fleetMap | boost::adaptors::map_values)
 	{
 		if(boost::accumulate(fleet.shipList, 0) > 0) //Si flotte vide, on garde pas
 			newFleetMap.insert(make_pair(fleet.id, fleet));
@@ -837,7 +837,7 @@ try
 	//! Ajout des erreur de code dans la base
 	std::vector<DataBase::CodeError> errorVect;
 	errorVect.reserve(events.size());
-	for(Event const & ev: events)
+	for(Event const & ev : events)
 	{
 		if(ev.type == Event::FleetCodeError || ev.type == Event::PlanetCodeError)
 		{
@@ -967,7 +967,7 @@ try
 	{
 		//Chargement de tout les code flote/planet de tout les joueur(chargement dans python)
 		std::vector<Player> const players = database_.getPlayers();
-		for(Player const & player: players)
+		for(Player const & player : players)
 		{
 			CodeData const fleetsCode = database_.getPlayerCode(player.id, CodeData::Fleet);
 			CodeData const planetsCode = database_.getPlayerCode(player.id, CodeData::Planet);
@@ -1097,7 +1097,7 @@ void Simulation::removeOldSaves() const
 	std::set<time_t> timeSet;
 
 	DirIter beginFileIter("save/"), endFileIter;
-	for(auto path: boost::make_iterator_range(beginFileIter, endFileIter))
+	for(auto path : boost::make_iterator_range(beginFileIter, endFileIter))
 	{
 		std::string const filename = path.path().filename().string();
 		if((filename.find("_save.bta") != 10)               ||
@@ -1132,7 +1132,7 @@ void Simulation::removeOldSaves() const
 		end = timeSet.lower_bound(endTime);
 
 		size_t fileCount = 0;
-		for(time_t fileTime: boost::make_iterator_range(begin, end))
+		for(time_t fileTime : boost::make_iterator_range(begin, end))
 		{
 			++fileCount;
 			if(fileCount == 1)

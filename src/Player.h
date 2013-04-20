@@ -74,7 +74,7 @@ static size_t const MaxStringSize = 256;
 
 struct CodeData
 {
-enum Target : uint8_t
+	enum Target : uint8_t
 	{
 	  Planet,
 	  Fleet,

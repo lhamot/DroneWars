@@ -92,7 +92,7 @@ void applyRound(std::vector<ShipInstance>& shipTab1,
 {
 	size_t pos = 0;
 	size_t const size = shipTab2.size();
-	for(ShipInstance & ship: shipTab1)
+	for(ShipInstance & ship : shipTab1)
 	{
 		size_t const power =
 		  (ship.type < Ship::Count) ?
@@ -112,7 +112,7 @@ void fillFinalFleet(std::vector<ShipInstance> const& shipTab,
 {
 	Fleet::ShipTab& outTab = fleet.shipList;
 	outTab.assign(0);
-	for(ShipInstance const & ship: shipTab)
+	for(ShipInstance const & ship : shipTab)
 		++outTab[ship.type];
 }
 
@@ -124,7 +124,7 @@ void fillFinalFleet(std::vector<ShipInstance> const& shipTab,
 	Planet::CannonTab& outTab = planet.cannonTab;
 	//outTab.assign(Cannon::Count, 0);
 	outTab.fill(0);
-	for(ShipInstance const & ship: shipTab)
+	for(ShipInstance const & ship : shipTab)
 		++outTab[ship.type - Ship::Count];
 }
 
@@ -303,7 +303,7 @@ void fight(std::vector<Fleet*> const& fleetList,
 	}
 
 	//! Pour toute les combinaisons de 2 combatant - Combat:
-	for(FleetPair const & fleetPair: fightingPair)
+	for(FleetPair const & fleetPair : fightingPair)
 	{
 		//! - planet vs flotte
 		if(fleetPair.index1 == PlanetIndex)

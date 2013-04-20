@@ -44,7 +44,7 @@ struct CompCoord
 struct Ressource
 {
 	typedef uint32_t Value;
-enum Enum : uint8_t
+	enum Enum : uint8_t
 	{
 	  Metal,
 	  Carbon,
@@ -89,7 +89,7 @@ struct PlanetTask
 		ar& type& value& value2& lauchTime& duration& startCost& expired;
 	}
 
-enum Enum : uint8_t
+	enum Enum : uint8_t
 	{
 	  UpgradeBuilding,
 	  MakeShip,
@@ -120,7 +120,7 @@ struct FleetTask
 		ar& type& lauchTime& duration& position& expired;
 	}
 
-enum Enum : uint8_t
+	enum Enum : uint8_t
 	{
 	  Move,
 	  Harvest,
@@ -168,7 +168,7 @@ struct Building
 
 struct Ship
 {
-enum Enum : int8_t
+	enum Enum : int8_t
 	{
 	  Undefined = -1,
 	  Mosquito,
@@ -194,7 +194,7 @@ enum Enum : int8_t
 
 struct Cannon
 {
-enum Enum : int8_t
+	enum Enum : int8_t
 	{
 	  Undefined = -1,
 	  Cannon1,
@@ -287,7 +287,7 @@ struct Planet
 
 struct PlanetAction
 {
-enum Type : int8_t
+	enum Type : int8_t
 	{
 	  Undefined = -1,
 	  Building,
@@ -380,7 +380,7 @@ struct Fleet
 
 struct FleetAction
 {
-enum Type : uint8_t
+	enum Type : uint8_t
 	{
 	  Nothing,
 	  Move,
@@ -474,7 +474,7 @@ struct FightReport
 	size_t heap_size() const
 	{
 		size_t res = fleetList.capacity() * sizeof(Report<Fleet>);
-		for(Report<Fleet> const & report: fleetList)
+		for(Report<Fleet> const & report : fleetList)
 			res += report.heap_size();
 		if(planet)
 			res += planet->heap_size();
@@ -491,7 +491,7 @@ struct Event
 		ar& id& time& type& comment& value;
 	}
 
-enum Type : uint8_t
+	enum Type : uint8_t
 	{
 	  FleetCodeError,
 	  FleetCodeExecError,
@@ -571,11 +571,11 @@ struct Universe
 	size_t heap_size() const
 	{
 		size_t res = 0;
-		for(auto const & planetKV: planetMap)
+		for(auto const & planetKV : planetMap)
 			res += sizeof(planetKV) +
 			       planetKV.second.heap_size() +
 			       2 * sizeof(size_t);
-		for(auto const & fleetKV: fleetMap)
+		for(auto const & fleetKV : fleetMap)
 			res += sizeof(fleetKV) +
 			       fleetKV.second.heap_size() +
 			       2 * sizeof(size_t);

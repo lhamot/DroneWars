@@ -11,7 +11,7 @@ inline std::string escape(std::string const& code)
 {
 	std::string escaped;
 	escaped.reserve(code.size() * 2);
-	for(char c: code)
+	for(char c : code)
 	{
 		switch(c)
 		{

@@ -38,11 +38,14 @@ public:
 
 	void setPlayerFleetCode(const ndw::Player_ID pid, const std::string& code);
 
-	void setPlayerPlanetCode(const ndw::Player_ID pid, const std::string& code);
+	void setPlayerPlanetCode(const ndw::Player_ID pid,
+	                         const std::string& code);
 
-	void setPlayerFleetBlocklyCode(const ndw::Player_ID pid, const std::string& code);
+	void setPlayerFleetBlocklyCode(const ndw::Player_ID pid,
+	                               const std::string& code);
 
-	void setPlayerPlanetBlocklyCode(const ndw::Player_ID pid, const std::string& code);
+	void setPlayerPlanetBlocklyCode(const ndw::Player_ID pid,
+	                                const std::string& code);
 
 	void getPlayerFleetCode(ndw::CodeData& _return, const ndw::Player_ID pid);
 
@@ -56,9 +59,12 @@ public:
 
 	void getFleet(ndw::Fleet& _return, const ndw::Fleet_ID fid);
 
-	void logPlayer(ndw::OptionalPlayer& _return, const std::string& login, const std::string& password);
+	void logPlayer(ndw::OptionalPlayer& _return,
+	               const std::string& login,
+	               const std::string& password);
 
-	void incrementTutoDisplayed(const ndw::Player_ID pid, const std::string& tutoName);
+	void incrementTutoDisplayed(const ndw::Player_ID pid,
+	                            const std::string& tutoName);
 
 	void getFightReport(ndw::FightReport& _return, const int32_t id);
 
@@ -66,7 +72,8 @@ public:
 
 	bool eraseAccount(const ndw::Player_ID pid, const std::string& password);
 
-	void getPlayerEvents(std::vector<ndw::Event>& _return, const ndw::Player_ID pid);
+	void getPlayerEvents(std::vector<ndw::Event>& _return,
+	                     const ndw::Player_ID pid);
 
 	void getBuildingsInfo(std::vector<ndw::Building>& _return);
 
@@ -106,13 +113,16 @@ public:
 
 	//***************************  Alliance  **********************************
 
-	ndw::Alliance_ID addAlliance(const ndw::Player_ID pid, const std::string& name, const std::string& description);
+	ndw::Alliance_ID addAlliance(const ndw::Player_ID pid,
+	                             const std::string& name,
+	                             const std::string& description);
 
 	void getAlliance(ndw::Alliance& _return, const ndw::Alliance_ID aid);
 
 	void updateAlliance(const ndw::Alliance& alliance);
 
-	void transfertAlliance(const ndw::Alliance_ID aid, const ndw::Player_ID pid);
+	void transfertAlliance(const ndw::Alliance_ID aid,
+	                       const ndw::Player_ID pid);
 
 	void eraseAlliance(const ndw::Alliance_ID aid);
 

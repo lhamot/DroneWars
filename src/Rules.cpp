@@ -39,7 +39,7 @@ void checkTutos(Universe& univ_,
 	std::map<Player::ID, DataBase::PlayerTutoMap> allTutoMap =
 	  database.getAllTutoDisplayed();
 	std::vector<Player> players = database.getPlayers();
-	for(Player & player: players)
+	for(Player & player : players)
 	{
 		DataBase::PlayerTutoMap& tutoMap = allTutoMap[player.id];
 		size_t const plLvl = tutoMap[CoddingLevelTag];
@@ -64,7 +64,7 @@ void checkTutos(Universe& univ_,
 		}
 		case 2: //! Cas 2: Créer Vaisseau
 		{
-			for(Event const & ev: events)
+			for(Event const & ev : events)
 			{
 				if(ev.playerID == player.id &&
 				   ev.type == Event::ShipMade)
@@ -77,7 +77,7 @@ void checkTutos(Universe& univ_,
 		}
 		case 3: //! Cas 3: Créer 3 flottes
 		{
-			for(Event const & sig: events)
+			for(Event const & sig : events)
 			{
 				if(sig.playerID == player.id &&
 				   sig.type == Event::ShipMade)
@@ -95,7 +95,7 @@ void checkTutos(Universe& univ_,
 		}
 		case 4: //! Cas 4: Créer 3 flottes composé de 5 mosquito exactement
 		{
-			for(Event const & sig: events)
+			for(Event const & sig : events)
 			{
 				if(sig.playerID == player.id &&
 				   sig.type == Event::FleetsGather)
@@ -119,7 +119,7 @@ void checkTutos(Universe& univ_,
 		case 5: //! Cas 5: Envoyez 6 flottes dans 6 endroit différent
 		{
 			std::set<Coord, CompCoord> fleetCoords;
-			for(Fleet const & fleet: univ_.fleetMap | adaptors::map_values)
+			for(Fleet const & fleet : univ_.fleetMap | adaptors::map_values)
 			{
 				if(fleet.playerId == player.id)
 				{
@@ -135,7 +135,7 @@ void checkTutos(Universe& univ_,
 		}
 		case 6: //! Cas 6: Récoltez ressources
 		{
-			for(Event const & sig: events)
+			for(Event const & sig : events)
 			{
 				if(sig.playerID == player.id &&
 				   sig.type == Event::PlanetHarvested)
@@ -148,7 +148,7 @@ void checkTutos(Universe& univ_,
 		}
 		case 7: //! Cas 7: Rapporter ressources
 		{
-			for(Event const & sig: events)
+			for(Event const & sig : events)
 			{
 				if(sig.playerID == player.id &&
 				   sig.type == Event::FleetDrop)
@@ -161,7 +161,7 @@ void checkTutos(Universe& univ_,
 		}
 		case 8: //! Cas 8: Colonisation
 		{
-			for(Event const & sig: events)
+			for(Event const & sig : events)
 			{
 				if(sig.playerID == player.id &&
 				   sig.type == Event::PlanetColonized)
@@ -203,7 +203,7 @@ void updateScore(Universe& univ, DataBase& database)
 {
 	std::map<Player::ID, uint64_t> playerScore;
 
-	for(Planet const & pl: univ.planetMap | boost::adaptors::map_values)
+	for(Planet const & pl : univ.planetMap | boost::adaptors::map_values)
 	{
 		uint64_t score = 0;
 		for(size_t type = 0; type < Building::Count; ++type)
@@ -214,7 +214,7 @@ void updateScore(Universe& univ, DataBase& database)
 		playerScore[pl.playerId] += score;
 	}
 
-	for(Fleet const & fleet: univ.fleetMap | boost::adaptors::map_values)
+	for(Fleet const & fleet : univ.fleetMap | boost::adaptors::map_values)
 	{
 		uint64_t score = 0;
 		for(size_t type = 0; type < Ship::Count; ++type)
