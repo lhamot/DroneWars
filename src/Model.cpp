@@ -44,27 +44,27 @@ static_assert(sizeof(Building::List) == (sizeof(Building) * Building::Count),
 
 Ship const Ship::List[] =
 {
-	{RessourceSet(100, 0, 0),    1,       1}, //Mosquito
-	{RessourceSet(400, 0, 0),    2,       2}, //Hornet
-	{RessourceSet(2000, 0, 0),   4,       4}, //Vulture
-	{RessourceSet(10000, 0, 0),  8,       8}, //Dragon
-	{RessourceSet(40000, 0, 0),  16,     16}, //Behemoth
-	{RessourceSet(200000, 0, 0), 32,     32}, //Azathoth
-	{RessourceSet(2000, 0, 0),   4,       2}, //Queen
-	{RessourceSet(400, 0, 0),    2,       0}, //Cargo
-	{RessourceSet(2000, 0, 0),   8,       0}  //LargeCargo
+	{RessourceSet(100, 0, 0),    1,       1,  1}, //Mosquito
+	{RessourceSet(400, 0, 0),    2,       2,  2}, //Hornet
+	{RessourceSet(2000, 0, 0),   4,       4,  4}, //Vulture
+	{RessourceSet(10000, 0, 0),  8,       8,  8}, //Dragon
+	{RessourceSet(40000, 0, 0),  16,     16, 16}, //Behemoth
+	{RessourceSet(200000, 0, 0), 32,     32, 32}, //Azathoth
+	{RessourceSet(2000, 0, 0),   4,       2,  2}, //Queen
+	{RessourceSet(400, 0, 0),    2,       0,  2}, //Cargo
+	{RessourceSet(2000, 0, 0),   8,       0,  4}  //LargeCargo
 };
 static_assert(sizeof(Ship::List) == (sizeof(Ship) * Ship::Count),
               "Ship info missing");
 
 Cannon const Cannon::List[] =
 {
-	{RessourceSet(100, 0, 0),    1,       1},
-	{RessourceSet(400, 0, 0),    2,       2},
-	{RessourceSet(2000, 0, 0),   4,       4},
-	{RessourceSet(10000, 0, 0),  8,       8},
-	{RessourceSet(40000, 0, 0),  16,     16},
-	{RessourceSet(200000, 0, 0), 32,     32},
+	{RessourceSet(100, 0, 0),    1,       1,  1},
+	{RessourceSet(400, 0, 0),    2,       2,  2},
+	{RessourceSet(2000, 0, 0),   4,       4,  4},
+	{RessourceSet(10000, 0, 0),  8,       8,  8},
+	{RessourceSet(40000, 0, 0),  16,     16, 16},
+	{RessourceSet(200000, 0, 0), 32,     32, 32},
 };
 static_assert(sizeof(Cannon::List) == (sizeof(Cannon) * Cannon::Count),
               "Cannon info missing");

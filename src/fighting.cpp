@@ -1,6 +1,14 @@
 #include "stdafx.h"
 #include "fighting.h"
 
+#include <luabind/object.hpp>
+#include <luabind/detail/call_function.hpp>
+
+
+//! C'est une experience
+#define UNTIL(exp) while(!(exp))
+
+
 using namespace std;
 
 static size_t const PlanetIndex = size_t(-1);
@@ -37,18 +45,22 @@ static size_t const PlanetIndex = size_t(-1);
 //  Pour chaque type de vaiseau
 //    Si il tire
 //      Chaque vaiseau tire sur un enemie aléatoire(des 2 premier rang?)(difference de precision?)
-struct ShipInstance
+struct Unit
 {
-	size_t type;
-	long life;
+	uint16_t type;
+	uint16_t life;
+	uint16_t shield;
 
-	ShipInstance(size_t type, size_t life):
-		life(long(life)), type(type)
+
+	Unit(uint16_t type, uint16_t life, uint16_t shield):
+		type(type), life(life), shield(shield)
 	{
 	}
 };
 
-void fillShipList(Fleet const& fleet, std::vector<ShipInstance>& shipTab)
+typedef std::vector<Unit> UnitTab;
+
+void fillShipList(Fleet const& fleet, UnitTab& shipTab)
 {
 	//Contage
 	size_t shipNumber = 0;
@@ -63,11 +75,11 @@ void fillShipList(Fleet const& fleet, std::vector<ShipInstance>& shipTab)
 		Ship const& def = Ship::List[type];
 		size_t const count = fleet.shipList[type];
 		for(size_t i = 0; i < count; ++i)
-			shipTab.push_back(ShipInstance(type, def.life));
+			shipTab.push_back(Unit(type, def.life, def.shield));
 	}
 }
 
-void fillShipList(Planet const& planet, std::vector<ShipInstance>& shipTab)
+void fillShipList(Planet const& planet, UnitTab& shipTab)
 {
 	//Contage
 	size_t shipNumber = 0;
@@ -82,53 +94,173 @@ void fillShipList(Planet const& planet, std::vector<ShipInstance>& shipTab)
 		Cannon const& def = Cannon::List[type];
 		size_t const count = planet.cannonTab[type];
 		for(size_t i = 0; i < count; ++i)
-			shipTab.push_back(ShipInstance(type + Ship::Count, def.life));
+			shipTab.push_back(Unit(type + Ship::Count, def.life, def.shield));
 	}
 }
 
 
-void applyRound(std::vector<ShipInstance>& shipTab1,
-                std::vector<ShipInstance>& shipTab2)
+//! @brief Effectue l'attaque de la flotte unitTab1 contre unitTab2
+void applyRound(UnitTab& unitTab1, UnitTab& unitTab2)
 {
 	size_t pos = 0;
-	size_t const size = shipTab2.size();
-	for(ShipInstance & ship : shipTab1)
+	size_t const size = unitTab2.size();
+	//! Pour chaque vaisseau de la flotte unitTab1
+	for(Unit & ship : unitTab1)
 	{
-		size_t const power =
+		//! - On calcule ca puissance
+		uint16_t power =
 		  (ship.type < Ship::Count) ?
 		  Ship::List[ship.type].power :
 		  Cannon::List[ship.type - Ship::Count].power;
-		shipTab2[pos].life -= long(power);
-		++pos;
-		if(pos == size)
-			pos = 0;
+
+		//! - Si il est moin puissant que bouclier enemi: On diminu le bouclier
+		Unit& unity = unitTab2[pos];
+		uint16_t& shield = unity.shield;
+		if(power < shield)
+			shield -= power;
+		else
+		{
+			//! - Sinon:
+			//!     On mais le bouclier a zero et on diminue la puissance
+			//!     Si l'attaquant est moin puissant que les PV de l'attaqué
+			//!         On diminue juste les PV
+			//!     Sinon l'attaqué est mort
+			power -= shield;
+			shield = 0;
+			uint16_t& life = unity.life;
+			if(power < life)
+				life -= power;
+			else
+			{
+				life = 0;
+				++pos;
+				if(pos == size)
+					pos = 0;
+			}
+		}
 	}
 }
 
 
-//! Cette fonction modifie la flotte
-void fillFinalFleet(std::vector<ShipInstance> const& shipTab,
-                    Fleet& fleet) throw()
+//! @warning Cette fonction modifie la flotte
+void fillFinalFleet(UnitTab const& shipTab, Fleet& fleet) throw()
 {
 	Fleet::ShipTab& outTab = fleet.shipList;
 	outTab.assign(0);
-	for(ShipInstance const & ship : shipTab)
+	for(Unit const & ship : shipTab)
 		++outTab[ship.type];
 }
 
 
-//! Cette fonction modifie la planet
-void fillFinalFleet(std::vector<ShipInstance> const& shipTab,
-                    Planet& planet) throw()
+//! @warning Cette fonction modifie la planet
+void fillFinalFleet(UnitTab const& shipTab, Planet& planet) throw()
 {
 	Planet::CannonTab& outTab = planet.cannonTab;
 	//outTab.assign(Cannon::Count, 0);
-	outTab.fill(0);
-	for(ShipInstance const & ship : shipTab)
+	outTab.assign(0);
+	for(Unit const & ship : shipTab)
 		++outTab[ship.type - Ship::Count];
 }
 
 
+//! @brief recharge les boucliers des unités
+void loadShield(UnitTab& unitTab)  throw()
+{
+	for(Unit & unit : unitTab)
+	{
+		uint16_t const shieldMax =
+		  (unit.type < Ship::Count) ?
+		  Ship::List[unit.type].shield :
+		  Cannon::List[unit.type - Ship::Count].shield;
+		unit.shield = shieldMax;
+	}
+}
+
+class SkillInterface
+{
+	//C'est plus pratique de les définir dans la class mère,
+	//car ces methodes ne seront pas forcement redéfinits.
+	virtual void beforeAttack_(UnitTab&, UnitTab&) {};
+	virtual void beforeCleaning_(UnitTab&, UnitTab&) {};
+	virtual void beforeReload_(UnitTab&, UnitTab&) {};
+
+public:
+	void beforeAttack(UnitTab& ownUnits, UnitTab& theirUnits)
+	{
+		beforeAttack_(ownUnits, theirUnits);
+	}
+	void beforeCleaning(UnitTab& ownUnits, UnitTab& theirUnits)
+	{
+		beforeCleaning_(ownUnits, theirUnits);
+	}
+	void beforeReload(UnitTab& ownUnits, UnitTab& theirUnits)
+	{
+		beforeReload_(ownUnits, theirUnits);
+	}
+};
+
+class NoSkill : public SkillInterface
+{
+};
+
+
+struct UnitStat
+{
+	size_t livingCount;
+	size_t deadCount;
+	size_t meanPV;
+
+	UnitStat(): livingCount(0), deadCount(0), meanPV(0) {}
+};
+struct ArmyStats
+{
+	boost::array<UnitStat, Ship::Count> shipStats;
+	boost::array<UnitStat, Cannon::Count> cannonStats;
+};
+
+ArmyStats calcArmyStat(UnitTab const& unitTab)
+{
+	ArmyStats result;
+
+	auto addUnitInStat = [](Unit const & unit, UnitStat & unitStat)
+	{
+		if(unit.life <= 0)
+			unitStat.deadCount += 1;
+		else
+		{
+			unitStat.livingCount += 1;
+			unitStat.meanPV += unit.life;
+		}
+	};
+
+	for(Unit const & unit : unitTab)
+	{
+		//! Si c'est un vaisseau
+		if(unit.type < Ship::Count)
+		{
+			size_t const type = unit.type;
+			UnitStat& unitStat = result.shipStats[type];
+			addUnitInStat(unit, unitStat);
+		}
+		//! Sinon
+		else
+		{
+			size_t const type = unit.type - Ship::Count;
+			UnitStat& unitStat = result.cannonStats[type];
+			addUnitInStat(unit, unitStat);
+		}
+	}
+	auto divideMeanByCount = [](UnitStat & stat)
+	{
+		if(stat.livingCount)
+			stat.meanPV /= stat.livingCount;
+	};
+	boost::for_each(result.shipStats, divideMeanByCount);
+	boost::for_each(result.cannonStats, divideMeanByCount);
+	return result;
+}
+
+//! Resultat d'un combat
 enum FightStatus : uint8_t
 {
   Fighter1Win,
@@ -136,28 +268,73 @@ enum FightStatus : uint8_t
   NobodyWin,
   NothingRemains
 };
+//! @brief Simule un combat entre deux combatant
 template<typename F1, typename F2>
-FightStatus fight(F1& fleet1, F2& fleet2)
+FightStatus fight(F1& fighter1, luabind::object roundFunc1,
+                  F2& fighter2, luabind::object roundFunc2
+                 )
 {
-	//Construction de la liste de vaisseaux
-	std::vector<ShipInstance> shipTab1;
-	fillShipList(fleet1, shipTab1);
-	std::vector<ShipInstance> shipTab2;
-	fillShipList(fleet2, shipTab2);
+	//! Construction des deux listes de vaisseaux (fillShipList)
+	UnitTab shipTab1;
+	fillShipList(fighter1, shipTab1);
+	boost::random_shuffle(shipTab1);
+	UnitTab shipTab2;
+	fillShipList(fighter2, shipTab2);
+	boost::random_shuffle(shipTab2);
 
-	//Rounds succesif
-	while(shipTab1.empty() == false && shipTab2.empty() == false)
+	//! Jusqu'as ce qu'une des 2 flotte soit annéantie, on repète:
+	size_t round = 0;
+	ArmyStats armyStat1 = calcArmyStat(shipTab1);
+	ArmyStats armyStat2 = calcArmyStat(shipTab2);
+	UNTIL(shipTab1.empty() || shipTab2.empty() || round == 5)
 	{
+		//! Excecution des scripts de round
+		/*
+		unique_ptr<SkillInterface> skill1(roundFunc1.is_valid() ?
+		                                  (SkillInterface*)luabind::call_function<SkillInterface*>(roundFunc1, boost::cref(armyStat1), boost::cref(armyStat2)) :
+		                                  new NoSkill());
+		unique_ptr<SkillInterface> skill2(roundFunc2.is_valid() ?
+		                                  (SkillInterface*)luabind::call_function<SkillInterface*>(roundFunc2, boost::cref(armyStat2), boost::cref(armyStat1)) :
+		                                  new NoSkill());
+		*/
+		unique_ptr<SkillInterface> skill1(new NoSkill());
+		unique_ptr<SkillInterface> skill2(new NoSkill());
+
+		//! Action script pré-attaque
+		skill1->beforeAttack(shipTab1, shipTab2);
+		skill2->beforeAttack(shipTab2, shipTab1);
+		//! - Flotte 1 attaque flotte 2 (applyRound)
 		applyRound(shipTab1, shipTab2);
+		//! - Flotte 2 attaque flotte 1 (applyRound)
 		applyRound(shipTab2, shipTab1);
-		remove_erase_if(shipTab1, boost::bind(&ShipInstance::life, _1) <= 0);
-		remove_erase_if(shipTab2, boost::bind(&ShipInstance::life, _1) <= 0);
+
+		//! Action script pré-nétoyage des morts
+		skill1->beforeCleaning(shipTab1, shipTab2);
+		skill2->beforeCleaning(shipTab2, shipTab1);
+
+		armyStat1 = calcArmyStat(shipTab1);
+		armyStat2 = calcArmyStat(shipTab2);
+
+		//! - On supprime les vaisseaux qui n'on plus de point de vie
+		remove_erase_if(shipTab1, boost::bind(&Unit::life, _1) <= 0);
+		remove_erase_if(shipTab2, boost::bind(&Unit::life, _1) <= 0);
+
+		//! Action script pré-rechargement boucliers
+		skill1->beforeReload(shipTab1, shipTab2);
+		skill2->beforeReload(shipTab2, shipTab1);
+		//! - On recharge les boucliers
+		loadShield(shipTab1);
+		loadShield(shipTab2);
+
+		round += 1;
 	}
 
-	//Impact sur les flotte
-	fillFinalFleet(shipTab1, fleet1);
-	fillFinalFleet(shipTab2, fleet2);
+	//! On modidife le nombre d'unité de chaque combatant
+	//! en fonction de ce qu'il reste de ca flotte. (fillFinalFleet)
+	fillFinalFleet(shipTab1, fighter1);
+	fillFinalFleet(shipTab2, fighter2);
 
+	//! On retourne un FightStatus en fonction du contenue restant des flottes
 	if(shipTab1.empty())
 	{
 		if(shipTab2.empty())
@@ -182,7 +359,7 @@ struct FleetPair
 
 	FleetPair(size_t f1, size_t f2) //Exceptionellement, je vais laisser de coté la liste d'initialization
 	{
-		if(index1 < index2)
+		if(f1 < f2)
 		{
 			index1 = f1;
 			index2 = f2;
@@ -193,24 +370,12 @@ struct FleetPair
 			index2 = f1;
 		}
 	}
-
-	bool operator < (FleetPair const& other) const
-	{
-		if(index1 < other.index1)
-			return true;
-		else
-			return index2 < other.index2;
-	}
 };
 
 template<typename F1, typename F2>
-void handleFighterPair(std::vector<Fleet*> const&, //fleetList,
-                       FightReport&, //reportList,
-                       FleetPair const& fleetPair,
-                       Report<F1>& report1,
-                       F1& fighter1,
-                       Report<F2>& report2,
-                       F2& fighter2
+void handleFighterPair(FleetPair const& fleetPair,
+                       Report<F1>& report1, F1& fighter1, luabind::object script1,
+                       Report<F2>& report2, F2& fighter2, luabind::object script2
                       )
 {
 	report1.enemySet.insert(fleetPair.index2);
@@ -218,7 +383,7 @@ void handleFighterPair(std::vector<Fleet*> const&, //fleetList,
 
 	report1.hasFight = true;
 	report2.hasFight = true;
-	FightStatus const status = fight(fighter1, fighter2);
+	FightStatus const status = fight(fighter1, script1, fighter2, script2);
 	switch(status)
 	{
 	case Fighter1Win:
@@ -240,6 +405,7 @@ void handleFighterPair(std::vector<Fleet*> const&, //fleetList,
 
 void fight(std::vector<Fleet*> const& fleetList,
            Planet* planet,
+           PlayerCodeMap& codesMap,
            FightReport& reportList)
 {
 	if(fleetList.empty())
@@ -259,7 +425,7 @@ void fight(std::vector<Fleet*> const& fleetList,
 
 
 	//! On liste les paires combatantes
-	std::set<FleetPair> fightingPair;
+	std::vector<FleetPair> fightingPair;
 	//! - Flotte/Flotte
 	for(auto iter1 = fleetList.begin(),
 	    end = fleetList.end();
@@ -275,8 +441,8 @@ void fight(std::vector<Fleet*> const& fleetList,
 				//uint64_t const score2 = mapFind(univ.playerMap, player2)->second.score;
 				//if((score1 * 5) > score2 && (score2 * 5) > score1)
 				//TOTO: Remetre la limitation sur les score trop differents
-				fightingPair.insert(FleetPair(iter1 - fleetList.begin(),
-				                              iter2 - fleetList.begin()));
+				fightingPair.push_back(FleetPair(iter1 - fleetList.begin(),
+				                                 iter2 - fleetList.begin()));
 			}
 		}
 	}
@@ -296,11 +462,18 @@ void fight(std::vector<Fleet*> const& fleetList,
 				//Bloquage si trop d'équart de niveaux
 				//if((score1 * 5) > score2 && (score2 * 5) > score1)
 				//TOTO: Remetre la limitation sur les score trop differents
-				fightingPair.insert(
+				fightingPair.push_back(
 				  FleetPair(iter1 - fleetList.begin(), PlanetIndex));
 			}
 		}
 	}
+
+	//! Pour extraire le script du joueur pour les round de combat
+	auto getRoundScript = [&]
+	                      (Player::ID pid)
+	{
+		return codesMap[pid].fleetsCode.functions["fight_round"];
+	};
 
 	//! Pour toute les combinaisons de 2 combatant - Combat:
 	for(FleetPair const & fleetPair : fightingPair)
@@ -310,18 +483,22 @@ void fight(std::vector<Fleet*> const& fleetList,
 		{
 			Report<Planet>& report1 = reportList.planet.get();
 			Report<Fleet>& report2 = reportList.fleetList[fleetPair.index2];
+			Fleet& fleet = *fleetList[fleetPair.index2];
 			handleFighterPair<Planet, Fleet>(
-			  fleetList, reportList, fleetPair, report1,
-			  *planet, report2, *fleetList[fleetPair.index2]);
+			  fleetPair,
+			  report1, *planet, getRoundScript(planet->playerId),
+			  report2, fleet, getRoundScript(fleet.playerId));
 		}
 		//! - flotte vs planet
 		else if(fleetPair.index2 == PlanetIndex)
 		{
 			Report<Fleet>& report1 = reportList.fleetList[fleetPair.index1];
 			Report<Planet>& report2 = reportList.planet.get();
+			Fleet& fleet = *fleetList[fleetPair.index1];
 			handleFighterPair<Fleet, Planet>(
-			  fleetList, reportList, fleetPair, report1,
-			  *fleetList[fleetPair.index1], report2, *planet);
+			  fleetPair,
+			  report1, fleet, getRoundScript(fleet.playerId),
+			  report2, *planet, getRoundScript(planet->playerId));
 		}
 		//! - flotte vs flotte
 		else
@@ -331,8 +508,9 @@ void fight(std::vector<Fleet*> const& fleetList,
 			Report<Fleet>& report2 = reportList.fleetList[fleetPair.index2];
 			Fleet* fighterPtr2 = fleetList[fleetPair.index2];
 			handleFighterPair<Fleet, Fleet>(
-			  fleetList, reportList, fleetPair, report1,
-			  *fighterPtr1, report2, *fighterPtr2);
+			  fleetPair,
+			  report1, *fighterPtr1, getRoundScript(fighterPtr1->playerId),
+			  report2, *fighterPtr2, getRoundScript(fighterPtr2->playerId));
 		}
 	}
 

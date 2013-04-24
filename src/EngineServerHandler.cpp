@@ -795,7 +795,6 @@ ndw::Alliance_ID EngineServerHandler::addAlliance(
 	                " name:" << name <<
 	                " descri:" << descri);
 	return database_.addAlliance(pid, name, descri);
-	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 

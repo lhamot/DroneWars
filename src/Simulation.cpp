@@ -479,6 +479,7 @@ void execPlanets(Universe& univ_,
 //! Les combats
 void execFights(Universe& univ_,
                 DataBase& database,
+                PlayerCodeMap& codesMap,
                 std::vector<Event>& events)
 {
 	LOG4CPLUS_TRACE(logger, "enter");
@@ -566,7 +567,7 @@ void execFights(Universe& univ_,
 		UpToUniqueLock writeLock(lockFleets);
 		//! - On excecute le combats
 		FightReport fightReport;
-		fight(fleetVect, planetPtr, fightReport);
+		fight(fleetVect, planetPtr, codesMap, fightReport);
 		bool hasFight = false;
 		auto range = make_zip_range(fleetVect, fightReport.fleetList);
 		for(auto fleetReportPair : range)
@@ -823,7 +824,7 @@ try
 	execPlanets(univ_, luaEngine, codesMap, events);
 
 	//! Les combats
-	execFights(univ_, database_, events);
+	execFights(univ_, database_, codesMap, events);
 
 	//! Les flottes
 	execFleets(univ_, luaEngine, codesMap, events);

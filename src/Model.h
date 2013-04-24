@@ -184,8 +184,9 @@ struct Ship
 	};
 
 	RessourceSet price;
-	size_t life;
-	size_t power;
+	uint16_t life;
+	uint16_t power;
+	uint16_t shield;
 
 
 	static Ship const List[Count];
@@ -207,8 +208,9 @@ struct Cannon
 	};
 
 	RessourceSet price;
-	uint32_t life;
-	uint32_t power;
+	uint16_t life;
+	uint16_t power;
+	uint16_t shield;
 
 	static Cannon const List[Count];
 };

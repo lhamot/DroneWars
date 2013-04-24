@@ -2,6 +2,7 @@
 #define __BTA_FIGHTING__
 
 #include "Model.h"
+#include "PlayerCodes.h"
 
 struct FighterPtr
 {
@@ -32,6 +33,13 @@ public:
 			return planet_;
 	}
 
+	Player::ID getPlayerID() const
+	{
+		return isPlanet_ ?
+		       planet_->playerId :
+		       fleet_->playerId;
+	}
+
 	bool operator == (FighterPtr const& other) const
 	{
 		return isPlanet_ == other.isPlanet_ &&
@@ -42,6 +50,7 @@ public:
 //! Planet peut etre NULL
 void fight(std::vector<Fleet*> const& fleetList,
            Planet* planet,
+           PlayerCodeMap& codesMap,
            FightReport& reportList);
 
 
