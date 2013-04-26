@@ -259,8 +259,9 @@ struct FleetReport
 {
 	10: bool isDead
 	20: bool hasFight
-	30: set<i32> enemySet
-	40: FleetFightInfo fightInfo
+	30: i32 experience
+	40: set<i32> enemySet
+	50: FleetFightInfo fightInfo
 }
 
 
@@ -275,8 +276,9 @@ struct PlanetReport
 {
 	10: bool isDead
 	20: bool hasFight
-	30: set<i32> enemySet
-	40: PlanetFightInfo fightInfo
+	30: i32 experience
+	40: set<i32> enemySet
+	50: PlanetFightInfo fightInfo
 }
 
 struct FightReport

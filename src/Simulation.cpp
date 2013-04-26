@@ -488,6 +488,15 @@ void execFights(Universe& univ_,
 	if(univ_.fleetMap.empty()) //si il y as des flottes
 		return;
 
+	std::vector<Player> players = database.getPlayers();
+	std::map<Player::ID, Player> const playerMap = [&]()
+	{
+		std::map<Player::ID, Player> playerMap;
+		for(Player const & player : players)
+			playerMap.insert(make_pair(player.id, player));
+		return playerMap;
+	}();
+
 	vector<Fleet::ID> deadFleets;
 	deadFleets.reserve(univ_.fleetMap.size());
 	vector<Coord> lostPlanets;
@@ -510,25 +519,6 @@ void execFights(Universe& univ_,
 	//! Remplissage de la multimap de flote Coord=>flote
 	for(Fleet & fleet : univ_.fleetMap | boost::adaptors::map_values)
 		fleetMultimap.insert(make_pair(fleet.coord, FighterPtr(&fleet)));
-
-	/*typedef std::vector<std::pair<Coord, FighterPtr> > FleetCoordMultimap;
-	FleetCoordMultimap fleetMultimap;
-	fleetMultimap.reserve(univ_.planetMap.size() + univ_.fleetMap.size());
-	for(Planet & planet: univ_.planetMap | boost::adaptors::map_values)
-		fleetMultimap.push_back(make_pair(planet.coord, FighterPtr(&planet)));
-	//! Remplissage de la multimap de flote Coord=>flote
-	for(Fleet & fleet: univ_.fleetMap | boost::adaptors::map_values)
-		fleetMultimap.push_back(make_pair(fleet.coord, FighterPtr(&fleet)));
-	struct CompFirst
-	{
-		CompCoord cmp;
-		bool operator()(std::pair<Coord, FighterPtr> const& a,
-			            std::pair<Coord, FighterPtr> const& b)
-		{
-			return cmp(a.first, b.first);
-		}
-	};
-	boost::sort(fleetMultimap, CompFirst());*/
 
 	std::vector<Fleet*> fleetVect;
 	//! Pour chaque coordonées, on accede au range des flotes
@@ -568,6 +558,7 @@ void execFights(Universe& univ_,
 		//! - On excecute le combats
 		FightReport fightReport;
 		fight(fleetVect, planetPtr, codesMap, fightReport);
+		calcExperience(playerMap, fightReport);
 		bool hasFight = false;
 		auto range = make_zip_range(fleetVect, fightReport.fleetList);
 		for(auto fleetReportPair : range)
@@ -644,10 +635,6 @@ void execFights(Universe& univ_,
 	UpToUniqueLock writeLock(lockFleets);
 	//! On gère chaque planete perdues(onPlanetLose)
 	std::unordered_map<Coord, Coord> newParentMap;
-	std::vector<Player> players = database.getPlayers();
-	std::map<size_t, Player> playerMap;
-	for(Player const & player : players)
-		playerMap.insert(make_pair(player.id, player));
 	for(Coord planetCoord : lostPlanets)
 		onPlanetLose(planetCoord, univ_, playerMap, newParentMap);
 

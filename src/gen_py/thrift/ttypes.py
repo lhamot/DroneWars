@@ -2424,6 +2424,7 @@ class FleetReport:
   Attributes:
    - isDead
    - hasFight
+   - experience
    - enemySet
    - fightInfo
   """
@@ -2459,7 +2460,7 @@ class FleetReport:
     None, # 27
     None, # 28
     None, # 29
-    (30, TType.SET, 'enemySet', (TType.I32,None), None, ), # 30
+    (30, TType.I32, 'experience', None, None, ), # 30
     None, # 31
     None, # 32
     None, # 33
@@ -2469,12 +2470,23 @@ class FleetReport:
     None, # 37
     None, # 38
     None, # 39
-    (40, TType.STRUCT, 'fightInfo', (FleetFightInfo, FleetFightInfo.thrift_spec), None, ), # 40
+    (40, TType.SET, 'enemySet', (TType.I32,None), None, ), # 40
+    None, # 41
+    None, # 42
+    None, # 43
+    None, # 44
+    None, # 45
+    None, # 46
+    None, # 47
+    None, # 48
+    None, # 49
+    (50, TType.STRUCT, 'fightInfo', (FleetFightInfo, FleetFightInfo.thrift_spec), None, ), # 50
   )
 
-  def __init__(self, isDead=None, hasFight=None, enemySet=None, fightInfo=None,):
+  def __init__(self, isDead=None, hasFight=None, experience=None, enemySet=None, fightInfo=None,):
     self.isDead = isDead
     self.hasFight = hasFight
+    self.experience = experience
     self.enemySet = enemySet
     self.fightInfo = fightInfo
 
@@ -2498,6 +2510,11 @@ class FleetReport:
         else:
           iprot.skip(ftype)
       elif fid == 30:
+        if ftype == TType.I32:
+          self.experience = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 40:
         if ftype == TType.SET:
           self.enemySet = set()
           (_etype68, _size65) = iprot.readSetBegin()
@@ -2507,7 +2524,7 @@ class FleetReport:
           iprot.readSetEnd()
         else:
           iprot.skip(ftype)
-      elif fid == 40:
+      elif fid == 50:
         if ftype == TType.STRUCT:
           self.fightInfo = FleetFightInfo()
           self.fightInfo.read(iprot)
@@ -2531,15 +2548,19 @@ class FleetReport:
       oprot.writeFieldBegin('hasFight', TType.BOOL, 20)
       oprot.writeBool(self.hasFight)
       oprot.writeFieldEnd()
+    if self.experience is not None:
+      oprot.writeFieldBegin('experience', TType.I32, 30)
+      oprot.writeI32(self.experience)
+      oprot.writeFieldEnd()
     if self.enemySet is not None:
-      oprot.writeFieldBegin('enemySet', TType.SET, 30)
+      oprot.writeFieldBegin('enemySet', TType.SET, 40)
       oprot.writeSetBegin(TType.I32, len(self.enemySet))
       for iter71 in self.enemySet:
         oprot.writeI32(iter71)
       oprot.writeSetEnd()
       oprot.writeFieldEnd()
     if self.fightInfo is not None:
-      oprot.writeFieldBegin('fightInfo', TType.STRUCT, 40)
+      oprot.writeFieldBegin('fightInfo', TType.STRUCT, 50)
       self.fightInfo.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -2657,6 +2678,7 @@ class PlanetReport:
   Attributes:
    - isDead
    - hasFight
+   - experience
    - enemySet
    - fightInfo
   """
@@ -2692,7 +2714,7 @@ class PlanetReport:
     None, # 27
     None, # 28
     None, # 29
-    (30, TType.SET, 'enemySet', (TType.I32,None), None, ), # 30
+    (30, TType.I32, 'experience', None, None, ), # 30
     None, # 31
     None, # 32
     None, # 33
@@ -2702,12 +2724,23 @@ class PlanetReport:
     None, # 37
     None, # 38
     None, # 39
-    (40, TType.STRUCT, 'fightInfo', (PlanetFightInfo, PlanetFightInfo.thrift_spec), None, ), # 40
+    (40, TType.SET, 'enemySet', (TType.I32,None), None, ), # 40
+    None, # 41
+    None, # 42
+    None, # 43
+    None, # 44
+    None, # 45
+    None, # 46
+    None, # 47
+    None, # 48
+    None, # 49
+    (50, TType.STRUCT, 'fightInfo', (PlanetFightInfo, PlanetFightInfo.thrift_spec), None, ), # 50
   )
 
-  def __init__(self, isDead=None, hasFight=None, enemySet=None, fightInfo=None,):
+  def __init__(self, isDead=None, hasFight=None, experience=None, enemySet=None, fightInfo=None,):
     self.isDead = isDead
     self.hasFight = hasFight
+    self.experience = experience
     self.enemySet = enemySet
     self.fightInfo = fightInfo
 
@@ -2731,6 +2764,11 @@ class PlanetReport:
         else:
           iprot.skip(ftype)
       elif fid == 30:
+        if ftype == TType.I32:
+          self.experience = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 40:
         if ftype == TType.SET:
           self.enemySet = set()
           (_etype75, _size72) = iprot.readSetBegin()
@@ -2740,7 +2778,7 @@ class PlanetReport:
           iprot.readSetEnd()
         else:
           iprot.skip(ftype)
-      elif fid == 40:
+      elif fid == 50:
         if ftype == TType.STRUCT:
           self.fightInfo = PlanetFightInfo()
           self.fightInfo.read(iprot)
@@ -2764,15 +2802,19 @@ class PlanetReport:
       oprot.writeFieldBegin('hasFight', TType.BOOL, 20)
       oprot.writeBool(self.hasFight)
       oprot.writeFieldEnd()
+    if self.experience is not None:
+      oprot.writeFieldBegin('experience', TType.I32, 30)
+      oprot.writeI32(self.experience)
+      oprot.writeFieldEnd()
     if self.enemySet is not None:
-      oprot.writeFieldBegin('enemySet', TType.SET, 30)
+      oprot.writeFieldBegin('enemySet', TType.SET, 40)
       oprot.writeSetBegin(TType.I32, len(self.enemySet))
       for iter78 in self.enemySet:
         oprot.writeI32(iter78)
       oprot.writeSetEnd()
       oprot.writeFieldEnd()
     if self.fightInfo is not None:
-      oprot.writeFieldBegin('fightInfo', TType.STRUCT, 40)
+      oprot.writeFieldBegin('fightInfo', TType.STRUCT, 50)
       self.fightInfo.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()

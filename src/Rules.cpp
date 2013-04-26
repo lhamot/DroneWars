@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Rules.h"
 #include <boost/format.hpp>
+#include <boost/math/special_functions/fpclassify.hpp>
 
 #include "DataBase.h"
 
@@ -8,7 +9,7 @@ using namespace boost;
 
 void onPlanetLose(Coord planetCoord,
                   Universe& univ,
-                  std::map<size_t, Player> const& playerMap,
+                  std::map<Player::ID, Player> const& playerMap,
                   std::unordered_map<Coord, Coord>& newParentMap)
 {
 	Planet& planet = univ.planetMap[planetCoord];
@@ -224,4 +225,83 @@ void updateScore(Universe& univ, DataBase& database)
 	}
 
 	database.updateScore(playerScore);
+}
+
+
+size_t armyPrice(Fleet const& army)
+{
+	size_t res = 0;
+	for(size_t i = 0; i < Ship::Count; ++i)
+		res += army.shipList[i] * Ship::List[i].price.tab[0];
+	return res;
+}
+
+
+size_t armyPrice(Planet const& army)
+{
+	size_t res = 0;
+	for(size_t i = 0; i < Cannon::Count; ++i)
+		res += army.cannonTab[i] * Cannon::List[i].price.tab[0];
+	return res;
+}
+
+
+template<typename A, typename E>
+uint32_t calcExp(PlayerMap const& playerMap,
+                 Report<A> const& allyReport,
+                 Report<E> const& enemyReport)
+{
+	bool const isDead = allyReport.isDead;
+	bool const enemyIsDead = enemyReport.isDead;
+	double exp = isDead ?
+	             (enemyIsDead ? 2. : 1.) :
+		             (enemyIsDead ? 4. : 2.);
+	Player const& player = mapFind(playerMap, allyReport.fightInfo.before.playerId)->second;
+	Player const& enemy = mapFind(playerMap, enemyReport.fightInfo.before.playerId)->second;
+	//std::cout << exp << std::endl;
+	exp *= log(double(enemy.experience + 2)) / log(double(player.experience + 2));
+	size_t const fleetPrice = armyPrice(enemyReport.fightInfo.before);
+	size_t const enemyFleetPrice = armyPrice(enemyReport.fightInfo.before);
+	//std::cout << exp << std::endl;
+	exp *= log(enemyFleetPrice + 2) / log(fleetPrice + 2);
+	//std::cout << exp << std::endl;
+	if(boost::math::isnormal(exp) == false)
+		BOOST_THROW_EXCEPTION(std::logic_error("isnormal(exp) == false"));
+	return boost::numeric::converter<uint32_t, double>::convert(exp);
+}
+
+void calcExperience(PlayerMap const& playerMap,
+                    FightReport& report)
+{
+	//! Experience de chaque flotte
+	for(Report<Fleet>& fleetReport : report.fleetList)
+	{
+		for(intptr_t enIdx : fleetReport.enemySet)
+		{
+			if(enIdx == -1)
+			{
+				if(!report.planet)
+					BOOST_THROW_EXCEPTION(std::logic_error("report.planet == NULL!!"));
+				if(report.planet->fightInfo.before.playerId == Player::NoId)
+					BOOST_THROW_EXCEPTION(std::logic_error("playerId == Player::NoId"));
+
+				fleetReport.experience +=
+				  calcExp(playerMap, fleetReport, *report.planet);
+			}
+			else
+				fleetReport.experience +=
+				  calcExp(playerMap, fleetReport, report.fleetList[enIdx]);
+		}
+	}
+
+	//! Experience de la planète
+	if(report.planet)
+	{
+		Report<Planet>& planetReport = *report.planet;
+		for(intptr_t enemiIndex : planetReport.enemySet)
+		{
+			planetReport.experience += calcExp(
+			                             playerMap, planetReport, report.fleetList[enemiIndex]);
+		}
+	}
 }

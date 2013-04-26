@@ -7,7 +7,7 @@
 
 void onPlanetLose(Coord planetCoord,
                   Universe& univ,
-                  std::map<size_t, Player> const& playerMap,
+                  std::map<Player::ID, Player> const& playerMap,
                   std::unordered_map<Coord, Coord>& newParentMap);
 
 
@@ -27,5 +27,9 @@ bool fleetCanSeePlanet(Fleet const& fleet,
 
 //! Recalcul le score des joueurs (modifie les joueurs)
 void updateScore(Universe& univ, DataBase& database);
+
+//! Calcule l'experience dans un FightReport
+typedef std::map<Player::ID, Player> PlayerMap;
+void calcExperience(PlayerMap const& planerMap, FightReport& report);
 
 #endif //__BTA_RULES__

@@ -1426,9 +1426,10 @@ void swap(FleetFightInfo& a, FleetFightInfo& b);
 
 typedef struct _FleetReport__isset
 {
-	_FleetReport__isset() : isDead(false), hasFight(false), enemySet(false), fightInfo(false) {}
+	_FleetReport__isset() : isDead(false), hasFight(false), experience(false), enemySet(false), fightInfo(false) {}
 	bool isDead;
 	bool hasFight;
+	bool experience;
 	bool enemySet;
 	bool fightInfo;
 } _FleetReport__isset;
@@ -1437,10 +1438,10 @@ class FleetReport
 {
 public:
 
-	static const char* ascii_fingerprint; // = "481453DA9CBE7BE529CA25C03DE5F1DD";
-	static const uint8_t binary_fingerprint[16]; // = {0x48,0x14,0x53,0xDA,0x9C,0xBE,0x7B,0xE5,0x29,0xCA,0x25,0xC0,0x3D,0xE5,0xF1,0xDD};
+	static const char* ascii_fingerprint; // = "E2E9FC268B795C36BF17E8B7B4FE9300";
+	static const uint8_t binary_fingerprint[16]; // = {0xE2,0xE9,0xFC,0x26,0x8B,0x79,0x5C,0x36,0xBF,0x17,0xE8,0xB7,0xB4,0xFE,0x93,0x00};
 
-	FleetReport() : isDead(0), hasFight(0)
+	FleetReport() : isDead(0), hasFight(0), experience(0)
 	{
 	}
 
@@ -1448,6 +1449,7 @@ public:
 
 	bool isDead;
 	bool hasFight;
+	int32_t experience;
 	std::set<int32_t>  enemySet;
 	FleetFightInfo fightInfo;
 
@@ -1461,6 +1463,11 @@ public:
 	void __set_hasFight(const bool val)
 	{
 		hasFight = val;
+	}
+
+	void __set_experience(const int32_t val)
+	{
+		experience = val;
 	}
 
 	void __set_enemySet(const std::set<int32_t>& val)
@@ -1478,6 +1485,8 @@ public:
 		if(!(isDead == rhs.isDead))
 			return false;
 		if(!(hasFight == rhs.hasFight))
+			return false;
+		if(!(experience == rhs.experience))
 			return false;
 		if(!(enemySet == rhs.enemySet))
 			return false;
@@ -1558,9 +1567,10 @@ void swap(PlanetFightInfo& a, PlanetFightInfo& b);
 
 typedef struct _PlanetReport__isset
 {
-	_PlanetReport__isset() : isDead(false), hasFight(false), enemySet(false), fightInfo(false) {}
+	_PlanetReport__isset() : isDead(false), hasFight(false), experience(false), enemySet(false), fightInfo(false) {}
 	bool isDead;
 	bool hasFight;
+	bool experience;
 	bool enemySet;
 	bool fightInfo;
 } _PlanetReport__isset;
@@ -1569,10 +1579,10 @@ class PlanetReport
 {
 public:
 
-	static const char* ascii_fingerprint; // = "6AF944E886CBE8BFA5F45D23F6D577DF";
-	static const uint8_t binary_fingerprint[16]; // = {0x6A,0xF9,0x44,0xE8,0x86,0xCB,0xE8,0xBF,0xA5,0xF4,0x5D,0x23,0xF6,0xD5,0x77,0xDF};
+	static const char* ascii_fingerprint; // = "12C85E5167CBA7F02589952E3B2F49EB";
+	static const uint8_t binary_fingerprint[16]; // = {0x12,0xC8,0x5E,0x51,0x67,0xCB,0xA7,0xF0,0x25,0x89,0x95,0x2E,0x3B,0x2F,0x49,0xEB};
 
-	PlanetReport() : isDead(0), hasFight(0)
+	PlanetReport() : isDead(0), hasFight(0), experience(0)
 	{
 	}
 
@@ -1580,6 +1590,7 @@ public:
 
 	bool isDead;
 	bool hasFight;
+	int32_t experience;
 	std::set<int32_t>  enemySet;
 	PlanetFightInfo fightInfo;
 
@@ -1593,6 +1604,11 @@ public:
 	void __set_hasFight(const bool val)
 	{
 		hasFight = val;
+	}
+
+	void __set_experience(const int32_t val)
+	{
+		experience = val;
 	}
 
 	void __set_enemySet(const std::set<int32_t>& val)
@@ -1610,6 +1626,8 @@ public:
 		if(!(isDead == rhs.isDead))
 			return false;
 		if(!(hasFight == rhs.hasFight))
+			return false;
+		if(!(experience == rhs.experience))
 			return false;
 		if(!(enemySet == rhs.enemySet))
 			return false;
@@ -1643,8 +1661,8 @@ class FightReport
 {
 public:
 
-	static const char* ascii_fingerprint; // = "7E14E06B907EB37A467E17B53CBE0F4B";
-	static const uint8_t binary_fingerprint[16]; // = {0x7E,0x14,0xE0,0x6B,0x90,0x7E,0xB3,0x7A,0x46,0x7E,0x17,0xB5,0x3C,0xBE,0x0F,0x4B};
+	static const char* ascii_fingerprint; // = "59FFDBC99C9EA2657EF7A145BFFBA7A3";
+	static const uint8_t binary_fingerprint[16]; // = {0x59,0xFF,0xDB,0xC9,0x9C,0x9E,0xA2,0x65,0x7E,0xF7,0xA1,0x45,0xBF,0xFB,0xA7,0xA3};
 
 	FightReport() : hasPlanet(0)
 	{
@@ -1716,8 +1734,8 @@ class Universe
 {
 public:
 
-	static const char* ascii_fingerprint; // = "DF0D3401606BD308FC9DD99D8653E1D9";
-	static const uint8_t binary_fingerprint[16]; // = {0xDF,0x0D,0x34,0x01,0x60,0x6B,0xD3,0x08,0xFC,0x9D,0xD9,0x9D,0x86,0x53,0xE1,0xD9};
+	static const char* ascii_fingerprint; // = "F87AC5DFEAF790988985669359CE52AC";
+	static const uint8_t binary_fingerprint[16]; // = {0xF8,0x7A,0xC5,0xDF,0xEA,0xF7,0x90,0x98,0x89,0x85,0x66,0x93,0x59,0xCE,0x52,0xAC};
 
 	Universe() : nextPlayerID(0), nextFleetID(0), time(0)
 	{

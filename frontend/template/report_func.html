@@ -8,6 +8,7 @@
 				<tr><th>{% trans "Player" %}</th><td>{{fleetReport.fightInfo.before.playerId}}</td></tr>
 				<tr><th>{% trans "Has fight" %}</th><td>{% if fleetReport.hasFight %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</td></tr>
 				<tr><th>{% trans "Is dead" %}</th><td>{% if fleetReport.isDead %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</td></tr>
+				<tr><th>{% trans "XP" %}</th><td>{{ fleetReport.experience }}</td></tr>
 				<tr><th>{% trans "Start" %}</th><td>{{fleetReport.fightInfo.before|content}}</td></tr>
 				<tr><th>{% trans "End" %}</th><td>{{fleetReport.fightInfo.after|content}}</td></tr>
 				<!--<tr><th>{% trans "Report ID" %}</td><td>{{target_event.value}}</td></tr>-->
@@ -22,6 +23,7 @@
 				<tr><th>{% trans "Player" %}</th><td>{{fight_report.planet.fightInfo.after.playerId}}</td></tr>
 				<tr><th>{% trans "Has fight" %}</th><td>{% if fight_report.planet.hasFight %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</td></tr>
 				<tr><th>{% trans "Is dead" %}</th><td>{% if fight_report.planet.isDead %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</td></tr>
+				<tr><th>{% trans "XP" %}</th><td>{{ fight_report.planet.experience }}</td></tr>
 				<tr><th>{% trans "Start" %}</th><td>{{fight_report.planet.fightInfo.before|content}}</td></tr>
 				<tr><th>{% trans "End" %}</th><td>{{fight_report.planet.fightInfo.after|content}}</td></tr>
 				<!--<tr><td>{% trans "Report ID" %}</td><td>{{target_event.value}}</td></tr>-->

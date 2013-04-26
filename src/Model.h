@@ -410,14 +410,19 @@ typedef std::vector<FleetAction> FleetActionList;
 template<typename T>
 struct Report
 {
+private:
+	friend boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
-		ar& isDead& hasFight& enemySet& fightInfo;
+		ar& isDead& hasFight& experience& enemySet& fightInfo;
 	}
+	Report() {} //boost::serialization
 
+public:
 	bool isDead;
 	bool hasFight;
+	uint32_t experience;
 	std::set<intptr_t> enemySet; //par index dans le FightReport
 	struct FightInfo
 	{
@@ -445,8 +450,11 @@ struct Report
 		return FightInfo(fighter, fighter);
 	}
 
-	Report() {}
-	Report(T const& fighter): isDead(false), hasFight(false), fightInfo(makeFightInfo(fighter))
+	Report(T const& fighter):
+		isDead(false),
+		hasFight(false),
+		experience(0),
+		fightInfo(makeFightInfo(fighter))
 	{
 	}
 

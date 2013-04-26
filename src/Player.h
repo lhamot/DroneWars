@@ -153,9 +153,10 @@ struct Player
 	uint64_t score;
 	Alliance::ID allianceID;
 	std::string allianceName;
+	uint32_t experience;
 
 	Player(ID i, std::string const& lg, std::string const& pass):
-		id(i), login(lg), password(pass), allianceID(0)
+		id(i), login(lg), password(pass), allianceID(0), experience(0)
 	{
 	}
 };

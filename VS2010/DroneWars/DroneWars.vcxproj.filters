@@ -137,6 +137,9 @@
     <ClInclude Include="..\..\src\DataBase.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\PlayerCodes.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\src\thrift.def">
