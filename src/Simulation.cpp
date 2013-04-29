@@ -488,6 +488,8 @@ void execFights(Universe& univ_,
 	if(univ_.fleetMap.empty()) //si il y as des flottes
 		return;
 
+	std::map<Player::ID, uint32_t> experienceMap;
+
 	std::vector<Player> players = database.getPlayers();
 	std::map<Player::ID, Player> const playerMap = [&]()
 	{
@@ -624,13 +626,30 @@ void execFights(Universe& univ_,
 			else if(fightReport.planet.get().hasFight)
 			{
 				if(planet.playerId == Player::NoId)
-					BOOST_THROW_EXCEPTION(std::logic_error("planet.playerId == Player::NoId"));
+					BOOST_THROW_EXCEPTION(
+					  std::logic_error("planet.playerId == Player::NoId"));
 				Event event(planet.playerId, time(0), Event::PlanetWin);
-				event.setValue(intptr_t(reportID)).setPlanetCoord(planet.coord);
+				event
+				.setValue(intptr_t(reportID))
+				.setPlanetCoord(planet.coord);
 				events.push_back(event);
 			}
 		}
+
+		//! - On cumul l'experience gagné par les joueurs
+		for(Report<Fleet> const & fleetReport : fightReport.fleetList)
+			experienceMap[fleetReport.fightInfo.before.playerId] +=
+			  fleetReport.experience;
+		if(fightReport.planet)
+		{
+			Report<Planet> const& report = *fightReport.planet;
+			experienceMap[report.fightInfo.before.playerId] +=
+			  report.experience;
+		}
 	}
+
+	//! On envoie dans la base les gain d'eperience
+	database.updateXP(experienceMap);
 
 	UpToUniqueLock writeLock(lockFleets);
 	//! On gère chaque planete perdues(onPlanetLose)

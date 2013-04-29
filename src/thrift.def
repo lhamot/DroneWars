@@ -79,7 +79,8 @@ struct Player
 	80: Coord mainPlanet
 	90: i64 score = 0
 	100: Alliance_ID allianceID
-	110: string allianceName
+	110: i32 experience = 0
+	120: string allianceName
 }
 
 

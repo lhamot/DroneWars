@@ -851,6 +851,7 @@ class Player:
    - mainPlanet
    - score
    - allianceID
+   - experience
    - allianceName
   """
 
@@ -965,10 +966,20 @@ class Player:
     None, # 107
     None, # 108
     None, # 109
-    (110, TType.STRING, 'allianceName', None, None, ), # 110
+    (110, TType.I32, 'experience', None, 0, ), # 110
+    None, # 111
+    None, # 112
+    None, # 113
+    None, # 114
+    None, # 115
+    None, # 116
+    None, # 117
+    None, # 118
+    None, # 119
+    (120, TType.STRING, 'allianceName', None, None, ), # 120
   )
 
-  def __init__(self, id=None, login=None, password=None, fleetsCode=None, planetsCode=None, tutoDisplayed=None, mainPlanet=None, score=thrift_spec[90][4], allianceID=None, allianceName=None,):
+  def __init__(self, id=None, login=None, password=None, fleetsCode=None, planetsCode=None, tutoDisplayed=None, mainPlanet=None, score=thrift_spec[90][4], allianceID=None, experience=thrift_spec[110][4], allianceName=None,):
     self.id = id
     self.login = login
     self.password = password
@@ -978,6 +989,7 @@ class Player:
     self.mainPlanet = mainPlanet
     self.score = score
     self.allianceID = allianceID
+    self.experience = experience
     self.allianceName = allianceName
 
   def read(self, iprot):
@@ -1044,6 +1056,11 @@ class Player:
         else:
           iprot.skip(ftype)
       elif fid == 110:
+        if ftype == TType.I32:
+          self.experience = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 120:
         if ftype == TType.STRING:
           self.allianceName = iprot.readString();
         else:
@@ -1098,8 +1115,12 @@ class Player:
       oprot.writeFieldBegin('allianceID', TType.I32, 100)
       oprot.writeI32(self.allianceID)
       oprot.writeFieldEnd()
+    if self.experience is not None:
+      oprot.writeFieldBegin('experience', TType.I32, 110)
+      oprot.writeI32(self.experience)
+      oprot.writeFieldEnd()
     if self.allianceName is not None:
-      oprot.writeFieldBegin('allianceName', TType.STRING, 110)
+      oprot.writeFieldBegin('allianceName', TType.STRING, 120)
       oprot.writeString(self.allianceName)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()

@@ -100,7 +100,8 @@ try
 	            "  planetCoordX INTEGER NOT NULL,"
 	            "  planetCoordY INTEGER NOT NULL,"
 	            "  planetCoordZ INTEGER NOT NULL,"
-	            "  allianceID INTEGER"
+	            "  allianceID INTEGER,"
+	            "  experience INTEGER"
 	            //"  FOREIGN KEY (allianceID) REFERENCES Alliance(id) "
 	            ")", now;
 
@@ -289,8 +290,9 @@ try
 	std::cout << login << " " << password << std::endl;
 	(*session_) <<
 	            "INSERT IGNORE INTO Player "
-	            "(login, password, planetCoordX, planetCoordY, planetCoordZ) "
-	            "VALUES(?, ?, -1, -1, -1)",
+	            "(login, password, "
+	            " planetCoordX, planetCoordY, planetCoordZ, experience) "
+	            "VALUES(?, ?, -1, -1, -1, 0)",
 	            use(login), use(password), now;
 	size_t rowCount;
 	(*session_) << "SELECT ROW_COUNT() ", into(rowCount), now;
@@ -336,8 +338,9 @@ try
 DB_CATCH
 
 
-typedef Tuple < Player::ID, std::string, std::string, uint64_t, Coord::Value,
-        Coord::Value, Coord::Value, Alliance::ID, std::string > PlayerTmp;
+typedef Tuple < Player::ID, std::string, std::string, uint64_t,
+        Coord::Value, Coord::Value, Coord::Value,
+        Alliance::ID, uint32_t, std::string > PlayerTmp;
 Player playerFromTuple(PlayerTmp const& playerTup)
 {
 	Player player(playerTup.get<0>(), playerTup.get<1>(), playerTup.get<2>());
@@ -346,7 +349,8 @@ Player playerFromTuple(PlayerTmp const& playerTup)
 	player.mainPlanet.Y = playerTup.get<5>();
 	player.mainPlanet.Z = playerTup.get<6>();
 	player.allianceID = playerTup.get<7>();
-	player.allianceName = playerTup.get<8>();
+	player.experience = playerTup.get<8>();
+	player.allianceName = playerTup.get<9>();
 	return player;
 }
 
@@ -435,19 +439,38 @@ try
 {
 	Transaction trans(*session_);
 
+	size_t max24 = 0;
+	(*session_) <<
+	            "SELECT max(id) FROM Event WHERE time < ?",
+	            into(max24), use(time(0) - (3600 * 24)), now;
+	size_t max1 = 0;
+	(*session_) <<
+	            "SELECT max(id) FROM Event WHERE time < ?",
+	            into(max1), use(time(0) - (3600 * 1)), now;
+
+	(*session_) <<
+	            "DELETE FROM Event "
+	            "  WHERE id < ? AND type IN (?, ?, ?)",
+	            use(max24),
+	            use((int)Event::PlanetWin),
+	            use((int)Event::PlanetColonized),
+	            use((int)Event::Upgraded),
+	            now;
+
+
 	// Planete
 	// Important
 	(*session_) <<
-	            "DELETE FROM Event WHERE time < ? AND type IN (?, ?, ?)",
-	            use(time(0) - (3600 * 24)),
+	            "DELETE FROM Event WHERE id < ? AND type IN (?, ?, ?)",
+	            use(max24),
 	            use((int)Event::PlanetWin),
 	            use((int)Event::PlanetColonized),
 	            use((int)Event::Upgraded),
 	            now;
 	// Pas important
 	(*session_) <<
-	            "DELETE FROM Event WHERE time < ? AND type IN (?, ?, ?)",
-	            use(time(0) - (60 * 10)),
+	            "DELETE FROM Event WHERE id < ? AND type IN (?, ?, ?)",
+	            use(max1),
 	            use((int)Event::CannonMade),
 	            use((int)Event::ShipMade),
 	            use((int)Event::FleetDrop),
@@ -455,16 +478,16 @@ try
 	//Flotte
 	// Important
 	(*session_) <<
-	            "DELETE FROM Event WHERE time < ? AND type IN (?, ?, ?)",
-	            use(time(0) - (3600 * 24)),
+	            "DELETE FROM Event WHERE id < ? AND type IN (?, ?, ?)",
+	            use(max24),
 	            use((int)Event::FleetWin),
 	            use((int)Event::FleetDraw),
 	            use((int)Event::PlanetColonized),
 	            now;
 	// Pas important
 	(*session_) <<
-	            "DELETE FROM Event WHERE time < ? AND type IN (?, ?, ?)",
-	            use(time(0) - (60 * 10)),
+	            "DELETE FROM Event WHERE id < ? AND type IN (?, ?, ?)",
+	            use(max1),
 	            use((int)Event::FleetsGather),
 	            use((int)Event::PlanetHarvested),
 	            use((int)Event::FleetDrop),
@@ -473,8 +496,8 @@ try
 	// Important
 	(*session_) <<
 	            "DELETE FROM Event "
-	            "WHERE time < ? AND type IN (?, ?, ?, ?, ?, ?)",
-	            use(time(0) - (3600 * 24)),
+	            "WHERE id < ? AND type IN (?, ?, ?, ?, ?, ?)",
+	            use(max24),
 	            use((int)Event::FleetCodeError),
 	            use((int)Event::FleetCodeExecError),
 	            use((int)Event::PlanetCodeError),
@@ -720,7 +743,6 @@ public:
 	                    const DataBase::CodeError& obj,
 	                    AbstractPreparation* pPrepare)
 	{
-		poco_assert_dbg(pBinder != 0);
 		TypeHandler<std::string>::prepare(pos++, obj.message, pPrepare);
 		TypeHandler<size_t>::prepare(pos++, obj.codeDataId, pPrepare);
 	}
@@ -730,7 +752,6 @@ public:
 	                    const DataBase::CodeError& defVal,
 	                    AbstractExtractor* pExt)
 	{
-		poco_assert_dbg(pExt != 0);
 		std::string message;
 		size_t codeID = 0;
 		TypeHandler<string>::extract(pos++, message, defVal.message, pExt);
@@ -898,6 +919,33 @@ try
 	trans.commit();
 }
 DB_CATCH
+
+
+void DataBase::updateXP(std::map<Player::ID, uint32_t> const& expMap)
+try
+{
+	if(expMap.empty())
+		return;
+	Transaction trans(*session_);
+	typedef Poco::Tuple<uint32_t, Player::ID> expTuple;
+	std::vector<expTuple> scoreVect;
+	scoreVect.reserve(expMap.size());
+	/*
+	for(auto nvp : expMap)
+		scoreVect.push_back(expTuple(nvp.second, nvp.first));
+	(*session_) <<
+	            "UPDATE Player SET experience =? WHERE id = ?",
+	            use(expMap), now;
+				*/
+	for(auto nvp : expMap)
+		(*session_) <<
+		            "UPDATE Player SET experience = experience + ? "
+		            "WHERE id = ?",
+		            use(nvp.second), use(nvp.first), now;
+	trans.commit();
+}
+DB_CATCH
+
 
 
 //***************************  Messages  **********************************
@@ -1177,6 +1225,7 @@ try
 	            use(al.name), use(al.description), use(al.id), now;
 }
 DB_CATCH
+
 
 void DataBase::transfertAlliance(Alliance::ID aid, Player::ID pid)
 try

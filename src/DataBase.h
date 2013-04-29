@@ -84,6 +84,8 @@ public:
 
 	void updateScore(std::map<Player::ID, uint64_t> const& scoreMap);
 
+	void updateXP(std::map<Player::ID, uint32_t> const& expMap);
+
 	//***************************  Event  *************************************
 
 	void addEvents(std::vector<Event> const& events);

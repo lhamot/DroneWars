@@ -178,6 +178,7 @@ ndw::Player playerToThrift(Player const& player)
 	outPlayer.mainPlanet = coordToThrift(player.mainPlanet);
 	outPlayer.score = numCast(player.score);
 	outPlayer.allianceID = numCast(player.allianceID);
+	outPlayer.experience = player.experience;
 	outPlayer.allianceName = player.allianceName;
 	return outPlayer;
 }
