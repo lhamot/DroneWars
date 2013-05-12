@@ -68,6 +68,8 @@ struct Alliance
 }
 
 
+typedef list<i32> Player_SkillTab
+
 struct Player
 {
 	10: Player_ID id
@@ -80,7 +82,9 @@ struct Player
 	90: i64 score = 0
 	100: Alliance_ID allianceID
 	110: i32 experience = 0
-	120: string allianceName
+	120: i32 skillpoints = 0
+	130: Player_SkillTab skilltab
+	140: string allianceName
 }
 
 
@@ -365,6 +369,11 @@ struct FriendshipRequests
 	20: list<Player> received
 }
 
+struct Skill
+{
+	10: string name
+}
+
 
 service EngineServer
 {
@@ -389,10 +398,12 @@ service EngineServer
 	TimeInfo getTimeInfo()
 	bool eraseAccount(10: Player_ID pid, 20: string password)
 	list<Event> getPlayerEvents(10: Player_ID pid)
+	bool buySkill(10: Player_ID pid, 20: i16 skillID)
 
 	list<Building> getBuildingsInfo()
 	list<Cannon> getCannonsInfo()
 	list<Ship> getShipsInfo()
+	list<Skill> getSkillsInfo();
 
 	void addMessage(10: Player_ID sender, 20: Player_ID recipient, 30: string suject, 40: string message)
 	list<Message> getMessages(10: Player_ID recipient)

@@ -38,9 +38,11 @@ public:
 	virtual void getTimeInfo(TimeInfo& _return) = 0;
 	virtual bool eraseAccount(const Player_ID pid, const std::string& password) = 0;
 	virtual void getPlayerEvents(std::vector<Event>& _return, const Player_ID pid) = 0;
+	virtual bool buySkill(const Player_ID pid, const int16_t skillID) = 0;
 	virtual void getBuildingsInfo(std::vector<Building>& _return) = 0;
 	virtual void getCannonsInfo(std::vector<Cannon>& _return) = 0;
 	virtual void getShipsInfo(std::vector<Ship>& _return) = 0;
+	virtual void getSkillsInfo(std::vector<Skill>& _return) = 0;
 	virtual void addMessage(const Player_ID sender, const Player_ID recipient, const std::string& suject, const std::string& message) = 0;
 	virtual void getMessages(std::vector<Message>& _return, const Player_ID recipient) = 0;
 	virtual void eraseMesage(const Message_ID mid) = 0;
@@ -175,6 +177,11 @@ public:
 	{
 		return;
 	}
+	bool buySkill(const Player_ID /* pid */, const int16_t /* skillID */)
+	{
+		bool _return = false;
+		return _return;
+	}
 	void getBuildingsInfo(std::vector<Building>& /* _return */)
 	{
 		return;
@@ -184,6 +191,10 @@ public:
 		return;
 	}
 	void getShipsInfo(std::vector<Ship>& /* _return */)
+	{
+		return;
+	}
+	void getSkillsInfo(std::vector<Skill>& /* _return */)
 	{
 		return;
 	}
@@ -2726,6 +2737,137 @@ public:
 
 };
 
+typedef struct _EngineServer_buySkill_args__isset
+{
+	_EngineServer_buySkill_args__isset() : pid(false), skillID(false) {}
+	bool pid;
+	bool skillID;
+} _EngineServer_buySkill_args__isset;
+
+class EngineServer_buySkill_args
+{
+public:
+
+	EngineServer_buySkill_args() : pid(0), skillID(0)
+	{
+	}
+
+	virtual ~EngineServer_buySkill_args() throw() {}
+
+	Player_ID pid;
+	int16_t skillID;
+
+	_EngineServer_buySkill_args__isset __isset;
+
+	void __set_pid(const Player_ID val)
+	{
+		pid = val;
+	}
+
+	void __set_skillID(const int16_t val)
+	{
+		skillID = val;
+	}
+
+	bool operator == (const EngineServer_buySkill_args& rhs) const
+	{
+		if(!(pid == rhs.pid))
+			return false;
+		if(!(skillID == rhs.skillID))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_buySkill_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_buySkill_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_buySkill_pargs
+{
+public:
+
+
+	virtual ~EngineServer_buySkill_pargs() throw() {}
+
+	const Player_ID* pid;
+	const int16_t* skillID;
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_buySkill_result__isset
+{
+	_EngineServer_buySkill_result__isset() : success(false) {}
+	bool success;
+} _EngineServer_buySkill_result__isset;
+
+class EngineServer_buySkill_result
+{
+public:
+
+	EngineServer_buySkill_result() : success(0)
+	{
+	}
+
+	virtual ~EngineServer_buySkill_result() throw() {}
+
+	bool success;
+
+	_EngineServer_buySkill_result__isset __isset;
+
+	void __set_success(const bool val)
+	{
+		success = val;
+	}
+
+	bool operator == (const EngineServer_buySkill_result& rhs) const
+	{
+		if(!(success == rhs.success))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_buySkill_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_buySkill_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_buySkill_presult__isset
+{
+	_EngineServer_buySkill_presult__isset() : success(false) {}
+	bool success;
+} _EngineServer_buySkill_presult__isset;
+
+class EngineServer_buySkill_presult
+{
+public:
+
+
+	virtual ~EngineServer_buySkill_presult() throw() {}
+
+	bool* success;
+
+	_EngineServer_buySkill_presult__isset __isset;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
 
 class EngineServer_getBuildingsInfo_args
 {
@@ -3036,6 +3178,111 @@ public:
 	std::vector<Ship>* success;
 
 	_EngineServer_getShipsInfo_presult__isset __isset;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+
+class EngineServer_getSkillsInfo_args
+{
+public:
+
+	EngineServer_getSkillsInfo_args()
+	{
+	}
+
+	virtual ~EngineServer_getSkillsInfo_args() throw() {}
+
+
+	bool operator == (const EngineServer_getSkillsInfo_args& /* rhs */) const
+	{
+		return true;
+	}
+	bool operator != (const EngineServer_getSkillsInfo_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_getSkillsInfo_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_getSkillsInfo_pargs
+{
+public:
+
+
+	virtual ~EngineServer_getSkillsInfo_pargs() throw() {}
+
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_getSkillsInfo_result__isset
+{
+	_EngineServer_getSkillsInfo_result__isset() : success(false) {}
+	bool success;
+} _EngineServer_getSkillsInfo_result__isset;
+
+class EngineServer_getSkillsInfo_result
+{
+public:
+
+	EngineServer_getSkillsInfo_result()
+	{
+	}
+
+	virtual ~EngineServer_getSkillsInfo_result() throw() {}
+
+	std::vector<Skill>  success;
+
+	_EngineServer_getSkillsInfo_result__isset __isset;
+
+	void __set_success(const std::vector<Skill>& val)
+	{
+		success = val;
+	}
+
+	bool operator == (const EngineServer_getSkillsInfo_result& rhs) const
+	{
+		if(!(success == rhs.success))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_getSkillsInfo_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_getSkillsInfo_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _EngineServer_getSkillsInfo_presult__isset
+{
+	_EngineServer_getSkillsInfo_presult__isset() : success(false) {}
+	bool success;
+} _EngineServer_getSkillsInfo_presult__isset;
+
+class EngineServer_getSkillsInfo_presult
+{
+public:
+
+
+	virtual ~EngineServer_getSkillsInfo_presult() throw() {}
+
+	std::vector<Skill>* success;
+
+	_EngineServer_getSkillsInfo_presult__isset __isset;
 
 	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
 
@@ -4824,6 +5071,9 @@ public:
 	void getPlayerEvents(std::vector<Event>& _return, const Player_ID pid);
 	void send_getPlayerEvents(const Player_ID pid);
 	void recv_getPlayerEvents(std::vector<Event>& _return);
+	bool buySkill(const Player_ID pid, const int16_t skillID);
+	void send_buySkill(const Player_ID pid, const int16_t skillID);
+	bool recv_buySkill();
 	void getBuildingsInfo(std::vector<Building>& _return);
 	void send_getBuildingsInfo();
 	void recv_getBuildingsInfo(std::vector<Building>& _return);
@@ -4833,6 +5083,9 @@ public:
 	void getShipsInfo(std::vector<Ship>& _return);
 	void send_getShipsInfo();
 	void recv_getShipsInfo(std::vector<Ship>& _return);
+	void getSkillsInfo(std::vector<Skill>& _return);
+	void send_getSkillsInfo();
+	void recv_getSkillsInfo(std::vector<Skill>& _return);
 	void addMessage(const Player_ID sender, const Player_ID recipient, const std::string& suject, const std::string& message);
 	void send_addMessage(const Player_ID sender, const Player_ID recipient, const std::string& suject, const std::string& message);
 	void recv_addMessage();
@@ -4915,9 +5168,11 @@ private:
 	void process_getTimeInfo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_eraseAccount(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_getPlayerEvents(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_buySkill(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_getBuildingsInfo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_getCannonsInfo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_getShipsInfo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_getSkillsInfo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_addMessage(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_getMessages(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_eraseMesage(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
@@ -4958,9 +5213,11 @@ public:
 		processMap_["getTimeInfo"] = &EngineServerProcessor::process_getTimeInfo;
 		processMap_["eraseAccount"] = &EngineServerProcessor::process_eraseAccount;
 		processMap_["getPlayerEvents"] = &EngineServerProcessor::process_getPlayerEvents;
+		processMap_["buySkill"] = &EngineServerProcessor::process_buySkill;
 		processMap_["getBuildingsInfo"] = &EngineServerProcessor::process_getBuildingsInfo;
 		processMap_["getCannonsInfo"] = &EngineServerProcessor::process_getCannonsInfo;
 		processMap_["getShipsInfo"] = &EngineServerProcessor::process_getShipsInfo;
+		processMap_["getSkillsInfo"] = &EngineServerProcessor::process_getSkillsInfo;
 		processMap_["addMessage"] = &EngineServerProcessor::process_addMessage;
 		processMap_["getMessages"] = &EngineServerProcessor::process_getMessages;
 		processMap_["eraseMesage"] = &EngineServerProcessor::process_eraseMesage;
@@ -5251,6 +5508,17 @@ public:
 		return;
 	}
 
+	bool buySkill(const Player_ID pid, const int16_t skillID)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->buySkill(pid, skillID);
+		}
+		return ifaces_[i]->buySkill(pid, skillID);
+	}
+
 	void getBuildingsInfo(std::vector<Building>& _return)
 	{
 		size_t sz = ifaces_.size();
@@ -5284,6 +5552,18 @@ public:
 			ifaces_[i]->getShipsInfo(_return);
 		}
 		ifaces_[i]->getShipsInfo(_return);
+		return;
+	}
+
+	void getSkillsInfo(std::vector<Skill>& _return)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->getSkillsInfo(_return);
+		}
+		ifaces_[i]->getSkillsInfo(_return);
 		return;
 	}
 

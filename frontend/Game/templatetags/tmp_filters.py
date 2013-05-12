@@ -154,3 +154,6 @@ def bbcode(code):
     parser = BBCode.Parser()
     return parser.format(code)
     
+@register.filter
+def at(vect, index):
+    return vect[index]

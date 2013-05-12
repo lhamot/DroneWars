@@ -32,6 +32,7 @@ urlpatterns = patterns('',
     url(r'^ingame/buildings.html', 'Game.info_views.BuildingsView'),
     url(r'^ingame/cannons.html', 'Game.info_views.CannonsView'),
     url(r'^ingame/ships.html', 'Game.info_views.ShipsView'),
+    url(r'^ingame/skilllist.html', 'Game.views.Skillsview'),
     
     url(r'^ingame/messages.html', 'Game.community_views.MessagesView'),
     url(r'^ingame/create_message.html', 'Game.community_views.CreateMessageView'),

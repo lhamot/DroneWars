@@ -1009,7 +1009,7 @@ try
 			std::cout << "OK" << std::endl;
 			newSave += SaveSecond;
 		}
-		bool noWait = false;
+		bool noWait = true;
 		if(noWait || newUpdate <= now)
 			try
 			{

@@ -75,11 +75,15 @@ public:
 	void getPlayerEvents(std::vector<ndw::Event>& _return,
 	                     const ndw::Player_ID pid);
 
+	bool buySkill(const ndw::Player_ID pid, const int16_t skillID);
+
 	void getBuildingsInfo(std::vector<ndw::Building>& _return);
 
 	void getCannonsInfo(std::vector<ndw::Cannon>& _return);
 
 	void getShipsInfo(std::vector<ndw::Ship>& _return);
+
+	void getSkillsInfo(std::vector<ndw::Skill>& _return);
 
 	//***************************  Messages  **********************************
 

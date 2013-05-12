@@ -11,6 +11,7 @@
 #include <boost/archive/text_oarchive.hpp>
 #pragma warning(pop)
 #include <boost/format.hpp>
+#include <boost/algorithm/string.hpp>
 
 #pragma warning(push)
 #pragma warning(disable: 4512 4244)
@@ -101,7 +102,9 @@ try
 	            "  planetCoordY INTEGER NOT NULL,"
 	            "  planetCoordZ INTEGER NOT NULL,"
 	            "  allianceID INTEGER,"
-	            "  experience INTEGER"
+	            "  experience INTEGER NOT NULL,"
+	            "  skillpoints INTEGER NOT NULL,"
+	            "  skilltab VARCHAR(200) NOT NULL"
 	            //"  FOREIGN KEY (allianceID) REFERENCES Alliance(id) "
 	            ")", now;
 
@@ -290,9 +293,9 @@ try
 	std::cout << login << " " << password << std::endl;
 	(*session_) <<
 	            "INSERT IGNORE INTO Player "
-	            "(login, password, "
-	            " planetCoordX, planetCoordY, planetCoordZ, experience) "
-	            "VALUES(?, ?, -1, -1, -1, 0)",
+	            "(login, password, planetCoordX, planetCoordY, planetCoordZ, "
+	            " experience, skillpoints) "
+	            "VALUES(?, ?, -1, -1, -1, 0, 0)",
 	            use(login), use(password), now;
 	size_t rowCount;
 	(*session_) << "SELECT ROW_COUNT() ", into(rowCount), now;
@@ -340,7 +343,7 @@ DB_CATCH
 
 typedef Tuple < Player::ID, std::string, std::string, uint64_t,
         Coord::Value, Coord::Value, Coord::Value,
-        Alliance::ID, uint32_t, std::string > PlayerTmp;
+        Alliance::ID, uint32_t, uint32_t, std::string, std::string > PlayerTmp;
 Player playerFromTuple(PlayerTmp const& playerTup)
 {
 	Player player(playerTup.get<0>(), playerTup.get<1>(), playerTup.get<2>());
@@ -350,7 +353,19 @@ Player playerFromTuple(PlayerTmp const& playerTup)
 	player.mainPlanet.Z = playerTup.get<6>();
 	player.allianceID = playerTup.get<7>();
 	player.experience = playerTup.get<8>();
-	player.allianceName = playerTup.get<9>();
+	player.skillpoints = playerTup.get<9>();
+	player.allianceName = playerTup.get<11>();
+
+	//La skill tab doit etre déserialisée
+	if(playerTup.get<10>().size())
+	{
+		std::vector<std::string> strs;
+		boost::split(strs, playerTup.get<10>(), boost::is_any_of(","));
+		if(strs.size() > player.skilltab.size())
+			BOOST_THROW_EXCEPTION(std::logic_error("Too mush skills in tab"));
+		transform(
+		  strs, player.skilltab.begin(), lexical_cast<uint16_t, string>);
+	}
 	return player;
 }
 
@@ -939,10 +954,44 @@ try
 				*/
 	for(auto nvp : expMap)
 		(*session_) <<
-		            "UPDATE Player SET experience = experience + ? "
+		            "UPDATE Player SET "
+		            "experience = experience + ?, "
+		            "skillpoints = skillpoints + ? "
 		            "WHERE id = ?",
-		            use(nvp.second), use(nvp.first), now;
+		            use(nvp.second),
+		            use(nvp.second),
+		            use(nvp.first),
+		            now;
 	trans.commit();
+}
+DB_CATCH
+
+
+bool DataBase::buySkill(Player::ID pid, int16_t skillID, size_t cost)
+try
+{
+	Transaction trans(*session_);
+	Player pla = getPlayer(pid);
+	if(pla.skillpoints < cost)
+		return false;
+
+	pla.skilltab.at(skillID) += 1;
+	std::vector<string> tab;
+	tab.reserve(pla.skilltab.size());
+	transform(pla.skilltab, back_inserter(tab), lexical_cast<string, uint16_t>);
+
+	string skilltabstr = join(tab, ",");
+	(*session_) <<
+	            "UPDATE Player SET "
+	            "skillpoints = skillpoints - ?, "
+	            "skilltab = ? "
+	            "WHERE id = ?",
+	            use(cost),
+	            use(skilltabstr),
+	            use(pid),
+	            now;
+	trans.commit();
+	return true;
 }
 DB_CATCH
 

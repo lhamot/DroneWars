@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <boost/format.hpp>
 
+#include "Skills.h"
+
 using namespace boost;
 using namespace std;
 
@@ -179,6 +181,8 @@ ndw::Player playerToThrift(Player const& player)
 	outPlayer.score = numCast(player.score);
 	outPlayer.allianceID = numCast(player.allianceID);
 	outPlayer.experience = player.experience;
+	outPlayer.skillpoints = player.skillpoints;
+	copy(player.skilltab, back_inserter(outPlayer.skilltab));
 	outPlayer.allianceName = player.allianceName;
 	return outPlayer;
 }
@@ -224,6 +228,14 @@ ndw::FightReport fightReportToThrift(FightReport const& report)
 		  logic_error("Unconsistent FightReport::hasPlanet value"));
 	if(report.planet)
 		result.__set_planet(planetReportToThrift(report.planet.get()));
+	return result;
+}
+
+
+ndw::Skill skillToThrift(Skill const& skill)
+{
+	ndw::Skill result;
+	result.name = skill.name;
 	return result;
 }
 
@@ -620,6 +632,16 @@ void EngineServerHandler::getPlayerEvents(
 }
 
 
+bool EngineServerHandler::buySkill(const ndw::Player_ID pid,
+                                   const int16_t skillID)
+{
+	LOG4CPLUS_TRACE(logger, "pid : " << pid << " skillID : " << skillID);
+	bool const done = database_.buySkill(pid, skillID, 100);
+	LOG4CPLUS_TRACE(logger, "exit " << done);
+	return done;
+}
+
+
 void EngineServerHandler::getBuildingsInfo(vector<ndw::Building>& _return)
 {
 	LOG4CPLUS_TRACE(logger, "enter");
@@ -672,6 +694,11 @@ void EngineServerHandler::getShipsInfo(vector<ndw::Ship>& _return)
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
+
+void EngineServerHandler::getSkillsInfo(std::vector<ndw::Skill>& _return)
+{
+	boost::transform(Skill::List, back_inserter(_return), skillToThrift);
+}
 
 //*******************************  Messages  **********************************
 

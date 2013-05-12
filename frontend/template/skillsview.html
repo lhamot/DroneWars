@@ -1,0 +1,31 @@
+{% extends "ingame_base.html" %}
+
+{% load i18n %}
+
+{% load tmp_filters %}
+
+{% block skills_class %}active{% endblock %}
+
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="span6">
+			<h2>{% trans "Skill points" %} : {{player.skillpoints}}</h2>
+			<table class="table">
+			<tr>
+				<th>{% trans "Name" %}</th>
+				<th>{% trans "Level" %}</th>
+				<th>{% trans "Up" %}</th>
+			</tr>
+			{% for skill in skill_list %}
+			<tr>
+				<td onclick="document.location.href='?skill_id={{forloop.counter0}}'">{{skill.name}}</td>
+				<td>{{player.skilltab|at:forloop.counter0}}</td>
+				<td><a class="btn btn-success" href="?buySkill={{forloop.counter0}}">{% trans "Cost : " %}1</a></td>
+			</tr>
+			{% endfor %}
+			</table>
+		</div>
+	</div>
+</div>
+{% endblock %}

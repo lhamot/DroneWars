@@ -2,6 +2,7 @@
 #define __DRONEWARS_PLAYER__
 
 #include "stdafx.h"
+#include "Skills.h"
 
 struct Coord
 {
@@ -154,10 +155,15 @@ struct Player
 	Alliance::ID allianceID;
 	std::string allianceName;
 	uint32_t experience;
+	uint32_t skillpoints;
+	typedef boost::array<uint8_t, Skill::Count> SkillTab;
+	SkillTab skilltab;
 
 	Player(ID i, std::string const& lg, std::string const& pass):
-		id(i), login(lg), password(pass), allianceID(0), experience(0)
+		id(i), login(lg), password(pass), allianceID(0),
+		experience(0), skillpoints(0)
 	{
+		skilltab.assign(0);
 	}
 };
 

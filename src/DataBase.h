@@ -86,6 +86,8 @@ public:
 
 	void updateXP(std::map<Player::ID, uint32_t> const& expMap);
 
+	bool buySkill(Player::ID pid, int16_t skillID, size_t cost);
+
 	//***************************  Event  *************************************
 
 	void addEvents(std::vector<Event> const& events);

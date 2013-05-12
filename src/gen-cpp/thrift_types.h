@@ -173,6 +173,8 @@ typedef int32_t Alliance_ID;
 
 typedef int32_t Player_ID;
 
+typedef std::vector<int32_t>  Player_SkillTab;
+
 typedef std::vector<int32_t>  BuildingTab;
 
 typedef int64_t Fleet_ID;
@@ -500,7 +502,7 @@ void swap(Alliance& a, Alliance& b);
 
 typedef struct _Player__isset
 {
-	_Player__isset() : id(false), login(false), password(false), fleetsCode(false), planetsCode(false), tutoDisplayed(false), mainPlanet(false), score(true), allianceID(false), experience(true), allianceName(false) {}
+	_Player__isset() : id(false), login(false), password(false), fleetsCode(false), planetsCode(false), tutoDisplayed(false), mainPlanet(false), score(true), allianceID(false), experience(true), skillpoints(true), skilltab(false), allianceName(false) {}
 	bool id;
 	bool login;
 	bool password;
@@ -511,6 +513,8 @@ typedef struct _Player__isset
 	bool score;
 	bool allianceID;
 	bool experience;
+	bool skillpoints;
+	bool skilltab;
 	bool allianceName;
 } _Player__isset;
 
@@ -518,10 +522,10 @@ class Player
 {
 public:
 
-	static const char* ascii_fingerprint; // = "DAE23EAA72F522FB3E729E208EE13B85";
-	static const uint8_t binary_fingerprint[16]; // = {0xDA,0xE2,0x3E,0xAA,0x72,0xF5,0x22,0xFB,0x3E,0x72,0x9E,0x20,0x8E,0xE1,0x3B,0x85};
+	static const char* ascii_fingerprint; // = "82190C42EB180D138783E5C3417D63E4";
+	static const uint8_t binary_fingerprint[16]; // = {0x82,0x19,0x0C,0x42,0xEB,0x18,0x0D,0x13,0x87,0x83,0xE5,0xC3,0x41,0x7D,0x63,0xE4};
 
-	Player() : id(0), login(), password(), score(0LL), allianceID(0), experience(0), allianceName()
+	Player() : id(0), login(), password(), score(0LL), allianceID(0), experience(0), skillpoints(0), allianceName()
 	{
 	}
 
@@ -537,6 +541,8 @@ public:
 	int64_t score;
 	Alliance_ID allianceID;
 	int32_t experience;
+	int32_t skillpoints;
+	Player_SkillTab skilltab;
 	std::string allianceName;
 
 	_Player__isset __isset;
@@ -591,6 +597,16 @@ public:
 		experience = val;
 	}
 
+	void __set_skillpoints(const int32_t val)
+	{
+		skillpoints = val;
+	}
+
+	void __set_skilltab(const Player_SkillTab& val)
+	{
+		skilltab = val;
+	}
+
 	void __set_allianceName(const std::string& val)
 	{
 		allianceName = val;
@@ -617,6 +633,10 @@ public:
 		if(!(allianceID == rhs.allianceID))
 			return false;
 		if(!(experience == rhs.experience))
+			return false;
+		if(!(skillpoints == rhs.skillpoints))
+			return false;
+		if(!(skilltab == rhs.skilltab))
 			return false;
 		if(!(allianceName == rhs.allianceName))
 			return false;
@@ -1743,8 +1763,8 @@ class Universe
 {
 public:
 
-	static const char* ascii_fingerprint; // = "BECC34DE697FF171157D30C6919A6D30";
-	static const uint8_t binary_fingerprint[16]; // = {0xBE,0xCC,0x34,0xDE,0x69,0x7F,0xF1,0x71,0x15,0x7D,0x30,0xC6,0x91,0x9A,0x6D,0x30};
+	static const char* ascii_fingerprint; // = "32AFF39EAFD68BBDA500606604C88273";
+	static const uint8_t binary_fingerprint[16]; // = {0x32,0xAF,0xF3,0x9E,0xAF,0xD6,0x8B,0xBD,0xA5,0x00,0x60,0x66,0x04,0xC8,0x82,0x73};
 
 	Universe() : nextPlayerID(0), nextFleetID(0), time(0)
 	{
@@ -1839,8 +1859,8 @@ class OptionalPlayer
 {
 public:
 
-	static const char* ascii_fingerprint; // = "793DF6B5633998CDF1FD75B318BA78BC";
-	static const uint8_t binary_fingerprint[16]; // = {0x79,0x3D,0xF6,0xB5,0x63,0x39,0x98,0xCD,0xF1,0xFD,0x75,0xB3,0x18,0xBA,0x78,0xBC};
+	static const char* ascii_fingerprint; // = "4FBD9C01249599226144400C9EB13948";
+	static const uint8_t binary_fingerprint[16]; // = {0x4F,0xBD,0x9C,0x01,0x24,0x95,0x99,0x22,0x61,0x44,0x40,0x0C,0x9E,0xB1,0x39,0x48};
 
 	OptionalPlayer()
 	{
@@ -2173,8 +2193,8 @@ class FriendshipRequests
 {
 public:
 
-	static const char* ascii_fingerprint; // = "9893F266424B0E5D360601E680C4DF7B";
-	static const uint8_t binary_fingerprint[16]; // = {0x98,0x93,0xF2,0x66,0x42,0x4B,0x0E,0x5D,0x36,0x06,0x01,0xE6,0x80,0xC4,0xDF,0x7B};
+	static const char* ascii_fingerprint; // = "20B92C9925479CA37AB12DD8CFEE02C6";
+	static const uint8_t binary_fingerprint[16]; // = {0x20,0xB9,0x2C,0x99,0x25,0x47,0x9C,0xA3,0x7A,0xB1,0x2D,0xD8,0xCF,0xEE,0x02,0xC6};
 
 	FriendshipRequests()
 	{
@@ -2218,6 +2238,54 @@ public:
 };
 
 void swap(FriendshipRequests& a, FriendshipRequests& b);
+
+typedef struct _Skill__isset
+{
+	_Skill__isset() : name(false) {}
+	bool name;
+} _Skill__isset;
+
+class Skill
+{
+public:
+
+	static const char* ascii_fingerprint; // = "45D52A93E2590F2922F669AFAAD707D6";
+	static const uint8_t binary_fingerprint[16]; // = {0x45,0xD5,0x2A,0x93,0xE2,0x59,0x0F,0x29,0x22,0xF6,0x69,0xAF,0xAA,0xD7,0x07,0xD6};
+
+	Skill() : name()
+	{
+	}
+
+	virtual ~Skill() throw() {}
+
+	std::string name;
+
+	_Skill__isset __isset;
+
+	void __set_name(const std::string& val)
+	{
+		name = val;
+	}
+
+	bool operator == (const Skill& rhs) const
+	{
+		if(!(name == rhs.name))
+			return false;
+		return true;
+	}
+	bool operator != (const Skill& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const Skill&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+void swap(Skill& a, Skill& b);
 
 } // namespace
 

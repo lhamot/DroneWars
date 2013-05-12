@@ -140,13 +140,6 @@ extern "C" int initDroneWars(lua_State* L)
 	    value("Carbon",  Ressource::Carbon),
 	    value("Loicium", Ressource::Loicium)
 	  ],
-	  class_<Planet>("Planet")
-	  .def("isFree", &planetIsFree)
-	  .def_readonly("coord", &Planet::coord)
-	  .def_readonly("playerId", &Planet::playerId)
-	  .def_readonly("buildingList", &Planet::buildingList)
-	  .def_readonly("cannonTab", &Planet::cannonTab)
-	  .def_readonly("ressourceSet", &Planet::ressourceSet),
 	  class_<RessourceSet>("RessourceSet")
 	  .def(constructor<Ressource::Value, Ressource::Value, Ressource::Value>())
 	  .def(constructor<>())
@@ -173,13 +166,30 @@ extern "C" int initDroneWars(lua_State* L)
 	    value("CommandCenter",     Building::CommandCenter     + 1), //+1 pour correspondre au tableau de batiment (comment a 1 en lua)
 	    value("MetalMine",         Building::MetalMine         + 1),
 	    value("CarbonMine",        Building::CarbonMine        + 1),
-	    value("CristalMine",       Building::LoiciumFilter     + 1),
+	    value("LoiciumFilter",     Building::LoiciumFilter     + 1),
 	    value("Factory",           Building::Factory           + 1),
 	    value("Laboratory",        Building::Laboratory        + 1),
 	    value("CarbonicCentral",   Building::CarbonicCentral   + 1),
 	    value("SolarCentral",      Building::SolarCentral      + 1),
 	    value("GeothermicCentral", Building::GeothermicCentral + 1)
 	  ],
+	  class_<Cannon>("Cannon")
+	  .enum_("Type")
+	  [
+	    value("Cannon1", Cannon::Cannon1 + 1),
+	    value("Cannon2", Cannon::Cannon2 + 1),
+	    value("Cannon3", Cannon::Cannon3 + 1),
+	    value("Cannon4", Cannon::Cannon4 + 1),
+	    value("Cannon5", Cannon::Cannon5 + 1),
+	    value("Cannon6", Cannon::Cannon6 + 1)
+	  ],
+	  class_<Planet>("Planet")
+	  .def("isFree", &planetIsFree)
+	  .def_readonly("coord", &Planet::coord)
+	  .def_readonly("playerId", &Planet::playerId)
+	  .def_readonly("buildingList", &Planet::buildingList)
+	  .def_readonly("cannonTab", &Planet::cannonTab)
+	  .def_readonly("ressourceSet", &Planet::ressourceSet),
 	  class_<Ship>("Ship")
 	  .enum_("Type")
 	  [
@@ -192,16 +202,6 @@ extern "C" int initDroneWars(lua_State* L)
 	    value("Queen",        Ship::Queen      + 1),
 	    value("Cargo",        Ship::Cargo      + 1),
 	    value("LargeCargo",   Ship::LargeCargo + 1)
-	  ],
-	  class_<Cannon>("Cannon")
-	  .enum_("Type")
-	  [
-	    value("Cannon1", Cannon::Cannon1 + 1),
-	    value("Cannon2", Cannon::Cannon2 + 1),
-	    value("Cannon3", Cannon::Cannon3 + 1),
-	    value("Cannon4", Cannon::Cannon4 + 1),
-	    value("Cannon5", Cannon::Cannon5 + 1),
-	    value("Cannon6", Cannon::Cannon6 + 1)
 	  ],
 	  class_<Fleet>("Fleet")
 	  .def_readonly("id", &Fleet::id)
@@ -219,11 +219,6 @@ extern "C" int initDroneWars(lua_State* L)
 	    value("Cannon",   PlanetAction::Cannon)
 	  ],
 	  class_<FleetAction>("FleetAction")
-	  .def(constructor<FleetAction::Type, Coord>()) //TODO: A virer quand plus persone ne l'utilisera
-	  .def(constructor<FleetAction::Type, Direction>())
-	  .def(constructor<FleetAction::Type>())
-	  .def_readonly("action", &FleetAction::action)
-	  .def_readonly("target", &FleetAction::target)
 	  .enum_("Type")
 	  [
 	    value("Nothing",   FleetAction::Nothing),
@@ -232,6 +227,11 @@ extern "C" int initDroneWars(lua_State* L)
 	    value("Colonize",  FleetAction::Colonize),
 	    value("Drop",      FleetAction::Drop)
 	  ]
+	  .def(constructor<FleetAction::Type, Coord>())      //TODO: A virer quand plus persone ne l'utilisera
+	  .def(constructor<FleetAction::Type, Direction>())  //TODO: A virer quand plus persone ne l'utilisera
+	  .def(constructor<FleetAction::Type>())
+	  .def_readonly("action", &FleetAction::action)
+	  .def_readonly("target", &FleetAction::target)
 	];
 
 	return 0;
