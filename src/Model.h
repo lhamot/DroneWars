@@ -1,3 +1,6 @@
+//! @file
+//! @author Loïc HAMOT
+
 #ifndef _BTA_MODEL_
 #define _BTA_MODEL_
 
@@ -8,12 +11,17 @@
 #include "Tools.h"
 
 
+//! Pour éviter un warning bidon de doxygen
+typedef boost::serialization::access boost_serialization_access;
+
 namespace std
 {
+//! Traits de calcul de valeur de hachage d'une coordonée Coord
 template<>
 struct hash<Coord>
 {
-	size_t operator()(const Coord& p) const
+	//! Calcul la valeur de hachage d'une coordonée Coord
+	size_t operator()(Coord const& p) const
 	{
 		std::size_t seed = 0;
 		boost::hash_combine(seed, p.X);
@@ -24,8 +32,10 @@ struct hash<Coord>
 };
 }
 
+//! Foncteur de comparaison de Coord
 struct CompCoord
 {
+	//! Compare deux Coord
 	bool operator()(Coord a, Coord b) const
 	{
 		if(a.X < b.X)
@@ -41,9 +51,13 @@ struct CompCoord
 	};
 };
 
+
+//! Les types de Ressource
 struct Ressource
 {
-	typedef uint32_t Value;
+	//! @todo: utiliser des strong enum
+	typedef uint32_t Value; //!< Type contenant une quantité d'une ressource
+	//! Les types de Ressource
 	enum Enum : uint8_t
 	{
 	  Metal,
@@ -53,42 +67,55 @@ struct Ressource
 	};
 };
 
+
+//! Contient une quantité pour chaque type de Ressource
 struct RessourceSet
 {
+	//! Serialize l'objet
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
 		ar& tab;
 	}
 
+	//! Tableau contenant une quantité pour chaque type de ressource
 	typedef boost::array<Ressource::Value, Ressource::Count> Tab;
-	Tab tab;
+	Tab tab; //!< Tableau contenant une quantité pour chaque type de ressource
 
+	//! Constructeur
 	RessourceSet(Tab const& t): tab(t) {}
+	//! Constructeur par defaut
 	RessourceSet() {tab.fill(0);}
+	//! Constructeur
 	RessourceSet(Ressource::Value a, Ressource::Value b, Ressource::Value c)
 	{
 		tab[0] = a; tab[1] = b; tab[2] = c;
 	}
 
+	//! operateur ==
 	inline bool operator == (RessourceSet const& b) const
 	{
 		return boost::range::equal(tab, b.tab);
 	}
+	//! operateur !=
 	inline bool operator != (RessourceSet const& b) const
 	{
 		return !(*this == b);
 	}
 };
 
+
+//! Tache éxcecutable par une planète
 struct PlanetTask
 {
+	//! Serialize l'objet
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
 		ar& type& value& value2& lauchTime& duration& startCost& expired;
 	}
 
+	//! Types possibles de la tache
 	enum Enum : uint8_t
 	{
 	  UpgradeBuilding,
@@ -97,29 +124,36 @@ struct PlanetTask
 	  Count
 	};
 
-	uint32_t value;
-	uint32_t value2;
-	uint32_t lauchTime;
-	uint32_t duration;
-	RessourceSet startCost;
-	bool expired;
-	Enum type;
+	uint32_t value;         //!< Valeur utilisée en fonction du type Enum
+	uint32_t value2;        //!< Valeur utilisée en fonction du type Enum
+	uint32_t lauchTime;     //!< Round de lancement
+	uint32_t duration;      //!< Durré total d'excecution
+	//! @todo: A quoi sert le cout de lancement?
+	RessourceSet startCost; //!< Cout de lancement
+	bool expired;           //!< true si la tache a déja été excecuté
+	Enum type;              //!< Type de la tache
 
+	//! Constructeur par defaut
 	PlanetTask() {}
+	//! Constructeur
 	PlanetTask(Enum t, uint32_t lauch, uint32_t dur):
 		value(0), value2(0), lauchTime(lauch), duration(dur), expired(false), type(t)
 	{
 	}
 };
 
+
+//! Tache éxcecutable par une flotte
 struct FleetTask
 {
+	//! Serialize l'objet
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
 		ar& type& lauchTime& duration& position& expired;
 	}
 
+	//! Types possibles de la flotte
 	enum Enum : uint8_t
 	{
 	  Move,
@@ -128,13 +162,15 @@ struct FleetTask
 	  Count
 	};
 
-	uint32_t lauchTime;
-	uint32_t duration;
-	Coord position;
-	bool expired;
-	Enum type;
+	uint32_t lauchTime; //!< Round de lancement
+	uint32_t duration;  //!< Durré total d'excecution
+	Coord position;     //!< Localisation utilisé par le type Enum::Move
+	bool expired;       //!< true si la tache a déja été excecuté
+	Enum type;          //!< Type de la tache
 
+	//! Constructeur par defaut
 	FleetTask() {}
+	//! Constructeur
 	FleetTask(Enum t, uint32_t lauch, uint32_t dur):
 		lauchTime(lauch), duration(dur), expired(false), type(t)
 	{
@@ -142,8 +178,10 @@ struct FleetTask
 };
 
 
+//! Caractéristique d'un batiment
 struct Building
 {
+	//! Types de batiment
 	enum Enum
 	{
 	  Undefined = -1,
@@ -159,15 +197,18 @@ struct Building
 	  Count
 	};
 
-	RessourceSet price;
-	double coef;
+	RessourceSet price; //!< Prix du batiment
+	double coef;        //!< Coef pour l'augmentation du prix
 
+	//! Liste contenant les caractéristiques de tout les batiments
 	static Building const List[Count];
 };
 
 
+//! Caractéristique d'un vaisseau
 struct Ship
 {
+	//! Les types de vaisseau
 	enum Enum : int8_t
 	{
 	  Undefined = -1,
@@ -183,18 +224,20 @@ struct Ship
 	  Count
 	};
 
-	RessourceSet price;
-	uint16_t life;
-	uint16_t power;
-	uint16_t shield;
+	RessourceSet price; //!< Prix du vaisseau
+	uint16_t life;      //!< Point de vie initial du vaisseau
+	uint16_t power;     //!< Point déga initial du vaisseau
+	uint16_t shield;    //!< Point bouclier initial du vaisseau
 
 
-	static Ship const List[Count];
+	static Ship const List[Count]; //!< Liste des vaisseaux (un par type)
 };
 
 
+//! Caractéristique d'un Cannon
 struct Cannon
 {
+	//! Les types de cannon
 	enum Enum : int8_t
 	{
 	  Undefined = -1,
@@ -207,17 +250,19 @@ struct Cannon
 	  Count
 	};
 
-	RessourceSet price;
-	uint16_t life;
-	uint16_t power;
-	uint16_t shield;
+	RessourceSet price; //!< Prix du vaisseau
+	uint16_t life;	    //!< Point de vie initial du vaisseau
+	uint16_t power;	    //!< Point déga initial du vaisseau
+	uint16_t shield;    //!< Point bouclier initial du vaisseau
 
-	static Cannon const List[Count];
+	static Cannon const List[Count]; //!< Liste des canons (un par type)
 };
 
 
+//! Données d'une planètes
 struct Planet
 {
+	//! Serialize l'objet
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
@@ -252,17 +297,21 @@ struct Planet
 		ar& parentCoord;
 	}
 
-	std::string name;
-	Coord coord;
-	Player::ID playerId;
+	//! Tableau contenant un uint16_t pour chaque type de Building
 	typedef boost::array<uint16_t, Building::Count> BuildingTab;
-	BuildingTab buildingList;
-	std::vector<PlanetTask> taskQueue;
-	RessourceSet ressourceSet;
+	//! Tableau contenant un uint32_t pour chaque type de Cannon
 	typedef boost::array<uint32_t, Cannon::Count> CannonTab;
-	CannonTab cannonTab;
-	Coord parentCoord;
 
+	std::string name;                  //!< Nom
+	Coord coord;                       //!< Coordonnées
+	Player::ID playerId;               //!< Propriétaire
+	BuildingTab buildingList;          //!< Niveau de chaque Building
+	std::vector<PlanetTask> taskQueue; //!< Liste des taches en cours
+	RessourceSet ressourceSet;         //!< Ressources présente
+	CannonTab cannonTab;               //!< Nombre de canons pour chaque type
+	Coord parentCoord;                 //!< Coordonées de la planète parente
+
+	//! Taille ocupée dans le tas (pour profiling)
 	size_t heap_size() const
 	{
 		return
@@ -270,8 +319,9 @@ struct Planet
 		  buildingList.size() * sizeof(size_t) +
 		  taskQueue.capacity() * sizeof(PlanetTask);
 	}
-
+	//! Constructeur par defaut
 	Planet(): playerId(55555) {}
+	//! Constructeur
 	Planet(Coord c): coord(c), playerId(Player::NoId)
 	{
 		buildingList.fill(0);
@@ -279,7 +329,7 @@ struct Planet
 		if(playerId >= 100000 && playerId != Player::NoId)
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 	}
-
+	//! true si la planète n'as pas de propriétaire
 	bool isFree() const
 	{
 		return playerId == Player::NoId;
@@ -287,8 +337,10 @@ struct Planet
 };
 
 
+//! Ordre donné par le script lua a une planète
 struct PlanetAction
 {
+	//! Types d'ordre possibles
 	enum Type : int8_t
 	{
 	  Undefined = -1,
@@ -299,30 +351,56 @@ struct PlanetAction
 	  Count
 	};
 
-	Type action;
-	Building::Enum building;
-	Ship::Enum ship;
-	Cannon::Enum cannon;
-	uint32_t number;
+	Type action;             //!< Type d'ordre
+	Building::Enum building; //!< Building, si utile au Type
+	Ship::Enum ship;         //!< Ship, si utile au Type
+	Cannon::Enum cannon;     //!< Cannon, si utile au Type
+	uint32_t number;         //!< Quantité de Building, Ship ou autre
 
-	bool operator==(PlanetAction const& other)
+	//! Constructeur par defaut
+	PlanetAction():
+		action(Undefined),
+		building(Building::Undefined),
+		ship(Ship::Undefined),
+		cannon(Cannon::Undefined),
+		number(0)
 	{
-		return action == other.action &&
-		       building == other.building &&
-		       ship == other.ship &&
-		       number == other.number;
 	}
-
-	PlanetAction(): action(Undefined), building(Building::Undefined), ship(Ship::Undefined), cannon(Cannon::Undefined), number(0) {}
-	PlanetAction(Type a, Building::Enum b): action(a), building(b), ship(Ship::Undefined), cannon(Cannon::Undefined), number(0) {}
-	PlanetAction(Type a, Ship::Enum s, uint32_t n): action(a), building(Building::Undefined), ship(s), cannon(Cannon::Undefined), number(n) {}
-	PlanetAction(Type a, Cannon::Enum c, uint32_t n): action(a), building(Building::Undefined), ship(Ship::Undefined), cannon(c), number(n) {}
+	//! Constructeur pour les type concernant des Building
+	PlanetAction(Type a, Building::Enum b):
+		action(a),
+		building(b),
+		ship(Ship::Undefined),
+		cannon(Cannon::Undefined),
+		number(0)
+	{
+	}
+	//! Constructeur pour les type concernant des vaisseaux
+	PlanetAction(Type a, Ship::Enum s, uint32_t n):
+		action(a),
+		building(Building::Undefined),
+		ship(s),
+		cannon(Cannon::Undefined),
+		number(n)
+	{
+	}
+	//! Constructeur pour les type concernant des canons
+	PlanetAction(Type a, Cannon::Enum c, uint32_t n):
+		action(a),
+		building(Building::Undefined),
+		ship(Ship::Undefined),
+		cannon(c),
+		number(n)
+	{
+	}
 };
-typedef std::vector<PlanetAction> PlanetActionList;
+typedef std::vector<PlanetAction> PlanetActionList; //!< Liste de PlanetAction
 
 
+//! Données d'une flotte
 struct Fleet
 {
+	//! Serialize l'objet
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int version)
 	{
@@ -350,26 +428,30 @@ struct Fleet
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 	}
 
-	typedef uint64_t ID;
-	static const ID NoId = 0;
-	ID id;
-	Player::ID playerId;
-	Coord coord;
-	Coord origin;
-	std::string name;
+	//! Un uint32_t par type de Ship
 	typedef boost::array<uint32_t, Ship::Count> ShipTab;
-	ShipTab shipList;
-	RessourceSet ressourceSet;
-	std::vector<FleetTask> taskQueue;
+	typedef uint64_t ID;      //!< Type ID
+	static const ID NoId = 0; //!< Valeur d'ID signifiant "Pas de flotte"
+
+	ID id;                    //!< Identifiant unique
+	Player::ID playerId;      //!< Propriétaire
+	Coord coord;              //!< Coordonées actuels
+	Coord origin;             //!< Coordonées d'origines
+	std::string name;         //!< Nom
+	ShipTab shipList;         //!< Quantité de chaque type de vaisseaux présent
+	RessourceSet ressourceSet;        //!< Ressources transportés par la flotte
+	std::vector<FleetTask> taskQueue; //!< Liste de taque a éxcecuter
 
 
+	//! Taille dans le tas. (Pour profiling)
 	size_t heap_size() const
 	{
 		return name.capacity();
 	}
 
-
-	Fleet() {}
+	//! Constructeur par defaut
+	Fleet(): id(NoId), playerId(Player::NoId) {shipList.assign(0);}
+	//! Constructeur
 	Fleet(ID fid, Player::ID pid, Coord c):
 		id(fid), playerId(pid), coord(c), origin(c)
 	{
@@ -380,8 +462,10 @@ struct Fleet
 };
 
 
+//! Ordre qu'un scrupt LUA peut donner a une flotte
 struct FleetAction
 {
+	//! Types d'ordres possibles
 	enum Type : uint8_t
 	{
 	  Nothing,
@@ -391,65 +475,70 @@ struct FleetAction
 	  Drop
 	};
 
-	Type action;
-	Direction target;
+	Type action;      //!< Type de l'ordre
+	Direction target; //!< Direction (si applicable)
 
-	bool operator==(FleetAction const& other)
-	{
-		return action == other.action && target == other.target;
-	}
-
-	FleetAction(Type a, Direction t = Direction()): action(a), target(t) {}
-
-	//TODO: A virer quand plus persone ne l'utilisera
-	FleetAction(Type a, Coord t): action(a), target(t.X, t.Y, t.Z) {}
+	//! Constructeur
+	explicit FleetAction(Type a, Direction t = Direction()): action(a), target(t) {}
 };
-typedef std::vector<FleetAction> FleetActionList;
+typedef std::vector<FleetAction> FleetActionList; //!< Liste de FleetAction
 
 
+//! @brief Part dun rapport de combat(FightRepport) lié à une planète ou flotte
+//! @tparam T Planet ou Fleet
 template<typename T>
 struct Report
 {
 private:
-	friend boost::serialization::access;
+	friend boost_serialization_access; //!< Pour donner access a boost
+	//! Serialize l'objet
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
 		ar& isDead& hasFight& experience& enemySet& fightInfo;
 	}
-	Report() {} //boost::serialization
+	//! Constructeur par default utilisé uniquement par boost::serialization
+	Report() {}
 
 public:
-	bool isDead;
-	bool hasFight;
-	uint32_t experience;
-	std::set<intptr_t> enemySet; //par index dans le FightReport
+	bool isDead;         //!< True si l'armée est détruite
+	bool hasFight;       //!< True si l'armée a combatue
+	uint32_t experience; //!< Points d'experience gagnés
+	//! Liste des énemie combatue, par index dans le FightReport
+	std::set<intptr_t> enemySet;
+	//! Etat des flottes/planètes avant et apprés un combat
 	struct FightInfo
 	{
+		//! serialize l'objet
 		template<class Archive>
 		void serialize(Archive& ar, const unsigned int)
 		{
 			ar& before& after;
 		}
 
-		T before;
-		T after;
+		T before; //!< Etat de l'armé avant le combat
+		T after;  //!< Etat de l'armé aprés le combat
 
+		//! Taille alloué sur le tas par l'objet (utile pour profiling memoire)
 		size_t heap_size() const
 		{
 			return before.heap_size() + after.heap_size();
 		}
 
+		//! Constructeur par defaut
 		FightInfo() {}
+		//! Constructeur
 		FightInfo(T const& bef, T const& aft): before(bef), after(aft) {}
 	};
-	FightInfo fightInfo;
+	FightInfo fightInfo; //!< Info sur le combat
 
+	//! Fabrique un FightInfo a partie d'une armé(flotte ou planète) donnée
 	static FightInfo makeFightInfo(T fighter)
 	{
 		return FightInfo(fighter, fighter);
 	}
 
+	//! Constructeur
 	Report(T const& fighter):
 		isDead(false),
 		hasFight(false),
@@ -458,6 +547,7 @@ public:
 	{
 	}
 
+	//! Taille alloué sur le tas par l'objet (utile pour profiling memoire)
 	size_t heap_size() const
 	{
 		return
@@ -467,20 +557,24 @@ public:
 };
 
 
+//! Rapport de combat
 struct FightReport
 {
+	//! Serialize l'objet
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
 		ar& fleetList& hasPlanet& planet;
 	}
 
-	std::vector<Report<Fleet> > fleetList;
-	bool hasPlanet;
-	boost::optional<Report<Planet> > planet;
+	std::vector<Report<Fleet> > fleetList;   //!< Liste des rapport de flotte
+	bool hasPlanet;                          //!< si une planète a combatue
+	boost::optional<Report<Planet> > planet; //!< Rapport de la planète
 
+	//! Constructeur par defaut
 	FightReport(): hasPlanet(false) {}
 
+	//! Taile dans le tas. (Pour profiling)
 	size_t heap_size() const
 	{
 		size_t res = fleetList.capacity() * sizeof(Report<Fleet>);
@@ -493,14 +587,22 @@ struct FightReport
 };
 
 
+//! Un evenement ayant eu lieu durant la simulation et lié à un joueur
 struct Event
 {
+private:
+	friend boost_serialization_access; //!< Pour donner access a boost
+	//! Serialize l'objet
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
 		ar& id& time& type& comment& value;
 	}
+	//! Constructeur par defaut, pour boost::serialization
+	Event() {}
 
+public:
+	//! Les types d'évenements
 	enum Type : uint8_t
 	{
 	  FleetCodeError,
@@ -522,40 +624,45 @@ struct Event
 	  Count
 	};
 
-	typedef size_t ID;
-	ID id;
-	time_t time;
-	Type type;
-	std::string comment;
-	intptr_t value;
-	bool viewed;
-	Player::ID playerID;
-	Fleet::ID fleetID;
-	Coord planetCoord;
+	typedef size_t ID;   //!< Type d'indentifiant d'évenement
+	ID id;               //!< Indentifiant unique
+	time_t time;         //!< Date de l'évenement
+	Type type;           //!< Type d'évenement
+	std::string comment; //!< Commentaire
+	intptr_t value;      //!< Valeur numerique utile pour certain Event::Type
+	bool viewed;         //!< true si l'évenement a été vu par son propriétaire
+	Player::ID playerID; //!< Propriétaire
+	Fleet::ID fleetID;   //!< Flotte lié, si applicable, sinon Fleet::NoID
+	Coord planetCoord;   //!< Planète lié, si applicable, sinon (0; 0; 0)
 
-
+	//! Taile dans le tas (Pour profiling memoire)
 	size_t heap_size() const
 	{
 		return comment.capacity();
 	}
 
-	Event() {}
-
+	//! Constructeur
 	Event(Player::ID pid, time_t ti, Type ty):
 		id(0), time(ti), type(ty), value(-1), viewed(false),
 		playerID(pid), fleetID(Fleet::NoId)
 	{
 	}
 
+	//! Modifie Event::value
 	Event& setValue(intptr_t val)       {value = val; return *this;}
-	Event& setComment(std::string const& comm)    {comment = comm; return *this;}
+	//! Modifie Event::comment
+	Event& setComment(std::string const& comm)  {comment = comm; return *this;}
+	//! Modifie Event::fleetID
 	Event& setFleetID(Fleet::ID fid)    {fleetID = fid; return *this;}
+	//! Modifie Event::planetCoord
 	Event& setPlanetCoord(Coord pcoord) {planetCoord = pcoord; return *this;}
 };
 
 
+//! Toute les données manipulées par le simulateur (mais pas dans le SGBD)
 struct Universe
 {
+	//! Serialize l'objet
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
@@ -566,18 +673,22 @@ struct Universe
 		ar& roundDuration;
 	}
 
-	static const unsigned short MapSizeX = 100;
-	static const unsigned short MapSizeY = 100;
-	static const unsigned short MapSizeZ = 100;
+	static const unsigned short MapSizeX = 100; //!< Nombre de cases, en X
+	static const unsigned short MapSizeY = 100; //!< Nombre de cases, en Y
+	static const unsigned short MapSizeZ = 100; //!< Nombre de cases, en Z
 
+	//! Tableau associatif [Coord] => Planète
 	typedef std::unordered_map<Coord, Planet> PlanetMap;
-	PlanetMap planetMap;
+	//! Tableau associatif [Fleet::ID] => Fleet
 	typedef std::map<Fleet::ID, Fleet> FleetMap;
-	FleetMap fleetMap;
-	Fleet::ID nextFleetID;
-	uint32_t roundCount;
-	double roundDuration;
 
+	PlanetMap planetMap;   //!< Tab des planètes, avec leurs coordonées en clé
+	FleetMap fleetMap;     //!< Tableau des flottes, avec le Fleet::ID pour clé
+	Fleet::ID nextFleetID; //!< ID de la prochaine flotte (autoincrément)
+	uint32_t roundCount;   //!< Nombre de round ecoulés
+	double roundDuration;  //!< Durrée du dernier round
+
+	//! Calcul la taille approximative dans pile, pour du profiling memoire
 	size_t heap_size() const
 	{
 		size_t res = 0;
@@ -592,9 +703,11 @@ struct Universe
 		return res;
 	}
 
-	typedef boost::shared_mutex Mutex;
-	mutable Mutex planetsFleetsReportsmutex;
+	typedef boost::shared_mutex Mutex;       //!< Type mutex pour Universe
+	//! @todo: Renomer cette variable
+	mutable Mutex planetsFleetsReportsmutex; //!< Mutex des donées de Universe
 
+	//! Constructeur par defaut
 	Universe():
 		nextFleetID(1),
 		roundCount(0),
@@ -602,6 +715,7 @@ struct Universe
 	{
 	}
 
+	//! Crée un Universe par copie
 	Universe(Universe const& other):
 		planetMap(other.planetMap),
 		fleetMap(other.fleetMap),
@@ -611,13 +725,15 @@ struct Universe
 	{
 	}
 
+	//! Copie un Universe
 	Universe& operator=(Universe other)
 	{
 		swap(other);
 		return *this;
 	}
 
-	void swap(Universe& other)
+	//! Echange deux Universe sans risque d'éxception
+	void swap(Universe& other) throw()
 	{
 		planetMap.swap(other.planetMap);
 		fleetMap.swap(other.fleetMap);

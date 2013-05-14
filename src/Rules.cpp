@@ -1,3 +1,6 @@
+//! @file
+//! @author Loïc HAMOT
+
 #include "stdafx.h"
 #include "Rules.h"
 #include <boost/format.hpp>
@@ -6,6 +9,7 @@
 #include "DataBase.h"
 
 using namespace boost;
+
 
 void onPlanetLose(Coord planetCoord,
                   Universe& univ,
@@ -24,15 +28,11 @@ void onPlanetLose(Coord planetCoord,
 }
 
 
-typedef boost::unique_lock<Universe::Mutex> UniqueLock;
-typedef boost::shared_lock<Universe::Mutex> SharedLock;
-typedef boost::upgrade_lock<Universe::Mutex> UpgradeLock;
-typedef boost::upgrade_to_unique_lock<Universe::Mutex> UpToUniqueLock;
-
 void checkTutos(Universe& univ_,
                 DataBase& database,
                 std::vector<Event> const& events)
 {
+	typedef boost::shared_lock<Universe::Mutex> SharedLock;
 	SharedLock lockAll(univ_.planetsFleetsReportsmutex);
 
 	std::vector<Player::ID> wisePlayer;
@@ -196,11 +196,12 @@ bool fleetCanSeePlanet(Fleet const& fleet,
 	//uint64_t const score2 = mapFind(univ.playerMap, planet.playerId)->second.score;
 	//Bloquage si trop d'équart de niveaux
 	//return (score1 * 5) > score2 && (score2 * 5) > score1;
-	//TODO : Gerer la difference de score
+	//! @todo: Gerer la difference de score
 	return true;
 }
 
-void updateScore(Universe& univ, DataBase& database)
+
+void updateScore(Universe const& univ, DataBase& database)
 {
 	std::map<Player::ID, uint64_t> playerScore;
 
@@ -228,29 +229,33 @@ void updateScore(Universe& univ, DataBase& database)
 }
 
 
-size_t armyPrice(Fleet const& army)
-{
-	size_t res = 0;
-	for(size_t i = 0; i < Ship::Count; ++i)
-		res += army.shipList[i] * Ship::List[i].price.tab[0];
-	return res;
-}
-
-
-size_t armyPrice(Planet const& army)
-{
-	size_t res = 0;
-	for(size_t i = 0; i < Cannon::Count; ++i)
-		res += army.cannonTab[i] * Cannon::List[i].price.tab[0];
-	return res;
-}
-
-
+//! Calcule l'XP qu'un combat entre deux armés va rapporter
 template<typename A, typename E>
 uint32_t calcExp(PlayerMap const& playerMap,
                  Report<A> const& allyReport,
                  Report<E> const& enemyReport)
 {
+	struct ArmyPrice
+	{
+		// Donne la valeur de la flotte pour le calcul d'XP
+		size_t operator()(Fleet const& army)
+		{
+			size_t res = 0;
+			for(size_t i = 0; i < Ship::Count; ++i)
+				res += army.shipList[i] * Ship::List[i].price.tab[0];
+			return res;
+		}
+
+		// Donne la valeur de la planète pour le calcul d'XP
+		size_t operator()(Planet const& army)
+		{
+			size_t res = 0;
+			for(size_t i = 0; i < Cannon::Count; ++i)
+				res += army.cannonTab[i] * Cannon::List[i].price.tab[0];
+			return res;
+		}
+	} armyPrice;
+
 	bool const isDead = allyReport.isDead;
 	bool const enemyIsDead = enemyReport.isDead;
 	if(isDead)
@@ -270,10 +275,11 @@ uint32_t calcExp(PlayerMap const& playerMap,
 	return boost::numeric::converter<uint32_t, double>::convert(exp);
 }
 
+
 void calcExperience(PlayerMap const& playerMap,
                     FightReport& report)
 {
-	//! Experience de chaque flotte
+	//! - Experience de chaque flotte
 	for(Report<Fleet>& fleetReport : report.fleetList)
 	{
 		for(intptr_t enIdx : fleetReport.enemySet)
@@ -294,7 +300,7 @@ void calcExperience(PlayerMap const& playerMap,
 		}
 	}
 
-	//! Experience de la planète
+	//! - Experience de la planète
 	if(report.planet)
 	{
 		Report<Planet>& planetReport = *report.planet;

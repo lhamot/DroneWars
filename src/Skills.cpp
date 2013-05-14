@@ -1,3 +1,6 @@
+//! @file
+//! @author Loïc HAMOT
+
 #include "stdafx.h"
 #include "Skills.h"
 

@@ -1,3 +1,6 @@
+//! @file
+//! @author Loïc HAMOT
+
 #ifndef __DRONEWARS_SIMULATION__
 #define __DRONEWARS_SIMULATION__
 
@@ -14,35 +17,51 @@ class LuaEngine;
 }
 
 
+//! Gère la simulation
 class Simulation
 {
-	Simulation(Simulation const&);
-	Simulation& operator = (Simulation const&);
+	Simulation(Simulation const&);              //!< copy ctor non implémenté
+	Simulation& operator = (Simulation const&); //!< operator = non implémenté
 public:
+	//! Constructeur
 	Simulation(Universe& univ);
 
+	//! Informe qu'un joueur à été modifié(généralement les scripts)
 	void reloadPlayer(Player::ID pid);
 
+	//! Boucle principale
 	void loop();
 
+	//! Donne l'age total de l'univers en rounds, y comprie le round actuel
 	double getUnivTime();
 
 private:
+
+	//! Excecute un round
 	void round(LuaTools::LuaEngine&,
 	           PlayerCodeMap& codesMap,
 	           std::vector<Event>& events);
+
+	//! Recharge les script des joueur dans la base de donnée
 	void updatePlayersCode(LuaTools::LuaEngine& luaEngine,
 	                       PlayerCodeMap& codesMap,
 	                       std::vector<Event>& events);
+
+	//! Lance une sauvegarde dans le fichier univName (dans un autre thread)
 	void save(std::string const& univName) const;
+
+	//! Supprime les sauvegardes considérées comme trop vielles
 	void removeOldSaves() const;
 
+	//! Mutex de playerToReload_
 	mutable boost::shared_mutex reloadPlayerMutex_;
+	//! Liste des joueurs a recharger au prochain tour
 	std::set<Player::ID> playerToReload_;
+	//! Date du début du round
 	boost::chrono::system_clock::time_point roundStart;
-	Universe& univ_;
-	DataBase database_;
-	mutable boost::thread savingThread_;
+	Universe& univ_;                     //!< Universe
+	DataBase database_;                  //!< Acces a la base de donnée
+	mutable boost::thread savingThread_; //!< thread de sauvegarde
 };
 
 

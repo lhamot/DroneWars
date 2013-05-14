@@ -1,3 +1,6 @@
+//! @file
+//! @author Loïc HAMOT
+
 #include "stdafx.h"
 #include "Engine.h"
 
@@ -7,8 +10,8 @@
 using namespace std;
 using namespace boost;
 
-typedef boost::unique_lock<Universe::Mutex> UniqueLock;
-typedef boost::shared_lock<Universe::Mutex> SharedLock;
+typedef boost::unique_lock<Universe::Mutex> UniqueLock; //!< Verou en écriture
+typedef boost::shared_lock<Universe::Mutex> SharedLock; //!< Verou en lecture
 
 Engine::Engine():
 	simulation_(new Simulation(univ_))
@@ -17,6 +20,7 @@ Engine::Engine():
 
 	time_t maxtime = 0;
 	size_t version = 1;
+	//! Recherche la dernière sauvegarde
 	for(const filesystem::path & p : make_iterator_range(dir, end))
 	{
 		string const fileStr = p.filename().string();
@@ -32,6 +36,7 @@ Engine::Engine():
 	}
 	if(maxtime)
 	{
+		//! Si elle est trouvée on la charge
 		stringstream ss;
 		ss << "save/" << maxtime << "_save.bta";
 		if(version == 2)
@@ -40,9 +45,11 @@ Engine::Engine():
 	}
 	else
 	{
+		//! Sinon on construit un Univers par defaut
 		DataBase database;
 		construct(univ_, database);
 	}
+	//! On lance le simulateur (Start)
 	start();
 }
 
@@ -138,10 +145,14 @@ vector<Planet> Engine::getPlanets(vector<Coord> const& coordVect) const
 	return result;
 }
 
-Fleet Engine::getFleet(Fleet::ID fid) const
+boost::optional<Fleet> Engine::getFleet(Fleet::ID fid) const
 {
 	SharedLock lock(univ_.planetsFleetsReportsmutex);
-	return mapFind(univ_.fleetMap, fid)->second;
+	auto iter = univ_.fleetMap.find(fid);
+	if(iter == univ_.fleetMap.end())
+		return none;
+	else
+		return iter->second;
 }
 
 

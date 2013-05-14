@@ -1,3 +1,6 @@
+//! @file
+//! @author Loïc HAMOT
+
 //std
 #include <algorithm>
 #include <ctime>

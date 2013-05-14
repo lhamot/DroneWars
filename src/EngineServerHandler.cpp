@@ -1,3 +1,6 @@
+//! @file
+//! @author Loïc HAMOT
+
 #include "stdafx.h"
 #include "EngineServerHandler.h"
 
@@ -10,10 +13,11 @@ using namespace boost;
 using namespace std;
 
 using namespace log4cplus;
-static Logger logger = Logger::getInstance(
-                         LOG4CPLUS_TEXT("EngineServerHandler"));
+//! Logger dédié au EngineServerHandler
+static Logger logger =
+  Logger::getInstance(LOG4CPLUS_TEXT("EngineServerHandler"));
 
-
+//! @cond Doxygen_Suppress
 bool ndw::Coord::operator < (const ndw::Coord& b) const
 {
 	if(X < b.X)
@@ -27,22 +31,28 @@ bool ndw::Coord::operator < (const ndw::Coord& b) const
 	else
 		return Z < b.Z;
 }
+//! @endcond
 
+namespace ndw
+{
+//! operateur d'écriture d'un ndw::Coord dans un flux
 ostream& operator << (ostream& os, ndw::Coord const& coord)
 {
 	os << "(" << coord.X << "," << coord.Y << "," << coord.Z << ")";
 	return os;
 }
+}
 
 
 namespace
 {
-
+//! Foncteur qui applique un boost::numeric_cast sans spécifier le type
 template<typename I>
 struct NumerciCast
 {
-	I value;
+	I value; //!< Valeur pas encore castée
 
+	//! Applique un boost::numeric_cast du type I vers O
 	template<typename O>
 	operator O()
 	{
@@ -51,6 +61,7 @@ struct NumerciCast
 };
 
 
+//! Crée un NumerciCast pour faire un numeric_cast sans spécifier le type
 template<typename I>
 NumerciCast<I> numCast(I value)
 {
@@ -59,6 +70,7 @@ NumerciCast<I> numCast(I value)
 }
 
 
+//! Convertie un Coord en ndw::Coord pour transfert par thrift
 ndw::Coord coordToThrift(Coord const& fleet)
 {
 	ndw::Coord res;
@@ -69,6 +81,7 @@ ndw::Coord coordToThrift(Coord const& fleet)
 }
 
 
+//! Convertie un RessourceSet en ndw::RessourceSet pour transfert par thrift
 ndw::RessourceSet ressourceToThrift(RessourceSet const& ress)
 {
 	ndw::RessourceSet res;
@@ -79,6 +92,7 @@ ndw::RessourceSet ressourceToThrift(RessourceSet const& ress)
 }
 
 
+//! Convertie un FleetTask en ndw::FleetTask pour transfert par thrift
 ndw::FleetTask fleetTaskToThrift(FleetTask const& task)
 {
 	ndw::FleetTask res;
@@ -91,6 +105,7 @@ ndw::FleetTask fleetTaskToThrift(FleetTask const& task)
 }
 
 
+//! Convertie un PlanetTask en ndw::PlanetTask pour transfert par thrift
 ndw::PlanetTask planetTaskToThrift(PlanetTask const& task)
 {
 	ndw::PlanetTask res;
@@ -104,6 +119,7 @@ ndw::PlanetTask planetTaskToThrift(PlanetTask const& task)
 }
 
 
+//! Convertie un Event en ndw::Event pour transfert par thrift
 ndw::Event eventToThrift(Event const& event)
 {
 	ndw::Event res;
@@ -117,6 +133,7 @@ ndw::Event eventToThrift(Event const& event)
 }
 
 
+//! Convertie un Fleet en ndw::Fleet pour transfert par thrift
 ndw::Fleet fleetToThrift(Fleet const& fleet)
 {
 	ndw::Fleet result;
@@ -140,6 +157,7 @@ ndw::Fleet fleetToThrift(Fleet const& fleet)
 }
 
 
+//! Convertie un Planet en ndw::Planet pour transfert par thrift
 ndw::Planet planetToThrift(Planet const& planet)
 {
 	ndw::Planet res;
@@ -163,6 +181,7 @@ ndw::Planet planetToThrift(Planet const& planet)
 }
 
 
+//! Convertie un CodeData en ndw::CodeData pour transfert par thrift
 void codeDataCppToThrift(CodeData const& in, ndw::CodeData& out)
 {
 	out.blocklyCode = in.blocklyCode;
@@ -171,6 +190,7 @@ void codeDataCppToThrift(CodeData const& in, ndw::CodeData& out)
 }
 
 
+//! Convertie un Player en ndw::Player pour transfert par thrift
 ndw::Player playerToThrift(Player const& player)
 {
 	ndw::Player outPlayer;
@@ -188,6 +208,7 @@ ndw::Player playerToThrift(Player const& player)
 }
 
 
+//! Convertie un FleetReport en ndw::FleetReport pour transfert par thrift
 ndw::FleetReport fleetReportToThrift(Report<Fleet> const& fleetReport)
 {
 	ndw::FleetReport result;
@@ -202,6 +223,7 @@ ndw::FleetReport fleetReportToThrift(Report<Fleet> const& fleetReport)
 }
 
 
+//! Convertie un PlanetReport en ndw::PlanetReport pour transfert par thrift
 ndw::PlanetReport planetReportToThrift(Report<Planet> const& planetReport)
 {
 	ndw::PlanetReport result;
@@ -216,6 +238,7 @@ ndw::PlanetReport planetReportToThrift(Report<Planet> const& planetReport)
 }
 
 
+//! Convertie un FightReport en ndw::FightReport pour transfert par thrift
 ndw::FightReport fightReportToThrift(FightReport const& report)
 {
 	ndw::FightReport result;
@@ -232,6 +255,7 @@ ndw::FightReport fightReportToThrift(FightReport const& report)
 }
 
 
+//! Convertie un Skill en ndw::Skill pour transfert par thrift
 ndw::Skill skillToThrift(Skill const& skill)
 {
 	ndw::Skill result;
@@ -262,9 +286,9 @@ bool EngineServerHandler::addPlayer(const string& login,
 {
 	LOG4CPLUS_TRACE(logger, "login: " << login << " password : " << password);
 	if(login.size() > MaxStringSize)
-		BOOST_THROW_EXCEPTION(Engine::InvalidData("login"));
+		BOOST_THROW_EXCEPTION(InvalidData("login"));
 	if(password.size() > MaxStringSize)
-		BOOST_THROW_EXCEPTION(Engine::InvalidData("password"));
+		BOOST_THROW_EXCEPTION(InvalidData("password"));
 
 	std::vector<std::string> codes;
 	getNewPlayerCode(codes);
@@ -281,6 +305,7 @@ bool EngineServerHandler::addPlayer(const string& login,
 }
 
 
+//! Trie un range d'objet en comparent un attribut donnée de ces objets
 template<class RandomAccessRange, class Attribute>
 RandomAccessRange& sortOnAttr(RandomAccessRange& rng, bool asc, Attribute attr)
 {
@@ -299,6 +324,7 @@ RandomAccessRange& sortOnAttr(RandomAccessRange& rng, bool asc, Attribute attr)
 }
 
 
+//! Trie un range de planète ou flotte, en fonction d'un critère donné
 template<typename Range>
 void sortOnType(Range& rg, ndw::Sort_Type::type sortType, const bool asc)
 {
@@ -421,54 +447,59 @@ void EngineServerHandler::getPlayerPlanets(
 }
 
 
-void EngineServerHandler::setPlayerFleetCode(const ndw::Player_ID pid,
-    const string& code)
+void EngineServerHandler::setPlayerFleetCode(
+  const ndw::Player_ID pid,
+  const string& code)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
 	if(code.size() > Player::MaxCodeSize)
-		BOOST_THROW_EXCEPTION(Engine::InvalidData("Code size too long"));
+		BOOST_THROW_EXCEPTION(InvalidData("Code size too long"));
 	database_.addScript(pid, CodeData::Fleet, code);
 	engine_.reloadPlayer(pid);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 
-void EngineServerHandler::setPlayerPlanetCode(const ndw::Player_ID pid,
-    const string& code)
+void EngineServerHandler::setPlayerPlanetCode(
+  const ndw::Player_ID pid,
+  const string& code)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
 	if(code.size() > Player::MaxCodeSize)
-		BOOST_THROW_EXCEPTION(Engine::InvalidData("Code size too long"));
+		BOOST_THROW_EXCEPTION(InvalidData("Code size too long"));
 	database_.addScript(pid, CodeData::Planet, code);
 	engine_.reloadPlayer(pid);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 
-void EngineServerHandler::setPlayerFleetBlocklyCode(const ndw::Player_ID pid,
-    const string& code)
+void EngineServerHandler::setPlayerFleetBlocklyCode(
+  const ndw::Player_ID pid,
+  const string& code)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
 	if(code.size() > Player::MaxBlocklySize)
-		BOOST_THROW_EXCEPTION(Engine::InvalidData("Code size too long"));
+		BOOST_THROW_EXCEPTION(InvalidData("Code size too long"));
 	database_.addBlocklyCode(pid, CodeData::Fleet, code);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 
-void EngineServerHandler::setPlayerPlanetBlocklyCode(const ndw::Player_ID pid,
-    const string& code)
+void EngineServerHandler::setPlayerPlanetBlocklyCode(
+  const ndw::Player_ID pid,
+  const string& code)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
 	if(code.size() > Player::MaxBlocklySize)
-		BOOST_THROW_EXCEPTION(Engine::InvalidData("Code size too long"));
+		BOOST_THROW_EXCEPTION(InvalidData("Code size too long"));
 	database_.addBlocklyCode(pid, CodeData::Planet, code);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 
-void EngineServerHandler::getPlayerFleetCode(ndw::CodeData& ret,
-    const ndw::Player_ID pid)
+void EngineServerHandler::getPlayerFleetCode(
+  ndw::CodeData& ret,
+  const ndw::Player_ID pid)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid);
 	codeDataCppToThrift(database_.getPlayerCode(pid, CodeData::Fleet), ret);
@@ -476,8 +507,9 @@ void EngineServerHandler::getPlayerFleetCode(ndw::CodeData& ret,
 }
 
 
-void EngineServerHandler::getPlayerPlanetCode(ndw::CodeData& ret,
-    const ndw::Player_ID pid)
+void EngineServerHandler::getPlayerPlanetCode(
+  ndw::CodeData& ret,
+  const ndw::Player_ID pid)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid);
 	codeDataCppToThrift(database_.getPlayerCode(pid, CodeData::Planet), ret);
@@ -498,7 +530,7 @@ void EngineServerHandler::getPlayers(vector<ndw::Player>& _return)
 void EngineServerHandler::getPlayer(ndw::Player& outPlayer,
                                     const ndw::Player_ID pid)
 {
-	//TODO : Séparer en deux requetes differentes
+	//! @todo: Séparer en deux requetes differentes
 	LOG4CPLUS_TRACE(logger, "pid : " << pid);
 	outPlayer = playerToThrift(database_.getPlayer(pid));
 	CodeData const fleetCode = database_.getPlayerCode(pid, CodeData::Fleet);
@@ -538,7 +570,11 @@ void EngineServerHandler::getFleet(ndw::Fleet& _return,
                                    const ndw::Fleet_ID fid)
 {
 	LOG4CPLUS_TRACE(logger, "fid : " << fid);
-	_return = fleetToThrift(engine_.getFleet(fid));
+	//! @todo: Gerer proprement l'absence de flotte
+	boost::optional<Fleet> const optFleet = engine_.getFleet(fid);
+	if(!optFleet)
+		BOOST_THROW_EXCEPTION(std::runtime_error("Fleet doesn't exist"));
+	_return = fleetToThrift(*optFleet);
 
 	vector<Event> events = database_.getFleetEvents(_return.playerId, fid);
 	_return.eventList.reserve(events.size());
@@ -636,6 +672,8 @@ bool EngineServerHandler::buySkill(const ndw::Player_ID pid,
                                    const int16_t skillID)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " skillID : " << skillID);
+	if(skillID >= Skill::Count)
+		return false;
 	bool const done = database_.buySkill(pid, skillID, 100);
 	LOG4CPLUS_TRACE(logger, "exit " << done);
 	return done;
@@ -844,8 +882,10 @@ void EngineServerHandler::getAlliance(ndw::Alliance& _return,
 
 void EngineServerHandler::updateAlliance(const ndw::Alliance& al)
 {
+	LOG4CPLUS_TRACE(logger, "allianceID:" << al.id);
 	database_.updateAlliance(
 	  Alliance(al.id, al.masterID, al.name, al.description, al.masterLogin));
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 
@@ -853,26 +893,34 @@ void EngineServerHandler::transfertAlliance(
   const ndw::Alliance_ID aid,
   const ndw::Player_ID pid)
 {
+	LOG4CPLUS_TRACE(logger, "allianceID:" << aid << " playerID:" << pid);
 	database_.transfertAlliance(aid, pid);
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 
 
 void EngineServerHandler::eraseAlliance(const ndw::Alliance_ID aid)
 {
+	LOG4CPLUS_TRACE(logger, "allianceID:" << aid);
 	database_.eraseAlliance(aid);
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 
 void EngineServerHandler::joinAlliance(const ndw::Player_ID pid,
                                        const ndw::Alliance_ID aid)
 {
+	LOG4CPLUS_TRACE(logger, "playerID:" << pid << " allianceID:" << aid);
 	database_.joinAlliance(pid, aid);
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 
 
 void EngineServerHandler::quitAlliance(const ndw::Player_ID pid)
 {
+	LOG4CPLUS_TRACE(logger, "playerID:" << pid);
 	database_.quitAlliance(pid);
+	LOG4CPLUS_TRACE(logger, "exit");
 }
 

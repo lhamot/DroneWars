@@ -1,3 +1,6 @@
+//! @file
+//! @author Loïc HAMOT
+
 #include "stdafx.h"
 #include "Simulation.h"
 
@@ -24,9 +27,13 @@ extern "C"
 }
 
 
+//! Verrou en écriture
 typedef boost::unique_lock<Universe::Mutex> UniqueLock;
+//! Verrou en lecture
 typedef boost::shared_lock<Universe::Mutex> SharedLock;
+//! Verrou en lecture, mutable en écriture
 typedef boost::upgrade_lock<Universe::Mutex> UpgradeLock;
+//! Verrou en écriture construit a partir d'un UpgradeLock
 typedef boost::upgrade_to_unique_lock<Universe::Mutex> UpToUniqueLock;
 
 using namespace LuaTools;
@@ -34,12 +41,18 @@ using namespace std;
 namespace BL = boost::locale;
 
 using namespace log4cplus;
+//! Logger du thread de simulation
 static Logger logger = Logger::getInstance(LOG4CPLUS_TEXT("Simulation"));
 
 
+//! Nombre d'instruction max authorisé dans l'éxcecution d'un script lua
 static size_t const LuaMaxInstruction = 20000;
+//! @brief Nombre d'echec autorisé dans un script lua, avant de l'invalider
+//! @todo: Apparement plus util
 static size_t const MaxCodeExecTry = 10;
 
+
+//! callback appelé par lua quand le nombre d'instruction max est dépassé
 void luaCountHook(lua_State* L,
                   lua_Debug* //ar
                  )
@@ -48,9 +61,9 @@ void luaCountHook(lua_State* L,
 	luaL_error(L, "timeout was reached");
 }
 
-static size_t const RoundSecond = 10;
-static size_t const SaveSecond = 60;
 
+static size_t const RoundSecond = 10; //!< Nombre de secondes min par round
+static size_t const SaveSecond = 60;  //!< Nombre de secondes min entre 2 save
 
 
 Simulation::Simulation(Universe& univ):
@@ -65,6 +78,8 @@ void Simulation::reloadPlayer(Player::ID pid)
 }
 
 
+//! @brief Traite une erreur de scripte en ajoutant un Event
+//! @todo: changer de nom
 void addErrorMessageImpl(Player::ID pid,
                          CodeData::Target target,
                          size_t codeID,
@@ -77,11 +92,11 @@ void addErrorMessageImpl(Player::ID pid,
 	                    Event::PlanetCodeError)
 	              .setComment(message)
 	              .setValue(codeID);
-	std::cout << "codeID : " << codeID << std::endl;
 	events.push_back(event);
 }
 
 
+//! @brief Traite une erreur de scripte en ajoutant un Event
 void addErrorMessage(CodeData const& codeData,
                      std::string const& message,
                      std::vector<Event>& events)
@@ -91,6 +106,7 @@ void addErrorMessage(CodeData const& codeData,
 }
 
 
+//! @brief Traite une erreur de scripte en ajoutant un Event
 void addErrorMessage(PlayerCodes::ObjectMap& objMap,
                      std::string const& message,
                      std::vector<Event>& events)
@@ -101,6 +117,7 @@ void addErrorMessage(PlayerCodes::ObjectMap& objMap,
 }
 
 
+//! Fait interpreter un script à lua et le transforme en PlayerCodes::ObjectMap
 PlayerCodes::ObjectMap registerCode(
   LuaTools::LuaEngine& luaEngine,
   CodeData const& code,
@@ -256,6 +273,8 @@ catch(luabind::cast_failed& ex)
 }*/
 
 
+//! @brief Verifie si une methode lua existe dans la codeMap et est valide
+//! @remark Si invalide, ajoute un Event avec addErrorMessage
 bool checkLuaMethode(PlayerCodes::ObjectMap& codeMap,
                      std::string const& name,
                      std::vector<Event>& events)
@@ -300,7 +319,7 @@ try
 				bool const wantGather1 = luabind::call_function<bool>(do_gather, boost::cref(fleet), boost::cref(otherFleet));
 				lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 				bool const wantGather2 = luabind::call_function<bool>(do_gather, boost::cref(otherFleet), boost::cref(fleet));
-				//TODO: Décoreler script et traitement
+				//! @todo: Décoreler script et traitement
 				if(wantGather1 && wantGather2)
 				{
 					gather(fleet, otherFleet);
@@ -441,6 +460,7 @@ void Simulation::updatePlayersCode(LuaTools::LuaEngine& luaEngine,
 }
 
 
+//! Simule le round pour toute les planètes
 void execPlanets(Universe& univ_,
                  LuaTools::LuaEngine& luaEngine,
                  PlayerCodeMap& codesMap,
@@ -754,7 +774,7 @@ void removeOldEvents(DataBase&)
 {
 	LOG4CPLUS_TRACE(logger, "enter");
 
-	//TODO : A faire dans la base de donné
+	//! @todo: A faire dans la base de donné
 
 	/*set<size_t> usedReport;
 	for(Player & player: univ_.playerMap | boost::adaptors::map_values)
@@ -801,7 +821,7 @@ void removeOldEvents(DataBase&)
 		return usedReport.count(reportKV.first) == false;
 	});*/
 
-	//TODO: Le faire sur les planètes
+	//! @todo: Le faire sur les planètes
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
@@ -812,7 +832,7 @@ void Simulation::round(LuaTools::LuaEngine& luaEngine,
                        std::vector<Event>& events)
 try
 {
-	//TODO : Ne plus passer signals et events en argument
+	//! @todo: Ne plus passer events en argument
 	LOG4CPLUS_TRACE(logger, "enter");
 
 	std::cout << time(0) << " ";
@@ -903,6 +923,8 @@ try
 }
 CATCH_LOG_EXCEPTION(logger)
 
+
+//! these libs are loaded by lua.c and are readily available to any Lua program
 static const luaL_Reg loadedlibs[] =
 {
 	{"_G", luaopen_base},
@@ -918,15 +940,15 @@ static const luaL_Reg loadedlibs[] =
 	{NULL, NULL}
 };
 
-
-static const luaL_Reg preloadedlibs[] =
-{
-	{NULL, NULL}
-};
-
-
+//! @brief open all previous libraries
+//! @see luaL_openlibs in lualib.h
 void openlibs(lua_State* L)
 {
+	static const luaL_Reg preloadedlibs[] =
+	{
+		{NULL, NULL}
+	};
+
 	const luaL_Reg* lib;
 	//call open functions from 'loadedlibs' and set results to global table
 	for(lib = loadedlibs; lib->func; lib++)
@@ -945,7 +967,7 @@ void openlibs(lua_State* L)
 }
 
 
-boost::shared_mutex roundTimeMutex;
+boost::shared_mutex roundTimeMutex; //!< mutex pour protéger le temps du round
 
 void Simulation::loop()
 try
@@ -956,6 +978,7 @@ try
 	//lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, 20000);
 	PlayerCodeMap codesMap; //Donné non partagée entre thread
 
+	//! @todo: remplacer openlibs par luaL_openlibs qui semble faire pareil
 	openlibs(luaEngine.state());
 	//luaL_openlibs(luaEngine.state());
 	//luaopen_base(luaEngine.state());
@@ -1051,6 +1074,8 @@ double Simulation::getUnivTime()
 	return univ_.roundCount + roundProgress;
 }
 
+
+//! Logger pour le thread de sauvegarde
 Logger saveLogger = Logger::getInstance(LOG4CPLUS_TEXT("Save"));
 
 void Simulation::save(std::string const& saveName) const

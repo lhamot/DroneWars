@@ -1,3 +1,6 @@
+//! @file
+//! @author Loïc HAMOT
+
 #include "stdafx.h"
 #include "fighting.h"
 
@@ -11,55 +14,28 @@
 
 using namespace std;
 
-static size_t const PlanetIndex = size_t(-1);
 
-//Reflexion sur les combats
-//
-// Objectifs:
-//   Regles simple
-//   Pas de strategie dominante
-//   Rapide a executer
-//
-//
-//Mechanique, en vrac
-//  Rang avant, moyen , arriÃ¨re
-//  Boulier cachant 1 ou  2 rang
-//  Choix de tirer ou non en fonction de la reserve d'energie(coup + fort si energie pleine)
-//  Generateurs d'energie(dans vaisseaux?)
-//  Ravitaillement des missile(vaisseu de fabrication?)
-//  Ravitaillement de ressource(loicium rafinÃ©?)
-//  Choix du type d'attaque(par type de vaiseau)
-//  Fuite pendant le combat
-//
-//Avant combat
-//
-//A chaque round
-//  Choix du rang pour chaque type(ariÃ¨re, moyen, avant)
-//  Fuire ou pas
-//
-//Algo round
-//  Demander aux IA si si continue
-//  Pour chaque type de vaiseau
-//    Demander aux IA le rang(malus d'un changement de rang?)
-//    Demander aux IA si ils tirent ou attendent
-//  Pour chaque type de vaiseau
-//    Si il tire
-//      Chaque vaiseau tire sur un enemie alÃ©atoire(des 2 premier rang?)(difference de precision?)
+//! Données d'un vaisseau ou d'une flotte pendant un combat
 struct Unit
 {
+	//! @brief Type d'unité
+	//!
+	//! Si type < Ship::Count, type est un Ship::Type
+	//! Sinon type - Ship::Count est un Cannon::Type
 	uint16_t type;
-	uint16_t life;
-	uint16_t shield;
+	uint16_t life;   //!< Point de vie de l'unité
+	uint16_t shield; //!< Point de bouclier de l'unité
 
-
+	//! Constructeur
 	Unit(uint16_t type, uint16_t life, uint16_t shield):
 		type(type), life(life), shield(shield)
 	{
 	}
 };
 
-typedef std::vector<Unit> UnitTab;
+typedef std::vector<Unit> UnitTab; //!< Liste d'unité (cannons ou vaisseaux)
 
+//! Remplit un UnitTab a partir d'une flotte (Fleet)
 void fillShipList(Fleet const& fleet, UnitTab& shipTab)
 {
 	//Contage
@@ -79,6 +55,8 @@ void fillShipList(Fleet const& fleet, UnitTab& shipTab)
 	}
 }
 
+
+//! Remplit un UnitTab a partir d'une planète (Planet)
 void fillShipList(Planet const& planet, UnitTab& shipTab)
 {
 	//Contage
@@ -99,7 +77,7 @@ void fillShipList(Planet const& planet, UnitTab& shipTab)
 }
 
 
-//! @brief Effectue l'attaque de la flotte unitTab1 contre unitTab2
+//! Effectue l'attaque de la flotte unitTab1 contre unitTab2
 void applyRound(UnitTab& unitTab1, UnitTab& unitTab2)
 {
 	size_t pos = 0;
@@ -122,9 +100,9 @@ void applyRound(UnitTab& unitTab1, UnitTab& unitTab2)
 		{
 			//! - Sinon:
 			//!     On mais le bouclier a zero et on diminue la puissance
-			//!     Si l'attaquant est moin puissant que les PV de l'attaquÃ©
+			//!     Si l'attaquant est moin puissant que les PV de l'attaqué
 			//!         On diminue juste les PV
-			//!     Sinon l'attaquÃ© est mort
+			//!     Sinon l'attaqué est mort
 			power -= shield;
 			shield = 0;
 			uint16_t& life = unity.life;
@@ -163,7 +141,7 @@ void fillFinalFleet(UnitTab const& shipTab, Planet& planet) throw()
 }
 
 
-//! @brief recharge les boucliers des unitÃ©s
+//! Recharge les boucliers des unités
 void loadShield(UnitTab& unitTab)  throw()
 {
 	for(Unit & unit : unitTab)
@@ -176,48 +154,66 @@ void loadShield(UnitTab& unitTab)  throw()
 	}
 }
 
+
+//! Interface de toute les competances de combats
 class SkillInterface
 {
-	//C'est plus pratique de les dÃ©finir dans la class mÃ¨re,
-	//car ces methodes ne seront pas forcement redÃ©finits.
+	//C'est plus pratique de les implementer dans la class mère,
+	//car ces methodes ne seront pas forcement reimplementer.
+	//! Appelé avant l'attaque
 	virtual void beforeAttack_(UnitTab&, UnitTab&) {};
+
+	//! Appelé avant le netoyage des unités mortes
 	virtual void beforeCleaning_(UnitTab&, UnitTab&) {};
+
+	//! Appelé avant le rechargement des boucliers
 	virtual void beforeReload_(UnitTab&, UnitTab&) {};
 
 public:
+	//! Appelé avant l'attaque : Appel beforeAttack_
 	void beforeAttack(UnitTab& ownUnits, UnitTab& theirUnits)
 	{
 		beforeAttack_(ownUnits, theirUnits);
 	}
+	//! Appelé avant le netoyage des unités mortes : Appel beforeCleaning_
 	void beforeCleaning(UnitTab& ownUnits, UnitTab& theirUnits)
 	{
 		beforeCleaning_(ownUnits, theirUnits);
 	}
+	//! Appelé avant le rechargement des boucliers : Appel beforeReload_
 	void beforeReload(UnitTab& ownUnits, UnitTab& theirUnits)
 	{
 		beforeReload_(ownUnits, theirUnits);
 	}
 };
 
+
+//! Un skill factice
 class NoSkill : public SkillInterface
 {
 };
 
 
+//! Statistique d'un type d'unité
 struct UnitStat
 {
-	size_t livingCount;
-	size_t deadCount;
-	size_t meanPV;
+	size_t livingCount; //!< Nombre d'unités vivantes
+	size_t deadCount;   //!< Nombre d'unités mortes
+	size_t meanPV;      //!< Nombre de PV moyen
 
 	UnitStat(): livingCount(0), deadCount(0), meanPV(0) {}
 };
+
+
+//! Statistique de chaque type d'unitées d'une armé
 struct ArmyStats
 {
-	boost::array<UnitStat, Ship::Count> shipStats;
-	boost::array<UnitStat, Cannon::Count> cannonStats;
+	boost::array<UnitStat, Ship::Count> shipStats;     //!< Stat des vaisseaux
+	boost::array<UnitStat, Cannon::Count> cannonStats; //!< Stat des canons
 };
 
+
+//! Calcul les stats d'une armé
 ArmyStats calcArmyStat(UnitTab const& unitTab)
 {
 	ArmyStats result;
@@ -260,6 +256,7 @@ ArmyStats calcArmyStat(UnitTab const& unitTab)
 	return result;
 }
 
+
 //! Resultat d'un combat
 enum FightStatus : uint8_t
 {
@@ -268,7 +265,9 @@ enum FightStatus : uint8_t
   NobodyWin,
   NothingRemains
 };
-//! @brief Simule un combat entre deux combatant
+
+
+//! Simule un combat entre deux combatant
 template<typename F1, typename F2>
 FightStatus fight(F1& fighter1, luabind::object roundFunc1,
                   F2& fighter2, luabind::object roundFunc2
@@ -282,7 +281,7 @@ FightStatus fight(F1& fighter1, luabind::object roundFunc1,
 	fillShipList(fighter2, shipTab2);
 	boost::random_shuffle(shipTab2);
 
-	//! Jusqu'as ce qu'une des 2 flotte soit annÃ©antie, on repÃ¨te:
+	//! Jusqu'as ce qu'une des 2 flotte soit annéantie, on repète:
 	size_t round = 0;
 	ArmyStats armyStat1 = calcArmyStat(shipTab1);
 	ArmyStats armyStat2 = calcArmyStat(shipTab2);
@@ -300,7 +299,7 @@ FightStatus fight(F1& fighter1, luabind::object roundFunc1,
 		unique_ptr<SkillInterface> skill1(new NoSkill());
 		unique_ptr<SkillInterface> skill2(new NoSkill());
 
-		//! Action script prÃ©-attaque
+		//! Action script pré-attaque
 		skill1->beforeAttack(shipTab1, shipTab2);
 		skill2->beforeAttack(shipTab2, shipTab1);
 		//! - Flotte 1 attaque flotte 2 (applyRound)
@@ -308,7 +307,7 @@ FightStatus fight(F1& fighter1, luabind::object roundFunc1,
 		//! - Flotte 2 attaque flotte 1 (applyRound)
 		applyRound(shipTab2, shipTab1);
 
-		//! Action script prÃ©-nÃ©toyage des morts
+		//! Action script pré-nétoyage des morts
 		skill1->beforeCleaning(shipTab1, shipTab2);
 		skill2->beforeCleaning(shipTab2, shipTab1);
 
@@ -319,7 +318,7 @@ FightStatus fight(F1& fighter1, luabind::object roundFunc1,
 		remove_erase_if(shipTab1, boost::bind(&Unit::life, _1) <= 0);
 		remove_erase_if(shipTab2, boost::bind(&Unit::life, _1) <= 0);
 
-		//! Action script prÃ©-rechargement boucliers
+		//! Action script pré-rechargement boucliers
 		skill1->beforeReload(shipTab1, shipTab2);
 		skill2->beforeReload(shipTab2, shipTab1);
 		//! - On recharge les boucliers
@@ -329,7 +328,7 @@ FightStatus fight(F1& fighter1, luabind::object roundFunc1,
 		round += 1;
 	}
 
-	//! On modidife le nombre d'unitÃ© de chaque combatant
+	//! On modidife le nombre d'unité de chaque combatant
 	//! en fonction de ce qu'il reste de ca flotte. (fillFinalFleet)
 	fillFinalFleet(shipTab1, fighter1);
 	fillFinalFleet(shipTab2, fighter2);
@@ -352,13 +351,16 @@ FightStatus fight(F1& fighter1, luabind::object roundFunc1,
 }
 
 
+//! Index de deux armés flotte ou planète
 struct FleetPair
 {
-	size_t index1;
-	size_t index2;
+	size_t index1; //!< Index le plus petit
+	size_t index2; //!< Index le plus grans
 
-	FleetPair(size_t f1, size_t f2) //Exceptionellement, je vais laisser de cotÃ© la liste d'initialization
+	//! Constructeur prenant les deux index et les triant
+	FleetPair(size_t f1, size_t f2)
 	{
+		//Exceptionellement, je vais laisser de coté la liste d'initialization
 		if(f1 < f2)
 		{
 			index1 = f1;
@@ -372,11 +374,14 @@ struct FleetPair
 	}
 };
 
+
+//! Excecute un combat entre deux armés (armé = Fleet ou Planet)
 template<typename F1, typename F2>
-void handleFighterPair(FleetPair const& fleetPair,
-                       Report<F1>& report1, F1& fighter1, luabind::object script1,
-                       Report<F2>& report2, F2& fighter2, luabind::object script2
-                      )
+void handleFighterPair(
+  FleetPair const& fleetPair,
+  Report<F1>& report1, F1& fighter1, luabind::object script1,
+  Report<F2>& report2, F2& fighter2, luabind::object script2
+)
 {
 	report1.enemySet.insert(fleetPair.index2);
 	report2.enemySet.insert(fleetPair.index1);
@@ -408,6 +413,8 @@ void fight(std::vector<Fleet*> const& fleetList,
            PlayerCodeMap& codesMap,
            FightReport& reportList)
 {
+	static size_t const PlanetIndex = size_t(-1);
+
 	if(fleetList.empty())
 		return;
 
@@ -440,7 +447,7 @@ void fight(std::vector<Fleet*> const& fleetList,
 				//uint64_t const score1 = mapFind(univ.playerMap, player1)->second.score;
 				//uint64_t const score2 = mapFind(univ.playerMap, player2)->second.score;
 				//if((score1 * 5) > score2 && (score2 * 5) > score1)
-				//TOTO: Remetre la limitation sur les score trop differents
+				//! @todo: Remetre la limitation sur les score trop differents
 				fightingPair.push_back(FleetPair(iter1 - fleetList.begin(),
 				                                 iter2 - fleetList.begin()));
 			}
@@ -459,9 +466,9 @@ void fight(std::vector<Fleet*> const& fleetList,
 			{
 				//uint64_t const score1 = mapFind(univ.playerMap, player1)->second.score;
 				//uint64_t const score2 = mapFind(univ.playerMap, player2)->second.score;
-				//Bloquage si trop d'Ã©quart de niveaux
+				//Bloquage si trop d'équart de niveaux
 				//if((score1 * 5) > score2 && (score2 * 5) > score1)
-				//TOTO: Remetre la limitation sur les score trop differents
+				//! @todo: Remetre la limitation sur les score trop differents
 				fightingPair.push_back(
 				  FleetPair(iter1 - fleetList.begin(), PlanetIndex));
 			}

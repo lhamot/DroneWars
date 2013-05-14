@@ -1,3 +1,6 @@
+//! @file
+//! @author Loïc HAMOT
+
 #ifndef __DRONEWARS_LOGGER__
 #define __DRONEWARS_LOGGER__
 
@@ -7,6 +10,7 @@
 #include <log4cplus/loggingmacros.h>
 
 
+//! catch une exception, la log et la relance
 #define CATCH_LOG_RETHROW(LOGGER) \
 	catch(std::exception &ex) \
 	{ \
@@ -19,6 +23,7 @@
 		throw; \
 	}
 
+//! catch une exception, la log et ne la relance pas
 #define CATCH_LOG_EXCEPTION(LOGGER) \
 	catch(std::exception &ex) \
 	{ \

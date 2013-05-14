@@ -1,3 +1,6 @@
+//! @file
+//! @author Loïc HAMOT
+
 #include "stdafx.h"
 #include "Model.h"
 
@@ -70,8 +73,18 @@ static_assert(sizeof(Cannon::List) == (sizeof(Cannon) * Cannon::Count),
               "Cannon info missing");
 
 
+//! Retourne le prix d'un Building donné, à un niveau donné
+//! @pre id est dans [0: Building::Count[
+//! @pre level > 0
 RessourceSet getBuilingPrice(Building::Enum id, size_t level)
 {
+	if(id < 0 || id >= Building::Count)
+		BOOST_THROW_EXCEPTION(
+		  std::out_of_range("Expect a building id in the range [0: Building::Count["));
+	if(level < 1)
+		BOOST_THROW_EXCEPTION(
+		  std::out_of_range("Expect a level greater than 1"));
+
 	Building const& building = Building::List[id];
 	double const coef = std::pow(building.coef, level - 1.);
 	RessourceSet result = building.price;
@@ -80,10 +93,13 @@ RessourceSet getBuilingPrice(Building::Enum id, size_t level)
 	return result;
 }
 
+
+//! Recupère les script pour un nouveau joueur
+//! @param codes [out] planète_lua, planète_blockly, flotte_lua, flotte_blockly
 void getNewPlayerCode(std::vector<std::string>& codes)
 {
 	namespace BL = boost::locale;
-	codes.clear();
+	std::vector<std::string> result;
 
 	//Ajout du code du joueur (Planet)
 	{
@@ -106,10 +122,8 @@ void getNewPlayerCode(std::vector<std::string>& codes)
 		  "function AI(planet, fleets)\n"
 		  "  return noPlanetAction()\n"
 		  "end";
-		codes.push_back(code);
-		codes.push_back(blocklyCode);
-		//database.addScript(pid, CodeData::Planet, code);
-		//database.addBlocklyCode(pid, CodeData::Planet, blocklyCode);
+		result.push_back(code);
+		result.push_back(blocklyCode);
 	}
 
 	//Ajout du code du joueur (Fleet)
@@ -143,13 +157,17 @@ void getNewPlayerCode(std::vector<std::string>& codes)
 		  "  order = FleetAction(FleetAction.Nothing,Direction())\n"
 		  "  return order\n"
 		  "end";
-		codes.push_back(code);
-		codes.push_back(blocklyCode);
-		//database.addScript(pid, CodeData::Fleet, code);
-		//database.addBlocklyCode(pid, CodeData::Fleet, blocklyCode);
+		result.push_back(code);
+		result.push_back(blocklyCode);
 	}
+
+	result.swap(codes);
 }
 
+
+//! @brief Donne une planète a un nouveau joueur
+//! @todo: donner un nom plus explicite
+//! @return la coordonée de la nouvelle planète
 Coord createPlayer(Universe& univ, Player::ID pid)
 {
 	bool done = false;
@@ -180,6 +198,8 @@ Coord createPlayer(Universe& univ, Player::ID pid)
 	return mainPlanetCoord;
 }
 
+
+//! Construit l'Universe et la base de donnée SQL, au premier lancement
 void construct(Universe& univ, DataBase& database)
 {
 	univ.roundCount = 0;
@@ -233,6 +253,7 @@ void construct(Universe& univ, DataBase& database)
 };
 
 
+//! Serialize l'Universe dans un flux
 void saveToStream(Universe const& univ, std::ostream& out)
 {
 	using namespace boost::iostreams;
@@ -248,6 +269,8 @@ void saveToStream(Universe const& univ, std::ostream& out)
 }
 
 
+//! @brief Déserialize l'Universe depuit un flux (ancienne version)
+//! @todo: à supprimer
 void loadFromStream_v1(std::istream& in, Universe& univ)
 {
 	using namespace boost::iostreams;
@@ -261,6 +284,9 @@ void loadFromStream_v1(std::istream& in, Universe& univ)
 	std::cout << "OK" << std::endl;
 }
 
+
+//! @brief Déserialize l'Universe depuit un flux
+//! @todo: Renommer en loadFromStream
 void loadFromStream_v2(std::istream& in, Universe& univ)
 {
 	using namespace boost::iostreams;
@@ -274,6 +300,11 @@ void loadFromStream_v2(std::istream& in, Universe& univ)
 	std::cout << "OK" << std::endl;
 }
 
+
+//! @brief true si un RessourceSet en contient un autre
+//!
+//! C'est a dire que chaque quantité de chaque type de ressource dans stock
+//! est plus grand que dans price
 bool canPay(RessourceSet const& stock, RessourceSet const& price)
 {
 	for(int i = 0; i < Ressource::Count; ++i)
@@ -285,21 +316,31 @@ bool canPay(RessourceSet const& stock, RessourceSet const& price)
 }
 
 
+//! @brief true si la planète a asser de ressource pour payer price
 bool canPay(Planet const& planet, RessourceSet const& price)
 {
 	return canPay(planet.ressourceSet, price);
 }
 
+
+//! @brief true si la flotte a asser de ressource pour payer price
 bool canPay(Fleet const& fleet, RessourceSet const& price)
 {
 	return canPay(fleet.ressourceSet, price);
 }
 
+
+//! @brief Retire à planète la quantité de ressource demandée
+//! @pre La planète peut payer
 void pay(Planet& planet, RessourceSet const& price)
 {
-	if(false == canPay(planet, price))
+	if(canPay(planet, price) == false)
 		BOOST_THROW_EXCEPTION(std::logic_error("Can't pay"));
 
+	//! @todo: utiliser boost::transform plutot qu'un for
+	/*transform(planet.ressourceSet.tab, price.tab.begin(),
+		      planet.ressourceSet.tab.begin(),
+			  [](Ressource::Value a, Ressource::Value b){return a - b;});*/
 	for(int i = 0; i < Ressource::Count; ++i)
 	{
 		assert(planet.ressourceSet.tab[i] >= price.tab[i]);
@@ -309,6 +350,9 @@ void pay(Planet& planet, RessourceSet const& price)
 		BOOST_THROW_EXCEPTION(std::logic_error("Strange ressources value"));
 }
 
+
+//! @brief Retire à flotte la quantité de ressource demandée
+//! @pre La flotte peut payer
 void pay(Fleet& fleet, RessourceSet const& price)
 {
 	for(int i = 0; i < Ressource::Count; ++i)
@@ -317,6 +361,9 @@ void pay(Fleet& fleet, RessourceSet const& price)
 		fleet.ressourceSet.tab[i] -= price.tab[i];
 	}
 }
+
+
+//! Test si une planète peut fabriquer un vaisseau dans la quantité demandée
 bool canBuild(Planet const& planet, Ship::Enum type, size_t number)
 {
 	if(type >= Ship::Count)
@@ -331,6 +378,8 @@ bool canBuild(Planet const& planet, Ship::Enum type, size_t number)
 	return canPay(planet, price);
 }
 
+
+//! Test si une planète peut upgrader un batiment
 bool canBuild(Planet const& planet, Building::Enum type)
 {
 	if(type >= Building::Count)
@@ -351,9 +400,10 @@ bool canBuild(Planet const& planet, Building::Enum type)
 }
 
 
+//! Test si une planète peut fabriquer un canon dans la quantité demandée
 bool canBuild(Planet const& planet, Cannon::Enum type, size_t number)
 {
-	if(type >= Cannon::Count)
+	if(type < 0 || type >= Cannon::Count)
 		return false;
 	if(planet.buildingList[Building::Factory] == 0)
 		return false;
@@ -366,6 +416,10 @@ bool canBuild(Planet const& planet, Cannon::Enum type, size_t number)
 }
 
 
+//! Ajoute une tache d'upgrade de building a la planète
+//! @pre building est compris dans [0: Building::Count[
+//! @pre La planète a un CommandCenter
+//! @pre La planète peut payer
 void addTask(Planet& planet, uint32_t roundCount, Building::Enum building)
 {
 	size_t const buNextLevel =  planet.buildingList[building] + 1;
@@ -383,7 +437,7 @@ void addTask(Planet& planet, uint32_t roundCount, Building::Enum building)
 	RessourceSet const price = getBuilingPrice(building, buNextLevel);
 	task.startCost = price;
 
-	if(false == canPay(planet, price))
+	if(canPay(planet, price) == false)
 		BOOST_THROW_EXCEPTION(std::logic_error("Can't pay"));
 
 	planet.taskQueue.push_back(task);
@@ -391,6 +445,10 @@ void addTask(Planet& planet, uint32_t roundCount, Building::Enum building)
 }
 
 
+//! Ajoute une tache de fabrication de vaisseau à la planète
+//! @pre ship est compris dans [0: Ship::Count[
+//! @pre La planète a un Building::Factory
+//! @pre La planète peut payer
 void addTask(Planet& planet, uint32_t roundCount, Ship::Enum ship, uint32_t number)
 {
 	size_t const div = 7;
@@ -411,6 +469,10 @@ void addTask(Planet& planet, uint32_t roundCount, Ship::Enum ship, uint32_t numb
 }
 
 
+//! Ajoute une tache de fabrication de canon à la planète
+//! @pre cannon est compris dans [0: Cannon::Count[
+//! @pre La planète a un Building::Factory
+//! @pre La planète peut payer
 void addTask(Planet& planet,
              uint32_t roundCount,
              Cannon::Enum cannon,
@@ -436,15 +498,18 @@ void addTask(Planet& planet,
 }
 
 
+//! @brief tTest si il y une tache d'upgrade d'un building pour arreter
+//! @todo: canStop
 bool canStop(
   Planet const&,// planet,
   Building::Enum// type
 )
 {
-	//TODO
 	return true;
 }
 
+
+//! Stop une tache de cette, si la tache existe
 void stopTask(Planet& planet,
               PlanetTask::Enum tasktype,
               Building::Enum building)
@@ -461,6 +526,7 @@ void stopTask(Planet& planet,
 }
 
 
+//! Excecute une tache sur une planète
 void execTask(Universe& univ,
               Planet& planet,
               PlanetTask& task,
@@ -509,6 +575,8 @@ void execTask(Universe& univ,
 	}
 }
 
+
+//! Excecute une tache sur une flotte
 void execTask(Universe& univ,
               Fleet& fleet,
               FleetTask& task,
@@ -576,6 +644,9 @@ void execTask(Universe& univ,
 	}
 }
 
+
+//! @brief Fait le travail d'un building, en connaissant son type et son niveau
+//! @todo: Remplacer par une liste de building polymorphic?
 void execBuilding(Planet& planet, Building::Enum type, uint32_t level)
 {
 	size_t const speedMult = 4;
@@ -607,6 +678,8 @@ void execBuilding(Planet& planet, Building::Enum type, uint32_t level)
 	};
 }
 
+
+//! Simule la vie de la planète durant un round
 void planetRound(Universe& univ,
                  Planet& planet,
                  std::vector<Event>& events)
@@ -620,7 +693,7 @@ void planetRound(Universe& univ,
 		execBuilding(planet, Building::Enum(type), planet.buildingList[type]);
 
 	//Cristalisations des ressources
-	if((rand() % 10) == 0) //TOTO: rand rapide
+	if((rand() % 10) == 0) //! @todo: rand rapide
 	{
 		planet.ressourceSet.tab[Ressource::Metal] += rand() % 7;
 		planet.ressourceSet.tab[Ressource::Carbon] += rand() % 5;
@@ -633,6 +706,7 @@ void planetRound(Universe& univ,
 }
 
 
+//! Simule la vie de la flotte durant un round
 void fleetRound(Universe& univ,
                 Fleet& fleet,
                 std::vector<Event>& events,
@@ -649,6 +723,7 @@ void fleetRound(Universe& univ,
 }
 
 
+//! Ajoute otherFleet dans fleet
 void gather(Fleet& fleet, Fleet const& otherFleet)
 {
 	geometry::add_point(fleet.ressourceSet.tab, otherFleet.ressourceSet.tab);
@@ -659,6 +734,7 @@ void gather(Fleet& fleet, Fleet const& otherFleet)
 }
 
 
+//! Test si une flotte peut se rendre a la destination coord
 bool canMove(Fleet const& fleet,
              Coord const& coord //Destination en valeur absolue
             )
@@ -673,10 +749,14 @@ bool canMove(Fleet const& fleet,
 	   coord.Y < 0 || coord.Y >= Universe::MapSizeY ||
 	   coord.Z < 0 || coord.Z >= Universe::MapSizeZ)
 		return false;
-	//TODO: Gestion du caburant
+	//! @todo: Gestion du caburant
 	return true;
 }
 
+
+//! Ajoute une tache de déplacement dans la flotte
+//! @pre la flotte peut se rendre a cet coordonée (canMove)
+//! @todo: renomer en addTaskMove
 void addTask(Fleet& fleet, uint32_t roundCount, Coord const& coord)
 {
 	FleetTask task(FleetTask::Move, roundCount, 1);
@@ -684,13 +764,18 @@ void addTask(Fleet& fleet, uint32_t roundCount, Coord const& coord)
 	fleet.taskQueue.push_back(task);
 }
 
+
+//! Test si la flotte peut récolter la planète
 bool canHarvest(Fleet const& fleet, Planet const& planet)
 {
-	if(false == fleet.taskQueue.empty())
+	if(fleet.taskQueue.empty() == false)
 		return false;
 	return planet.playerId == Player::NoId;
 }
 
+
+//! Ajoute une tache de récolte dans la flotte
+//! @pre la flotte peut récolter la planète (canHarvest)
 void addTaskHarvest(Fleet& fleet, uint32_t roundCount, Planet const& planet)
 {
 	FleetTask task(FleetTask::Harvest, roundCount, 1);
@@ -698,6 +783,8 @@ void addTaskHarvest(Fleet& fleet, uint32_t roundCount, Planet const& planet)
 	fleet.taskQueue.push_back(task);
 }
 
+
+//! Test si la flotte peut colonizer la planète
 bool canColonize(Fleet const& fleet, Planet const& planet)
 {
 	if(false == fleet.taskQueue.empty())
@@ -705,6 +792,9 @@ bool canColonize(Fleet const& fleet, Planet const& planet)
 	return planet.playerId == Player::NoId && fleet.shipList[Ship::Queen];
 }
 
+
+//! Ajoute une tache de récolte dans la flotte
+//! @pre la flotte peut colonizer la planète (canColonize)
 void addTaskColonize(Fleet& fleet, uint32_t roundCount, Planet const& planet)
 {
 	FleetTask task(FleetTask::Colonize, roundCount, 1);
@@ -712,12 +802,17 @@ void addTaskColonize(Fleet& fleet, uint32_t roundCount, Planet const& planet)
 	fleet.taskQueue.push_back(task);
 }
 
+
+//! Test si la flotte peut balancer ses ressources sur la planète
 bool canDrop(Fleet const& fleet, Planet const& planet)
 {
 	Ressource::Value const ressCount = boost::accumulate(fleet.ressourceSet.tab, 0);
 	return planet.playerId == fleet.playerId && ressCount > 0;
 }
 
+
+//! La flotte balance ses ressources sur la planète
+//! @pre la flotte peut balancer ses ressources sur la planète (canDrop)
 void drop(Fleet& fleet, Planet& planet)
 {
 	geometry::add_point(planet.ressourceSet.tab, fleet.ressourceSet.tab);

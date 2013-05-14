@@ -1,3 +1,6 @@
+//! @file
+//! @author Loïc HAMOT
+
 #include "stdafx.h"
 #include "EngineServerHandler.h"
 
@@ -25,11 +28,12 @@
 
 using namespace std;
 using namespace log4cplus;
-static Logger logger = Logger::getInstance(LOG4CPLUS_TEXT("main"));
 
-
+//! Fonction main
 int main()//(int argc, char** argv)
 {
+	static Logger logger = Logger::getInstance(LOG4CPLUS_TEXT("main"));
+
 	log4cplus::PropertyConfigurator::doConfigure("DroneWarsLog.properties");
 
 	srand(static_cast<unsigned int>(time(NULL)));

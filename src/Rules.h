@@ -1,3 +1,6 @@
+//! @file
+//! @author Loïc HAMOT
+
 #ifndef __BTA_RULES__
 #define __BTA_RULES__
 
@@ -5,31 +8,34 @@
 #include <boost/range/adaptor/map.hpp>
 #include "DataBase.h"
 
+//! Reset la planète + MaJ des liens de parentés en cas de perte de planète.
 void onPlanetLose(Coord planetCoord,
                   Universe& univ,
                   std::map<Player::ID, Player> const& playerMap,
                   std::unordered_map<Coord, Coord>& newParentMap);
 
 
-void getBlocklyHTML(size_t tutoLevel,
-                    std::string const& codecontext,
-                    std::ostream& out);
-
-
-//! Verifie si il faut augrmenter le niveau du tutoriel
+//! Test si il faut augmenter le niveau du tutoriel blockly de chaque joueur
 void checkTutos(Universe& univ_,
                 DataBase& database,
                 std::vector<Event> const& events);
 
+
+//! @brief Test si une flotte est capable de voir une planète locale
+//!
+//! Par example, si la difference de niveau est trop grande,
+//! la flotte ne pourra pas voir la planète.
 bool fleetCanSeePlanet(Fleet const& fleet,
                        Planet const& planet,
                        Universe const& univ);
 
-//! Recalcul le score des joueurs (modifie les joueurs)
-void updateScore(Universe& univ, DataBase& database);
 
-//! Calcule l'experience dans un FightReport
+//! Recalcul les scores des joueur et les met a jour dans la base de donnée
+void updateScore(Universe const& univ, DataBase& database);
+
+//! Tableau qui associe chaque Player à son ID
 typedef std::map<Player::ID, Player> PlayerMap;
+//! Calcule l'experience que chaque armés dans un FightReport a gagnées
 void calcExperience(PlayerMap const& planerMap, FightReport& report);
 
 #endif //__BTA_RULES__

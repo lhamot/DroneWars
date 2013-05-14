@@ -1,3 +1,6 @@
+//! @file
+//! @author Loïc HAMOT
+
 #ifndef  BOOST_SERIALIZATION_UNORDERED_MAP_HPP
 #define BOOST_SERIALIZATION_UNORDERED_MAP_HPP
 
@@ -15,6 +18,8 @@ namespace boost
 namespace serialization
 {
 
+
+//! serialization d'un std::unordered_map
 template<class Archive, class Type, class Key, class Hash, class Compare, class Allocator>
 inline void save(
   Archive& ar,
@@ -28,6 +33,8 @@ inline void save(
 	> (ar, t);
 }
 
+
+//! déserialization d'un std::unordered_map
 template<class Archive, class Type, class Key, class Hash, class Compare, class Allocator>
 inline void load(
   Archive& ar,
@@ -47,8 +54,8 @@ inline void load(
 	> (ar, t);
 }
 
-// split non-intrusive serialization function member into separate
-// non intrusive save/load member functions
+
+//! serialize ou déserialize d'un std::unordered_map
 template<class Archive, class Type, class Key, class Hash, class Compare, class Allocator>
 inline void serialize(
   Archive& ar,
@@ -59,7 +66,8 @@ inline void serialize(
 	boost::serialization::split_free(ar, t, file_version);
 }
 
-// multimap
+
+//! serialize un std::unordered_multimap
 template<class Archive, class Type, class Key, class Hash, class Compare, class Allocator >
 inline void save(
   Archive& ar,
@@ -73,6 +81,8 @@ inline void save(
 	> (ar, t);
 }
 
+
+//! déserialization d'un std::unordered_multimap
 template<class Archive, class Type, class Key, class Hash, class Compare, class Allocator >
 inline void load(
   Archive& ar,
@@ -92,8 +102,8 @@ inline void load(
 	> (ar, t);
 }
 
-// split non-intrusive serialization function member into separate
-// non intrusive save/load member functions
+
+//! serialize ou déserialize d'un std::unordered_multimap
 template<class Archive, class Type, class Key, class Hash, class Compare, class Allocator >
 inline void serialize(
   Archive& ar,

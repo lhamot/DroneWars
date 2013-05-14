@@ -1,3 +1,6 @@
+//! @file
+//! @author Loïc HAMOT
+
 #ifndef __BTA_TOOLS__
 #define __BTA_TOOLS__
 
@@ -7,46 +10,19 @@
 #include <boost/range/iterator_range.hpp>
 
 
-inline std::string escape(std::string const& code)
-{
-	std::string escaped;
-	escaped.reserve(code.size() * 2);
-	for(char c : code)
-	{
-		switch(c)
-		{
-		case '\"': escaped += "\\\""; break;
-		case '\'': escaped += "\\\'"; break;
-		case '\\': escaped += "\\\\"; break;
-		case '\n': break;
-		case '\r': break;
-		default: escaped.push_back(c);
-		}
-	}
-	return escaped;
-};
-
-
+//! @brief Recherche un iterateur dans une map et le retourne
+//! @throw std::logic_error si la clé n'existe pas
 template<typename M>
-typename M::const_iterator
-mapFind(M const& map, typename M::key_type key)
+auto mapFind(M& map, typename M::key_type key) -> decltype(map.find(key))
 {
-	typename M::const_iterator iter = map.find(key);
+	auto iter = map.find(key);
 	if(iter == map.end())
 		BOOST_THROW_EXCEPTION(std::logic_error("Can't find item"));
 	return iter;
 }
 
-template<typename M>
-typename M::iterator
-mapFind(M& map, typename M::key_type key)
-{
-	typename M::iterator iter = map.find(key);
-	if(iter == map.end())
-		BOOST_THROW_EXCEPTION(std::logic_error("Can't find item"));
-	return iter;
-}
 
+//! Recherche dans une map le prochain iterateur qui n'as pas la mème clé
 template<typename T, typename I>
 typename T::iterator
 nextNot(T& map, I const& iter)
@@ -59,16 +35,30 @@ nextNot(T& map, I const& iter)
 }
 
 
+//! Crée un zip_iterator à partir de deux iterateurs
+template<typename I1, typename I2>
+auto make_zip_iterator(I1 const& iter1, I2 const& iter2)
+-> decltype(boost::make_zip_iterator(boost::make_tuple(iter1, iter2)))
+{
+	return boost::make_zip_iterator(boost::make_tuple(iter1, iter2));
+}
+
+
+//! Crée un range pour parcourir deux conteneurs à la fois (voir zip en python)
 template<typename C1, typename C2>
 auto make_zip_range(C1 const& c1, C2 const& c2)
--> decltype(boost::make_iterator_range(boost::make_zip_iterator(boost::make_tuple(c1.begin(), c2.begin())),
-                                       boost::make_zip_iterator(boost::make_tuple(c1.end(), c2.end()))))
+-> decltype(boost::make_iterator_range(
+              make_zip_iterator(c1.begin(), c2.begin()),
+              make_zip_iterator(c1.end(), c2.end())))
 {
-	auto begin = boost::make_zip_iterator(boost::make_tuple(c1.begin(), c2.begin()));
-	auto end = boost::make_zip_iterator(boost::make_tuple(c1.end(), c2.end()));
+	auto begin = make_zip_iterator(c1.begin(), c2.begin());
+	auto end = make_zip_iterator(c1.end(), c2.end());
 	return boost::make_iterator_range(begin, end);
 }
 
+
+
+//! @brief Supprime de la map tout les éléments correspondants a une condition
 template<typename M, typename F>
 void map_remove_erase_if(M& map, F const& func)
 {
@@ -76,19 +66,27 @@ void map_remove_erase_if(M& map, F const& func)
 	while(iter != map.end())
 	{
 		if(func(*iter))
-			map.erase(iter++);
+		{
+			auto next = iter;
+			++next;
+			map.erase(iter);
+		}
 		else
 			++iter;
 	}
 }
 
 
+//! Traits pour simuler un static if
 template<bool B>
 struct StaticIf;
 
+
+//! Specialisation pour le cas ou la condition est vraie
 template<>
 struct StaticIf<true>
 {
+	//! Puisque la condition est vrai, on excecute la function
 	template<typename F>
 	static void exec(F f)
 	{
@@ -96,15 +94,19 @@ struct StaticIf<true>
 	}
 };
 
+//! Specialisation pour le cas ou la condition est fausse
 template<>
 struct StaticIf<false>
 {
+	//! Puisque la condition est fausse, on ne fait rien
 	template<typename F>
 	static void exec(F)
 	{
 	}
 };
 
+
+//! Appelle la fonction f, si B est true, pour simuler un static if
 template<bool B, typename F>
 void staticIf(F f)
 {

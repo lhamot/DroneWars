@@ -1,3 +1,6 @@
+//! @file
+//! @author Loïc HAMOT
+
 #include "stdafx.h"
 #include "DataBase.h"
 
@@ -31,17 +34,21 @@ using namespace boost;
 using namespace std;
 
 
+//! Convertie un BLOB en std::string
 std::string toString(BLOB const& blob)
 {
 	return std::string(blob.begin(), blob.end());
 }
 
+
+//! Crée une transaction RAII (qui rollback à la destruction si pas de commit)
 class Transaction : private boost::noncopyable
 {
-	Session& session_;
-	bool commited_;
+	Session& session_; //!< Connection au SGBD
+	bool commited_;    //!< true si un commit a été effectué
 
 public:
+	//! Constructeur
 	Transaction(Session& sess):
 		session_(sess),
 		commited_(false)
@@ -49,12 +56,15 @@ public:
 		session_.begin();
 	}
 
+
+	//! Excecute la transaction définitivement
 	void commit()
 	{
 		session_.commit();
 		commited_ = true;
 	}
 
+	//! Destructeur : rollback si aucun commit n'as été fait
 	~Transaction()
 	{
 		if(commited_ == false)
@@ -63,6 +73,7 @@ public:
 };
 
 
+//! Attrape toutes exceptions venant du SGBD pour les logger et les relancer
 #define DB_CATCH \
 	catch(Poco::Data::DataException const& ex)                                \
 	{                                                                         \
@@ -341,9 +352,11 @@ try
 DB_CATCH
 
 
+//! Tuple pour stoker le données d'un Player quand elle sorte du SGBD
 typedef Tuple < Player::ID, std::string, std::string, uint64_t,
         Coord::Value, Coord::Value, Coord::Value,
         Alliance::ID, uint32_t, uint32_t, std::string, std::string > PlayerTmp;
+//! Convertie un PlayerTmp en Player
 Player playerFromTuple(PlayerTmp const& playerTup)
 {
 	Player player(playerTup.get<0>(), playerTup.get<1>(), playerTup.get<2>());
@@ -369,6 +382,8 @@ Player playerFromTuple(PlayerTmp const& playerTup)
 	return player;
 }
 
+
+//! Requete SQL générique pour extraire un PlayerTmp
 static char const* const GetPlayerRequest =
   "SELECT Player.*, Alliance.name FROM Player "
   "LEFT OUTER JOIN Alliance "
@@ -414,7 +429,7 @@ try
 	            into(playerList), use(id), now;
 	if(playerList.size() != 1)
 		BOOST_THROW_EXCEPTION(
-		  std::invalid_argument("Player id not found in base"));
+		  Exception("Player id not found in base"));
 	else
 		return playerFromTuple(playerList.front());
 }
@@ -473,8 +488,9 @@ try
 	            now;
 
 
-	// Planete
-	// Important
+	//! Supression des évenements de planète
+	//! - Important:
+	//!   PlanetWin, PlanetColonized, Upgraded de plus de 24 heures
 	(*session_) <<
 	            "DELETE FROM Event WHERE id < ? AND type IN (?, ?, ?)",
 	            use(max24),
@@ -482,7 +498,8 @@ try
 	            use((int)Event::PlanetColonized),
 	            use((int)Event::Upgraded),
 	            now;
-	// Pas important
+	//! - Pas important:
+	//!   CannonMade, ShipMade, FleetDrop de plus de 1 heures
 	(*session_) <<
 	            "DELETE FROM Event WHERE id < ? AND type IN (?, ?, ?)",
 	            use(max1),
@@ -490,8 +507,9 @@ try
 	            use((int)Event::ShipMade),
 	            use((int)Event::FleetDrop),
 	            now;
-	//Flotte
-	// Important
+	//! Supression des évenements de flotte
+	//! - Important:
+	//!   FleetWin, FleetDraw et PlanetColonized de plus de 24 heures
 	(*session_) <<
 	            "DELETE FROM Event WHERE id < ? AND type IN (?, ?, ?)",
 	            use(max24),
@@ -499,7 +517,8 @@ try
 	            use((int)Event::FleetDraw),
 	            use((int)Event::PlanetColonized),
 	            now;
-	// Pas important
+	//! - Pas important:
+	//!   FleetsGather, PlanetHarvested et FleetDrop de plus de 1 heures
 	(*session_) <<
 	            "DELETE FROM Event WHERE id < ? AND type IN (?, ?, ?)",
 	            use(max1),
@@ -507,8 +526,10 @@ try
 	            use((int)Event::PlanetHarvested),
 	            use((int)Event::FleetDrop),
 	            now;
-	//Joueur
-	// Important
+	//! Supression des évenements de joueur
+	//! - Important:
+	//!   FleetCodeError, FleetCodeExecError, PlanetCodeError,
+	//!   PlanetCodeExecError, FleetLose et PlanetLose de plus de 24 heures
 	(*session_) <<
 	            "DELETE FROM Event "
 	            "WHERE id < ? AND type IN (?, ?, ?, ?, ?, ?)",
@@ -521,7 +542,7 @@ try
 	            use((int)Event::PlanetLose),
 	            now;
 
-	//Rappor de combat
+	//! Supprime les Rappor de combats de plus de 24 heures
 	(*session_) <<
 	            "DELETE FROM FightReport WHERE time < ?",
 	            use(time(0) - (3600 * 24)),
@@ -532,14 +553,16 @@ try
 DB_CATCH
 
 
+//! Tuple pour stoker les donnée d'un Event quand il sort de la base de donnée
 typedef Poco::Tuple < Event::ID, time_t, size_t, std::string, intptr_t,
         int, Player::ID, Fleet::ID, Coord::Value, Coord::Value, Coord::Value >
         DBEvent;
 
 
+//! Convertie un DBEvent en Event
 Event toEvent(DBEvent const& ev)
 {
-	Event res;
+	Event res(ev.get<6>(), ev.get<1>(), Event::Type(ev.get<2>()));
 	res.id = ev.get<0>();
 	res.time = ev.get<1>();
 	res.type = Event::Type(ev.get<2>());
@@ -686,11 +709,12 @@ FightReport DataBase::getFightReport(size_t reportID)
 try
 {
 	FightReport report;
-	//std::string data;
 	Poco::Data::BLOB data;
 	(*session_) << "SELECT data FROM FightReport WHERE id = ?",
 	            use(reportID), into(data), now;
 
+	if(data.size() == 0)
+		BOOST_THROW_EXCEPTION(Exception("Invalid reportID"));
 	using namespace boost::archive;
 	stringstream ss(ios::binary | ios::in | ios::out);
 	ss.rdbuf()->sputn(data.rawContent(), data.size());
@@ -736,9 +760,11 @@ namespace Poco
 namespace Data
 {
 
+//! @see http://pocoproject.org/docs-1.5.1/00200-DataUserManual.html#27
 template <>
 class TypeHandler<typename DataBase::CodeError>
 {
+	//! @cond Doxygen_Suppress
 public:
 	static void bind(std::size_t pos,
 	                 const DataBase::CodeError& obj,
@@ -780,6 +806,7 @@ private:
 	~TypeHandler();
 	TypeHandler(const TypeHandler&);
 	TypeHandler& operator=(const TypeHandler&);
+	//! @endcond
 };
 
 }
@@ -1055,7 +1082,7 @@ DB_CATCH
 
 //***************************  Friendship  ********************************
 
-
+//! Ordone deux Player::ID
 void order(Player::ID& playerA, Player::ID& playerB)
 {
 	if(playerA > playerB)
@@ -1066,7 +1093,7 @@ void order(Player::ID& playerA, Player::ID& playerB)
 void DataBase::addFriendshipRequest(Player::ID sender, Player::ID recipient)
 try
 {
-	//Si c'est le meme on ne fait rien
+	//! Si sender est recipient sont identique, on ne fait rien
 	if(sender == recipient)
 		return;
 	Transaction trans(*session_);
@@ -1076,7 +1103,7 @@ try
 	            "SELECT COUNT(*) FROM FriendshipRequest "
 	            "WHERE sender = ? AND recipient = ? ",
 	            into(rowCount), use(recipient), use(sender), now;
-	//! Dans on le considère comme une validation
+	//! - Si oui on le considère comme une validation
 	if(rowCount)
 	{
 		Player::ID playerA = sender;
@@ -1091,7 +1118,7 @@ try
 		            "WHERE sender = ? AND recipient = ? ",
 		            use(recipient), use(sender), now;
 	}
-	//! Sinon on insert la demande (sauf si il en as déja une identique)
+	//! - Sinon on insert la demande (sauf si il en as déja une identique)
 	else
 	{
 		(*session_) <<

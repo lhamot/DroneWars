@@ -1,3 +1,7 @@
+//! @file
+//! @author Loïc HAMOT
+//! @todo: tous ces runtime_error sont surement à évité car sont envoyé à lua
+
 #include "stdafx.h"
 #include "LuaUniverse.h"
 
@@ -13,37 +17,39 @@
 namespace BL = boost::locale;
 using namespace boost;
 
-void PlanetActionListPushBack(PlanetActionList& list, PlanetAction const& pa)
-{
-	list.push_back(pa);
-}
 
+//! Extrait la quantité d'une ressource donnée, dans un RessourceSet
 size_t getRessource(RessourceSet const& ress, size_t i)
 {
 	return ress.tab.at(i);
 }
 
+
+//! Génère une direction aléatoirement
 Direction directionRandom()
 {
 	Direction target;
+	//! @todo: Pourquoi += et pas = ?
 	target.X += (rand() % 3) - 1;
 	target.Y += (rand() % 3) - 1;
 	target.Z += (rand() % 3) - 1;
 	return target;
 }
 
-Coord::Value toOne(Coord::Value val)
-{
-	if(val < 0)
-		return -1;
-	else if(val > 0)
-		return 1;
-	else
-		return 0;
-}
 
+//! Retourn la direction pour aller de ori vers targ
 Direction directionFromTo(Coord const& ori, Coord const& targ)
 {
+	// Ramene un entier dans l'intervale [-1: 1]
+	auto toOne = [](Coord::Value val) -> Coord::Value
+	{
+		if(val < 0)
+			return -1;
+		else if(val > 0)
+			return 1;
+		else
+			return 0;
+	};
 	Direction target;
 	target.X += toOne(targ.X - ori.X);
 	target.Y += toOne(targ.Y - ori.Y);
@@ -52,32 +58,44 @@ Direction directionFromTo(Coord const& ori, Coord const& targ)
 }
 
 
+//! true si la planète est libre
+//! @todo: remplacable par Planet::isFree
 bool planetIsFree(Planet const& planet)
 {
-	return planet.playerId == Player::NoId;
+	return planet.isFree();
 }
 
 
+//! Crée un PlanetAction pour construir le building demandé
 PlanetAction makeBuilding(Building::Enum building)
 {
 	return PlanetAction(PlanetAction::Building, Building::Enum(building - 1));
 }
 
+
+//! Crée un PlanetAction pour construir le vaisseau demandé
 PlanetAction makeShip(Ship::Enum ship)
 {
 	return PlanetAction(PlanetAction::Ship, Ship::Enum(ship - 1), 1);
 }
 
+
+//! Crée un PlanetAction pour construir le canon demandé
 PlanetAction makeCannon(Cannon::Enum cannon)
 {
 	return PlanetAction(PlanetAction::Cannon, Cannon::Enum(cannon - 1), 1);
 }
 
+
+//! Crée un PlanetAction qui demande de ne rien faire
 PlanetAction noPlanetAction()
 {
 	return PlanetAction();
 }
 
+
+//! Retourne le prix d'un vaisseau donné
+//! @throw std::runtime_error si ship n'est pas compris dans [1; Ship::Count]
 RessourceSet shipPrice(Ship::Enum ship)
 {
 	if(ship < 1 || ship > Ship::Count)
@@ -88,6 +106,9 @@ RessourceSet shipPrice(Ship::Enum ship)
 	return Ship::List[ship - 1].price;
 }
 
+
+//! Retourne le prix d'un canon donné
+//! @throw std::runtime_error si cannon n'est pas dans [1; Cannon::Count]
 RessourceSet cannonPrice(Cannon::Enum cannon)
 {
 	if(cannon < 1 || cannon > Cannon::Count)
@@ -98,6 +119,10 @@ RessourceSet cannonPrice(Cannon::Enum cannon)
 	return Cannon::List[cannon - 1].price;
 }
 
+
+//! Retourne le prix d'un Building donné, à un niveau donné
+//! @throw std::runtime_error si building n'est pas dans [1; Building::Count]
+//! @throw std::runtime_error si level < 1
 RessourceSet buildingPrice(Building::Enum building, size_t level)
 {
 	if(building < 1 || building > Building::Count)
@@ -227,8 +252,7 @@ extern "C" int initDroneWars(lua_State* L)
 	    value("Colonize",  FleetAction::Colonize),
 	    value("Drop",      FleetAction::Drop)
 	  ]
-	  .def(constructor<FleetAction::Type, Coord>())      //TODO: A virer quand plus persone ne l'utilisera
-	  .def(constructor<FleetAction::Type, Direction>())  //TODO: A virer quand plus persone ne l'utilisera
+	  .def(constructor<FleetAction::Type, Direction>())
 	  .def(constructor<FleetAction::Type>())
 	  .def_readonly("action", &FleetAction::action)
 	  .def_readonly("target", &FleetAction::target)
