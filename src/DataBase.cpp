@@ -447,11 +447,15 @@ try
 	std::vector<DBEvent> dbEvents;
 	dbEvents.reserve(events.size());
 	for(Event const & event : events)
+	{
 		dbEvents.push_back(
 		  DBEvent(event.time, event.type, event.comment, event.value,
 		          event.viewed, event.playerID, event.fleetID,
 		          event.planetCoord.X, event.planetCoord.Y,
 		          event.planetCoord.Z));
+		if(event.playerID == Player::NoId)
+			BOOST_THROW_EXCEPTION(std::logic_error("event.playerID > 100"));
+	}
 
 	Transaction trans(*session_);
 	(*session_) <<

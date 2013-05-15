@@ -67,9 +67,9 @@ void map_remove_erase_if(M& map, F const& func)
 	{
 		if(func(*iter))
 		{
-			auto next = iter;
-			++next;
-			map.erase(iter);
+			auto prev = iter;
+			++iter;
+			map.erase(prev);
 		}
 		else
 			++iter;

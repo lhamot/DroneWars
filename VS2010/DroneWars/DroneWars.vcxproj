@@ -139,10 +139,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\DroneWarsLog.properties" />
+    <None Include="..\..\fleetScript.lua" />
+    <None Include="..\..\planetScript.lua" />
     <None Include="..\..\src\thrift.def" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\doc\doc.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\blocklyFleetDefaultCode.xml" />
+    <Xml Include="..\..\blocklyPlanetDefaultCode.xml" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{66784FFB-A927-45B0-907F-709FC3AEFD39}</ProjectGuid>

@@ -11,10 +11,7 @@
 #include "fighting.h"
 #include "Logger.h"
 #include "DataBase.h"
-#pragma warning(push)
-#pragma warning(disable: 4189 4100)
 #include <luabind/stl_container_converter.hpp>
-#pragma warning(pop)
 #include <boost/range/numeric.hpp>
 #include <boost/format.hpp>
 #include <boost/chrono.hpp>
@@ -154,6 +151,9 @@ try
 	{
 		luabind::object g = luabind::globals(luaEngine.state());
 		PlayerCodes::ObjectMap result;
+		result.playerId = code.playerId;
+		result.scriptID = code.id;
+		result.target = code.target;
 		result.functions["AI"] = g["AI"];
 		result.functions["action"] = g["AI_action"];
 		result.functions["do_gather"] = g["AI_do_gather"];
@@ -286,7 +286,11 @@ bool checkLuaMethode(PlayerCodes::ObjectMap& codeMap,
 	{
 		luabind::object methode = codeIter->second;
 		if(luabind::type(methode) == LUA_TFUNCTION)
+		{
+			if(codeMap.playerId == Player::NoId)
+				BOOST_THROW_EXCEPTION(std::logic_error("codeMap.playerId == Player::NoId"));
 			return true;
+		}
 		else
 		{
 			std::string const message =
@@ -1032,7 +1036,7 @@ try
 			std::cout << "OK" << std::endl;
 			newSave += SaveSecond;
 		}
-		bool noWait = true;
+		bool noWait = false;
 		if(noWait || newUpdate <= now)
 			try
 			{
@@ -1101,13 +1105,12 @@ void Simulation::save(std::string const& saveName) const
 			struct stat buf;
 			if(stat(saveName.c_str(), &buf) == 0)
 			{
-				if(rename(saveName.c_str(), ansSaveName.c_str()) == 0)
+				if(rename(saveName.c_str(), ansSaveName.c_str()) != 0)
 					BOOST_THROW_EXCEPTION(
-					  std::ios::failure(str(
-					                      format("Can't rename %1% to %2%") %
-					                      saveName % ansSaveName)));
+					  std::ios::failure(str(format("Can't rename %1% to %2%") %
+					                        saveName % ansSaveName)));
 			}
-			if(rename(newSaveName.c_str(), saveName.c_str()) == 0)
+			if(rename(newSaveName.c_str(), saveName.c_str()) != 0)
 				BOOST_THROW_EXCEPTION(
 				  std::ios::failure(str(format("Can't rename %1% to %2%") %
 				                        newSaveName % saveName)));

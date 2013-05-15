@@ -15,17 +15,17 @@ function AI_action(my_fleet2, planete_locale2)
   if planete_locale2 then
     if planete_locale2:isFree() then
       if(my_fleet2.shipList[Ship.Queen] > 0) then 
-        if(math.random(2) == 1) then return FleetAction(FleetAction.Colonize,Coord()) end
+        if(math.random(2) == 1) then return FleetAction(FleetAction.Colonize) end
       end
       if(planete_locale2.ressourceSet:at(Ressource.Metal) > 0) then
-        return FleetAction(FleetAction.Harvest,Coord())
+        return FleetAction(FleetAction.Harvest)
       end
     elseif my_fleet2.coord == my_fleet2.origin then
       if(my_fleet2.ressourceSet:at(Ressource.Metal) > 0) then
-        return FleetAction(FleetAction.Drop,Coord())
+        return FleetAction(FleetAction.Drop)
       end
       if(my_fleet2.shipList[Ship.Queen] < 1) then
-        return FleetAction(FleetAction.Nothing,Coord())
+        return FleetAction(FleetAction.Nothing)
       end
     end
   end

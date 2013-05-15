@@ -255,7 +255,7 @@ struct stl_container__ipairs
 		/* stack:
 		 * 1: table object
 		 */
-		Container_tt* container = stl_adapter<Container_tt>::container_from_table(L, 1);
+		//Container_tt* container = stl_adapter<Container_tt>::container_from_table(L, 1);
 
 		lua_pushcfunction(L, &stl_container__next<Container_tt>::impl);
 		lua_pushvalue(L, 1);

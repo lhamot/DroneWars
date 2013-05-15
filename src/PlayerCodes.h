@@ -23,7 +23,7 @@ struct PlayerCodes
 		CodeData::Target target; //!< Planète ou Flotte?
 		Map functions;           //!< Tab [Nom de fonction] => luabind::object
 
-		//! Constructeur
+		//! Constructeur par defaut
 		ObjectMap(): scriptID(0), playerId(0), target(CodeData::Undefined) {}
 	};
 	ObjectMap fleetsCode;  //!< Fonctions pour les flottes d'un joueur

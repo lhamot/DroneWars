@@ -154,10 +154,24 @@
     <None Include="..\..\DroneWarsLog.properties">
       <Filter>autre</Filter>
     </None>
+    <None Include="..\..\fleetScript.lua">
+      <Filter>autre</Filter>
+    </None>
+    <None Include="..\..\planetScript.lua">
+      <Filter>autre</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\doc\doc.txt">
       <Filter>autre</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\blocklyFleetDefaultCode.xml">
+      <Filter>autre</Filter>
+    </Xml>
+    <Xml Include="..\..\blocklyPlanetDefaultCode.xml">
+      <Filter>autre</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

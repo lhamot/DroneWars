@@ -642,10 +642,13 @@ public:
 	}
 
 	//! Constructeur
+	//! @pre pid != Player::NoId
 	Event(Player::ID pid, time_t ti, Type ty):
 		id(0), time(ti), type(ty), value(-1), viewed(false),
 		playerID(pid), fleetID(Fleet::NoId)
 	{
+		if(playerID == Player::NoId)
+			BOOST_THROW_EXCEPTION(std::logic_error("playerID == Player::NoId"));
 	}
 
 	//! Modifie Event::value
