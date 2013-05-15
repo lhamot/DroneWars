@@ -454,7 +454,7 @@ void fight(std::vector<Fleet*> const& fleetList,
 		}
 	}
 	//! - Planete/Flotte
-	if(reportList.hasPlanet)
+	if(planet)
 	{
 		for(auto iter1 = fleetList.begin(),
 		    end = fleetList.end();

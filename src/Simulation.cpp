@@ -79,20 +79,18 @@ void Simulation::reloadPlayer(Player::ID pid)
 
 
 //! @brief Traite une erreur de scripte en ajoutant un Event
-//! @todo: changer de nom
-void addErrorMessageImpl(Player::ID pid,
+Event makeCodeErrorEvent(Player::ID pid,
                          CodeData::Target target,
                          size_t codeID,
-                         std::string const& message,
-                         std::vector<Event>& events)
+                         std::string const& message)
 {
-	Event event = Event(pid, time(0),
-	                    target == CodeData::Fleet ?
-	                    Event::FleetCodeError :
-	                    Event::PlanetCodeError)
-	              .setComment(message)
-	              .setValue(codeID);
-	events.push_back(event);
+	return Event(pid,
+	             time(0),
+	             target == CodeData::Fleet ?
+	             Event::FleetCodeError :
+	             Event::PlanetCodeError)
+	       .setComment(message)
+	       .setValue(codeID);
 }
 
 
@@ -101,8 +99,9 @@ void addErrorMessage(CodeData const& codeData,
                      std::string const& message,
                      std::vector<Event>& events)
 {
-	addErrorMessageImpl(
-	  codeData.playerId, codeData.target, codeData.id, message, events);
+	events.push_back(
+	  makeCodeErrorEvent(
+	    codeData.playerId, codeData.target, codeData.id, message));
 }
 
 
@@ -111,8 +110,9 @@ void addErrorMessage(PlayerCodes::ObjectMap& objMap,
                      std::string const& message,
                      std::vector<Event>& events)
 {
-	addErrorMessageImpl(
-	  objMap.playerId, objMap.target, objMap.scriptID, message, events);
+	events.push_back(
+	  makeCodeErrorEvent(
+	    objMap.playerId, objMap.target, objMap.scriptID, message));
 	objMap.functions.clear();
 }
 
@@ -367,7 +367,7 @@ try
 		target.Y += action.target.Y;
 		target.Z += action.target.Z;
 		if(canMove(fleet, target))
-			addTask(fleet, univ_.roundCount, target);
+			addTaskMove(fleet, univ_.roundCount, target);
 	}
 	break;
 	case FleetAction::Harvest:
@@ -1082,8 +1082,10 @@ void Simulation::save(std::string const& saveName) const
 {
 	auto savingFunc = [](std::shared_ptr<Universe const> clone, std::string const & saveName)
 	{
+		using namespace boost;
 		try
 		{
+			//! todo: Utiliser boost::filesystem avec un boost plus recent
 			LOG4CPLUS_TRACE(saveLogger, "saveToStream");
 			using namespace std;
 			std::string const newSaveName = saveName + ".new";
@@ -1098,8 +1100,17 @@ void Simulation::save(std::string const& saveName) const
 			remove(ansSaveName.c_str());
 			struct stat buf;
 			if(stat(saveName.c_str(), &buf) == 0)
-				rename(saveName.c_str(), ansSaveName.c_str());
-			rename(newSaveName.c_str(), saveName.c_str());
+			{
+				if(rename(saveName.c_str(), ansSaveName.c_str()) == 0)
+					BOOST_THROW_EXCEPTION(
+					  std::ios::failure(str(
+					                      format("Can't rename %1% to %2%") %
+					                      saveName % ansSaveName)));
+			}
+			if(rename(newSaveName.c_str(), saveName.c_str()) == 0)
+				BOOST_THROW_EXCEPTION(
+				  std::ios::failure(str(format("Can't rename %1% to %2%") %
+				                        newSaveName % saveName)));
 
 			LOG4CPLUS_TRACE(saveLogger, "copy");
 			std::ifstream in(saveName, ios::binary | ios::in);

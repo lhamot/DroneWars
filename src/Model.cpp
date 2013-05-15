@@ -166,9 +166,8 @@ void getNewPlayerCode(std::vector<std::string>& codes)
 
 
 //! @brief Donne une planète a un nouveau joueur
-//! @todo: donner un nom plus explicite
 //! @return la coordonée de la nouvelle planète
-Coord createPlayer(Universe& univ, Player::ID pid)
+Coord createMainPlanet(Universe& univ, Player::ID pid)
 {
 	bool done = false;
 	Coord mainPlanetCoord;
@@ -233,7 +232,7 @@ void construct(Universe& univ, DataBase& database)
 		Player::ID const pid = database.addPlayer(nameGen(), password, codes);
 		if(pid != Player::NoId)
 		{
-			Coord coord = createPlayer(univ, pid);
+			Coord coord = createMainPlanet(univ, pid);
 			database.setPlayerMainPlanet(pid, coord);
 			{
 				ifstream file("planetScript.lua");
@@ -756,8 +755,7 @@ bool canMove(Fleet const& fleet,
 
 //! Ajoute une tache de déplacement dans la flotte
 //! @pre la flotte peut se rendre a cet coordonée (canMove)
-//! @todo: renomer en addTaskMove
-void addTask(Fleet& fleet, uint32_t roundCount, Coord const& coord)
+void addTaskMove(Fleet& fleet, uint32_t roundCount, Coord const& coord)
 {
 	FleetTask task(FleetTask::Move, roundCount, 1);
 	task.position = coord;

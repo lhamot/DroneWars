@@ -92,7 +92,7 @@ void Engine::stop()
 Coord Engine::addPlayer(Player::ID pid)
 {
 	UniqueLock lock(univ_.planetsFleetsReportsmutex);
-	return createPlayer(univ_, pid); //Modifie une planete
+	return createMainPlanet(univ_, pid); //Modifie une planete
 }
 
 

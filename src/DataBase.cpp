@@ -1272,21 +1272,21 @@ DB_CATCH
 Alliance DataBase::getAlliance(Alliance::ID aid)
 try
 {
-	Alliance al;
-	BLOB description;
+	typedef Tuple < Alliance::ID, Player::ID,
+	        std::string, BLOB, std::string > MessageTup;
+	MessageTup messageTup;
 	(*session_) <<
 	            "SELECT Alliance.*, Player.login FROM Alliance "
 	            "INNER JOIN Player "
 	            "ON masterID = Player.id "
 	            "WHERE Alliance.id = ? ",
-	            into(al.id),
-	            into(al.masterID),
-	            into(al.name),
-	            into(description),
-	            into(al.masterLogin),
+	            into(messageTup),
 	            use(aid), now;
-	al.description = toString(description);
-	return al;
+	return Alliance(messageTup.get<0>(),
+	                messageTup.get<1>(),
+	                messageTup.get<2>(),
+	                toString(messageTup.get<3>()),
+	                messageTup.get<4>());
 }
 DB_CATCH
 

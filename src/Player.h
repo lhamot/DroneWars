@@ -151,10 +151,6 @@ struct Alliance
 	std::string description;  //!< Description
 	std::string masterLogin;  //!< Login du propriétaire (Pas stoké dans SGBD)
 
-	//! Constructeur par defaut
-	//! @todo: Virer le constructeur par defaut
-	Alliance(): id(0), masterID(0) {}
-
 	//! Constructeur
 	Alliance(Alliance::ID id,
 	         uint32_t playerID,

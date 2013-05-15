@@ -751,7 +751,7 @@ RessourceSet getBuilingPrice(Building::Enum id, size_t level);
 
 void getNewPlayerCode(std::vector<std::string>& codes);
 
-Coord createPlayer(Universe& univ, Player::ID pid);
+Coord createMainPlanet(Universe& univ, Player::ID pid);
 
 void saveToStream(Universe const& univ, std::ostream& out);
 void loadFromStream_v1(std::istream& in, Universe& univ);
@@ -798,7 +798,7 @@ void gather(Fleet& fleet, Fleet const& otherFleet);
 
 bool canMove(Fleet const& fleet, Coord const& coord);
 
-void addTask(Fleet& fleet, uint32_t roundCount, Coord const& coord);
+void addTaskMove(Fleet& fleet, uint32_t roundCount, Coord const& coord);
 
 bool canHarvest(Fleet const& fleet, Planet const& planet);
 
