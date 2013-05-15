@@ -757,7 +757,6 @@ void getNewPlayerCode(std::vector<std::string>& codes);
 Coord createMainPlanet(Universe& univ, Player::ID pid);
 
 void saveToStream(Universe const& univ, std::ostream& out);
-void loadFromStream_v1(std::istream& in, Universe& univ);
 void loadFromStream_v2(std::istream& in, Universe& univ);
 
 bool canBuild(Planet const& planet, Ship::Enum type, size_t number);

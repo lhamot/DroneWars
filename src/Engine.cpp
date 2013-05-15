@@ -61,8 +61,6 @@ void Engine::load(string const& univName, size_t version)
 	ifstream loadFile(univName, ios::in | ios::binary);
 	if(loadFile.is_open() == false)
 		BOOST_THROW_EXCEPTION(ios::failure("Can't load from " + univName));
-	if(version == 1)
-		loadFromStream_v1(loadFile, univ_);
 	else if(version == 2)
 		loadFromStream_v2(loadFile, univ_);
 	else

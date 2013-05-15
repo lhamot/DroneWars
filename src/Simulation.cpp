@@ -44,9 +44,6 @@ static Logger logger = Logger::getInstance(LOG4CPLUS_TEXT("Simulation"));
 
 //! Nombre d'instruction max authorisé dans l'éxcecution d'un script lua
 static size_t const LuaMaxInstruction = 20000;
-//! @brief Nombre d'echec autorisé dans un script lua, avant de l'invalider
-//! @todo: Apparement plus util
-static size_t const MaxCodeExecTry = 10;
 
 
 //! callback appelé par lua quand le nombre d'instruction max est dépassé
@@ -420,25 +417,6 @@ catch(luabind::cast_failed& ex)
 }*/
 
 
-//! Désactivation de tout les codes qui echoue
-//! Ne modifie que codesMap
-/*void disableFailingCode(Universe const& univ_, PlayerCodeMap& codesMap)
-{
-	LOG4CPLUS_TRACE(logger, "enter");
-
-	SharedLock lockPlayer(univ_.playersMutex);
-
-	for(Player const & player: univ_.playerMap | boost::adaptors::map_values)
-	{
-		if(player.planetsCode.getFailCount() >= MaxCodeExecTry)
-			codesMap[player.id].planetsCode = PlayerCodes::ObjectMap();
-		if(player.fleetsCode.getFailCount() >= MaxCodeExecTry)
-			codesMap[player.id].fleetsCode = PlayerCodes::ObjectMap();
-	}
-	LOG4CPLUS_TRACE(logger, "exit");
-}*/
-
-
 //! Rechargement des codes flote/planet des joueurs dont le code a été changé,
 //! Modifie la codesMap et playerToReload_
 void Simulation::updatePlayersCode(LuaTools::LuaEngine& luaEngine,
@@ -771,64 +749,6 @@ void execFleets(
 
 	LOG4CPLUS_TRACE(logger, "exit");
 }
-
-
-//! Supprime les evenement trop vieux, et les rapport plus réfférencés
-void removeOldEvents(DataBase&)
-{
-	LOG4CPLUS_TRACE(logger, "enter");
-
-	//! @todo: A faire dans la base de donné
-
-	/*set<size_t> usedReport;
-	for(Player & player: univ_.playerMap | boost::adaptors::map_values)
-	{
-		if(player.eventList.size() > 10)
-			player.eventList.erase(player.eventList.begin(), player.eventList.end() - 10);
-		for(Event const & ev: player.eventList)
-		{
-			if(ev.type == Event::FleetLose || ev.type == Event::PlanetLose ||
-			   ev.type == Event::FleetWin || ev.type == Event::PlanetWin)
-				usedReport.insert(ev.value);
-		}
-	}
-
-	for(Planet & planet: univ_.planetMap | boost::adaptors::map_values)
-	{
-		//La suppression des evenement de planètes est faite ailleurs
-		//if(planet.eventList.size() > 10)
-		//	planet.eventList.erase(planet.eventList.begin(), planet.eventList.end() - 10);
-		for(Event const & ev: planet.eventList)
-		{
-			if(ev.type == Event::FleetLose || ev.type == Event::PlanetLose ||
-			   ev.type == Event::FleetWin || ev.type == Event::PlanetWin)
-				usedReport.insert(ev.value);
-		}
-	}
-
-	for(Fleet & fleet: univ_.fleetMap | boost::adaptors::map_values)
-	{
-		//La suppression des evenement de planètes est faite ailleurs
-		//if(fleet.eventList.size() > 10)
-		//   fleet.eventList.erase(fleet.eventList.begin(), fleet.eventList.end() - 10);
-		for(Event const & ev: fleet.eventList)
-		{
-			if(ev.type == Event::FleetLose || ev.type == Event::PlanetLose ||
-			   ev.type == Event::FleetWin || ev.type == Event::PlanetWin)
-				usedReport.insert(ev.value);
-		}
-	}
-
-	map_remove_erase_if(univ_.reportMap,
-	                    [&](Universe::ReportMap::value_type const & reportKV)
-	{
-		return usedReport.count(reportKV.first) == false;
-	});*/
-
-	//! @todo: Le faire sur les planètes
-	LOG4CPLUS_TRACE(logger, "exit");
-}
-
 
 
 void Simulation::round(LuaTools::LuaEngine& luaEngine,

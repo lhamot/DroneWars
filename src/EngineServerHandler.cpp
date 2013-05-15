@@ -452,7 +452,7 @@ void EngineServerHandler::setPlayerFleetCode(
   const string& code)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
-	if(code.size() > Player::MaxCodeSize)
+	if(code.size() > CodeData::MaxCodeSize)
 		BOOST_THROW_EXCEPTION(InvalidData("Code size too long"));
 	database_.addScript(pid, CodeData::Fleet, code);
 	engine_.reloadPlayer(pid);
@@ -465,7 +465,7 @@ void EngineServerHandler::setPlayerPlanetCode(
   const string& code)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
-	if(code.size() > Player::MaxCodeSize)
+	if(code.size() > CodeData::MaxCodeSize)
 		BOOST_THROW_EXCEPTION(InvalidData("Code size too long"));
 	database_.addScript(pid, CodeData::Planet, code);
 	engine_.reloadPlayer(pid);
@@ -478,7 +478,7 @@ void EngineServerHandler::setPlayerFleetBlocklyCode(
   const string& code)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
-	if(code.size() > Player::MaxBlocklySize)
+	if(code.size() > CodeData::MaxBlocklySize)
 		BOOST_THROW_EXCEPTION(InvalidData("Code size too long"));
 	database_.addBlocklyCode(pid, CodeData::Fleet, code);
 	LOG4CPLUS_TRACE(logger, "exit");
@@ -490,7 +490,7 @@ void EngineServerHandler::setPlayerPlanetBlocklyCode(
   const string& code)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
-	if(code.size() > Player::MaxBlocklySize)
+	if(code.size() > CodeData::MaxBlocklySize)
 		BOOST_THROW_EXCEPTION(InvalidData("Code size too long"));
 	database_.addBlocklyCode(pid, CodeData::Planet, code);
 	LOG4CPLUS_TRACE(logger, "exit");

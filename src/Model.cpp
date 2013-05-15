@@ -268,24 +268,7 @@ void saveToStream(Universe const& univ, std::ostream& out)
 }
 
 
-//! @brief Déserialize l'Universe depuit un flux (ancienne version)
-//! @todo: à supprimer
-void loadFromStream_v1(std::istream& in, Universe& univ)
-{
-	using namespace boost::iostreams;
-	std::cout << "Loading... ";
-	filtering_streambuf<input> inFilter;
-	inFilter.push(gzip_decompressor());
-	inFilter.push(in);
-
-	boost::archive::binary_iarchive ia(inFilter);
-	ia& univ;
-	std::cout << "OK" << std::endl;
-}
-
-
 //! @brief Déserialize l'Universe depuit un flux
-//! @todo: Renommer en loadFromStream
 void loadFromStream_v2(std::istream& in, Universe& univ)
 {
 	using namespace boost::iostreams;

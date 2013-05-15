@@ -28,12 +28,8 @@ size_t getRessource(RessourceSet const& ress, size_t i)
 //! Génère une direction aléatoirement
 Direction directionRandom()
 {
-	Direction target;
-	//! @todo: Pourquoi += et pas = ?
-	target.X += (rand() % 3) - 1;
-	target.Y += (rand() % 3) - 1;
-	target.Z += (rand() % 3) - 1;
-	return target;
+	auto randDir = [] {return Direction::Value((rand() % 3) - 1);};
+	return Direction(randDir(), randDir(), randDir());
 }
 
 

@@ -98,6 +98,11 @@ static size_t const MaxStringSize = 256; //!< Taille max des string courte
 //! Script de planète ou flotte d'un joueur
 struct CodeData
 {
+	//! @brief Taile max du code lua
+	static size_t const MaxCodeSize = 32 * 1024;
+	//! @brief Taille max du code blockly
+	static size_t const MaxBlocklySize = MaxCodeSize * 8;
+
 	//! Planète ou Flotte
 	enum Target : uint8_t
 	{
@@ -170,13 +175,6 @@ struct Alliance
 //! Donnée d'un joueur
 struct Player
 {
-	//! @brief Taile max du code lua
-	//! @todo: Rien a faire là
-	static size_t const MaxCodeSize = 32 * 1024;
-	//! @brief Taille max du code blockly
-	//! @todo: Rien a faire là
-	static size_t const MaxBlocklySize = MaxCodeSize * 8;
-
 	//! Un uint8_t pour chaque Skill
 	typedef boost::array<uint8_t, Skill::Count> SkillTab;
 	typedef uint32_t ID;      //!< Type d'identifiant
