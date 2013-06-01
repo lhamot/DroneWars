@@ -7,6 +7,7 @@
 #include "Tools.h"
 #include "NameGen.h"
 #include <boost/range/numeric.hpp>
+#include <boost/range/algorithm/transform.hpp>
 #include <boost/format.hpp>
 #include <boost/bind.hpp>
 
@@ -319,15 +320,11 @@ void pay(Planet& planet, RessourceSet const& price)
 	if(canPay(planet, price) == false)
 		BOOST_THROW_EXCEPTION(std::logic_error("Can't pay"));
 
-	//! @todo: utiliser boost::transform plutot qu'un for
-	/*transform(planet.ressourceSet.tab, price.tab.begin(),
-		      planet.ressourceSet.tab.begin(),
-			  [](Ressource::Value a, Ressource::Value b){return a - b;});*/
-	for(int i = 0; i < Ressource::Count; ++i)
-	{
-		assert(planet.ressourceSet.tab[i] >= price.tab[i]);
-		planet.ressourceSet.tab[i] -= price.tab[i];
-	}
+	boost::transform(planet.ressourceSet.tab,
+	                 price.tab,
+	                 planet.ressourceSet.tab.begin(),
+	                 std::minus<Ressource::Value>());
+
 	if(planet.ressourceSet.tab[0] > 2000000000)
 		BOOST_THROW_EXCEPTION(std::logic_error("Strange ressources value"));
 }
