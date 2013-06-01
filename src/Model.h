@@ -55,7 +55,6 @@ struct CompCoord
 //! Les types de Ressource
 struct Ressource
 {
-	//! @todo: utiliser des strong enum
 	typedef uint32_t Value; //!< Type contenant une quantité d'une ressource
 	//! Les types de Ressource
 	enum Enum : uint8_t
@@ -707,8 +706,7 @@ struct Universe
 	}
 
 	typedef boost::shared_mutex Mutex;       //!< Type mutex pour Universe
-	//! @todo: Renomer cette variable
-	mutable Mutex planetsFleetsReportsmutex; //!< Mutex des donées de Universe
+	mutable Mutex mutex; //!< Mutex des donées de Universe
 
 	//! Constructeur par defaut
 	Universe():

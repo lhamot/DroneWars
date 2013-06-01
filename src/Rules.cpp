@@ -33,7 +33,7 @@ void checkTutos(Universe& univ_,
                 std::vector<Event> const& events)
 {
 	typedef boost::shared_lock<Universe::Mutex> SharedLock;
-	SharedLock lockAll(univ_.planetsFleetsReportsmutex);
+	SharedLock lockAll(univ_.mutex);
 
 	std::vector<Player::ID> wisePlayer;
 	wisePlayer.reserve(10000);

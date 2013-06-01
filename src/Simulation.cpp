@@ -450,7 +450,7 @@ void execPlanets(Universe& univ_,
 {
 	LOG4CPLUS_TRACE(logger, "enter");
 
-	UpgradeLock lockPlanet(univ_.planetsFleetsReportsmutex);
+	UpgradeLock lockPlanet(univ_.mutex);
 	FleetCoordMap fleetMap;
 	for(Fleet const & fleet : univ_.fleetMap | boost::adaptors::map_values)
 		fleetMap.insert(make_pair(fleet.coord, fleet));
@@ -486,7 +486,7 @@ void execFights(Universe& univ_,
 {
 	LOG4CPLUS_TRACE(logger, "enter");
 
-	UpgradeLock lockFleets(univ_.planetsFleetsReportsmutex);
+	UpgradeLock lockFleets(univ_.mutex);
 	if(univ_.fleetMap.empty()) //si il y as des flottes
 		return;
 
@@ -702,7 +702,7 @@ void execFleets(
 {
 	LOG4CPLUS_TRACE(logger, "enter");
 
-	UpgradeLock lockFleets(univ_.planetsFleetsReportsmutex);
+	UpgradeLock lockFleets(univ_.mutex);
 
 	FleetCoordMap fleetMap;
 	for(Fleet & fleet : univ_.fleetMap | boost::adaptors::map_values)
@@ -1047,7 +1047,7 @@ void Simulation::save(std::string const& saveName) const
 	if(savingThread_.timed_join(boost::posix_time::seconds(0)))
 	{
 		LOG4CPLUS_TRACE(logger, "copy universe to save");
-		SharedLock lockAll(univ_.planetsFleetsReportsmutex);
+		SharedLock lockAll(univ_.mutex);
 		std::shared_ptr<Universe const> clone = make_shared<Universe>(univ_);
 		LOG4CPLUS_TRACE(logger, "lauch save");
 		savingThread_ = boost::thread(savingFunc, clone, saveName);

@@ -56,7 +56,7 @@ Engine::Engine():
 
 void Engine::load(string const& univName, size_t version)
 {
-	UniqueLock lock(univ_.planetsFleetsReportsmutex);
+	UniqueLock lock(univ_.mutex);
 	using namespace std;
 	ifstream loadFile(univName, ios::in | ios::binary);
 	if(loadFile.is_open() == false)
@@ -89,14 +89,14 @@ void Engine::stop()
 
 Coord Engine::addPlayer(Player::ID pid)
 {
-	UniqueLock lock(univ_.planetsFleetsReportsmutex);
+	UniqueLock lock(univ_.mutex);
 	return createMainPlanet(univ_, pid); //Modifie une planete
 }
 
 
 vector<Fleet> Engine::getPlayerFleets(Player::ID pid) const
 {
-	SharedLock lock(univ_.planetsFleetsReportsmutex);
+	SharedLock lock(univ_.mutex);
 	vector<Fleet> fleetList;
 	for(Fleet const & fleet : univ_.fleetMap | adaptors::map_values)
 	{
@@ -109,7 +109,7 @@ vector<Fleet> Engine::getPlayerFleets(Player::ID pid) const
 
 vector<Planet> Engine::getPlayerPlanets(Player::ID pid) const
 {
-	SharedLock lock(univ_.planetsFleetsReportsmutex);
+	SharedLock lock(univ_.mutex);
 	vector<Planet> planetList;
 	for(Universe::PlanetMap::value_type const & planetNVP : univ_.planetMap)
 	{
@@ -122,7 +122,7 @@ vector<Planet> Engine::getPlayerPlanets(Player::ID pid) const
 
 optional<Planet> Engine::getPlanet(Coord coord) const
 {
-	SharedLock lock(univ_.planetsFleetsReportsmutex);
+	SharedLock lock(univ_.mutex);
 	auto iter = univ_.planetMap.find(coord);
 	return iter == univ_.planetMap.end() ?
 	       optional<Planet>() :
@@ -131,7 +131,7 @@ optional<Planet> Engine::getPlanet(Coord coord) const
 
 vector<Planet> Engine::getPlanets(vector<Coord> const& coordVect) const
 {
-	SharedLock lock(univ_.planetsFleetsReportsmutex);
+	SharedLock lock(univ_.mutex);
 	vector<Planet> result;
 	result.reserve(coordVect.size());
 	for(Coord const & coord : coordVect)
@@ -145,7 +145,7 @@ vector<Planet> Engine::getPlanets(vector<Coord> const& coordVect) const
 
 boost::optional<Fleet> Engine::getFleet(Fleet::ID fid) const
 {
-	SharedLock lock(univ_.planetsFleetsReportsmutex);
+	SharedLock lock(univ_.mutex);
 	auto iter = univ_.fleetMap.find(fid);
 	if(iter == univ_.fleetMap.end())
 		return none;
@@ -156,7 +156,7 @@ boost::optional<Fleet> Engine::getFleet(Fleet::ID fid) const
 
 TimeInfo Engine::getTimeInfo() const
 {
-	SharedLock lock(univ_.planetsFleetsReportsmutex);
+	SharedLock lock(univ_.mutex);
 	TimeInfo info = {univ_.roundDuration, simulation_->getUnivTime()};
 	return info;
 }
