@@ -334,11 +334,16 @@ void pay(Planet& planet, RessourceSet const& price)
 //! @pre La flotte peut payer
 void pay(Fleet& fleet, RessourceSet const& price)
 {
-	for(int i = 0; i < Ressource::Count; ++i)
-	{
-		assert(fleet.ressourceSet.tab[i] >= price.tab[i]);
-		fleet.ressourceSet.tab[i] -= price.tab[i];
-	}
+	if(canPay(fleet, price) == false)
+		BOOST_THROW_EXCEPTION(std::logic_error("Can't pay"));
+
+	boost::transform(fleet.ressourceSet.tab,
+	                 price.tab,
+	                 fleet.ressourceSet.tab.begin(),
+	                 std::minus<Ressource::Value>());
+
+	if(fleet.ressourceSet.tab[0] > 2000000000)
+		BOOST_THROW_EXCEPTION(std::logic_error("Strange ressources value"));
 }
 
 
