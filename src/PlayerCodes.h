@@ -5,7 +5,8 @@
 #define __NDW_PLAYERCODES__
 
 #include "stdafx.h"
-#include <luabind/object.hpp>
+#include "Polua/Core.h"
+#include "Polua/Ref.h"
 
 
 //! Contient les codes d'un joueurs (préchangé dans le moteur lua)
@@ -17,7 +18,7 @@ struct PlayerCodes
 	struct ObjectMap
 	{
 		//! Tableau assosiatif [Nom de fonction] => luabind::object
-		typedef std::map<std::string, luabind::object> Map;
+		typedef std::map<std::string, Polua::object> Map;
 		size_t scriptID;         //!< ID su script
 		Player::ID playerId;     //!< ID du joueur
 		CodeData::Target target; //!< Planète ou Flotte?

@@ -27,7 +27,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">-Zm129 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="..\..\src\EngineServerHandler.cpp" />
     <ClCompile Include="..\..\src\fighting.cpp">
@@ -35,8 +34,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">-Zm129 %(AdditionalOptions)</AdditionalOptions>
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Full</Optimization>
     </ClCompile>
     <ClCompile Include="..\..\src\gen-cpp\EngineServer.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -64,28 +61,24 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">-Zm129 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="..\..\src\LuaUniverse.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">-Zm129 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="..\..\src\main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">-Zm129 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="..\..\src\Model.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">-Zm129 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="..\..\src\NameGen.cpp" />
     <ClCompile Include="..\..\src\portable_binary_iarchive.cpp">
@@ -100,17 +93,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">-Zm129 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="..\..\src\Skills.cpp" />
     <ClCompile Include="..\..\src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">-Zm129 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="..\..\src\stl_container_adapter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\DataBase.h" />
@@ -127,6 +115,15 @@
     <ClInclude Include="..\..\src\NameGen.h" />
     <ClInclude Include="..\..\src\Player.h" />
     <ClInclude Include="..\..\src\PlayerCodes.h" />
+    <ClInclude Include="..\..\src\Polua\Call.h" />
+    <ClInclude Include="..\..\src\Polua\Class.h" />
+    <ClInclude Include="..\..\src\Polua\Core.h" />
+    <ClInclude Include="..\..\src\Polua\Detail.h" />
+    <ClInclude Include="..\..\src\Polua\Indexer\boost_array.h" />
+    <ClInclude Include="..\..\src\Polua\Indexer\std_vector.h" />
+    <ClInclude Include="..\..\src\Polua\Ref.h" />
+    <ClInclude Include="..\..\src\Polua\RegFunc.h" />
+    <ClInclude Include="..\..\src\Polua\State.h" />
     <ClInclude Include="..\..\src\portable_binary_archive.hpp" />
     <ClInclude Include="..\..\src\portable_binary_iarchive.hpp" />
     <ClInclude Include="..\..\src\portable_binary_oarchive.hpp" />
@@ -161,27 +158,27 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v120_CTP_Nov2012</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v120_CTP_Nov2012</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v120_CTP_Nov2012</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v120_CTP_Nov2012</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -230,8 +227,8 @@
       </PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>NOMINMAX;WIN32;LIBINTL_STATIC;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\poco-1.4.6p1-all\Foundation\include;I:\C_libs\poco-1.4.6p1-all\Data\include;I:\C_libs\poco-1.4.6p1-all\Data\MySQL\include;I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;I:\C_libs\thrift\lib\cpp\src;I:\C_libs\log4cplus-1.1.0\include;I:\C_libs\thrift\lib\cpp\src\thrift;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SLB_EXTERNAL_LUA;NOMINMAX;WIN32;LIBINTL_STATIC;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\poco-1.4.6p1-all\Foundation\include;I:\C_libs\poco-1.4.6p1-all\Data\include;I:\C_libs\poco-1.4.6p1-all\Data\MySQL\include;I:\C_libs\boost_1_49_0;I:\C_libs\lua-5.2.0\src;I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;I:\C_libs\thrift\lib\cpp\src;I:\C_libs\log4cplus-1.1.0\include;I:\C_libs\thrift\lib\cpp\src\thrift;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4505;4251;4127</DisableSpecificWarnings>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
@@ -248,8 +245,8 @@
       </PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>NOMINMAX;WIN32;LIBINTL_STATIC;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\poco-1.4.6p1-all\Foundation\include;I:\C_libs\poco-1.4.6p1-all\Data\include;I:\C_libs\poco-1.4.6p1-all\Data\MySQL\include;I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;I:\C_libs\thrift\lib\cpp\src;I:\C_libs\log4cplus-1.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SLB_EXTERNAL_LUA;NOMINMAX;WIN32;LIBINTL_STATIC;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\poco-1.4.6p1-all\Foundation\include;I:\C_libs\poco-1.4.6p1-all\Data\include;I:\C_libs\poco-1.4.6p1-all\Data\MySQL\include;I:\C_libs\boost_1_49_0;I:\C_libs\lua-5.2.0\src;I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;I:\C_libs\thrift\lib\cpp\src;I:\C_libs\log4cplus-1.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4505;4251;4127</DisableSpecificWarnings>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
@@ -265,11 +262,11 @@
       <WarningLevel>Level4</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NOMINMAX;WIN32;LIBINTL_STATIC;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\poco-1.4.6p1-all\Foundation\include;I:\C_libs\poco-1.4.6p1-all\Data\include;I:\C_libs\poco-1.4.6p1-all\Data\MySQL\include;I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;I:\C_libs\thrift\lib\cpp\src;I:\C_libs\log4cplus-1.1.0\include;I:\C_libs\thrift\lib\cpp\src\thrift;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SLB_EXTERNAL_LUA;NOMINMAX;WIN32;LIBINTL_STATIC;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\poco-1.4.6p1-all\Foundation\include;I:\C_libs\poco-1.4.6p1-all\Data\include;I:\C_libs\poco-1.4.6p1-all\Data\MySQL\include;I:\C_libs\boost_1_49_0;I:\C_libs\lua-5.2.0\src;I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;I:\C_libs\thrift\lib\cpp\src;I:\C_libs\log4cplus-1.1.0\include;I:\C_libs\thrift\lib\cpp\src\thrift;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4505;4251;4127</DisableSpecificWarnings>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
@@ -290,8 +287,8 @@
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NOMINMAX;WIN32;LIBINTL_STATIC;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\poco-1.4.6p1-all\Foundation\include;I:\C_libs\poco-1.4.6p1-all\Data\include;I:\C_libs\poco-1.4.6p1-all\Data\MySQL\include;I:\C_libs\boost_1_49_0;I:\C_libs\luabind-0.9.1-28;I:\C_libs\lua-5.2.0\src;I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;I:\C_libs\thrift\lib\cpp\src;I:\C_libs\log4cplus-1.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SLB_EXTERNAL_LUA;NOMINMAX;WIN32;LIBINTL_STATIC;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);I:\C_libs\poco-1.4.6p1-all\Foundation\include;I:\C_libs\poco-1.4.6p1-all\Data\include;I:\C_libs\poco-1.4.6p1-all\Data\MySQL\include;I:\C_libs\boost_1_49_0;I:\C_libs\lua-5.2.0\src;I:\C\Bit_them_all\src\luabind;I:\C_libs\libintl-0.14.4-src\src\libintl\0.14.4\libintl-0.14.4-src;I:\C_libs\thrift\lib\cpp\src;I:\C_libs\log4cplus-1.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4505;4251;4127</DisableSpecificWarnings>
       <AdditionalOptions>-Zm124 %(AdditionalOptions)</AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>

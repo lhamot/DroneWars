@@ -8,11 +8,19 @@
 #include "Model.h"
 #pragma warning(push)
 #pragma warning(disable: 4189 4100)
-#include <luabind/class.hpp>
-#include <luabind/operator.hpp>
-#include <luabind/stl_container_converter.hpp>
 #pragma warning(pop)
 #include <boost/format.hpp>
+
+#include "Polua/Class.h"
+#include "Polua/RegFunc.h"
+#include "Polua/Indexer/boost_array.h"
+#include "Polua/Indexer/std_vector.h"
+
+extern "C"
+{
+#include "lua.h"
+#include "lauxlib.h"
+}
 
 namespace BL = boost::locale;
 using namespace boost;
@@ -138,121 +146,103 @@ RessourceSet buildingPrice(Building::Enum building, size_t level)
 
 extern "C" int initDroneWars(lua_State* L)
 {
-	using namespace luabind;
+	using namespace Polua;
 
-	open(L);
+	//! @todo: ne plus avoir besoin de ca
+	Class<std::vector<Fleet const*> >(L, "FleetVector");
+	Class<Planet::BuildingTab>(L, "");
+	Class<Fleet::ShipTab>(L, "");
 
-	module(L)
-	[
-	  def("shipPrice", shipPrice),
-	  def("cannonPrice", cannonPrice),
-	  def("buildingPrice", buildingPrice),
-
-	  def("directionRandom", directionRandom),
-	  def("directionFromTo", directionFromTo),
-	  def("makeBuilding", makeBuilding),
-	  def("makeShip", makeShip),
-	  def("makeCannon", makeCannon),
-	  def("noPlanetAction", noPlanetAction),
-	  class_<Ressource>("Ressource")
-	  .enum_("Type")
-	  [
-	    value("Metal",   Ressource::Metal),
-	    value("Carbon",  Ressource::Carbon),
-	    value("Loicium", Ressource::Loicium)
-	  ],
-	  class_<RessourceSet>("RessourceSet")
-	  .def(constructor<Ressource::Value, Ressource::Value, Ressource::Value>())
-	  .def(constructor<>())
-	  .def(const_self == other<RessourceSet>())
-	  .def("contains", canPay)
-	  .def("at", getRessource),
-	  class_<Coord>("Coord")
-	  .def(constructor<>())
-	  .def(constructor<Coord::Value, Coord::Value, Coord::Value>())
-	  .def(const_self == other<Coord>())
-	  .def_readonly("X", &Coord::X)
-	  .def_readonly("Y", &Coord::Y)
-	  .def_readonly("Z", &Coord::Z),
-	  class_<Direction>("Direction")
-	  .def(constructor<>())
-	  .def(constructor<Direction::Value, Direction::Value, Direction::Value>())
-	  .def(const_self == other<Direction>())
-	  .def_readonly("X", &Direction::X)
-	  .def_readonly("Y", &Direction::Y)
-	  .def_readonly("Z", &Direction::Z),
-	  class_<Building>("Building")
-	  .enum_("Type")
-	  [
-	    value("CommandCenter",     Building::CommandCenter     + 1), //+1 pour correspondre au tableau de batiment (comment a 1 en lua)
-	    value("MetalMine",         Building::MetalMine         + 1),
-	    value("CarbonMine",        Building::CarbonMine        + 1),
-	    value("LoiciumFilter",     Building::LoiciumFilter     + 1),
-	    value("Factory",           Building::Factory           + 1),
-	    value("Laboratory",        Building::Laboratory        + 1),
-	    value("CarbonicCentral",   Building::CarbonicCentral   + 1),
-	    value("SolarCentral",      Building::SolarCentral      + 1),
-	    value("GeothermicCentral", Building::GeothermicCentral + 1)
-	  ],
-	  class_<Cannon>("Cannon")
-	  .enum_("Type")
-	  [
-	    value("Cannon1", Cannon::Cannon1 + 1),
-	    value("Cannon2", Cannon::Cannon2 + 1),
-	    value("Cannon3", Cannon::Cannon3 + 1),
-	    value("Cannon4", Cannon::Cannon4 + 1),
-	    value("Cannon5", Cannon::Cannon5 + 1),
-	    value("Cannon6", Cannon::Cannon6 + 1)
-	  ],
-	  class_<Planet>("Planet")
-	  .def("isFree", &planetIsFree)
-	  .def_readonly("coord", &Planet::coord)
-	  .def_readonly("playerId", &Planet::playerId)
-	  .def_readonly("buildingList", &Planet::buildingList)
-	  .def_readonly("cannonTab", &Planet::cannonTab)
-	  .def_readonly("ressourceSet", &Planet::ressourceSet),
-	  class_<Ship>("Ship")
-	  .enum_("Type")
-	  [
-	    value("Mosquito",     Ship::Mosquito   + 1),
-	    value("Hornet",       Ship::Hornet     + 1),
-	    value("Vulture",      Ship::Vulture    + 1),
-	    value("Dragon",       Ship::Dragon     + 1),
-	    value("Behemoth",     Ship::Behemoth   + 1),
-	    value("Azathoth",     Ship::Azathoth   + 1),
-	    value("Queen",        Ship::Queen      + 1),
-	    value("Cargo",        Ship::Cargo      + 1),
-	    value("LargeCargo",   Ship::LargeCargo + 1)
-	  ],
-	  class_<Fleet>("Fleet")
-	  .def_readonly("id", &Fleet::id)
-	  .def_readonly("playerId", &Fleet::playerId)
-	  .def_readonly("coord", &Fleet::coord)
-	  .def_readonly("origin", &Fleet::origin)
-	  .def_readonly("name", &Fleet::name)
-	  .def_readonly("shipList", &Fleet::shipList)
-	  .def_readonly("ressourceSet", &Fleet::ressourceSet),
-	  class_<PlanetAction>("PlanetAction")
-	  .enum_("Type")
-	  [
-	    value("Building", PlanetAction::Building),
-	    value("Ship",     PlanetAction::Ship),
-	    value("Cannon",   PlanetAction::Cannon)
-	  ],
-	  class_<FleetAction>("FleetAction")
-	  .enum_("Type")
-	  [
-	    value("Nothing",   FleetAction::Nothing),
-	    value("Move",      FleetAction::Move),
-	    value("Harvest",   FleetAction::Harvest),
-	    value("Colonize",  FleetAction::Colonize),
-	    value("Drop",      FleetAction::Drop)
-	  ]
-	  .def(constructor<FleetAction::Type, Direction>())
-	  .def(constructor<FleetAction::Type>())
-	  .def_readonly("action", &FleetAction::action)
-	  .def_readonly("target", &FleetAction::target)
-	];
+	regFunc(L, "shipPrice", shipPrice);
+	regFunc(L, "cannonPrice", cannonPrice);
+	regFunc(L, "buildingPrice", buildingPrice);
+	regFunc(L, "directionRandom", directionRandom);
+	regFunc(L, "directionFromTo", directionFromTo);
+	regFunc(L, "makeBuilding", makeBuilding);
+	regFunc(L, "makeShip", makeShip);
+	regFunc(L, "makeCannon", makeCannon);
+	regFunc(L, "noPlanetAction", noPlanetAction);
+	Class<Ressource>(L, "Ressource")
+	.enumValue("Metal", Ressource::Metal)
+	.enumValue("Carbon", Ressource::Carbon)
+	.enumValue("Loicium", Ressource::Loicium);
+	Class<RessourceSet>(L, "RessourceSet")
+	.ctor<Ressource::Value, Ressource::Value, Ressource::Value>()
+	.ctor()
+	.opEqual()
+	.methode("contains", &canPay)
+	.methode("at", &getRessource);
+	Class<Coord>(L, "Coord")
+	.ctor()
+	.ctor<Coord::Value, Coord::Value, Coord::Value>()
+	.opEqual()
+	.property("X", &Coord::X)
+	.property("Y", &Coord::Y)
+	.property("Z", &Coord::Z);
+	Class<Direction>(L, "Direction")
+	.ctor()
+	.ctor<Direction::Value, Direction::Value, Direction::Value>()
+	.opEqual()
+	.opEqual()
+	.property("X", &Direction::X)
+	.property("Y", &Direction::Y)
+	.property("Z", &Direction::Z);
+	Class<Building>(L, "Building")
+	.enumValue("CommandCenter",     Building::CommandCenter     + 1) //+1 pour correspondre au tableau de batiment (commence à 1 en lua)
+	.enumValue("MetalMine",         Building::MetalMine         + 1)
+	.enumValue("CarbonMine",        Building::CarbonMine        + 1)
+	.enumValue("LoiciumFilter",     Building::LoiciumFilter     + 1)
+	.enumValue("Factory",           Building::Factory           + 1)
+	.enumValue("Laboratory",        Building::Laboratory        + 1)
+	.enumValue("CarbonicCentral",   Building::CarbonicCentral   + 1)
+	.enumValue("SolarCentral",      Building::SolarCentral      + 1)
+	.enumValue("GeothermicCentral", Building::GeothermicCentral + 1);
+	Class<Cannon>(L, "Cannon")
+	.enumValue("Cannon1", Cannon::Cannon1 + 1)
+	.enumValue("Cannon2", Cannon::Cannon2 + 1)
+	.enumValue("Cannon3", Cannon::Cannon3 + 1)
+	.enumValue("Cannon4", Cannon::Cannon4 + 1)
+	.enumValue("Cannon5", Cannon::Cannon5 + 1)
+	.enumValue("Cannon6", Cannon::Cannon6 + 1);
+	Class<Planet>(L, "Planet")
+	.methode("isFree", &planetIsFree)
+	.read_only("coord", &Planet::coord)
+	.read_only("playerId", &Planet::playerId)
+	.read_only("buildingList", &Planet::buildingList)
+	.read_only("cannonTab", &Planet::cannonTab)
+	.read_only("ressourceSet", &Planet::ressourceSet);
+	Class<Ship>(L, "Ship")
+	.enumValue("Mosquito",     Ship::Mosquito   + 1)
+	.enumValue("Hornet",       Ship::Hornet     + 1)
+	.enumValue("Vulture",      Ship::Vulture    + 1)
+	.enumValue("Dragon",       Ship::Dragon     + 1)
+	.enumValue("Behemoth",     Ship::Behemoth   + 1)
+	.enumValue("Azathoth",     Ship::Azathoth   + 1)
+	.enumValue("Queen",        Ship::Queen      + 1)
+	.enumValue("Cargo",        Ship::Cargo      + 1)
+	.enumValue("LargeCargo",   Ship::LargeCargo + 1);
+	Class<Fleet>(L, "Fleet")
+	.property("id", &Fleet::id)
+	.property("playerId", &Fleet::playerId)
+	.property("coord", &Fleet::coord)
+	.property("origin", &Fleet::origin)
+	.property("name", &Fleet::name)
+	.property("shipList", &Fleet::shipList)
+	.property("ressourceSet", &Fleet::ressourceSet);
+	Class<PlanetAction>(L, "PlanetAction")
+	.enumValue("Building", PlanetAction::Building)
+	.enumValue("Ship",     PlanetAction::Ship)
+	.enumValue("Cannon",   PlanetAction::Cannon);
+	Class<FleetAction>(L, "FleetAction")
+	.enumValue("Nothing",   FleetAction::Nothing)
+	.enumValue("Move",      FleetAction::Move)
+	.enumValue("Harvest",   FleetAction::Harvest)
+	.enumValue("Colonize",  FleetAction::Colonize)
+	.enumValue("Drop",      FleetAction::Drop)
+	.ctor<FleetAction::Type, Direction>()
+	.ctor<FleetAction::Type>()
+	.read_only("action", &FleetAction::action)
+	.read_only("target", &FleetAction::target);
 
 	return 0;
 }

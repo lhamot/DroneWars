@@ -4,8 +4,7 @@
 #include "stdafx.h"
 #include "fighting.h"
 
-#include <luabind/object.hpp>
-#include <luabind/detail/call_function.hpp>
+#include "Polua/Core.h"
 
 
 //! C'est une experience
@@ -269,8 +268,8 @@ enum FightStatus : uint8_t
 
 //! Simule un combat entre deux combatant
 template<typename F1, typename F2>
-FightStatus fight(F1& fighter1, luabind::object roundFunc1,
-                  F2& fighter2, luabind::object roundFunc2
+FightStatus fight(F1& fighter1, Polua::object roundFunc1,
+                  F2& fighter2, Polua::object roundFunc2
                  )
 {
 	//! Construction des deux listes de vaisseaux (fillShipList)
@@ -379,8 +378,8 @@ struct FleetPair
 template<typename F1, typename F2>
 void handleFighterPair(
   FleetPair const& fleetPair,
-  Report<F1>& report1, F1& fighter1, luabind::object script1,
-  Report<F2>& report2, F2& fighter2, luabind::object script2
+  Report<F1>& report1, F1& fighter1, Polua::object script1,
+  Report<F2>& report2, F2& fighter2, Polua::object script2
 )
 {
 	report1.enemySet.insert(fleetPair.index2);

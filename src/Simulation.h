@@ -5,15 +5,20 @@
 #define __DRONEWARS_SIMULATION__
 
 #include <boost/thread/locks.hpp>
-#include <luabind/luabind.hpp>
 #include "Model.h"
 #include "DataBase.h"
 #include <boost/chrono.hpp>
 #include "PlayerCodes.h"
 
+
+namespace Polua
+{
+class State;
+};
+
 namespace LuaTools
 {
-class LuaEngine;
+typedef Polua::State LuaEngine;
 }
 
 
