@@ -178,7 +178,7 @@ public:
 	size_t addFightReport(FightReport const& report);
 
 	//! Ajoute une liste de Rapport de combat
-	void addFightReports(std::vector<FightReport> const& reports);
+	size_t addFightReports(std::vector<FightReport> const& reports);
 
 	//! @brief Extrait un rapport de combat depuit la base
 	//! @throw Exception si reportID est invalid

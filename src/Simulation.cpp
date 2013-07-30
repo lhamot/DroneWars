@@ -551,6 +551,10 @@ void execFights(Universe& univ_,
 		fleetMultimap.insert(make_pair(fleet.coord, FighterPtr(&fleet)));
 
 	std::vector<Fleet*> fleetVect;
+	std::vector<Event> tempEvents;
+	std::vector<FightReport> tempReports;
+	tempEvents.reserve(1000000);
+	tempReports.reserve(1000000);
 	//! Pour chaque coordonées, on accede au range des flotes
 	auto fleetMultimapEnd = fleetMultimap.end();
 	for(FleetCoordMultimap::iterator iter1 = fleetMultimap.begin(), iter2 = nextNot(fleetMultimap, iter1);
@@ -608,7 +612,7 @@ void execFights(Universe& univ_,
 			continue;
 
 		//! - On ajoute le rapport dans la base de donné
-		size_t const reportID = database.addFightReport(fightReport);
+		tempReports.push_back(fightReport);
 
 		//! - On ajoute les evenement/message dans les flottes/joueur
 		std::set<Player::ID> informedPlayer;
@@ -621,19 +625,18 @@ void execFights(Universe& univ_,
 			if(report.isDead)
 			{
 				deadFleets.push_back(fleet.id);
-				Event event(fleet.playerId, time(0), Event::FleetLose);
-				event.setValue(intptr_t(reportID));
 				if(informedPlayer.count(fleet.playerId) == 0)
 				{
-					events.push_back(event);
+					tempEvents.push_back(
+					  Event(fleet.playerId, time(0), Event::FleetLose));
 					informedPlayer.insert(fleet.playerId);
 				}
 			}
 			else if(report.hasFight)
 			{
-				Event event(fleet.playerId, time(0), Event::FleetWin);
-				event.setValue(intptr_t(reportID)).setFleetID(fleet.id);
-				events.push_back(event);
+				tempEvents.push_back(
+				  Event(fleet.playerId, time(0), Event::FleetWin)
+				  .setFleetID(fleet.id));
 			}
 		}
 		if(planetPtr)
@@ -645,9 +648,8 @@ void execFights(Universe& univ_,
 				lostPlanets.push_back(planet.coord);
 				if(planet.playerId != Player::NoId)
 				{
-					Event event(planet.playerId, time(0), Event::PlanetLose);
-					event.setValue(intptr_t(reportID));
-					events.push_back(event);
+					tempEvents.push_back(
+					  Event(planet.playerId, time(0), Event::PlanetLose));
 					informedPlayer.insert(planet.playerId);
 				}
 			}
@@ -656,11 +658,9 @@ void execFights(Universe& univ_,
 				if(planet.playerId == Player::NoId)
 					BOOST_THROW_EXCEPTION(
 					  std::logic_error("planet.playerId == Player::NoId"));
-				Event event(planet.playerId, time(0), Event::PlanetWin);
-				event
-				.setValue(intptr_t(reportID))
-				.setPlanetCoord(planet.coord);
-				events.push_back(event);
+				tempEvents.push_back(
+				  Event(planet.playerId, time(0), Event::PlanetWin)
+				  .setPlanetCoord(planet.coord));
 			}
 		}
 
@@ -675,6 +675,11 @@ void execFights(Universe& univ_,
 			  report.experience;
 		}
 	}
+
+	size_t const firstReportID = 1 + database.addFightReports(tempReports) - tempReports.size();
+	for(size_t i = 0; i < tempEvents.size(); ++i)
+		tempEvents[i].setValue(firstReportID + i);
+	events.insert(events.end(), tempEvents.begin(), tempEvents.end());
 
 	//! On envoie dans la base les gain d'eperience
 	database.updateXP(experienceMap);

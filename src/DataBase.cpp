@@ -473,6 +473,18 @@ try
 {
 	Transaction trans(*session_);
 
+	for(size_t type = 0; type < Event::Count; ++type)
+	{
+		int count = 0;
+		(*session_) <<
+		            "SELECT count(id) FROM Event WHERE type=?",
+		            into(count), use(type), now;
+		count = std::max(0, count - 50000);
+		(*session_) <<
+		            "DELETE FROM Event WHERE type=? ORDER BY id LIMIT ?",
+		            use(type), use(count), now;
+	}
+
 	size_t max24 = 0;
 	(*session_) <<
 	            "SELECT max(id) FROM Event WHERE time < ?",
@@ -496,20 +508,20 @@ try
 	//! - Important:
 	//!   PlanetWin, PlanetColonized, Upgraded de plus de 24 heures
 	(*session_) <<
-	            "DELETE FROM Event WHERE id < ? AND type IN (?, ?, ?)",
+	            "DELETE FROM Event WHERE id < ? AND type IN (?, ?)",
 	            use(max24),
 	            use((int)Event::PlanetWin),
 	            use((int)Event::PlanetColonized),
-	            use((int)Event::Upgraded),
 	            now;
 	//! - Pas important:
 	//!   CannonMade, ShipMade, FleetDrop de plus de 1 heures
 	(*session_) <<
-	            "DELETE FROM Event WHERE id < ? AND type IN (?, ?, ?)",
+	            "DELETE FROM Event WHERE id < ? AND type IN (?, ?, ?, ?)",
 	            use(max1),
 	            use((int)Event::CannonMade),
 	            use((int)Event::ShipMade),
 	            use((int)Event::FleetDrop),
+	            use((int)Event::Upgraded),
 	            now;
 	//! Supression des évenements de flotte
 	//! - Important:
@@ -684,16 +696,16 @@ try
 DB_CATCH
 
 
-void DataBase::addFightReports(std::vector<FightReport> const& reports)
+size_t DataBase::addFightReports(std::vector<FightReport> const& reports)
 try
 {
 	using namespace boost::archive;
 	Transaction trans(*session_);
 	std::string data;
-	time_t now = 0;
+	time_t date = time(0);
 	Statement stmt =
 	  ((*session_) << "INSERT INTO FightReport (time, data) VALUES(?, ?)",
-	   use(now), use(data));
+	   use(date), use(data));
 
 	for(FightReport const & report : reports)
 	{
@@ -701,10 +713,13 @@ try
 		boost::archive::text_oarchive oa(ss);
 		oa& report;
 		data = ss.str();
-		now = time(0);
+		date = time(0);
 		stmt.execute();
 	}
+	size_t id = 0;
+	(*session_) << "SELECT LAST_INSERT_ID() ", into(id), now;
 	trans.commit();
+	return id;
 }
 DB_CATCH
 
