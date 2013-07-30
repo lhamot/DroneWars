@@ -401,21 +401,14 @@ struct Fleet
 {
 	//! Serialize l'objet
 	template<class Archive>
-	void serialize(Archive& ar, const unsigned int version)
+	void serialize(Archive& ar, const unsigned int) //version
 	{
 		staticIf<Archive::is_saving::value>([&]()
 		{
 			if(playerId >= 100000)
 				BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 		});
-		if(version < 1)
-		{
-			size_t val;
-			ar& val;
-			id = val;
-		}
-		else
-			ar& id;
+		ar& id;
 		ar& playerId;
 		ar& coord;
 		ar& origin;
