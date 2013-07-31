@@ -3,7 +3,7 @@
 
 #undef printf //A cause de libintl qui a une macro printf, et thrift qui definie une methode printf
 #pragma warning(push)
-#pragma warning(disable: 4512 4100 4099 4244 4127 4267 4706)
+#pragma warning(disable: 4512 4100 4099 4244 4127 4267 4706 4616 4396)
 #include "gen-cpp/EngineServer.h"
 #include "gen-cpp/thrift_types.h"
 #pragma warning(pop)
