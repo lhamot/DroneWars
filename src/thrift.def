@@ -84,7 +84,8 @@ struct Player
 	110: i32 experience = 0
 	120: i32 skillpoints = 0
 	130: Player_SkillTab skilltab
-	140: string allianceName
+	140: Player_SkillTab skillCost
+	150: string allianceName
 }
 
 

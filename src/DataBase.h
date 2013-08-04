@@ -123,7 +123,7 @@ public:
 	//! @throw Exception si pid invalid
 	//! @throw std::out_of_range si skillID invalid
 	//! @return false si pas asser de skillpoint, sinon true
-	bool buySkill(Player::ID pid, int16_t skillID, size_t cost);
+	bool buySkill(Player::ID pid, int16_t skillID);
 
 	//***************************  Event  *************************************
 

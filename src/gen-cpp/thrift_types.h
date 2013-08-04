@@ -502,7 +502,7 @@ void swap(Alliance& a, Alliance& b);
 
 typedef struct _Player__isset
 {
-	_Player__isset() : id(false), login(false), password(false), fleetsCode(false), planetsCode(false), tutoDisplayed(false), mainPlanet(false), score(true), allianceID(false), experience(true), skillpoints(true), skilltab(false), allianceName(false) {}
+	_Player__isset() : id(false), login(false), password(false), fleetsCode(false), planetsCode(false), tutoDisplayed(false), mainPlanet(false), score(true), allianceID(false), experience(true), skillpoints(true), skilltab(false), skillCost(false), allianceName(false) {}
 	bool id;
 	bool login;
 	bool password;
@@ -515,6 +515,7 @@ typedef struct _Player__isset
 	bool experience;
 	bool skillpoints;
 	bool skilltab;
+	bool skillCost;
 	bool allianceName;
 } _Player__isset;
 
@@ -522,8 +523,8 @@ class Player
 {
 public:
 
-	static const char* ascii_fingerprint; // = "82190C42EB180D138783E5C3417D63E4";
-	static const uint8_t binary_fingerprint[16]; // = {0x82,0x19,0x0C,0x42,0xEB,0x18,0x0D,0x13,0x87,0x83,0xE5,0xC3,0x41,0x7D,0x63,0xE4};
+	static const char* ascii_fingerprint; // = "5FB4B2F14DF8005A0E9E1D4A285B6EC2";
+	static const uint8_t binary_fingerprint[16]; // = {0x5F,0xB4,0xB2,0xF1,0x4D,0xF8,0x00,0x5A,0x0E,0x9E,0x1D,0x4A,0x28,0x5B,0x6E,0xC2};
 
 	Player() : id(0), login(), password(), score(0LL), allianceID(0), experience(0), skillpoints(0), allianceName()
 	{
@@ -543,6 +544,7 @@ public:
 	int32_t experience;
 	int32_t skillpoints;
 	Player_SkillTab skilltab;
+	Player_SkillTab skillCost;
 	std::string allianceName;
 
 	_Player__isset __isset;
@@ -607,6 +609,11 @@ public:
 		skilltab = val;
 	}
 
+	void __set_skillCost(const Player_SkillTab& val)
+	{
+		skillCost = val;
+	}
+
 	void __set_allianceName(const std::string& val)
 	{
 		allianceName = val;
@@ -637,6 +644,8 @@ public:
 		if(!(skillpoints == rhs.skillpoints))
 			return false;
 		if(!(skilltab == rhs.skilltab))
+			return false;
+		if(!(skillCost == rhs.skillCost))
 			return false;
 		if(!(allianceName == rhs.allianceName))
 			return false;
@@ -1763,8 +1772,8 @@ class Universe
 {
 public:
 
-	static const char* ascii_fingerprint; // = "32AFF39EAFD68BBDA500606604C88273";
-	static const uint8_t binary_fingerprint[16]; // = {0x32,0xAF,0xF3,0x9E,0xAF,0xD6,0x8B,0xBD,0xA5,0x00,0x60,0x66,0x04,0xC8,0x82,0x73};
+	static const char* ascii_fingerprint; // = "B261AEB4C2A43064B4BAB17500A078A7";
+	static const uint8_t binary_fingerprint[16]; // = {0xB2,0x61,0xAE,0xB4,0xC2,0xA4,0x30,0x64,0xB4,0xBA,0xB1,0x75,0x00,0xA0,0x78,0xA7};
 
 	Universe() : nextPlayerID(0), nextFleetID(0), time(0)
 	{
@@ -1859,8 +1868,8 @@ class OptionalPlayer
 {
 public:
 
-	static const char* ascii_fingerprint; // = "4FBD9C01249599226144400C9EB13948";
-	static const uint8_t binary_fingerprint[16]; // = {0x4F,0xBD,0x9C,0x01,0x24,0x95,0x99,0x22,0x61,0x44,0x40,0x0C,0x9E,0xB1,0x39,0x48};
+	static const char* ascii_fingerprint; // = "AA80C8D28829018B2875632E28506DA4";
+	static const uint8_t binary_fingerprint[16]; // = {0xAA,0x80,0xC8,0xD2,0x88,0x29,0x01,0x8B,0x28,0x75,0x63,0x2E,0x28,0x50,0x6D,0xA4};
 
 	OptionalPlayer()
 	{
@@ -2193,8 +2202,8 @@ class FriendshipRequests
 {
 public:
 
-	static const char* ascii_fingerprint; // = "20B92C9925479CA37AB12DD8CFEE02C6";
-	static const uint8_t binary_fingerprint[16]; // = {0x20,0xB9,0x2C,0x99,0x25,0x47,0x9C,0xA3,0x7A,0xB1,0x2D,0xD8,0xCF,0xEE,0x02,0xC6};
+	static const char* ascii_fingerprint; // = "D2E57CE2EBC0AC13BC2FAE1C3241E0E8";
+	static const uint8_t binary_fingerprint[16]; // = {0xD2,0xE5,0x7C,0xE2,0xEB,0xC0,0xAC,0x13,0xBC,0x2F,0xAE,0x1C,0x32,0x41,0xE0,0xE8};
 
 	FriendshipRequests()
 	{

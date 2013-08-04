@@ -21,7 +21,7 @@
 			<tr>
 				<td onclick="document.location.href='?skill_id={{forloop.counter0}}'">{{skill.name}}</td>
 				<td>{{player.skilltab|at:forloop.counter0}}</td>
-				<td><a class="btn btn-success" href="?buySkill={{forloop.counter0}}">{% trans "Cost : " %}1</a></td>
+				<td><a class="btn btn-success" href="?buySkill={{forloop.counter0}}">{% trans "Cost : " %}{{player.skillCost|at:forloop.counter0}}</a></td>
 			</tr>
 			{% endfor %}
 			</table>

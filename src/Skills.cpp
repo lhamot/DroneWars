@@ -8,7 +8,7 @@
 Skill const Skill::List[Count] =
 {
 	{"Conquest"},
-	{"Strategie"},
+	{"Strategy"},
 	{"Cohesion"},
 	{"InformationService"},
 	{"ServerFarm"},

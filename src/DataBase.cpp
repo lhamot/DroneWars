@@ -1013,11 +1013,12 @@ try
 DB_CATCH
 
 
-bool DataBase::buySkill(Player::ID pid, int16_t skillID, size_t cost)
+bool DataBase::buySkill(Player::ID pid, int16_t skillID)
 try
 {
 	Transaction trans(*session_);
 	Player pla = getPlayer(pid);
+	size_t const cost = Skill::skillCost(pla.skilltab.at(skillID)) * 100;
 	if(pla.skillpoints < cost)
 		return false;
 

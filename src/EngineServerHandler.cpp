@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <boost/format.hpp>
+#include <boost/range/irange.hpp>
 
 #include "Skills.h"
 
@@ -213,6 +214,9 @@ ndw::Player playerToThrift(Player const& player)
 	outPlayer.experience = player.experience;
 	outPlayer.skillpoints = player.skillpoints;
 	copy(player.skilltab, back_inserter(outPlayer.skilltab));
+	outPlayer.skillCost.reserve(Skill::Count);
+	transform(player.skilltab, back_inserter(outPlayer.skillCost),
+	[](size_t c) {return numeric_cast<int>(Skill::skillCost(c));});
 	outPlayer.allianceName = player.allianceName;
 	return outPlayer;
 }
@@ -684,7 +688,7 @@ bool EngineServerHandler::buySkill(const ndw::Player_ID pid,
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " skillID : " << skillID);
 	if(skillID >= Skill::Count)
 		return false;
-	bool const done = database_.buySkill(pid, skillID, 100);
+	bool const done = database_.buySkill(pid, skillID);
 	LOG4CPLUS_TRACE(logger, "exit " << done);
 	return done;
 }
@@ -729,11 +733,10 @@ void EngineServerHandler::getShipsInfo(vector<ndw::Ship>& _return)
 {
 	LOG4CPLUS_TRACE(logger, "enter");
 	_return.reserve(Ship::Count);
-	int32_t index = 0;
 	for(Ship const & s : Ship::List)
 	{
 		ndw::Ship newSh;
-		newSh.index = index++;
+		newSh.index = NUMCAST(_return.size());
 		newSh.price = ressourceToThrift(s.price);
 		newSh.life = NUMCAST(s.life);
 		newSh.power = NUMCAST(s.power);
