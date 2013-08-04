@@ -11,6 +11,7 @@
 #include "fighting.h"
 #include "Logger.h"
 #include "DataBase.h"
+#include "UnivManip.h"
 #include "Polua/Ref.h"
 
 #include <boost/range/numeric.hpp>

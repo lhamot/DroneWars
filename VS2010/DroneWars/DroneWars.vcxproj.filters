@@ -27,9 +27,6 @@
     <ClCompile Include="..\..\src\main.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Model.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\fighting.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -73,6 +70,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\stdafx.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\UnivManip.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

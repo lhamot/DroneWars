@@ -6,6 +6,7 @@
 
 #include "Tools.h"
 #include "Simulation.h"
+#include "UnivManip.h"
 
 using namespace std;
 using namespace boost;

@@ -16,6 +16,8 @@
 #include "Polua/Indexer/boost_array.h"
 #include "Polua/Indexer/std_vector.h"
 
+#include "UnivManip.h"
+
 extern "C"
 {
 #include "lua.h"

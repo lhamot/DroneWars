@@ -9,6 +9,7 @@
 #include <boost/range/irange.hpp>
 
 #include "Skills.h"
+#include "UnivManip.h"
 
 using namespace boost;
 using namespace std;
