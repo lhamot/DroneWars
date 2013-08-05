@@ -38,4 +38,28 @@ typedef std::map<Player::ID, Player> PlayerMap;
 //! Calcule l'experience que chaque armés dans un FightReport a gagnées
 void calcExperience(PlayerMap const& planerMap, FightReport& report);
 
+size_t getMaxPlanetCount(Player const& player);
+
+size_t getMaxFleetCount(Player const& player);
+
+size_t getMaxFleetSize(Player const& player);
+
+namespace InternalRules
+{
+
+bool canColonize(Universe const& univ, Player const& player, Fleet const& fleet, Planet const& planet);
+
+bool canBuild(Player const& player,
+              Planet const& planet,
+              Ship::Enum type,
+              size_t const playerFleetCount);
+
+bool canGather(Player const& player,
+               Fleet const& fleet1,
+               Fleet const& fleet2);
+}
+
+
+
+
 #endif //__BTA_RULES__

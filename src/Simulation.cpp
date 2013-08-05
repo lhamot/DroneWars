@@ -205,8 +205,10 @@ catch(Polua::Exception const& ex)
 
 void applyPlanetAction(
   Universe& univ_,
+  std::map<Player::ID, Player> const& playerMap,
   Planet& planet,
-  PlanetAction const& action)
+  PlanetAction const& action,
+  size_t const playerFleetCount)
 {
 	switch(action.action)
 	{
@@ -225,8 +227,9 @@ void applyPlanetAction(
 	}
 	case PlanetAction::Ship:
 	{
-		if(canBuild(planet, action.ship, action.number))
-			addTask(planet, univ_.roundCount, action.ship, action.number);
+		Player const& player = mapFind(playerMap, planet.playerId)->second;
+		if(canBuild(player, planet, action.ship, playerFleetCount))
+			addTask(planet, univ_.roundCount, action.ship, 1);
 	}
 	break;
 	case PlanetAction::Cannon:
@@ -272,6 +275,7 @@ bool checkLuaMethode(PlayerCodes::ObjectMap& codeMap,
 
 
 void gatherIfWant(
+  Player const& player,
   LuaEngine& luaEngine,
   PlayerCodes::ObjectMap& codeMap,
   Fleet& fleet,
@@ -287,7 +291,9 @@ void gatherIfWant(
 		while(fleetIter != localFleetsKV.second)
 		{
 			Fleet& otherFleet = fleetIter->second;
-			if((otherFleet.id > fleet.id) && (otherFleet.playerId == fleet.playerId))
+			if((otherFleet.id > fleet.id) &&
+			   (otherFleet.playerId == fleet.playerId) &&
+			   canGather(player, fleet, otherFleet))
 			{
 				lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 				bool const wantGather1 = do_gather->call<bool>(fleet, otherFleet);
@@ -347,6 +353,7 @@ catch(Polua::Exception const& ex)
 }
 
 void applyFleetScript(Universe& univ_,
+                      std::map<Player::ID, Player> const& playerMap,
                       Fleet& fleet,
                       FleetAction const& action,
                       std::vector<Event>& events)
@@ -375,9 +382,12 @@ void applyFleetScript(Universe& univ_,
 			addTaskHarvest(fleet, univ_.roundCount, *planet);
 		break;
 	case FleetAction::Colonize:
-		if(planet && canColonize(fleet, *planet))
+	{
+		Player const& player = mapFind(playerMap, fleet.playerId)->second;
+		if(planet && canColonize(univ_, player, fleet, *planet))
 			addTaskColonize(fleet, univ_.roundCount, *planet);
 		break;
+	}
 	case FleetAction::Drop:
 		if(planet && canDrop(fleet, *planet))
 		{
@@ -420,18 +430,39 @@ void Simulation::updatePlayersCode(LuaTools::LuaEngine& luaEngine,
 }
 
 
+std::map<Player::ID, Player> getPlayerMap(DataBase const& database)
+{
+	std::vector<Player> players = database.getPlayers();
+	std::map<Player::ID, Player> const playerMap = [&]()
+	{
+		std::map<Player::ID, Player> playerMap;
+		for(Player const & player : players)
+			playerMap.insert(make_pair(player.id, player));
+		return playerMap;
+	}();
+	return playerMap;
+}
+
 //! Simule le round pour toute les planètes
 void execPlanets(Universe& univ_,
+                 DataBase const& database,
                  LuaTools::LuaEngine& luaEngine,
                  PlayerCodeMap& codesMap,
                  std::vector<Event>& events)
 {
 	LOG4CPLUS_TRACE(logger, "enter");
 
+	std::map<Player::ID, Player> const playerMap = getPlayerMap(database);
+
+	std::map<Player::ID, size_t> playerFleetCounts;
+
 	UpgradeLock lockPlanet(univ_.mutex);
 	FleetCoordMap fleetMap;
 	for(Fleet const & fleet : univ_.fleetMap | boost::adaptors::map_values)
+	{
 		fleetMap.insert(make_pair(fleet.coord, fleet));
+		playerFleetCounts[fleet.playerId] += 1;
+	}
 
 	//Les planètes
 	{
@@ -496,14 +527,18 @@ void execPlanets(Universe& univ_,
 		UpToUniqueLock writeLock(lockPlanet);
 		for(ExtPlanetAction const & extAction : planetActionList)
 		{
+			Planet& planet = univ_.planetMap[extAction.planetCoord];
 			if(extAction.optAction)
 				applyPlanetAction(univ_,
-				                  univ_.planetMap[extAction.planetCoord],
-				                  *extAction.optAction);
+				                  playerMap,
+				                  planet,
+				                  *extAction.optAction,
+				                  playerFleetCounts[planet.playerId]);
 		}
 	}
 	LOG4CPLUS_TRACE(logger, "exit");
 }
+
 
 //! Les combats
 void execFights(Universe& univ_,
@@ -519,14 +554,7 @@ void execFights(Universe& univ_,
 
 	std::map<Player::ID, uint32_t> experienceMap;
 
-	std::vector<Player> players = database.getPlayers();
-	std::map<Player::ID, Player> const playerMap = [&]()
-	{
-		std::map<Player::ID, Player> playerMap;
-		for(Player const & player : players)
-			playerMap.insert(make_pair(player.id, player));
-		return playerMap;
-	}();
+	std::map<Player::ID, Player> const playerMap = getPlayerMap(database);
 
 	vector<Fleet::ID> deadFleets;
 	deadFleets.reserve(univ_.fleetMap.size());
@@ -728,6 +756,7 @@ void execFights(Universe& univ_,
 //! Excecutes les code des flottes
 void execFleets(
   Universe& univ_,
+  DataBase const& database,
   LuaTools::LuaEngine& luaEngine,
   PlayerCodeMap& codesMap,
   std::vector<Event>& events)
@@ -735,6 +764,8 @@ void execFleets(
 	LOG4CPLUS_TRACE(logger, "enter");
 
 	UpgradeLock lockFleets(univ_.mutex);
+
+	std::map<Player::ID, Player> const playerMap = getPlayerMap(database);
 
 	FleetCoordMap fleetMap;
 	for(Fleet & fleet : univ_.fleetMap | boost::adaptors::map_values)
@@ -747,7 +778,8 @@ void execFleets(
 	for(auto iter = fleetMap.begin(); iter != fleetMap.end(); ++iter)
 	{
 		UpToUniqueLock writeLock(lockFleets);
-		gatherIfWant(luaEngine,
+		gatherIfWant(mapFind(playerMap, iter->second.playerId)->second,
+		             luaEngine,
 		             codesMap[iter->second.playerId].fleetsCode,
 		             iter->second,
 		             fleetMap,
@@ -777,7 +809,7 @@ void execFleets(
 	{
 		if(fleetAndAction.action)
 			applyFleetScript(
-			  univ_, fleetAndAction.fleet, *fleetAndAction.action, events);
+			  univ_, playerMap, fleetAndAction.fleet, *fleetAndAction.action, events);
 	}
 
 	std::map<Fleet::ID, Fleet> newFleetMap;
@@ -813,13 +845,13 @@ try
 
 	//! Excecution du code des planetes(modifie l'univers)
 	//SharedLock writeLock(univ_.playersMutex);
-	execPlanets(univ_, luaEngine, codesMap, events);
+	execPlanets(univ_, database_, luaEngine, codesMap, events);
 
 	//! Les combats
 	execFights(univ_, database_, codesMap, events);
 
 	//! Les flottes
-	execFleets(univ_, luaEngine, codesMap, events);
+	execFleets(univ_, database_, luaEngine, codesMap, events);
 
 	//! Supprime evenement trop vieux dans les Player et les Rapport plus utile
 	database_.removeOldEvents();

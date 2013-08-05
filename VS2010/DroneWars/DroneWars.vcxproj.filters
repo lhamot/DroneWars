@@ -173,6 +173,9 @@
     <ClInclude Include="..\..\src\Polua\Detail.h">
       <Filter>Fichiers d%27en-tête\Polua</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\UnivManip.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\src\thrift.def">

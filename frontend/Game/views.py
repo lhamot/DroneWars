@@ -517,6 +517,7 @@ def ScoreView(request):
     key = {
         "login": lambda player: player.login,
         "score": lambda player: player.score,
+        "exp": lambda player: player.experience,
     }
      
     players = sorted(players, key=key[sort_order], reverse=asc)

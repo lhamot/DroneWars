@@ -16,7 +16,10 @@ Coord createMainPlanet(Universe& univ, Player::ID pid);
 void saveToStream(Universe const& univ, std::ostream& out);
 void loadFromStream_v2(std::istream& in, Universe& univ);
 
-bool canBuild(Planet const& planet, Ship::Enum type, size_t number);
+bool canBuild(Player const& player,
+              Planet const& planet,
+              Ship::Enum type,
+              size_t const playerFleetCount);
 
 bool canBuild(Planet const& planet, Building::Enum type);
 
@@ -63,7 +66,10 @@ bool canHarvest(Fleet const& fleet, Planet const& planet);
 
 void addTaskHarvest(Fleet& fleet, uint32_t roundCount, Planet const& planet);
 
-bool canColonize(Fleet const& fleet, Planet const& planet);
+bool canColonize(Universe const& univ,
+                 Player const& player,
+                 Fleet const& fleet,
+                 Planet const& planet);
 
 void addTaskColonize(Fleet& fleet, uint32_t roundCount, Planet const& planet);
 
@@ -72,6 +78,10 @@ bool canDrop(Fleet const& fleet, Planet const& planet);
 void drop(Fleet& fleet, Planet& planet);
 
 bool canPay(RessourceSet const& stock, RessourceSet const& price);
+
+bool canGather(Player const& player,
+               Fleet const& fleet1,
+               Fleet const& fleet2);
 
 
 #endif __NDW_UNIV_MANIP__

@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "Rules.h"
 #include <boost/format.hpp>
-#include <boost/math/special_functions/fpclassify.hpp>
+#include <boost/range/numeric.hpp>
 
 #include "DataBase.h"
 
@@ -310,4 +310,66 @@ void calcExperience(PlayerMap const& playerMap,
 			                             playerMap, planetReport, report.fleetList[enemiIndex]);
 		}
 	}
+}
+
+
+size_t getMaxPlanetCount(Player const& player)
+{
+	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::Conquest] + 2.));
+}
+
+size_t getMaxFleetCount(Player const& player)
+{
+	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::Strategy] + 2.));
+}
+
+size_t getMaxFleetSize(Player const& player)
+{
+	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::Cohesion] + 2.));
+}
+
+
+namespace InternalRules
+{
+//! Test si la flotte peut colonizer la planète
+bool canColonize(Universe const& univ,
+                 Player const& player,
+                 Fleet const& fleet,
+                 Planet const& planet)
+{
+	size_t const maxPlanetCount = getMaxPlanetCount(player);
+	size_t const planetCount =
+	  count_if(univ.planetMap | adaptors::map_values,
+	           bind(&Planet::playerId, _1) == player.id);
+	return
+	  planetCount < maxPlanetCount &&
+	  planet.playerId == Player::NoId && fleet.shipList[Ship::Queen];
+}
+
+
+//! Test si une planète peut fabriquer un vaisseau dans la quantité demandée
+bool canBuild(Player const& player,
+              Planet const&, //planet,
+              Ship::Enum, //type
+              size_t const playerFleetCount
+             )
+{
+	size_t const maxFleetCount = getMaxFleetCount(player);
+	//size_t const fleetCount =
+	//	count_if(univ.fleetMap | adaptors::map_values,
+	//			 bind(&Fleet::playerId, _1) == player.id);
+	return playerFleetCount < maxFleetCount;
+}
+
+
+bool canGather(Player const& player,
+               Fleet const& fleet1,
+               Fleet const& fleet2)
+{
+	size_t const maxShipCount = getMaxFleetSize(player);
+	size_t const fleetSize =
+	  boost::accumulate(fleet1.shipList, 0) +
+	  boost::accumulate(fleet2.shipList, 0);
+	return fleetSize < maxShipCount;
+}
 }

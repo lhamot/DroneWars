@@ -5,6 +5,7 @@
 #include "Model.h"
 
 #include "Tools.h"
+#include "Rules.h"
 #include "NameGen.h"
 #include <boost/range/numeric.hpp>
 #include <boost/range/algorithm/transform.hpp>
@@ -348,7 +349,10 @@ void pay(Fleet& fleet, RessourceSet const& price)
 
 
 //! Test si une planète peut fabriquer un vaisseau dans la quantité demandée
-bool canBuild(Planet const& planet, Ship::Enum type, size_t number)
+bool canBuild(Player const& player,
+              Planet const& planet,
+              Ship::Enum type,
+              size_t const playerFleetCount)
 {
 	if(type >= Ship::Count)
 		return false;
@@ -358,8 +362,10 @@ bool canBuild(Planet const& planet, Ship::Enum type, size_t number)
 		return false;
 
 	RessourceSet price = Ship::List[type].price;
-	boost::geometry::multiply_value(price.tab, Ressource::Value(number));
-	return canPay(planet, price);
+	boost::geometry::multiply_value(price.tab, 1);
+	if(canPay(planet, price) == false)
+		return false;
+	return InternalRules::canBuild(player, planet, type, playerFleetCount);
 }
 
 
@@ -768,11 +774,16 @@ void addTaskHarvest(Fleet& fleet, uint32_t roundCount, Planet const& planet)
 
 
 //! Test si la flotte peut colonizer la planète
-bool canColonize(Fleet const& fleet, Planet const& planet)
+bool canColonize(Universe const& univ,
+                 Player const& player,
+                 Fleet const& fleet,
+                 Planet const& planet)
 {
 	if(false == fleet.taskQueue.empty())
 		return false;
-	return planet.playerId == Player::NoId && fleet.shipList[Ship::Queen];
+	if(planet.playerId != Player::NoId || fleet.shipList[Ship::Queen] == 0)
+		return false;
+	return InternalRules::canColonize(univ, player, fleet, planet);
 }
 
 
@@ -802,3 +813,10 @@ void drop(Fleet& fleet, Planet& planet)
 	geometry::assign_value(fleet.ressourceSet.tab, 0);
 }
 
+
+bool canGather(Player const& player,
+               Fleet const& fleet1,
+               Fleet const& fleet2)
+{
+	return InternalRules::canGather(player, fleet1, fleet2);
+}

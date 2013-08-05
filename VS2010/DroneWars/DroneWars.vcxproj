@@ -128,6 +128,7 @@
     <ClInclude Include="..\..\src\Skills.h" />
     <ClInclude Include="..\..\src\stdafx.h" />
     <ClInclude Include="..\..\src\Tools.h" />
+    <ClInclude Include="..\..\src\UnivManip.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\DroneWarsLog.properties" />
