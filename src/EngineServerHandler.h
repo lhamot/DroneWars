@@ -141,9 +141,6 @@ public:
 	//! Recupère les info sur tout les type de vaisseaux (Ship)
 	void getShipsInfo(std::vector<ndw::Ship>& _return);
 
-	//! Recupère les info sur tout les Skill
-	void getSkillsInfo(std::vector<ndw::Skill>& _return);
-
 	//***************************  Messages  **********************************
 
 	//! @brief Ajoute un Message dans la base de donnée

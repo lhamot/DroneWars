@@ -5,8 +5,8 @@
 #define __DRONEWARS_PLAYER__
 
 #include "stdafx.h"
-#include "Skills.h"
 
+static size_t const SkillCount = 11;
 
 //! Coordonée entière tridimentionelle
 struct Coord
@@ -176,7 +176,7 @@ struct Alliance
 struct Player
 {
 	//! Un uint8_t pour chaque Skill
-	typedef boost::array<uint8_t, Skill::Count> SkillTab;
+	typedef boost::array<uint8_t, SkillCount> SkillTab;
 	typedef uint32_t ID;      //!< Type d'identifiant
 	static ID const NoId = 0; //!< Valeur indiquant l'absence de joueur
 	ID id;                    //!< Identifiant unique

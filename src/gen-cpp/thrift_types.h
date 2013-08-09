@@ -173,7 +173,7 @@ typedef int32_t Alliance_ID;
 
 typedef int32_t Player_ID;
 
-typedef std::vector<int32_t>  Player_SkillTab;
+typedef std::vector<class Skill>  Player_SkillTab;
 
 typedef std::vector<int32_t>  BuildingTab;
 
@@ -500,9 +500,93 @@ public:
 
 void swap(Alliance& a, Alliance& b);
 
+typedef struct _Skill__isset
+{
+	_Skill__isset() : name(false), level(false), cost(false), canUpdate(false), effectMessage(false) {}
+	bool name;
+	bool level;
+	bool cost;
+	bool canUpdate;
+	bool effectMessage;
+} _Skill__isset;
+
+class Skill
+{
+public:
+
+	static const char* ascii_fingerprint; // = "E6E1339DC43ED2385C6C627788C7C3D4";
+	static const uint8_t binary_fingerprint[16]; // = {0xE6,0xE1,0x33,0x9D,0xC4,0x3E,0xD2,0x38,0x5C,0x6C,0x62,0x77,0x88,0xC7,0xC3,0xD4};
+
+	Skill() : name(), level(0), cost(0), canUpdate(0), effectMessage()
+	{
+	}
+
+	virtual ~Skill() throw() {}
+
+	std::string name;
+	int32_t level;
+	int32_t cost;
+	bool canUpdate;
+	std::string effectMessage;
+
+	_Skill__isset __isset;
+
+	void __set_name(const std::string& val)
+	{
+		name = val;
+	}
+
+	void __set_level(const int32_t val)
+	{
+		level = val;
+	}
+
+	void __set_cost(const int32_t val)
+	{
+		cost = val;
+	}
+
+	void __set_canUpdate(const bool val)
+	{
+		canUpdate = val;
+	}
+
+	void __set_effectMessage(const std::string& val)
+	{
+		effectMessage = val;
+	}
+
+	bool operator == (const Skill& rhs) const
+	{
+		if(!(name == rhs.name))
+			return false;
+		if(!(level == rhs.level))
+			return false;
+		if(!(cost == rhs.cost))
+			return false;
+		if(!(canUpdate == rhs.canUpdate))
+			return false;
+		if(!(effectMessage == rhs.effectMessage))
+			return false;
+		return true;
+	}
+	bool operator != (const Skill& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const Skill&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+void swap(Skill& a, Skill& b);
+
 typedef struct _Player__isset
 {
-	_Player__isset() : id(false), login(false), password(false), fleetsCode(false), planetsCode(false), tutoDisplayed(false), mainPlanet(false), score(true), allianceID(false), experience(true), skillpoints(true), skilltab(false), skillCost(false), allianceName(false) {}
+	_Player__isset() : id(false), login(false), password(false), fleetsCode(false), planetsCode(false), tutoDisplayed(false), mainPlanet(false), score(true), allianceID(false), experience(true), skillpoints(true), skilltab(false), allianceName(false) {}
 	bool id;
 	bool login;
 	bool password;
@@ -515,7 +599,6 @@ typedef struct _Player__isset
 	bool experience;
 	bool skillpoints;
 	bool skilltab;
-	bool skillCost;
 	bool allianceName;
 } _Player__isset;
 
@@ -523,8 +606,8 @@ class Player
 {
 public:
 
-	static const char* ascii_fingerprint; // = "5FB4B2F14DF8005A0E9E1D4A285B6EC2";
-	static const uint8_t binary_fingerprint[16]; // = {0x5F,0xB4,0xB2,0xF1,0x4D,0xF8,0x00,0x5A,0x0E,0x9E,0x1D,0x4A,0x28,0x5B,0x6E,0xC2};
+	static const char* ascii_fingerprint; // = "FABA7F1FF15D007DBFAB4923136AC0B8";
+	static const uint8_t binary_fingerprint[16]; // = {0xFA,0xBA,0x7F,0x1F,0xF1,0x5D,0x00,0x7D,0xBF,0xAB,0x49,0x23,0x13,0x6A,0xC0,0xB8};
 
 	Player() : id(0), login(), password(), score(0LL), allianceID(0), experience(0), skillpoints(0), allianceName()
 	{
@@ -544,7 +627,6 @@ public:
 	int32_t experience;
 	int32_t skillpoints;
 	Player_SkillTab skilltab;
-	Player_SkillTab skillCost;
 	std::string allianceName;
 
 	_Player__isset __isset;
@@ -609,11 +691,6 @@ public:
 		skilltab = val;
 	}
 
-	void __set_skillCost(const Player_SkillTab& val)
-	{
-		skillCost = val;
-	}
-
 	void __set_allianceName(const std::string& val)
 	{
 		allianceName = val;
@@ -644,8 +721,6 @@ public:
 		if(!(skillpoints == rhs.skillpoints))
 			return false;
 		if(!(skilltab == rhs.skilltab))
-			return false;
-		if(!(skillCost == rhs.skillCost))
 			return false;
 		if(!(allianceName == rhs.allianceName))
 			return false;
@@ -1772,8 +1847,8 @@ class Universe
 {
 public:
 
-	static const char* ascii_fingerprint; // = "B261AEB4C2A43064B4BAB17500A078A7";
-	static const uint8_t binary_fingerprint[16]; // = {0xB2,0x61,0xAE,0xB4,0xC2,0xA4,0x30,0x64,0xB4,0xBA,0xB1,0x75,0x00,0xA0,0x78,0xA7};
+	static const char* ascii_fingerprint; // = "42255118F1806BB7A10696DE8722C04F";
+	static const uint8_t binary_fingerprint[16]; // = {0x42,0x25,0x51,0x18,0xF1,0x80,0x6B,0xB7,0xA1,0x06,0x96,0xDE,0x87,0x22,0xC0,0x4F};
 
 	Universe() : nextPlayerID(0), nextFleetID(0), time(0)
 	{
@@ -1868,8 +1943,8 @@ class OptionalPlayer
 {
 public:
 
-	static const char* ascii_fingerprint; // = "AA80C8D28829018B2875632E28506DA4";
-	static const uint8_t binary_fingerprint[16]; // = {0xAA,0x80,0xC8,0xD2,0x88,0x29,0x01,0x8B,0x28,0x75,0x63,0x2E,0x28,0x50,0x6D,0xA4};
+	static const char* ascii_fingerprint; // = "8C8E9E2A748076E9D6FE0EDEAA649832";
+	static const uint8_t binary_fingerprint[16]; // = {0x8C,0x8E,0x9E,0x2A,0x74,0x80,0x76,0xE9,0xD6,0xFE,0x0E,0xDE,0xAA,0x64,0x98,0x32};
 
 	OptionalPlayer()
 	{
@@ -2202,8 +2277,8 @@ class FriendshipRequests
 {
 public:
 
-	static const char* ascii_fingerprint; // = "D2E57CE2EBC0AC13BC2FAE1C3241E0E8";
-	static const uint8_t binary_fingerprint[16]; // = {0xD2,0xE5,0x7C,0xE2,0xEB,0xC0,0xAC,0x13,0xBC,0x2F,0xAE,0x1C,0x32,0x41,0xE0,0xE8};
+	static const char* ascii_fingerprint; // = "CF5DDF8BB04F33C274C6E1304FD89799";
+	static const uint8_t binary_fingerprint[16]; // = {0xCF,0x5D,0xDF,0x8B,0xB0,0x4F,0x33,0xC2,0x74,0xC6,0xE1,0x30,0x4F,0xD8,0x97,0x99};
 
 	FriendshipRequests()
 	{
@@ -2247,54 +2322,6 @@ public:
 };
 
 void swap(FriendshipRequests& a, FriendshipRequests& b);
-
-typedef struct _Skill__isset
-{
-	_Skill__isset() : name(false) {}
-	bool name;
-} _Skill__isset;
-
-class Skill
-{
-public:
-
-	static const char* ascii_fingerprint; // = "45D52A93E2590F2922F669AFAAD707D6";
-	static const uint8_t binary_fingerprint[16]; // = {0x45,0xD5,0x2A,0x93,0xE2,0x59,0x0F,0x29,0x22,0xF6,0x69,0xAF,0xAA,0xD7,0x07,0xD6};
-
-	Skill() : name()
-	{
-	}
-
-	virtual ~Skill() throw() {}
-
-	std::string name;
-
-	_Skill__isset __isset;
-
-	void __set_name(const std::string& val)
-	{
-		name = val;
-	}
-
-	bool operator == (const Skill& rhs) const
-	{
-		if(!(name == rhs.name))
-			return false;
-		return true;
-	}
-	bool operator != (const Skill& rhs) const
-	{
-		return !(*this == rhs);
-	}
-
-	bool operator < (const Skill&) const;
-
-	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
-};
-
-void swap(Skill& a, Skill& b);
 
 } // namespace
 

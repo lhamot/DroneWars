@@ -121,8 +121,8 @@ public:
 	//! Inscremente le skill skillID du joueur pid, et reduit ses skillpoints
 	//! de cost
 	//! @throw Exception si pid invalid
-	//! @throw std::out_of_range si skillID invalid
-	//! @return false si pas asser de skillpoint, sinon true
+	//! @pre skillID est valid
+	//! @return false si pas assez de skillpoint, sinon true
 	bool buySkill(Player::ID pid, int16_t skillID);
 
 	//***************************  Event  *************************************

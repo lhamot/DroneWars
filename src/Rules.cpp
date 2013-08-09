@@ -7,6 +7,7 @@
 #include <boost/range/numeric.hpp>
 
 #include "DataBase.h"
+#include "Skills.h"
 
 using namespace boost;
 

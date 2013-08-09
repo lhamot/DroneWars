@@ -48,7 +48,6 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '   getBuildingsInfo()'
   print '   getCannonsInfo()'
   print '   getShipsInfo()'
-  print '   getSkillsInfo()'
   print '  void addMessage(Player_ID sender, Player_ID recipient, string suject, string message)'
   print '   getMessages(Player_ID recipient)'
   print '  void eraseMesage(Message_ID mid)'
@@ -264,12 +263,6 @@ elif cmd == 'getShipsInfo':
     print 'getShipsInfo requires 0 args'
     sys.exit(1)
   pp.pprint(client.getShipsInfo())
-
-elif cmd == 'getSkillsInfo':
-  if len(args) != 0:
-    print 'getSkillsInfo requires 0 args'
-    sys.exit(1)
-  pp.pprint(client.getSkillsInfo())
 
 elif cmd == 'addMessage':
   if len(args) != 4:

@@ -572,7 +572,6 @@ def Skillsview(request):
     pid = request.session["PlayerID"]
     player = service.getPlayer(pid)
     player.skillpoints /= 100
-    skill_list = service.getSkillsInfo()
     
     if "buySkill" in request.GET:
         skillID = int(request.GET["buySkill"])
@@ -582,7 +581,7 @@ def Skillsview(request):
 
     return render(request, 'skillsview.html', {
         "player": player,
-        "skill_list": skill_list,
+        "skill_list": player.skilltab,
     })
     
     

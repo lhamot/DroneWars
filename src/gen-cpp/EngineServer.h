@@ -42,7 +42,6 @@ public:
 	virtual void getBuildingsInfo(std::vector<Building>& _return) = 0;
 	virtual void getCannonsInfo(std::vector<Cannon>& _return) = 0;
 	virtual void getShipsInfo(std::vector<Ship>& _return) = 0;
-	virtual void getSkillsInfo(std::vector<Skill>& _return) = 0;
 	virtual void addMessage(const Player_ID sender, const Player_ID recipient, const std::string& suject, const std::string& message) = 0;
 	virtual void getMessages(std::vector<Message>& _return, const Player_ID recipient) = 0;
 	virtual void eraseMesage(const Message_ID mid) = 0;
@@ -191,10 +190,6 @@ public:
 		return;
 	}
 	void getShipsInfo(std::vector<Ship>& /* _return */)
-	{
-		return;
-	}
-	void getSkillsInfo(std::vector<Skill>& /* _return */)
 	{
 		return;
 	}
@@ -3183,111 +3178,6 @@ public:
 
 };
 
-
-class EngineServer_getSkillsInfo_args
-{
-public:
-
-	EngineServer_getSkillsInfo_args()
-	{
-	}
-
-	virtual ~EngineServer_getSkillsInfo_args() throw() {}
-
-
-	bool operator == (const EngineServer_getSkillsInfo_args& /* rhs */) const
-	{
-		return true;
-	}
-	bool operator != (const EngineServer_getSkillsInfo_args& rhs) const
-	{
-		return !(*this == rhs);
-	}
-
-	bool operator < (const EngineServer_getSkillsInfo_args&) const;
-
-	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
-};
-
-
-class EngineServer_getSkillsInfo_pargs
-{
-public:
-
-
-	virtual ~EngineServer_getSkillsInfo_pargs() throw() {}
-
-
-	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
-};
-
-typedef struct _EngineServer_getSkillsInfo_result__isset
-{
-	_EngineServer_getSkillsInfo_result__isset() : success(false) {}
-	bool success;
-} _EngineServer_getSkillsInfo_result__isset;
-
-class EngineServer_getSkillsInfo_result
-{
-public:
-
-	EngineServer_getSkillsInfo_result()
-	{
-	}
-
-	virtual ~EngineServer_getSkillsInfo_result() throw() {}
-
-	std::vector<Skill>  success;
-
-	_EngineServer_getSkillsInfo_result__isset __isset;
-
-	void __set_success(const std::vector<Skill>& val)
-	{
-		success = val;
-	}
-
-	bool operator == (const EngineServer_getSkillsInfo_result& rhs) const
-	{
-		if(!(success == rhs.success))
-			return false;
-		return true;
-	}
-	bool operator != (const EngineServer_getSkillsInfo_result& rhs) const
-	{
-		return !(*this == rhs);
-	}
-
-	bool operator < (const EngineServer_getSkillsInfo_result&) const;
-
-	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
-};
-
-typedef struct _EngineServer_getSkillsInfo_presult__isset
-{
-	_EngineServer_getSkillsInfo_presult__isset() : success(false) {}
-	bool success;
-} _EngineServer_getSkillsInfo_presult__isset;
-
-class EngineServer_getSkillsInfo_presult
-{
-public:
-
-
-	virtual ~EngineServer_getSkillsInfo_presult() throw() {}
-
-	std::vector<Skill>* success;
-
-	_EngineServer_getSkillsInfo_presult__isset __isset;
-
-	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-
-};
-
 typedef struct _EngineServer_addMessage_args__isset
 {
 	_EngineServer_addMessage_args__isset() : sender(false), recipient(false), suject(false), message(false) {}
@@ -5083,9 +4973,6 @@ public:
 	void getShipsInfo(std::vector<Ship>& _return);
 	void send_getShipsInfo();
 	void recv_getShipsInfo(std::vector<Ship>& _return);
-	void getSkillsInfo(std::vector<Skill>& _return);
-	void send_getSkillsInfo();
-	void recv_getSkillsInfo(std::vector<Skill>& _return);
 	void addMessage(const Player_ID sender, const Player_ID recipient, const std::string& suject, const std::string& message);
 	void send_addMessage(const Player_ID sender, const Player_ID recipient, const std::string& suject, const std::string& message);
 	void recv_addMessage();
@@ -5172,7 +5059,6 @@ private:
 	void process_getBuildingsInfo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_getCannonsInfo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_getShipsInfo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
-	void process_getSkillsInfo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_addMessage(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_getMessages(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_eraseMesage(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
@@ -5217,7 +5103,6 @@ public:
 		processMap_["getBuildingsInfo"] = &EngineServerProcessor::process_getBuildingsInfo;
 		processMap_["getCannonsInfo"] = &EngineServerProcessor::process_getCannonsInfo;
 		processMap_["getShipsInfo"] = &EngineServerProcessor::process_getShipsInfo;
-		processMap_["getSkillsInfo"] = &EngineServerProcessor::process_getSkillsInfo;
 		processMap_["addMessage"] = &EngineServerProcessor::process_addMessage;
 		processMap_["getMessages"] = &EngineServerProcessor::process_getMessages;
 		processMap_["eraseMesage"] = &EngineServerProcessor::process_eraseMesage;
@@ -5552,18 +5437,6 @@ public:
 			ifaces_[i]->getShipsInfo(_return);
 		}
 		ifaces_[i]->getShipsInfo(_return);
-		return;
-	}
-
-	void getSkillsInfo(std::vector<Skill>& _return)
-	{
-		size_t sz = ifaces_.size();
-		size_t i = 0;
-		for(; i < (sz - 1); ++i)
-		{
-			ifaces_[i]->getSkillsInfo(_return);
-		}
-		ifaces_[i]->getSkillsInfo(_return);
 		return;
 	}
 

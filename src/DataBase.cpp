@@ -26,6 +26,7 @@
 #pragma warning(pop)
 
 #include "NameGen.h"
+#include "Skills.h"
 
 
 using namespace Poco::Data;
@@ -1016,10 +1017,15 @@ DB_CATCH
 bool DataBase::buySkill(Player::ID pid, int16_t skillID)
 try
 {
+	if(skillID >= Skill::Count || skillID < 0)
+		BOOST_THROW_EXCEPTION(std::logic_error("invalid skillID"));
+
 	Transaction trans(*session_);
 	Player pla = getPlayer(pid);
-	size_t const cost = Skill::skillCost(pla.skilltab.at(skillID)) * 100;
+	size_t const cost = Skill::List[skillID]->skillCost(pla.skilltab.at(skillID)) * 100;
 	if(pla.skillpoints < cost)
+		return false;
+	if(Skill::List[skillID]->canUpgrade(pla) == false)
 		return false;
 
 	pla.skilltab.at(skillID) += 1;

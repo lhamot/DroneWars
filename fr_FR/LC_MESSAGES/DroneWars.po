@@ -7,75 +7,58 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-21 23:44+0100\n"
-"PO-Revision-Date: 2013-02-22 00:03+0100\n"
+"POT-Creation-Date: 2013-08-09 18:40+0100\n"
+"PO-Revision-Date: 2013-08-09 18:42+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-KeywordsList: gettext;gettextWT\n"
+"X-Poedit-KeywordsList: gettext;gettextWT;translate\n"
 "X-Poedit-Basepath: I:\\C\\Bit_them_all\\src\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 1.5.5\n"
+"X-Generator: Poedit 1.5.7\n"
 "Plural-Forms: Plural-Forms: nplurals=2; plural=n == 1 ? 0 : 1;\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: Model.cpp:85
-msgid "my_fleet"
-msgstr "ma_flotte"
+#: LuaUniverse.cpp:109 LuaUniverse.cpp:122
+msgid "%1% expect a number in the range [1: %2%]"
+msgstr "%1% attend un nombre entre 1 et %2% compris."
 
-#: Model.cpp:86
-msgid "otherFleet"
-msgstr "autre_flotte"
+#: LuaUniverse.cpp:138
+msgid "%1% expect a building number in the range [1: %2%]"
+msgstr "attend un numero de batiment entre 1 et %2% compris"
 
-#: Model.cpp:87
-msgid "local_planet"
-msgstr "planete_locale"
+#: Simulation.cpp:185 Simulation.cpp:269
+msgid "Procedure \"%1%\" not found."
+msgstr "Procédure \"%1%\" introuvable."
 
-#: Model.cpp:88 Model.cpp:118
-msgid "order"
-msgstr "ordre"
+#: Skills.cpp:51
+msgid "You can create up to {1} planets."
+msgstr "Vous pouvez créer jusqu'as {1} planètes."
 
-#: Model.cpp:89
-msgid "DO_GATHER_CODE_COMMENT"
-msgstr ""
-"Cette procedure permet à un capitaine de décider si sa flotte doit fusioner "
-"avec une autre flotte allié présente dans la mème zone. \n"
-"En entrée elle recois votre flote \"ma_flotte\" et la flotte allié "
-"\"autre_flotte\", ce qui doit lui permetre de décider si il vaut mieu "
-"fusioner ou non."
+#: Skills.cpp:68
+msgid "You can create up to {1} fleets."
+msgstr "Vous pouvez créer jusqu'as {1} flottes."
 
-#: Model.cpp:90
-msgid "DO_FIGHT_CODE_COMMENT"
-msgstr ""
-"Cette procedure permet a un capitaine de décider si sa flotte doit combatre "
-"ou fuire. \n"
-"En entrée elle recois votre flote \"ma_flotte\" et la flotte enemie "
-"\"autre_flotte\", ce qui doit lui permetre de décider si il vaut mieu "
-"combatre ou fuire."
+#: Skills.cpp:85
+msgid "Your fleets can contains up to {1} ships."
+msgstr "Vos flottes peuvent contenir jusqu'as {1} vaisseaux."
 
-#: Model.cpp:91
-msgid "FLEET_ACTION_CODE_COMMENT"
-msgstr ""
-"Cette procédure décrit le comportment d'une flotte à chaque tour. \n"
-"Elle recois deux variables : \n"
-"Une \"ma_flotte\" qui représente la flotte dont c'est le tour de jouer, et "
-"une variable \"planètes\" qui peut contenir une planète si il y en as une "
-"dans la mème zone. \n"
-"Cette procedure retourne la variable \"ordre\" qui contient l'ordre à donner "
-"aux vaisseaux de la flotte."
-
-#: Model.cpp:116
+#: UnivManip.cpp:119
 msgid "my_planet"
 msgstr "ma_planete"
 
-#: Model.cpp:117
+#: UnivManip.cpp:120
 msgid "fleets"
 msgstr "flottes"
 
-#: Model.cpp:119
+#: UnivManip.cpp:121 UnivManip.cpp:147
+msgid "order"
+msgstr "ordre"
+
+#: UnivManip.cpp:122
 msgid "PLANET_ACTION_CODE_COMMENT"
 msgstr ""
 "Cette procédure décrit le comportment d'une planète à chaque tour. \n"
@@ -86,13 +69,49 @@ msgstr ""
 "Cette procedure retourne la variable \"ordre\" qui contient l'ordre a donner "
 "aux battisseurs présent sur la planète."
 
-#: Simulation.cpp:143
-msgid "Procedure \"%1%\" not found."
-msgstr "Procédure \"%1%\" introuvable."
+#: UnivManip.cpp:144
+msgid "my_fleet"
+msgstr "ma_flotte"
 
-#: Simulation.cpp:208 Simulation.cpp:342
-msgid "Unable to make cast to %1%"
-msgstr "La valeur de retour n'est pas %1%, comme attendue."
+#: UnivManip.cpp:145
+msgid "otherFleet"
+msgstr "autre_flotte"
+
+#: UnivManip.cpp:146
+msgid "local_planet"
+msgstr "planete_locale"
+
+#: UnivManip.cpp:148
+msgid "DO_GATHER_CODE_COMMENT"
+msgstr ""
+"Cette procedure permet à un capitaine de décider si sa flotte doit fusioner "
+"avec une autre flotte allié présente dans la mème zone. \n"
+"En entrée elle recois votre flote \"ma_flotte\" et la flotte allié "
+"\"autre_flotte\", ce qui doit lui permetre de décider si il vaut mieu "
+"fusioner ou non."
+
+#: UnivManip.cpp:149
+msgid "DO_FIGHT_CODE_COMMENT"
+msgstr ""
+"Cette procedure permet a un capitaine de décider si sa flotte doit combatre "
+"ou fuire. \n"
+"En entrée elle recois votre flote \"ma_flotte\" et la flotte enemie "
+"\"autre_flotte\", ce qui doit lui permetre de décider si il vaut mieu "
+"combatre ou fuire."
+
+#: UnivManip.cpp:150
+msgid "FLEET_ACTION_CODE_COMMENT"
+msgstr ""
+"Cette procédure décrit le comportment d'une flotte à chaque tour. \n"
+"Elle recois deux variables : \n"
+"Une \"ma_flotte\" qui représente la flotte dont c'est le tour de jouer, et "
+"une variable \"planètes\" qui peut contenir une planète si il y en as une "
+"dans la mème zone. \n"
+"Cette procedure retourne la variable \"ordre\" qui contient l'ordre à donner "
+"aux vaisseaux de la flotte."
+
+#~ msgid "Unable to make cast to %1%"
+#~ msgstr "La valeur de retour n'est pas %1%, comme attendue."
 
 #~ msgid "Login"
 #~ msgstr "Identifiant"

@@ -9,6 +9,11 @@
 #include <boost/iterator/zip_iterator.hpp>
 #include <boost/range/iterator_range.hpp>
 
+//! Obtient une local pour la culture demandée
+//! @todo: Si le nombre de trad pas seconde augmente, il faudra surement
+//!   préparer les locale et les réutiliser.
+std::locale getLocal(std::string const& loc);
+
 
 //! @brief Recherche un iterateur dans une map et le retourne
 //! @throw std::logic_error si la clé n'existe pas

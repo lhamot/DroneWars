@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <boost/format.hpp>
 #include <boost/range/irange.hpp>
+#include <boost/range/adaptor/indirected.hpp>
 
 #include "Skills.h"
 #include "UnivManip.h"
@@ -202,6 +203,18 @@ void codeDataCppToThrift(CodeData const& in, ndw::CodeData& out)
 }
 
 
+ndw::Skill skillToThrift(size_t skillID, Player const& player)
+{
+	ndw::Skill outSkill;
+	outSkill.level = player.skilltab[skillID];
+	ISkill const& skill = *Skill::List[skillID];
+	outSkill.name = skill.getName();
+	outSkill.canUpdate = skill.canUpgrade(player);
+	outSkill.cost = NUMCAST(skill.skillCost(player.skilltab[skillID]));
+	outSkill.effectMessage = skill.effectMessage(player);
+	return outSkill;
+}
+
 //! Convertie un Player en ndw::Player pour transfert par thrift
 ndw::Player playerToThrift(Player const& player)
 {
@@ -214,10 +227,9 @@ ndw::Player playerToThrift(Player const& player)
 	outPlayer.allianceID = NUMCAST(player.allianceID);
 	outPlayer.experience = player.experience;
 	outPlayer.skillpoints = player.skillpoints;
-	copy(player.skilltab, back_inserter(outPlayer.skilltab));
-	outPlayer.skillCost.reserve(Skill::Count);
-	transform(player.skilltab, back_inserter(outPlayer.skillCost),
-	[](size_t c) {return numeric_cast<int>(Skill::skillCost(c));});
+	outPlayer.skilltab.reserve(Skill::Count);
+	for(size_t skillID = 0; skillID < Skill::Count; ++skillID)
+		outPlayer.skilltab.push_back(skillToThrift(skillID, player));
 	outPlayer.allianceName = player.allianceName;
 	return outPlayer;
 }
@@ -266,15 +278,6 @@ ndw::FightReport fightReportToThrift(FightReport const& report)
 		  logic_error("Unconsistent FightReport::hasPlanet value"));
 	if(report.planet)
 		result.__set_planet(planetReportToThrift(report.planet.get()));
-	return result;
-}
-
-
-//! Convertie un Skill en ndw::Skill pour transfert par thrift
-ndw::Skill skillToThrift(Skill const& skill)
-{
-	ndw::Skill result;
-	result.name = skill.name;
 	return result;
 }
 
@@ -687,7 +690,7 @@ bool EngineServerHandler::buySkill(const ndw::Player_ID pid,
                                    const int16_t skillID)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " skillID : " << skillID);
-	if(skillID >= Skill::Count)
+	if(skillID >= Skill::Count || skillID < 0)
 		return false;
 	bool const done = database_.buySkill(pid, skillID);
 	LOG4CPLUS_TRACE(logger, "exit " << done);
@@ -746,11 +749,6 @@ void EngineServerHandler::getShipsInfo(vector<ndw::Ship>& _return)
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
-
-void EngineServerHandler::getSkillsInfo(std::vector<ndw::Skill>& _return)
-{
-	boost::transform(Skill::List, back_inserter(_return), skillToThrift);
-}
 
 //*******************************  Messages  **********************************
 
