@@ -66,10 +66,10 @@ bool canHarvest(Fleet const& fleet, Planet const& planet);
 
 void addTaskHarvest(Fleet& fleet, uint32_t roundCount, Planet const& planet);
 
-bool canColonize(Universe const& univ,
-                 Player const& player,
+bool canColonize(Player const& player,
                  Fleet const& fleet,
-                 Planet const& planet);
+                 Planet const& planet,
+                 size_t planetCount);
 
 void addTaskColonize(Fleet& fleet, uint32_t roundCount, Planet const& planet);
 

@@ -333,17 +333,13 @@ size_t getMaxFleetSize(Player const& player)
 namespace InternalRules
 {
 //! Test si la flotte peut colonizer la planète
-bool canColonize(Universe const& univ,
-                 Player const& player,
+bool canColonize(Player const& player,
                  Fleet const& fleet,
-                 Planet const& planet)
+                 Planet const& planet,
+                 size_t planetCount)
 {
-	size_t const maxPlanetCount = getMaxPlanetCount(player);
-	size_t const planetCount =
-	  count_if(univ.planetMap | adaptors::map_values,
-	           bind(&Planet::playerId, _1) == player.id);
 	return
-	  planetCount < maxPlanetCount &&
+	  planetCount < getMaxPlanetCount(player) &&
 	  planet.playerId == Player::NoId && fleet.shipList[Ship::Queen];
 }
 

@@ -774,16 +774,16 @@ void addTaskHarvest(Fleet& fleet, uint32_t roundCount, Planet const& planet)
 
 
 //! Test si la flotte peut colonizer la planète
-bool canColonize(Universe const& univ,
-                 Player const& player,
+bool canColonize(Player const& player,
                  Fleet const& fleet,
-                 Planet const& planet)
+                 Planet const& planet,
+                 size_t planetCount)
 {
 	if(false == fleet.taskQueue.empty())
 		return false;
 	if(planet.playerId != Player::NoId || fleet.shipList[Ship::Queen] == 0)
 		return false;
-	return InternalRules::canColonize(univ, player, fleet, planet);
+	return InternalRules::canColonize(player, fleet, planet, planetCount);
 }
 
 

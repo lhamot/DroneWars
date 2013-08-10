@@ -356,6 +356,7 @@ void applyFleetScript(Universe& univ_,
                       std::map<Player::ID, Player> const& playerMap,
                       Fleet& fleet,
                       FleetAction const& action,
+                      std::map<Player::ID, size_t>& playersPlanetCount,
                       std::vector<Event>& events)
 {
 	auto planetIter = univ_.planetMap.find(fleet.coord);
@@ -384,7 +385,8 @@ void applyFleetScript(Universe& univ_,
 	case FleetAction::Colonize:
 	{
 		Player const& player = mapFind(playerMap, fleet.playerId)->second;
-		if(planet && canColonize(univ_, player, fleet, *planet))
+		if(planet &&
+		   canColonize(player, fleet, *planet, playersPlanetCount[player.id]))
 			addTaskColonize(fleet, univ_.roundCount, *planet);
 		break;
 	}
@@ -808,8 +810,12 @@ void execFleets(
 	for(FleetAndAction & fleetAndAction : scriptInputsList)
 	{
 		if(fleetAndAction.action)
-			applyFleetScript(
-			  univ_, playerMap, fleetAndAction.fleet, *fleetAndAction.action, events);
+			applyFleetScript(univ_,
+			                 playerMap,
+			                 fleetAndAction.fleet,
+			                 *fleetAndAction.action,
+			                 playersPlanetCount,
+			                 events);
 	}
 
 	std::map<Fleet::ID, Fleet> newFleetMap;

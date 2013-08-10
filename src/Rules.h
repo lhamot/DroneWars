@@ -47,7 +47,10 @@ size_t getMaxFleetSize(Player const& player);
 namespace InternalRules
 {
 
-bool canColonize(Universe const& univ, Player const& player, Fleet const& fleet, Planet const& planet);
+bool canColonize(Player const& player,
+                 Fleet const& fleet,
+                 Planet const& planet,
+                 size_t planetCount);
 
 bool canBuild(Player const& player,
               Planet const& planet,
