@@ -74,14 +74,52 @@ public:
 	CohesionSkill(): ISkill("Cohesion") {}
 };
 
+class InfoServiceSkill : public ISkill
+{
+	virtual bool canUpgradeImpl(Player const& player) const
+	{
+		return player.skilltab[Skill::InformationService] < 1;
+	}
+	virtual size_t skillCostImpl(size_t) //skillCurrentLevel
+	const
+	{
+		return 1000;
+	}
+	virtual std::string effectMessageImpl(Player const&) //player
+	const
+	{
+		using namespace boost::locale;
+		return translate("You can filter your messages (Not implemented yet)");
+	}
+public:
+	InfoServiceSkill(): ISkill("InformationService") {}
+};
+
+class ServerFarmSkill : public ISkill
+{
+	virtual bool canUpgradeImpl(Player const&) const {return true;};
+	virtual size_t skillCostImpl(size_t skillCurrentLevel) const
+	{
+		return skillCurrentLevel + 1;
+	}
+	virtual std::string effectMessageImpl(Player const& player) const
+	{
+		using namespace boost::locale;
+		return (format(translate("You can now store up to {1} events.")) %
+		        getMaxEventCount(player)).str();
+	}
+public:
+	ServerFarmSkill(): ISkill("ServerFarm") {}
+};
+
 std::vector<std::shared_ptr<ISkill> > InitSkills()
 {
 	std::vector<std::shared_ptr<ISkill> > list;
 	list.push_back(std::make_shared<ConquestSkill>());
 	list.push_back(std::make_shared<StrategySkill>());
 	list.push_back(std::make_shared<CohesionSkill>());
-	list.push_back(std::make_shared<DummySkill>("InformationService"));
-	list.push_back(std::make_shared<DummySkill>("ServerFarm"));
+	list.push_back(std::make_shared<InfoServiceSkill>());
+	list.push_back(std::make_shared<ServerFarmSkill>());
 	list.push_back(std::make_shared<DummySkill>("Chronos"));
 	list.push_back(std::make_shared<DummySkill>("Memory"));
 	list.push_back(std::make_shared<DummySkill>("Communication"));

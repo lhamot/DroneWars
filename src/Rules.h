@@ -44,6 +44,8 @@ size_t getMaxFleetCount(Player const& player);
 
 size_t getMaxFleetSize(Player const& player);
 
+size_t getMaxEventCount(Player const& player);
+
 namespace InternalRules
 {
 

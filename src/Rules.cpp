@@ -329,6 +329,10 @@ size_t getMaxFleetSize(Player const& player)
 	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::Cohesion] + 2.));
 }
 
+size_t getMaxEventCount(Player const& player)
+{
+	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::ServerFarm] + 4.));
+}
 
 namespace InternalRules
 {

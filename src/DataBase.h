@@ -143,7 +143,7 @@ public:
 	void resetPlanetEvents(Coord pcoord);
 
 	//! Supprime les évenements trop vieux
-	void removeOldEvents();
+	void removeOldEvents(std::map<Player::ID, size_t> const& maxEventCount);
 
 	//***************************  Script  ************************************
 

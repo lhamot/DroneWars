@@ -469,10 +469,22 @@ try
 DB_CATCH
 
 
-void DataBase::removeOldEvents()
+void DataBase::removeOldEvents(std::map<Player::ID, size_t> const& maxEventCountPerPlayer)
 try
 {
 	Transaction trans(*session_);
+
+	for(auto maxEventCount : maxEventCountPerPlayer)
+	{
+		int count = 0;
+		(*session_) <<
+		            "SELECT count(id) FROM Event WHERE playerID=?",
+		            into(count), use(maxEventCount.first), now;
+		count = std::max(0, int(count) - int(maxEventCount.second));
+		(*session_) <<
+		            "DELETE FROM Event WHERE playerID=? ORDER BY id LIMIT ?",
+		            use(maxEventCount.first), use(count), now;
+	}
 
 	for(size_t type = 0; type < Event::Count; ++type)
 	{
@@ -486,83 +498,10 @@ try
 		            use(type), use(count), now;
 	}
 
-	size_t max24 = 0;
-	(*session_) <<
-	            "SELECT max(id) FROM Event WHERE time < ?",
-	            into(max24), use(time(0) - (3600 * 24)), now;
-	size_t max1 = 0;
-	(*session_) <<
-	            "SELECT max(id) FROM Event WHERE time < ?",
-	            into(max1), use(time(0) - (3600 * 1)), now;
-
-	(*session_) <<
-	            "DELETE FROM Event "
-	            "  WHERE id < ? AND type IN (?, ?, ?)",
-	            use(max24),
-	            use((int)Event::PlanetWin),
-	            use((int)Event::PlanetColonized),
-	            use((int)Event::Upgraded),
-	            now;
-
-
-	//! Supression des évenements de planète
-	//! - Important:
-	//!   PlanetWin, PlanetColonized, Upgraded de plus de 24 heures
-	(*session_) <<
-	            "DELETE FROM Event WHERE id < ? AND type IN (?, ?)",
-	            use(max24),
-	            use((int)Event::PlanetWin),
-	            use((int)Event::PlanetColonized),
-	            now;
-	//! - Pas important:
-	//!   CannonMade, ShipMade, FleetDrop de plus de 1 heures
-	(*session_) <<
-	            "DELETE FROM Event WHERE id < ? AND type IN (?, ?, ?, ?)",
-	            use(max1),
-	            use((int)Event::CannonMade),
-	            use((int)Event::ShipMade),
-	            use((int)Event::FleetDrop),
-	            use((int)Event::Upgraded),
-	            now;
-	//! Supression des évenements de flotte
-	//! - Important:
-	//!   FleetWin, FleetDraw et PlanetColonized de plus de 24 heures
-	(*session_) <<
-	            "DELETE FROM Event WHERE id < ? AND type IN (?, ?, ?)",
-	            use(max24),
-	            use((int)Event::FleetWin),
-	            use((int)Event::FleetDraw),
-	            use((int)Event::PlanetColonized),
-	            now;
-	//! - Pas important:
-	//!   FleetsGather, PlanetHarvested et FleetDrop de plus de 1 heures
-	(*session_) <<
-	            "DELETE FROM Event WHERE id < ? AND type IN (?, ?, ?)",
-	            use(max1),
-	            use((int)Event::FleetsGather),
-	            use((int)Event::PlanetHarvested),
-	            use((int)Event::FleetDrop),
-	            now;
-	//! Supression des évenements de joueur
-	//! - Important:
-	//!   FleetCodeError, FleetCodeExecError, PlanetCodeError,
-	//!   PlanetCodeExecError, FleetLose et PlanetLose de plus de 24 heures
-	(*session_) <<
-	            "DELETE FROM Event "
-	            "WHERE id < ? AND type IN (?, ?, ?, ?, ?, ?)",
-	            use(max24),
-	            use((int)Event::FleetCodeError),
-	            use((int)Event::FleetCodeExecError),
-	            use((int)Event::PlanetCodeError),
-	            use((int)Event::PlanetCodeExecError),
-	            use((int)Event::FleetLose),
-	            use((int)Event::PlanetLose),
-	            now;
-
 	//! Supprime les Rappor de combats de plus de 24 heures
 	(*session_) <<
 	            "DELETE FROM FightReport WHERE time < ?",
-	            use(time(0) - (3600 * 24)),
+	            use(time(0) - (3600 * 1)),
 	            now;
 
 	trans.commit();

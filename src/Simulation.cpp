@@ -860,7 +860,12 @@ try
 	execFleets(univ_, database_, luaEngine, codesMap, events);
 
 	//! Supprime evenement trop vieux dans les Player et les Rapport plus utile
-	database_.removeOldEvents();
+	{
+		std::map<Player::ID, size_t> maxEventPerPlayer;
+		for(Player const & player : database_.getPlayers())
+			maxEventPerPlayer[player.id] = getMaxEventCount(player);
+		database_.removeOldEvents(maxEventPerPlayer);
+	}
 
 	//! Ajoute les nouveau evenements dans la base
 	database_.addEvents(events);
