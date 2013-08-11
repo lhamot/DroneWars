@@ -791,7 +791,7 @@ void execFleets(
 
 	struct FleetAndAction
 	{
-		Fleet fleet;
+		Fleet* fleet;
 		boost::optional<FleetAction> action;
 	};
 	std::vector<FleetAndAction> scriptInputsList;
@@ -803,7 +803,7 @@ void execFleets(
 		                  codesMap[iter->second.playerId].fleetsCode,
 		                  iter->second,
 		                  events);
-		FleetAndAction fleetAndAction = {iter->second, action};
+		FleetAndAction fleetAndAction = {&iter->second, action};
 		scriptInputsList.push_back(fleetAndAction);
 	}
 
@@ -812,7 +812,7 @@ void execFleets(
 		if(fleetAndAction.action)
 			applyFleetScript(univ_,
 			                 playerMap,
-			                 fleetAndAction.fleet,
+			                 *fleetAndAction.fleet,
 			                 *fleetAndAction.action,
 			                 playersPlanetCount,
 			                 events);
@@ -1124,7 +1124,7 @@ void Simulation::save(std::string const& saveName) const
 	};
 
 
-	if(savingThread_.timed_join(boost::posix_time::seconds(0)))
+	if(savingThread_.joinable() == false)
 	{
 		LOG4CPLUS_TRACE(logger, "copy universe to save");
 		SharedLock lockAll(univ_.mutex);
