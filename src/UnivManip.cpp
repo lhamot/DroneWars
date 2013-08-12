@@ -22,6 +22,7 @@
 #include <boost/iostreams/filtering_stream.hpp>
 
 #include "DataBase.h"
+#include "Skills.h"
 
 
 BOOST_GEOMETRY_REGISTER_BOOST_ARRAY_CS(cs::cartesian)
@@ -232,6 +233,12 @@ void construct(Universe& univ, DataBase& database)
 	for(size_t playerCount = 0; playerCount < 100;)
 	{
 		Player::ID const pid = database.addPlayer(nameGen(), password, codes);
+		for(size_t i = 0; i < 10; ++i)
+		{
+			database.buySkill(pid, Skill::Cohesion);
+			database.buySkill(pid, Skill::Strategy);
+			database.buySkill(pid, Skill::Conquest);
+		}
 		if(pid != Player::NoId)
 		{
 			Coord coord = createMainPlanet(univ, pid);
