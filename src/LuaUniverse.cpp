@@ -15,8 +15,10 @@
 #include "Polua/RegFunc.h"
 #include "Polua/Indexer/boost_array.h"
 #include "Polua/Indexer/std_vector.h"
+#include "Polua/Ref.h"
 
 #include "UnivManip.h"
+#include "Skills.h"
 
 extern "C"
 {
@@ -146,6 +148,34 @@ RessourceSet buildingPrice(Building::Enum building, size_t level)
 }
 
 
+int luaCFunction_fleetage(lua_State* L)
+{
+	Polua::object playerObj = Polua::refFromName(L, "currentPlayer");
+	Player currentPlayer = playerObj->get<Player>();
+	Fleet const& fleet = Polua::fromstackAny<Fleet>(L, 1);
+	if(currentPlayer.skilltab[Skill::Chronos] < 1 ||
+	   fleet.playerId != currentPlayer.id)
+		Polua::push(L, 0);
+	else
+		Polua::push(L, time(0) - fleet.time);
+	return 1;
+}
+
+int luaCFunction_planetage(lua_State* L)
+{
+	Polua::object playerObj = Polua::refFromName(L, "currentPlayer");
+	Player const& currentPlayer = playerObj->get<Player const&>();
+	Planet const& planet = Polua::fromstackAny<Planet>(L, 1);
+	if(currentPlayer.skilltab[Skill::Chronos] < 1 ||
+	   planet.playerId != currentPlayer.id)
+		Polua::push(L, 0);
+	else
+		Polua::push(L, time(0) - planet.time);
+	return 1;
+}
+
+
+
 extern "C" int initDroneWars(lua_State* L)
 {
 	using namespace Polua;
@@ -208,6 +238,7 @@ extern "C" int initDroneWars(lua_State* L)
 	.enumValue("Cannon6", Cannon::Cannon6 + 1);
 	Class<Planet>(L, "Planet")
 	.methode("isFree", &planetIsFree)
+	.methode("age", luaCFunction_planetage)
 	.read_only("coord", &Planet::coord)
 	.read_only("playerId", &Planet::playerId)
 	.read_only("buildingList", &Planet::buildingList)
@@ -224,6 +255,7 @@ extern "C" int initDroneWars(lua_State* L)
 	.enumValue("Cargo",        Ship::Cargo      + 1)
 	.enumValue("LargeCargo",   Ship::LargeCargo + 1);
 	Class<Fleet>(L, "Fleet")
+	.methode("age", luaCFunction_fleetage)
 	.property("id", &Fleet::id)
 	.property("playerId", &Fleet::playerId)
 	.property("coord", &Fleet::coord)
@@ -245,6 +277,7 @@ extern "C" int initDroneWars(lua_State* L)
 	.ctor<FleetAction::Type>()
 	.read_only("action", &FleetAction::action)
 	.read_only("target", &FleetAction::target);
+	Class<Player>(L, "Player");
 
 	return 0;
 }

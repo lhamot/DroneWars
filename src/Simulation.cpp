@@ -17,7 +17,6 @@
 #include <boost/range/numeric.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/format.hpp>
-#include <boost/chrono.hpp>
 
 
 extern "C"
@@ -56,6 +55,12 @@ void luaCountHook(lua_State* L,
 {
 	lua_sethook(L, luaCountHook, LUA_MASKCOUNT, 1);
 	luaL_error(L, "timeout was reached");
+}
+
+void setCurrentPlayer(LuaEngine& luaEngine, Player const& player)
+{
+	Polua::pushTemp(luaEngine.state(), player);
+	lua_setglobal(luaEngine.state(), "currentPlayer");
 }
 
 
@@ -170,6 +175,7 @@ catch(Polua::Exception& ex)
 boost::optional<PlanetAction> execPlanetScript(
   LuaEngine& luaEngine,
   PlayerCodes::ObjectMap& codeMap,
+  Player const& player,
   Planet const& planet,
   std::vector<Fleet const*> const& fleetList,
   std::vector<Event>& events)
@@ -195,6 +201,7 @@ try
 		BOOST_THROW_EXCEPTION(
 		  std::logic_error("planet.buildingList.size() != Building::Count"));
 
+	setCurrentPlayer(luaEngine, player);
 	return code->call<PlanetAction>(planet, fleetList);
 }
 catch(Polua::Exception const& ex)
@@ -284,6 +291,7 @@ void gatherIfWant(
 {
 	auto localFleetsKV = fleetMap.equal_range(fleet.coord);
 	auto fleetIter = localFleetsKV.first;
+	setCurrentPlayer(luaEngine, player);
 	Polua::Caller caller(luaEngine.state());
 	if(checkLuaMethode(codeMap, "do_gather", events))
 	{
@@ -324,6 +332,7 @@ boost::optional<FleetAction> execFleetScript(
   Universe const& univ_,
   LuaEngine& luaEngine,
   PlayerCodes::ObjectMap& codeMap,
+  Player const& player,
   Fleet const& fleet,
   std::vector<Event>& events)
 try
@@ -340,6 +349,7 @@ try
 	lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 	if(planet && fleetCanSeePlanet(fleet, *planet, univ_) == false)
 		planet = nullptr;
+	setCurrentPlayer(luaEngine, player);
 	if(planet)
 		action = actionFunc->call<FleetAction>(fleet, *planet);
 	else
@@ -516,10 +526,12 @@ void execPlanets(Universe& univ_,
 	for(ScriptInputs const sciptInputs : ownedPlanetList)
 	{
 		Planet const& planet = sciptInputs.planet;
+		Player const& player = mapFind(playerMap, planet.playerId)->second;
 		planetActionList.push_back(ExtPlanetAction(
 		                             planet.coord,
 		                             execPlanetScript(luaEngine,
 		                                 codesMap[planet.playerId].planetsCode,
+		                                 player,
 		                                 planet,
 		                                 sciptInputs.fleetList,
 		                                 events)));
@@ -797,10 +809,12 @@ void execFleets(
 	std::vector<FleetAndAction> scriptInputsList;
 	for(auto iter = fleetMap.begin(); iter != fleetMap.end(); ++iter)
 	{
+		Player const& player = mapFind(playerMap, iter->second.playerId)->second;
 		boost::optional<FleetAction> action =
 		  execFleetScript(univ_,
 		                  luaEngine,
 		                  codesMap[iter->second.playerId].fleetsCode,
+		                  player,
 		                  iter->second,
 		                  events);
 		FleetAndAction fleetAndAction = {&iter->second, action};

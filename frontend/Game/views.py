@@ -402,6 +402,7 @@ def BlocklyFleetsCodesView(request):
         "mode": "blockly",
         'timeInfo': timeInfo,
         'tutoInfoIsSeen': tutoInfoIsSeen,
+        'player':player,
     })
     
 
@@ -429,6 +430,7 @@ def TextFleetsCodesView(request):
         "level": plLvl,
         "mode": "text",
         "timeInfo": timeInfo,
+        'player':player,
     })
 
 
@@ -476,6 +478,7 @@ def BlocklyPlanetsCodesView(request):
         "helpMessage": helpMessage,
         "timeInfo": timeInfo,
         "tutoInfoIsSeen": tutoInfoIsSeen,
+        'player':player,
     })
 
 
@@ -504,6 +507,7 @@ def TextPlanetsCodesView(request):
         "level": plLvl,    
         "mode": "text",
         "timeInfo": timeInfo,         
+        'player':player,
     })
     
 

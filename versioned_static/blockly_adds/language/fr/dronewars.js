@@ -21,8 +21,11 @@ Blockly.LANG_DRONEWARS_PLANET_PLAYERID = "id du propriétaire de la planète";
 Blockly.LANG_DRONEWARS_PLANET_BUILDINGLIST = 'batiments de la planète';
 Blockly.LANG_DRONEWARS_PLANET_CANNONLIST = 'canons de la planète';
 Blockly.LANG_DRONEWARS_PLANET_RESSOURCESET = 'resources de la planète';
-Blockly.LANG_DRONEWARS_PLANET_CAN_PAY_1 = 'la planète'
-Blockly.LANG_DRONEWARS_PLANET_CAN_PAY_2 = 'peut payer' 
+Blockly.LANG_DRONEWARS_PLANET_CAN_PAY_1 = 'la planète';
+Blockly.LANG_DRONEWARS_PLANET_CAN_PAY_2 = 'peut payer';
+Blockly.LANG_DRONEWARS_PLANET_AGE = 'age de la planète';
+Blockly.LANG_DRONEWARS_PLANET_AGE_2 = '';
+ 
 Blockly.LANG_DRONEWARS_RESSOURCESET = 'resources';
 Blockly.LANG_DRONEWARS_RESSOURCESET_AT = ' présent dans les ressources';
 Blockly.LANG_DRONEWARS_CONTAINS_1 = 'les ressources' 
@@ -40,6 +43,8 @@ Blockly.LANG_DRONEWARS_FLEET_ORIGIN = 'origine de la flotte';
 Blockly.LANG_DRONEWARS_FLEET_NAME = 'nom de la flotte';
 Blockly.LANG_DRONEWARS_FLEET_SHIPLIST = 'vaisseaux de la flotte';
 Blockly.LANG_DRONEWARS_FLEET_RESSOURCESET = 'resources de la flotte';
+Blockly.LANG_DRONEWARS_FLEET_AGE = 'age de la flotte';
+Blockly.LANG_DRONEWARS_FLEET_AGE_2 = '';
 
 Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_1 = '[NE PLUS UTILISER] ordre de';
 Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_2 = ' dans la direction';

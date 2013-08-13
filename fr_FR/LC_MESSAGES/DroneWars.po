@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-09 18:40+0100\n"
-"PO-Revision-Date: 2013-08-09 18:42+0100\n"
+"POT-Creation-Date: 2013-08-13 20:23+0100\n"
+"PO-Revision-Date: 2013-08-13 20:23+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "Language: fr\n"
@@ -22,43 +22,56 @@ msgstr ""
 "Plural-Forms: Plural-Forms: nplurals=2; plural=n == 1 ? 0 : 1;\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: LuaUniverse.cpp:109 LuaUniverse.cpp:122
+#: LuaUniverse.cpp:111 LuaUniverse.cpp:124
 msgid "%1% expect a number in the range [1: %2%]"
 msgstr "%1% attend un nombre entre 1 et %2% compris."
 
-#: LuaUniverse.cpp:138
+#: LuaUniverse.cpp:140
 msgid "%1% expect a building number in the range [1: %2%]"
 msgstr "attend un numero de batiment entre 1 et %2% compris"
 
-#: Simulation.cpp:185 Simulation.cpp:269
+#: Simulation.cpp:191 Simulation.cpp:276
 msgid "Procedure \"%1%\" not found."
 msgstr "Procédure \"%1%\" introuvable."
 
-#: Skills.cpp:51
+#: Skills.cpp:36
 msgid "You can create up to {1} planets."
 msgstr "Vous pouvez créer jusqu'as {1} planètes."
 
-#: Skills.cpp:68
+#: Skills.cpp:53
 msgid "You can create up to {1} fleets."
 msgstr "Vous pouvez créer jusqu'as {1} flottes."
 
-#: Skills.cpp:85
+#: Skills.cpp:70
 msgid "Your fleets can contains up to {1} ships."
 msgstr "Vos flottes peuvent contenir jusqu'as {1} vaisseaux."
 
-#: UnivManip.cpp:119
+#: Skills.cpp:92
+msgid "You can filter your messages"
+msgstr "Vous pouvez filter vos messages (Pas encors implementé)"
+
+#: Skills.cpp:108
+msgid "You can now store up to {1} events."
+msgstr "Vous pouvez stocker jusqu'as {1} evenements."
+
+#: Skills.cpp:130
+msgid "You can use the \"age()\" procedure on your fleets and planets"
+msgstr ""
+"Vous pouvez utiliser la procedure \":age()\" sur vos flottes et planètes."
+
+#: UnivManip.cpp:120
 msgid "my_planet"
 msgstr "ma_planete"
 
-#: UnivManip.cpp:120
+#: UnivManip.cpp:121
 msgid "fleets"
 msgstr "flottes"
 
-#: UnivManip.cpp:121 UnivManip.cpp:147
+#: UnivManip.cpp:122 UnivManip.cpp:148
 msgid "order"
 msgstr "ordre"
 
-#: UnivManip.cpp:122
+#: UnivManip.cpp:123
 msgid "PLANET_ACTION_CODE_COMMENT"
 msgstr ""
 "Cette procédure décrit le comportment d'une planète à chaque tour. \n"
@@ -69,19 +82,19 @@ msgstr ""
 "Cette procedure retourne la variable \"ordre\" qui contient l'ordre a donner "
 "aux battisseurs présent sur la planète."
 
-#: UnivManip.cpp:144
+#: UnivManip.cpp:145
 msgid "my_fleet"
 msgstr "ma_flotte"
 
-#: UnivManip.cpp:145
+#: UnivManip.cpp:146
 msgid "otherFleet"
 msgstr "autre_flotte"
 
-#: UnivManip.cpp:146
+#: UnivManip.cpp:147
 msgid "local_planet"
 msgstr "planete_locale"
 
-#: UnivManip.cpp:148
+#: UnivManip.cpp:149
 msgid "DO_GATHER_CODE_COMMENT"
 msgstr ""
 "Cette procedure permet à un capitaine de décider si sa flotte doit fusioner "
@@ -90,7 +103,7 @@ msgstr ""
 "\"autre_flotte\", ce qui doit lui permetre de décider si il vaut mieu "
 "fusioner ou non."
 
-#: UnivManip.cpp:149
+#: UnivManip.cpp:150
 msgid "DO_FIGHT_CODE_COMMENT"
 msgstr ""
 "Cette procedure permet a un capitaine de décider si sa flotte doit combatre "
@@ -99,7 +112,7 @@ msgstr ""
 "\"autre_flotte\", ce qui doit lui permetre de décider si il vaut mieu "
 "combatre ou fuire."
 
-#: UnivManip.cpp:150
+#: UnivManip.cpp:151
 msgid "FLEET_ACTION_CODE_COMMENT"
 msgstr ""
 "Cette procédure décrit le comportment d'une flotte à chaque tour. \n"

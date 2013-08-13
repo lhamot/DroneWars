@@ -91,6 +91,7 @@
 		<block type="dronewars_Planet_buildingList"></block>
 		<block type="dronewars_Planet_cannonTab"></block>
 		{% if level < 9  %}<block type="dronewars_Planet_ressourceSet"></block>{% endif %}
+		{% if player.skilltab.5.level > 0 %}<block type="dronewars_planet_age"></block>{% endif %}
 	</category>
 	<category name="{% trans "DroneWars: Fleet" %}">
 		<block type="dronewars_Fleet_id"></block>
@@ -102,6 +103,7 @@
 		{% if level < 9  %}<block type="dronewars_Fleet_ressourceSet"></block>{% endif %}
 		<block type="dronewars_ship_in_fleet"></block>
 		<block type="dronewars_ressource_in_fleet"></block>
+		{% if player.skilltab.5.level > 0 %}<block type="dronewars_fleet_age"></block>{% endif %}
 	</category>
 	<category name="{% trans "DroneWars: Resources" %}">
 		<block type="dronewars_ressourceSet"></block>

@@ -95,3 +95,26 @@ Blockly.lua.dronewars_ship_price = function()
             Blockly.lua.ORDER_FUNCTION_CALL
            ];
 };
+
+
+Blockly.Language.dronewars_fleet_age =
+{
+category:
+    Blockly.LANG_CATEGORY_DRONEWARS_FLEET,
+init:
+    function()
+    {
+        this.setColour(230);
+        this.appendValueInput('FLEET')
+            .setCheck('Fleet')
+            .appendTitle(Blockly.LANG_DRONEWARS_FLEET_AGE);
+        this.setOutput(true, Number);
+    }
+};
+
+Blockly.lua.dronewars_fleet_age = function()
+{
+    var fleet = 
+        Blockly.lua.valueToCode(this, 'FLEET', Blockly.lua.ORDER_NONE) || 'nil';
+    return [fleet + ':age()', Blockly.lua.ORDER_FUNCTION_CALL];
+};

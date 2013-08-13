@@ -30,6 +30,29 @@ Blockly.lua.dronewars_is_planet_free = function()
 };
 
 
+Blockly.Language.dronewars_planet_age =
+{
+category:
+    Blockly.LANG_CATEGORY_DRONEWARS_PLANET,
+init:
+    function()
+    {
+        this.setColour(230);
+        this.appendValueInput('PLANET')
+            .setCheck('Planet')
+            .appendTitle(Blockly.LANG_DRONEWARS_PLANET_AGE);
+        this.setOutput(true, Number);
+    }
+};
+
+Blockly.lua.dronewars_planet_age = function()
+{
+    var planet = 
+        Blockly.lua.valueToCode(this, 'PLANET', Blockly.lua.ORDER_NONE) || 'nil';
+    return [planet + ':age()', Blockly.lua.ORDER_FUNCTION_CALL];
+};
+
+
 addProperty('Planet', 'coord', 'Coord',
             Blockly.LANG_DRONEWARS_PLANET_COORD,
             Blockly.LANG_CATEGORY_DRONEWARS_PLANET);

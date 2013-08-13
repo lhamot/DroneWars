@@ -294,6 +294,7 @@ struct Planet
 		if(buildingList.size() != Building::Count)
 			BOOST_THROW_EXCEPTION(std::logic_error("buildingList.size() != Building::Count"));
 		ar& parentCoord;
+		ar& time;
 	}
 
 	//! Tableau contenant un uint16_t pour chaque type de Building
@@ -309,6 +310,7 @@ struct Planet
 	RessourceSet ressourceSet;         //!< Ressources présente
 	CannonTab cannonTab;               //!< Nombre de canons pour chaque type
 	Coord parentCoord;                 //!< Coordonées de la planète parente
+	time_t time;                       //!< Date de création
 
 	//! Taille ocupée dans le tas (pour profiling)
 	size_t heap_size() const
@@ -319,9 +321,9 @@ struct Planet
 		  taskQueue.capacity() * sizeof(PlanetTask);
 	}
 	//! Constructeur par defaut
-	Planet(): playerId(55555) {}
+	Planet(): playerId(55555), time(0) {}
 	//! Constructeur
-	Planet(Coord c): coord(c), playerId(Player::NoId)
+	Planet(Coord c): coord(c), playerId(Player::NoId), time(::time(0))
 	{
 		buildingList.fill(0);
 		cannonTab.fill(0);
@@ -414,6 +416,7 @@ struct Fleet
 		ar& origin;
 		ar& name;
 		ar& shipList;
+		ar& time;
 		ar& ressourceSet;
 		ar& taskQueue;
 		if(playerId >= 100000)
@@ -431,6 +434,7 @@ struct Fleet
 	Coord origin;             //!< Coordonées d'origines
 	std::string name;         //!< Nom
 	ShipTab shipList;         //!< Quantité de chaque type de vaisseaux présent
+	time_t time;              //!< Date de création
 	RessourceSet ressourceSet;        //!< Ressources transportés par la flotte
 	std::vector<FleetTask> taskQueue; //!< Liste de taque a éxcecuter
 
@@ -442,10 +446,10 @@ struct Fleet
 	}
 
 	//! Constructeur par defaut
-	Fleet(): id(NoId), playerId(Player::NoId) {shipList.assign(0);}
+	Fleet(): id(NoId), playerId(Player::NoId), time(0) {shipList.assign(0);}
 	//! Constructeur
 	Fleet(ID fid, Player::ID pid, Coord c):
-		id(fid), playerId(pid), coord(c), origin(c)
+		id(fid), playerId(pid), coord(c), origin(c), time(::time(0))
 	{
 		shipList.fill(0);
 		if(playerId >= 100000)

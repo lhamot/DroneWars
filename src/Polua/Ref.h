@@ -87,6 +87,16 @@ public:
 		Caller caller(L);
 		return caller.call<R>(args...);
 	}
+
+	template<typename T>
+	T get()
+	{
+		POLUA_CHECK_STACK(L, 0);
+		push();
+		T obj = Polua::fromstackAny<T>(L, -1);
+		lua_pop(L, 1);
+		return obj;
+	}
 };
 
 //! Référence un obj stoké dans les registre de lua (avec sémentique de valeur)

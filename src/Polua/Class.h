@@ -559,7 +559,8 @@ public:
 	//! Ajoute une methode au type T, a partir d'un lua_CFunction
 	Class& methode(std::string const& name, lua_CFunction methode)
 	{
-		setInMetatable(L, name, Member(methode, LuaCFunc(), LuaCFunc()));
+		Member mem(Methode(methode, nullptr));
+		setInMetatable(L, name, mem);
 		return *this;
 	}
 
