@@ -61,7 +61,7 @@ public:
 		std::cout << "i:" << i << " d:" << d << " e:" << e << " s:" << s << std::endl;
 	}
 
-	int func(int a)
+	int func(int a) const
 	{
 		std::cout << a << std::endl;
 		return a + 1;

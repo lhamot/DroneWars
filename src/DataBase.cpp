@@ -9,12 +9,15 @@
 #include <iterator>
 
 #pragma warning(push)
-#pragma warning(disable: 4310)
+#pragma warning(disable: 4310 4100)
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
-#pragma warning(pop)
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/range/adaptor/transformed.hpp>
+#include <boost/property_tree/ptree_serialization.hpp>
+#include <boost/serialization/variant.hpp>
+#pragma warning(pop)
 
 #pragma warning(push)
 #pragma warning(disable: 4512 4244)
@@ -33,6 +36,7 @@ using namespace Poco::Data;
 using namespace Poco;
 using namespace boost;
 using namespace std;
+using namespace boost::adaptors;
 
 
 //! Convertie un BLOB en std::string
@@ -968,11 +972,9 @@ try
 		return false;
 
 	pla.skilltab.at(skillID) += 1;
-	std::vector<string> tab;
-	tab.reserve(pla.skilltab.size());
-	transform(pla.skilltab, back_inserter(tab), lexical_cast<string, uint16_t>);
 
-	string skilltabstr = join(tab, ",");
+	string const skilltabstr =
+	  join(pla.skilltab | transformed(lexical_cast<string, uint16_t>), ",");
 	(*session_) <<
 	            "UPDATE Player SET "
 	            "skillpoints = skillpoints - ?, "
@@ -987,6 +989,23 @@ try
 }
 DB_CATCH
 
+
+void DataBase::setPlayerSkills(Player::ID pid,
+                               Player::SkillTab const& skillTab)
+{
+	Transaction trans(*session_);
+
+	string const skilltabstr =
+	  join(skillTab | transformed(lexical_cast<string, uint16_t>), ",");
+	(*session_) <<
+	            "UPDATE Player SET "
+	            "skilltab = ? "
+	            "WHERE id = ?",
+	            use(skilltabstr),
+	            use(pid),
+	            now;
+	trans.commit();
+}
 
 
 //***************************  Messages  **********************************

@@ -13,10 +13,13 @@
 #include <boost/bind.hpp>
 
 #pragma warning(push)
-#pragma warning(disable: 4310)
+#pragma warning(disable: 4310 4100)
 #include <boost/archive/binary_iarchive.hpp>
 #include "portable_binary_oarchive.hpp"
 #include "portable_binary_iarchive.hpp"
+#include <boost/property_tree/ptree_serialization.hpp>
+#include <boost/serialization/variant.hpp>
+#include <boost/serialization/optional.hpp>
 #pragma warning(pop)
 #include <boost/iostreams/filtering_streambuf.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
@@ -233,11 +236,13 @@ void construct(Universe& univ, DataBase& database)
 	for(size_t playerCount = 0; playerCount < 100;)
 	{
 		Player::ID const pid = database.addPlayer(nameGen(), password, codes);
-		for(size_t i = 0; i < 10; ++i)
 		{
-			database.buySkill(pid, Skill::Cohesion);
-			database.buySkill(pid, Skill::Strategy);
-			database.buySkill(pid, Skill::Conquest);
+			Player::SkillTab skillTab;
+			skillTab.fill(0);
+			skillTab[Skill::Cohesion] = 10;
+			skillTab[Skill::Strategy] = 10;
+			skillTab[Skill::Conquest] = 10;
+			database.setPlayerSkills(pid, skillTab);
 		}
 		if(pid != Player::NoId)
 		{

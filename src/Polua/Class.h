@@ -132,6 +132,30 @@ static int call(lua_State* L)
 };
 
 
+template<typename R, typename T, typename... Args>
+struct MemCallerR<R(T::*)(Args...) const>
+{
+	typedef R(T::*FuncPtr)(Args...) const;
+
+	template<typename... ArgIdxList>
+	static int call2(lua_State* L, detail::TypeList<ArgIdxList...> const&)
+	{
+		using namespace detail;
+		ObjAndMethode<typename Normalize<T>::type, FuncPtr> OMP(L);
+		Polua::pushTemp(
+		  L,
+		  (OMP.object->*OMP.methode)(fromStack(L, ArgIdxList())...));
+		return 1;
+	}
+
+	static int call(lua_State* L)
+	{
+		return call2(L, detail::ArgIdxListMaker<Args...>::Type());
+	}
+};
+
+
+
 template<typename R, typename T, typename ...Args>
 struct MemCallerR<R(*)(T, Args...)>
 {
@@ -175,6 +199,25 @@ static int call(lua_State* L)
 {
 	return call2(L, detail::ArgIdxListMaker<Args...>::Type());
 }
+};
+
+template<typename T, typename... Args>
+struct MemCaller<void(T::*)(Args...) const>
+{
+	typedef void(T::*FuncPtr)(Args...) const;
+
+	template<typename... ArgIdxList>
+	static int call2(lua_State* L, detail::TypeList<ArgIdxList...> const&)
+	{
+		using namespace detail;
+		ObjAndMethode<typename Normalize<T>::type, FuncPtr> OMP(L);
+		(OMP.object->*OMP.methode)(fromStack(L, ArgIdxList())...);
+		return 0;
+	}
+	static int call(lua_State* L)
+	{
+		return call2(L, detail::ArgIdxListMaker<Args...>::Type());
+	}
 };
 
 
@@ -471,12 +514,14 @@ class Class
 	struct GetFuncTypeR
 	{
 		typedef R(T::*MemberFunc)(Args...);
+		typedef R(T::*ConstMemberFunc)(Args...) const;
 		typedef R(*ExternFunc)(Args...);
 	};
 	template<typename... Args>
 	struct GetFuncType
 	{
 		typedef void(T::*MemberFunc)(Args...);
+		typedef void(T::*ConstMemberFunc)(Args...) const;
 		typedef void(*ExternFunc)(Args...);
 	};
 
@@ -534,6 +579,14 @@ public:
 		return *this;
 	}
 
+	//! Ajoute unu fonction de convertion en string
+	Class& toString(lua_CFunction stringizer)
+	{
+		POLUA_CHECK_STACK(L, 0);
+		setInMetatable(L, "__tostring", stringizer);
+		return *this;
+	}
+
 	//! Ajoute une propriété au type T
 	template<typename A>
 	Class& property(std::string const& name, A T::*memberPtr)
@@ -564,11 +617,22 @@ public:
 		return *this;
 	}
 
-	//! Ajoute une methode au type T, a partir d'une vrai methode
+	//! Ajoute une methode au type T, a partir d'une vrai methode non const
 	template<typename... Args>
 	Class& methode(std::string const& name, void(T::*methode)(Args...))
 	{
 		typedef typename GetFuncType<Args...>::MemberFunc FuncPtr;
+		Methode closure(&ClassHelpers::MemCaller<FuncPtr>::call,
+		                ClassHelpers::memberToVoid(methode));
+		setInMetatable(L, name, Member(closure));
+		return *this;
+	}
+
+	//! Ajoute une methode au type T, a partir d'une vrai methode constante
+	template<typename... Args>
+	Class& methode(std::string const& name, void(T::*methode)(Args...) const)
+	{
+		typedef typename GetFuncType<Args...>::ConstMemberFunc FuncPtr;
 		Methode closure(&ClassHelpers::MemCaller<FuncPtr>::call,
 		                ClassHelpers::memberToVoid(methode));
 		setInMetatable(L, name, Member(closure));
@@ -586,11 +650,22 @@ public:
 		return *this;
 	}
 
-	//! Ajoute une methode au type T, a partir d'une vrai methode
+	//! Ajoute une methode au type T, a partir d'une vrai methode non const
 	template<typename R, typename... Args>
 	Class& methode(std::string const& name, R(T::*methode)(Args...))
 	{
 		typedef typename GetFuncTypeR<R, Args...>::MemberFunc FuncPtr;
+		Methode closure(&ClassHelpers::MemCallerR<FuncPtr>::call,
+		                ClassHelpers::memberToVoid(methode));
+		setInMetatable(L, name, Member(closure));
+		return *this;
+	}
+
+	//! Ajoute une methode au type T, a partir d'une vrai methode constante
+	template<typename R, typename... Args>
+	Class& methode(std::string const& name, R(T::*methode)(Args...) const)
+	{
+		typedef typename GetFuncTypeR<R, Args...>::ConstMemberFunc FuncPtr;
 		Methode closure(&ClassHelpers::MemCallerR<FuncPtr>::call,
 		                ClassHelpers::memberToVoid(methode));
 		setInMetatable(L, name, Member(closure));

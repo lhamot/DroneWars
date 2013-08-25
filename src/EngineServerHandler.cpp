@@ -53,8 +53,8 @@ namespace
 template<typename I>
 struct NumerciCast
 {
-	I value; //!< Valeur pas encore castée
-	char const* valueName;
+	I value;               //!< Valeur pas encore convertie
+	char const* valueName; //!< Nom de la valeur a convertir (pour log)
 
 	//! Applique un boost::numeric_cast du type I vers O
 	template<typename O>
@@ -75,12 +75,17 @@ struct NumerciCast
 
 //! Crée un NumerciCast pour faire un numeric_cast sans spécifier le type
 template<typename I>
-NumerciCast<I> numCast(I value, char const* const valueName)
+NumerciCast<I> numCast(
+  I value,                    //!< Valeur a caster
+  char const* const valueName //!< Nom de la valeur (pour log)
+)
 {
 	NumerciCast<I> cast = {value, valueName};
 	return cast;
 }
 
+//! Crée un NumerciCast pour faire un numeric_cast sans spécifier le type
+//! @param value Valeur a caster
 #define NUMCAST(value) numCast(value, #value)
 
 //! Convertie un Coord en ndw::Coord pour transfert par thrift
@@ -203,6 +208,7 @@ void codeDataCppToThrift(CodeData const& in, ndw::CodeData& out)
 }
 
 
+//! Convertie un Skill en ndw::Skill pour transfert par thrift
 ndw::Skill skillToThrift(size_t skillID, Player const& player)
 {
 	ndw::Skill outSkill;
@@ -214,6 +220,7 @@ ndw::Skill skillToThrift(size_t skillID, Player const& player)
 	outSkill.effectMessage = skill.effectMessage(player);
 	return outSkill;
 }
+
 
 //! Convertie un Player en ndw::Player pour transfert par thrift
 ndw::Player playerToThrift(Player const& player)

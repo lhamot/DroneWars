@@ -21,7 +21,7 @@
 #include <log4cplus/loggingmacros.h>
 
 #pragma warning(push)
-#pragma warning(disable:4244 4310 4100 4512 4127 4706 4702)
+#pragma warning(disable:4244 4310 4100 4512 4127 4706 4702 4503 4345)
 #include <boost/array.hpp>
 #include <boost/exception/all.hpp>
 #include <boost/functional/hash.hpp>
@@ -54,5 +54,6 @@
 #include <boost/thread/shared_mutex.hpp>
 #include <boost/variant.hpp>
 #include <boost/locale.hpp>
+#include <boost/property_tree/ptree.hpp>
 #pragma warning(pop)
 

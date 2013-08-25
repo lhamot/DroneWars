@@ -19,6 +19,7 @@
 
 #include "UnivManip.h"
 #include "Skills.h"
+#include "PTreeLuaHelper.h"
 
 extern "C"
 {
@@ -147,12 +148,12 @@ RessourceSet buildingPrice(Building::Enum building, size_t level)
 	return getBuilingPrice(Building::Enum(building - 1), level);
 }
 
-
+//! lua_CFunction qui pousse l'age d'une flotte sur la pile lua
 int luaCFunction_fleetage(lua_State* L)
 {
 	Polua::object playerObj = Polua::refFromName(L, "currentPlayer");
 	Player currentPlayer = playerObj->get<Player>();
-	Fleet const& fleet = Polua::fromstackAny<Fleet>(L, 1);
+	Fleet const& fleet = Polua::fromstackAny<Fleet>(L, -1);
 	if(currentPlayer.skilltab[Skill::Chronos] < 1 ||
 	   fleet.playerId != currentPlayer.id)
 		Polua::push(L, 0);
@@ -161,11 +162,12 @@ int luaCFunction_fleetage(lua_State* L)
 	return 1;
 }
 
+//! lua_CFunction qui pousse l'age d'une planète sur la pile lua
 int luaCFunction_planetage(lua_State* L)
 {
 	Polua::object playerObj = Polua::refFromName(L, "currentPlayer");
 	Player const& currentPlayer = playerObj->get<Player const&>();
-	Planet const& planet = Polua::fromstackAny<Planet>(L, 1);
+	Planet const& planet = Polua::fromstackAny<Planet>(L, -1);
 	if(currentPlayer.skilltab[Skill::Chronos] < 1 ||
 	   planet.playerId != currentPlayer.id)
 		Polua::push(L, 0);
@@ -239,6 +241,7 @@ extern "C" int initDroneWars(lua_State* L)
 	Class<Planet>(L, "Planet")
 	.methode("isFree", &planetIsFree)
 	.methode("age", luaCFunction_planetage)
+	.property("memory", &Planet::memory)
 	.read_only("coord", &Planet::coord)
 	.read_only("playerId", &Planet::playerId)
 	.read_only("buildingList", &Planet::buildingList)
@@ -256,6 +259,7 @@ extern "C" int initDroneWars(lua_State* L)
 	.enumValue("LargeCargo",   Ship::LargeCargo + 1);
 	Class<Fleet>(L, "Fleet")
 	.methode("age", luaCFunction_fleetage)
+	.property("memory", &Fleet::memory)
 	.property("id", &Fleet::id)
 	.property("playerId", &Fleet::playerId)
 	.property("coord", &Fleet::coord)
@@ -278,6 +282,23 @@ extern "C" int initDroneWars(lua_State* L)
 	.read_only("action", &FleetAction::action)
 	.read_only("target", &FleetAction::target);
 	Class<Player>(L, "Player");
+	Class<TypedPtree>(L, "ptree")
+	.methode("size", &TypedPtree::size)
+	.methode("empty", &TypedPtree::empty)
+	.methode("clear", &TypedPtree::clear)
+	.methode("get_child", &ptree_get_child)
+	.methode("put", &ptree_put)
+	.methode("add", &ptree_add)
+	.methode("get", &ptree_get)
+	.methode("get_value", &ptree_get_value)
+	.methode("put_value", &ptree_put_value)
+	.methode("full_count", &countPtreeItem)
+	.toString(&ptree_tostring)
+	;
+	Class<TypedPtree::iterator>(L, "ptree_iterator")
+	.methode("gey_key", &ptree_iter_key)
+	.toString(&ptree_iter_tostring)
+	;
 
 	return 0;
 }

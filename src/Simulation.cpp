@@ -57,6 +57,7 @@ void luaCountHook(lua_State* L,
 	luaL_error(L, "timeout was reached");
 }
 
+//! Place un joueur dans les registre lua sous le nom "currentPlayer"
 void setCurrentPlayer(LuaEngine& luaEngine, Player const& player)
 {
 	Polua::pushTemp(luaEngine.state(), player);
@@ -176,7 +177,7 @@ boost::optional<PlanetAction> execPlanetScript(
   LuaEngine& luaEngine,
   PlayerCodes::ObjectMap& codeMap,
   Player const& player,
-  Planet const& planet,
+  Planet& planet,
   std::vector<Fleet const*> const& fleetList,
   std::vector<Event>& events)
 try
@@ -202,7 +203,18 @@ try
 		  std::logic_error("planet.buildingList.size() != Building::Count"));
 
 	setCurrentPlayer(luaEngine, player);
-	return code->call<PlanetAction>(planet, fleetList);
+	PlanetAction action = code->call<PlanetAction>(planet, fleetList);
+	cleanPtreeNil(planet.memory);
+	if(acceptPtree(player, planet.memory) == false)
+	{
+		addErrorMessage(codeMap,
+		                BL::gettext("Too mush items in your "
+		                            "planet memory for your Memory skill level."),
+		                events);
+		return boost::none;
+	}
+	else
+		return action;
 }
 catch(Polua::Exception const& ex)
 {
@@ -210,13 +222,16 @@ catch(Polua::Exception const& ex)
 	return boost::none;
 }
 
+//! Applique l'action demandé par le script de la planete
 void applyPlanetAction(
   Universe& univ_,
   std::map<Player::ID, Player> const& playerMap,
+  Planet& sciptModifiedPlanet,
   Planet& planet,
   PlanetAction const& action,
   size_t const playerFleetCount)
 {
+	planet.memory.swap(sciptModifiedPlanet.memory);
 	switch(action.action)
 	{
 	case PlanetAction::Undefined:
@@ -327,13 +342,13 @@ void gatherIfWant(
 	}
 }
 
-
+//! Excecute le script de la flotte
 boost::optional<FleetAction> execFleetScript(
   Universe const& univ_,
   LuaEngine& luaEngine,
   PlayerCodes::ObjectMap& codeMap,
   Player const& player,
-  Fleet const& fleet,
+  Fleet& fleet,
   std::vector<Event>& events)
 try
 {
@@ -354,7 +369,17 @@ try
 		action = actionFunc->call<FleetAction>(fleet, *planet);
 	else
 		action = actionFunc->call<FleetAction>(fleet);
-	return action;
+	cleanPtreeNil(fleet.memory);
+	if(acceptPtree(player, fleet.memory) == false)
+	{
+		addErrorMessage(codeMap,
+		                BL::gettext("Too mush items in your "
+		                            "fleet's memory for your Memory skill level."),
+		                events);
+		return boost::none;
+	}
+	else
+		return action;
 }
 catch(Polua::Exception const& ex)
 {
@@ -362,13 +387,17 @@ catch(Polua::Exception const& ex)
 	return boost::none;
 }
 
+//! Applique l'action demandé par le script de la flotte
 void applyFleetScript(Universe& univ_,
                       std::map<Player::ID, Player> const& playerMap,
+                      Fleet& scriptModifiedFleet,
                       Fleet& fleet,
                       FleetAction const& action,
                       std::map<Player::ID, size_t>& playersPlanetCount,
                       std::vector<Event>& events)
 {
+	scriptModifiedFleet.memory.swap(fleet.memory);
+
 	auto planetIter = univ_.planetMap.find(fleet.coord);
 	Planet* planet = nullptr;
 	if(planetIter != univ_.planetMap.end())
@@ -442,6 +471,7 @@ void Simulation::updatePlayersCode(LuaTools::LuaEngine& luaEngine,
 }
 
 
+//! Genere une map le joueur ID=>Joueur a partir de la base de donnée SQL
 std::map<Player::ID, Player> getPlayerMap(DataBase const& database)
 {
 	std::vector<Player> players = database.getPlayers();
@@ -513,11 +543,15 @@ void execPlanets(Universe& univ_,
 	struct ExtPlanetAction
 	{
 		Coord planetCoord;
+		Planet planet;
 		boost::optional<PlanetAction> optAction;
 
 		explicit ExtPlanetAction(Coord const& coord): planetCoord(coord) {}
-		ExtPlanetAction(Coord const& coord, boost::optional<PlanetAction> const& action):
-			planetCoord(coord), optAction(action)
+		ExtPlanetAction(Coord const& coord,
+		                Planet const& planet,
+		                boost::optional<PlanetAction> const& action
+		               ):
+			planetCoord(coord), planet(planet), optAction(action)
 		{
 		}
 	};
@@ -525,26 +559,28 @@ void execPlanets(Universe& univ_,
 	planetActionList.reserve(ownedPlanetList.size());
 	for(ScriptInputs const sciptInputs : ownedPlanetList)
 	{
-		Planet const& planet = sciptInputs.planet;
+		Planet planet = sciptInputs.planet;
 		Player const& player = mapFind(playerMap, planet.playerId)->second;
-		planetActionList.push_back(ExtPlanetAction(
-		                             planet.coord,
-		                             execPlanetScript(luaEngine,
-		                                 codesMap[planet.playerId].planetsCode,
-		                                 player,
-		                                 planet,
-		                                 sciptInputs.fleetList,
-		                                 events)));
+		boost::optional<PlanetAction> action =
+		  execPlanetScript(luaEngine,
+		                   codesMap[planet.playerId].planetsCode,
+		                   player,
+		                   planet,
+		                   sciptInputs.fleetList,
+		                   events);
+		planetActionList.push_back(
+		  ExtPlanetAction(planet.coord, planet, action));
 	}
 
 	{
 		UpToUniqueLock writeLock(lockPlanet);
-		for(ExtPlanetAction const & extAction : planetActionList)
+		for(ExtPlanetAction & extAction : planetActionList)
 		{
 			Planet& planet = univ_.planetMap[extAction.planetCoord];
 			if(extAction.optAction)
 				applyPlanetAction(univ_,
 				                  playerMap,
+				                  extAction.planet,
 				                  planet,
 				                  *extAction.optAction,
 				                  playerFleetCounts[planet.playerId]);
@@ -804,20 +840,25 @@ void execFleets(
 	struct FleetAndAction
 	{
 		Fleet* fleet;
+		Fleet scriptModifiedFleet;
 		boost::optional<FleetAction> action;
 	};
 	std::vector<FleetAndAction> scriptInputsList;
 	for(auto iter = fleetMap.begin(); iter != fleetMap.end(); ++iter)
 	{
 		Player const& player = mapFind(playerMap, iter->second.playerId)->second;
+		Fleet scriptModifiedFleet = iter->second;
 		boost::optional<FleetAction> action =
 		  execFleetScript(univ_,
 		                  luaEngine,
 		                  codesMap[iter->second.playerId].fleetsCode,
 		                  player,
-		                  iter->second,
+		                  scriptModifiedFleet,
 		                  events);
-		FleetAndAction fleetAndAction = {&iter->second, action};
+		FleetAndAction fleetAndAction =
+		{
+			&iter->second, scriptModifiedFleet, action
+		};
 		scriptInputsList.push_back(fleetAndAction);
 	}
 
@@ -826,6 +867,7 @@ void execFleets(
 		if(fleetAndAction.action)
 			applyFleetScript(univ_,
 			                 playerMap,
+			                 fleetAndAction.scriptModifiedFleet,
 			                 *fleetAndAction.fleet,
 			                 *fleetAndAction.action,
 			                 playersPlanetCount,
@@ -1142,8 +1184,11 @@ void Simulation::save(std::string const& saveName) const
 		CATCH_LOG_RETHROW(saveLogger)
 	};
 
+	bool canSave = savingThread_.joinable() == false;
+	if(canSave == false)
+		canSave = savingThread_.try_join_for(boost::chrono::milliseconds(10));
 
-	if(savingThread_.joinable() == false)
+	if(canSave)
 	{
 		LOG4CPLUS_TRACE(logger, "copy universe to save");
 		SharedLock lockAll(univ_.mutex);

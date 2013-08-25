@@ -160,12 +160,12 @@ public:
 template<typename T>
 class RefWrapper : public WrapperBase<T>
 {
-	T& copy_;
+	T& ref_;
 
 public:
-	explicit RefWrapper(T const& copy): copy_(copy) {}
+	explicit RefWrapper(T& ref): ref_(ref) {}
 
-	virtual T* getPtr() {return &copy_;}
+	virtual T* getPtr() {return &ref_;}
 };
 
 
@@ -374,24 +374,24 @@ template<typename T> struct Push<T, true, true> :
 
 //! Pousse dans la pile lua une copie d'un type C++ en passant par CopyWrapper
 template<typename T>
-void pushUserdataCopy(lua_State* L, T& val)
+void pushUserdataCopy(lua_State* L, T const& val)
 {
 	POLUA_CHECK_STACK(L, 1);
 	CopyWrapper<T>* usrdata =
 	  (CopyWrapper<T>*)lua_newuserdata(L, sizeof(CopyWrapper<T>));
 	luaL_setmetatable(L, typeid(T).name());
-	new(usrdata) CopyWrapper<T>(val);
+	new(usrdata) CopyWrapper<T>(const_cast<T&>(val));
 }
 
 //! Pousse dans la pile lua une ref sur un type C++ en passant par RefWrapper
 template<typename T>
-void pushUserdataRef(lua_State* L, T& val)
+void pushUserdataRef(lua_State* L, T const& val)
 {
 	POLUA_CHECK_STACK(L, 1);
 	RefWrapper<T>* usrdata =
 	  (RefWrapper<T>*)lua_newuserdata(L, sizeof(RefWrapper<T>));
 	luaL_setmetatable(L, typeid(T).name());
-	new(usrdata) RefWrapper<T>(val);
+	new(usrdata) RefWrapper<T>(const_cast<T&>(val));
 }
 
 template<typename T>

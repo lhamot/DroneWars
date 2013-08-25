@@ -53,11 +53,11 @@ auto make_zip_iterator(I1 const& iter1, I2 const& iter2)
 template<typename C1, typename C2>
 auto make_zip_range(C1 const& c1, C2 const& c2)
 -> decltype(boost::make_iterator_range(
-              make_zip_iterator(c1.begin(), c2.begin()),
-              make_zip_iterator(c1.end(), c2.end())))
+              make_zip_iterator(boost::begin(c1), boost::begin(c2)),
+              make_zip_iterator(boost::end(c1), boost::end(c2))))
 {
-	auto begin = make_zip_iterator(c1.begin(), c2.begin());
-	auto end = make_zip_iterator(c1.end(), c2.end());
+	auto begin = make_zip_iterator(boost::begin(c1), boost::begin(c2));
+	auto end = make_zip_iterator(boost::end(c1), boost::end(c2));
 	return boost::make_iterator_range(begin, end);
 }
 
@@ -79,6 +79,19 @@ void map_remove_erase_if(M& map, F const& func)
 		else
 			++iter;
 	}
+}
+
+
+//! Crée un range pour transformer un conteneur
+template<typename F, typename C>
+auto make_transform_range(C const& c)
+-> decltype(boost::make_iterator_range(
+              boost::make_transform_iterator<F>(boost::begin(c)),
+              boost::make_transform_iterator<F>(boost::end(c))))
+{
+	auto begin = boost::make_transform_iterator<F>(boost::begin(c));
+	auto end = boost::make_transform_iterator<F>(boost::end(c));
+	return boost::make_iterator_range(begin, end);
 }
 
 

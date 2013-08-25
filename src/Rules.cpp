@@ -334,6 +334,21 @@ size_t getMaxEventCount(Player const& player)
 	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::ServerFarm] + 4.));
 }
 
+size_t playerPtreeSize(Player const& player)
+{
+	size_t const memLevel = player.skilltab[Skill::Memory];
+	return memLevel ?
+	       size_t(pow(2., (int(player.skilltab[Skill::Memory]) - 2) * 0.6) * 4.) :
+	       0;
+}
+
+bool acceptPtree(Player const& player, TypedPtree const& pt)
+{
+	size_t const maxItemCount = playerPtreeSize(player);
+	size_t const treeItemCount = countPtreeItem(pt);
+	return treeItemCount <= maxItemCount;
+}
+
 namespace InternalRules
 {
 //! Test si la flotte peut colonizer la planète

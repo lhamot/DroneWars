@@ -9,6 +9,7 @@
 #include "serialize_unordered_map.h"
 #include "Player.h"
 #include "Tools.h"
+#include "TypedPtree.h"
 
 
 //! Pour éviter un warning bidon de doxygen
@@ -295,6 +296,7 @@ struct Planet
 			BOOST_THROW_EXCEPTION(std::logic_error("buildingList.size() != Building::Count"));
 		ar& parentCoord;
 		ar& time;
+		ar& memory;
 	}
 
 	//! Tableau contenant un uint16_t pour chaque type de Building
@@ -311,6 +313,7 @@ struct Planet
 	CannonTab cannonTab;               //!< Nombre de canons pour chaque type
 	Coord parentCoord;                 //!< Coordonées de la planète parente
 	time_t time;                       //!< Date de création
+	TypedPtree memory; //!< Données utilisateur
 
 	//! Taille ocupée dans le tas (pour profiling)
 	size_t heap_size() const
@@ -421,6 +424,7 @@ struct Fleet
 		ar& taskQueue;
 		if(playerId >= 100000)
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
+		ar& memory;
 	}
 
 	//! Un uint32_t par type de Ship
@@ -437,7 +441,7 @@ struct Fleet
 	time_t time;              //!< Date de création
 	RessourceSet ressourceSet;        //!< Ressources transportés par la flotte
 	std::vector<FleetTask> taskQueue; //!< Liste de taque a éxcecuter
-
+	TypedPtree memory; //!< Données utilisateurs
 
 	//! Taille dans le tas. (Pour profiling)
 	size_t heap_size() const

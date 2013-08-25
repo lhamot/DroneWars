@@ -116,7 +116,7 @@ public:
 	//! Met a jour l'XP des joueurs
 	void updateXP(std::map<Player::ID, uint32_t> const& expMap);
 
-	//! @brief Gère l'achat d'un slill
+	//! @brief Gère l'achat d'un skill
 	//!
 	//! Inscremente le skill skillID du joueur pid, et reduit ses skillpoints
 	//! de cost
@@ -124,6 +124,9 @@ public:
 	//! @pre skillID est valid
 	//! @return false si pas assez de skillpoint, sinon true
 	bool buySkill(Player::ID pid, int16_t skillID);
+
+	//! @brief Definie les niveau des skill d'un joueur (Util pour les IA)
+	void setPlayerSkills(Player::ID pid, Player::SkillTab const& skillTab);
 
 	//***************************  Event  *************************************
 

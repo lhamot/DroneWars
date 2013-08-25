@@ -6,6 +6,7 @@
 
 #include "stdafx.h"
 
+//! Nombre de skill
 static size_t const SkillCount = 11;
 
 //! Coordonée entière tridimentionelle

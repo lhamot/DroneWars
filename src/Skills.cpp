@@ -7,7 +7,7 @@
 
 #include <boost/locale.hpp>
 
-
+//! Skill non abstrait de rempacement, pour ceux qui ne sont pas encore codés
 class DummySkill : public ISkill
 {
 	virtual bool canUpgradeImpl(Player const&) const {return true;};
@@ -20,9 +20,12 @@ class DummySkill : public ISkill
 		return std::string();
 	}
 public:
+	//! Constructeur
+	//! @param name Nom du skill (avant traduction)
 	explicit DummySkill(std::string const& name): ISkill(name) {}
 };
 
+//! Compétance Conquest
 class ConquestSkill : public ISkill
 {
 	virtual bool canUpgradeImpl(Player const&) const {return true;};
@@ -40,6 +43,7 @@ public:
 	ConquestSkill(): ISkill("Conquest") {}
 };
 
+//! Compétance Strategy
 class StrategySkill : public ISkill
 {
 	virtual bool canUpgradeImpl(Player const&) const {return true;};
@@ -57,6 +61,7 @@ public:
 	StrategySkill(): ISkill("Strategy") {}
 };
 
+//! Compétance Cohesion
 class CohesionSkill : public ISkill
 {
 	virtual bool canUpgradeImpl(Player const&) const {return true;};
@@ -74,6 +79,7 @@ public:
 	CohesionSkill(): ISkill("Cohesion") {}
 };
 
+//! Compétance Service d'information
 class InfoServiceSkill : public ISkill
 {
 	virtual bool canUpgradeImpl(Player const& player) const
@@ -95,6 +101,7 @@ public:
 	InfoServiceSkill(): ISkill("InformationService") {}
 };
 
+//! Compétance Ferme de serveur
 class ServerFarmSkill : public ISkill
 {
 	virtual bool canUpgradeImpl(Player const&) const {return true;};
@@ -112,6 +119,7 @@ public:
 	ServerFarmSkill(): ISkill("ServerFarm") {}
 };
 
+//! Compétance Chronos
 class ChronosSkill : public ISkill
 {
 	virtual bool canUpgradeImpl(Player const& player) const
@@ -134,7 +142,30 @@ public:
 	ChronosSkill(): ISkill("Chronos") {}
 };
 
+//! Compétance Memoire
+class MemorySkill : public ISkill
+{
+	virtual bool canUpgradeImpl(Player const& //player
+	                           ) const
+	{
+		return true;
+	}
+	virtual size_t skillCostImpl(size_t skillCurrentLevel) const
+	{
+		return size_t(pow(2., (int(skillCurrentLevel) - 1) * 0.6) * 4.);
+	}
+	virtual std::string effectMessageImpl(Player const& player) const
+	{
+		using namespace boost::locale;
+		return (format(translate("Your store up to {1} items in the \"memory\""
+		                         " of your fleets and planets")) %
+		        playerPtreeSize(player)).str();
+	}
+public:
+	MemorySkill(): ISkill("Memory") {}
+};
 
+//! Initialise la liste de skill
 std::vector<std::shared_ptr<ISkill> > InitSkills()
 {
 	std::vector<std::shared_ptr<ISkill> > list;
@@ -144,7 +175,7 @@ std::vector<std::shared_ptr<ISkill> > InitSkills()
 	list.push_back(std::make_shared<InfoServiceSkill>());
 	list.push_back(std::make_shared<ServerFarmSkill>());
 	list.push_back(std::make_shared<ChronosSkill>());
-	list.push_back(std::make_shared<DummySkill>("Memory"));
+	list.push_back(std::make_shared<MemorySkill>());
 	list.push_back(std::make_shared<DummySkill>("Communication"));
 	list.push_back(std::make_shared<DummySkill>("Spy"));
 	list.push_back(std::make_shared<DummySkill>("BlackBox"));

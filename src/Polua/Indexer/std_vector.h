@@ -56,7 +56,7 @@ struct IPairs<std::vector<T> >
 		size_t index =
 		  (lua_gettop(L) < 2 || lua_isnil(L, 2)) ?
 		  1 :
-		  index = Polua::fromstackAny<size_t>(L, 2) + 1;
+		  Polua::fromstackAny<size_t>(L, 2) + 1;
 
 		if(index > obj->size())
 		{
@@ -72,10 +72,6 @@ struct IPairs<std::vector<T> >
 
 	static int ipairs(lua_State* L)
 	{
-		Container* obj = userdata_fromstack<Container>(L, -1);
-		if(!obj)
-			return luaL_error(L , "Internal error, no object given!");
-
 		lua_pushcfunction(L, &IPairs<Container>::iterator);
 		lua_pushvalue(L, 1);
 		lua_pushnil(L);

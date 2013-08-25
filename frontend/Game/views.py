@@ -11,11 +11,13 @@ from django.shortcuts import render, redirect
 from django import forms
 from django.contrib.sessions.models import Session
 from django.utils import timezone
+from django.core.exceptions import PermissionDenied
 import logging
 
 import thrift.transport.TSocket
 import thrift.protocol.TBinaryProtocol
 import gen_py.thrift.EngineServer
+from django.http import Http404
 
 
 Building_Enum = gen_py.thrift.ttypes.Building_Enum
@@ -204,9 +206,12 @@ def PlanetView(request):
     tab = [int(val) for val in tab]
     targetCoord = gen_py.thrift.ttypes.Coord(tab[0], tab[1], tab[2])
         
-    target = service.getPlanet(targetCoord)[0]
+    planetList = service.getPlanet(targetCoord)
+    if len(planetList) == 0:
+        raise Http404
+    target = planetList[0]
     if target.playerId != pid:
-        raise RuntimeError("Try to access to a not owned planet")
+        raise PermissionDenied
         
     timeInfo = service.getTimeInfo();
     

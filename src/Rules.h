@@ -38,27 +38,39 @@ typedef std::map<Player::ID, Player> PlayerMap;
 //! Calcule l'experience que chaque armés dans un FightReport a gagnées
 void calcExperience(PlayerMap const& planerMap, FightReport& report);
 
+//! Nombre maximum de planètes qu'un joueur peut posseder
 size_t getMaxPlanetCount(Player const& player);
 
+//! Nombre maximum de flottes qu'un joueur peut posseder
 size_t getMaxFleetCount(Player const& player);
 
+//! Nombre maximum de vaisseaux dans la flotte du joueur
 size_t getMaxFleetSize(Player const& player);
 
+//! Nombre maximum d'evenements du joueur qui sont concervés
 size_t getMaxEventCount(Player const& player);
+
+//! Nombre maximum d'élément acceptés dans les "memory" des flottes et planètes
+size_t playerPtreeSize(Player const& player);
+
+//! Teste si ce TypedPtree est acceptable (nombre l'élément)
+bool acceptPtree(Player const& player, TypedPtree const& pt);
 
 namespace InternalRules
 {
-
+//! Test si la flote de ce joueur peut coloniser cette planète
 bool canColonize(Player const& player,
                  Fleet const& fleet,
                  Planet const& planet,
                  size_t planetCount);
 
+//! Test si la planète de ce joueur peut fabriquer ce batiment
 bool canBuild(Player const& player,
               Planet const& planet,
               Ship::Enum type,
               size_t const playerFleetCount);
 
+//! Test si les deux flottes peuvent ce réunir
 bool canGather(Player const& player,
                Fleet const& fleet1,
                Fleet const& fleet2);

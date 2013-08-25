@@ -17,8 +17,7 @@ extern "C"
 //! Outils divers aidant l'utilisation de lua dans du c++
 namespace LuaTools
 {
-typedef Polua::State LuaEngine;
-
+typedef Polua::State LuaEngine; //!< Interpréteur lua
 }
 
 #endif //__LUA_TOOLS__

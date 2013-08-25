@@ -7,36 +7,44 @@
 #include "stdafx.h"
 #include "Player.h"
 
-class ISkill
+//! Interface de tout les skills
+class ISkill : boost::noncopyable
 {
-	ISkill(ISkill const&);
-	ISkill& operator=(ISkill const&);
+	std::string const name_; //!< Nom du skill
 
-	std::string const name_;
-
+	//! Décide si un joueur peut upgrader ce skill
 	virtual bool canUpgradeImpl(Player const& player) const = 0;
+	//! Calcul le cout pour upgrader ce skill
 	virtual size_t skillCostImpl(size_t skillCurrentLevel) const = 0;
+	//! Génere le message décrivent l'effet actuel du skill
 	virtual std::string effectMessageImpl(Player const& player) const = 0;
 
 public:
+	//! constructeur
+	//! @param name : Nom du skill
 	explicit ISkill(std::string const& name): name_(name) {}
+
 	virtual ~ISkill() = 0 {};
 
+	//! Retourne le nom du skill
 	std::string const& getName() const
 	{
 		return name_;
 	}
 
+	//! Décide si un joueur peut upgrader ce skill (NVI)
 	bool canUpgrade(Player const& player) const
 	{
 		return canUpgradeImpl(player);
 	}
 
+	//! Calcul le cout pour upgrader ce skill (NVI)
 	size_t skillCost(size_t skillCurrentLevel) const
 	{
 		return skillCostImpl(skillCurrentLevel);
 	}
 
+	//! Génere le message décrivent l'effet actuel du skill (NVI)
 	std::string effectMessage(Player const& player) const
 	{
 		return effectMessageImpl(player);
@@ -44,9 +52,10 @@ public:
 };
 
 
-//! Caractéristique d'une competance
+//! Caractéristique des competances
 struct Skill
 {
+	//! Identifiants numerique des competances
 	enum Type
 	{
 	  Conquest,
