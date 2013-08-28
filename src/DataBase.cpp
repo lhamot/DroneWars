@@ -15,6 +15,7 @@
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/range/adaptor/transformed.hpp>
+#include <boost/range/irange.hpp>
 #include <boost/property_tree/ptree_serialization.hpp>
 #include <boost/serialization/variant.hpp>
 #pragma warning(pop)
@@ -255,6 +256,59 @@ try
 	            "  REFERENCES Alliance(id) "
 	            "ON DELETE SET NULL ",
 	            now;
+
+	/*for(size_t p1: boost::irange(1, 101))
+	{
+		(*session_) <<
+			"INSERT INTO `script`(`playerID`, `time`, `target`, `code`) VALUES (?, NOW(), 1, \'"
+			"taille_flottes2 = 10\n"
+			"function AI_do_gather(my_fleet2, autre_flotte2)\n"
+			"  return true\n"
+			"end\n"
+			"function AI_do_fight(my_fleet2, autre_flotte2)\n"
+			"  return true\n"
+			"end\n"
+			"function AI_emit(my_fleet2, planete_locale2)\n"
+			"  message = userdata()\n"
+			"  message:put(\"X\", my_fleet2.coord.X)\n"
+			"  message:put(\"Y\", my_fleet2.coord.Y)\n"
+			"  message:put(\"Z\", my_fleet2.coord.Z)\n"
+			"  return message\n"
+			"end\n"
+			"function AI_action(my_fleet2, planete_locale2, mails)\n"
+			"  --print(mails:size())\n"
+			"  --if mails:size() > 0 then\n"
+			"  --  print(mails[1].X, mails[1].Y, mails[1].Z)\n"
+			"  --end\n"
+			"  --for k, v in ipairs(mails) do\n"
+			"  --  print(k, v)\n"
+			"  --end\n"
+			"  if planete_locale2 then\n"
+			"    if planete_locale2:isFree() then\n"
+			"      if(my_fleet2.shipList[Ship.Queen] > 0) then\n"
+			"        if(math.random(2) == 1) then return FleetAction(FleetAction.Colonize) end\n"
+			"      end\n"
+			"      if(planete_locale2.ressourceSet:at(Ressource.Metal) > 0) then\n"
+			"        return FleetAction(FleetAction.Harvest)\n"
+			"      end\n"
+			"    elseif my_fleet2.coord == my_fleet2.origin then\n"
+			"      if(my_fleet2.ressourceSet:at(Ressource.Metal) > 0) then\n"
+			"        return FleetAction(FleetAction.Drop)\n"
+			"      end\n"
+			"      if(my_fleet2.shipList[Ship.Queen] < 1) then\n"
+			"        return FleetAction(FleetAction.Nothing)\n"
+			"      end\n"
+			"    end\n"
+			"  end\n"
+			"  if(my_fleet2.ressourceSet:at(Ressource.Metal) > (10000)) then\n"
+			"    return FleetAction(FleetAction.Move,directionFromTo(my_fleet2.coord, my_fleet2.origin))\n"
+			"  end\n"
+			"  return FleetAction(FleetAction.Move,directionRandom())\n"
+			"end\n"
+			"\')",
+			use(p1),
+			now;
+	}*/
 }
 DB_CATCH
 

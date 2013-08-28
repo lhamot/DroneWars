@@ -65,7 +65,7 @@ struct Skill
 	  ServerFarm,
 	  Chronos,
 	  Memory,
-	  Communication,
+	  Emission,
 	  Spy,
 	  BlackBox,
 	  Log

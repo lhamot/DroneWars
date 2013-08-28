@@ -16,7 +16,9 @@
 
 #include <boost/range/numeric.hpp>
 #include <boost/range/adaptor/filtered.hpp>
+#include <boost/range/irange.hpp>
 #include <boost/format.hpp>
+#include <boost/multi_array.hpp>
 
 
 extern "C"
@@ -133,6 +135,7 @@ try
 	luaL_dostring(luaEngine.state(), "AI_action = nil");
 	luaL_dostring(luaEngine.state(), "AI_do_gather = nil");
 	luaL_dostring(luaEngine.state(), "AI_do_fight = nil");
+	luaL_dostring(luaEngine.state(), "AI_emit = nil");
 
 	std::string codeString = code.code;
 
@@ -162,6 +165,9 @@ try
 		result.functions["action"] = Polua::refFromName(luaEngine.state(), "AI_action");
 		result.functions["do_gather"] = Polua::refFromName(luaEngine.state(), "AI_do_gather");
 		result.functions["do_fight"] = Polua::refFromName(luaEngine.state(), "AI_do_fight");
+		auto emitFunc = Polua::refFromName(luaEngine.state(), "AI_emit");
+		if(emitFunc->is_valid())
+			result.functions["emit"] = emitFunc;
 		return result;
 	}
 }
@@ -342,6 +348,9 @@ void gatherIfWant(
 	}
 }
 
+typedef std::shared_ptr<TypedPtree> TypedPtreePtr;
+typedef std::vector<TypedPtree*> MailBox;
+
 //! Excecute le script de la flotte
 boost::optional<FleetAction> execFleetScript(
   Universe const& univ_,
@@ -349,6 +358,7 @@ boost::optional<FleetAction> execFleetScript(
   PlayerCodes::ObjectMap& codeMap,
   Player const& player,
   Fleet& fleet,
+  MailBox const& mails,
   std::vector<Event>& events)
 try
 {
@@ -366,9 +376,9 @@ try
 		planet = nullptr;
 	setCurrentPlayer(luaEngine, player);
 	if(planet)
-		action = actionFunc->call<FleetAction>(fleet, *planet);
+		action = actionFunc->call<FleetAction>(fleet, *planet, mails);
 	else
-		action = actionFunc->call<FleetAction>(fleet);
+		action = actionFunc->call<FleetAction>(fleet, false, mails);
 	cleanPtreeNil(fleet.memory);
 	if(acceptPtree(player, fleet.memory) == false)
 	{
@@ -803,6 +813,51 @@ void execFights(Universe& univ_,
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
+
+TypedPtreePtr getFleetEmission(
+  Universe const& univ_,
+  LuaEngine& luaEngine,
+  PlayerCodes::ObjectMap& codeMap,
+  Player const& player,
+  Fleet& fleet,
+  std::vector<Event>& events)
+try
+{
+	if(checkLuaMethode(codeMap, "emit", events) == false)
+		return TypedPtreePtr();
+	Polua::object emitFunc = mapFind(codeMap.functions, "emit")->second;
+	auto planetIter = univ_.planetMap.find(fleet.coord);
+	Planet const* planet = nullptr;
+	if(planetIter != univ_.planetMap.end())
+		planet = &(planetIter->second);
+	using namespace Polua;
+	lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
+	if(planet && fleetCanSeePlanet(fleet, *planet, univ_) == false)
+		planet = nullptr;
+	setCurrentPlayer(luaEngine, player);
+	TypedPtreePtr pt = make_shared<TypedPtree>();
+	if(planet)
+		*pt = emitFunc->call<TypedPtree>(fleet, *planet);
+	else
+		*pt = emitFunc->call<TypedPtree>(fleet, false);
+	cleanPtreeNil(fleet.memory);
+	if(acceptPtree(player, fleet.memory) == false)
+	{
+		addErrorMessage(codeMap,
+		                BL::gettext("Too mush items in your "
+		                            "fleet's memory for your Memory skill level."),
+		                events);
+		return TypedPtreePtr();
+	}
+	else
+		return pt;
+}
+catch(Polua::Exception const& ex)
+{
+	addErrorMessage(codeMap, ex.what(), events);
+	return TypedPtreePtr();
+}
+
 //! Excecutes les code des flottes
 void execFleets(
   Universe& univ_,
@@ -837,6 +892,58 @@ void execFleets(
 		fleetRound(univ_, iter->second, events, playersPlanetCount);
 	}
 
+	//Excecution et stockage des émissions
+	using namespace boost;
+	std::vector<std::shared_ptr<TypedPtree> > mailOwner;
+	typedef std::map<Player::ID, MailBox> PlayersMailBoxes;
+	typedef multi_array<PlayersMailBoxes, 3> UniverseMailBoxes;
+	UniverseMailBoxes univMailBoxes(
+	  extents[Universe::MapSizeZ][Universe::MapSizeY][Universe::MapSizeX]);
+
+	size_t emitedCount = 0;
+	size_t storedCount = 0;
+	size_t earedCount = 0;
+	for(auto iter = fleetMap.begin(); iter != fleetMap.end(); ++iter)
+	{
+		Player const& player = mapFind(playerMap, iter->second.playerId)->second;
+		Fleet fleet = iter->second;
+		Coord const coord = fleet.coord;
+		TypedPtreePtr pt = getFleetEmission(univ_,
+		                                    luaEngine,
+		                                    codesMap[iter->second.playerId].fleetsCode,
+		                                    player,
+		                                    fleet,
+		                                    events);
+		if(!pt)
+			continue;
+		++emitedCount;
+		mailOwner.push_back(pt);
+		int const dist = numeric_cast<int>(playerEmissionRange(player));
+		auto bornedRange = [](int first, int pastLast, int bornSup)
+		{
+			return
+			  boost::irange(std::max<int>(std::min<int>(first, pastLast), 0),
+			                std::min<int>(pastLast, bornSup));
+		};
+		auto xrange = bornedRange(
+		                coord.X - (dist - 1), coord.X + dist, Universe::MapSizeX);
+		auto yrange = bornedRange(
+		                coord.Y - (dist - 1), coord.Y + dist, Universe::MapSizeY);
+		auto zrange = bornedRange(
+		                coord.Z - (dist - 1), coord.Z + dist, Universe::MapSizeZ);
+		for(size_t x : xrange)
+		{
+			for(size_t y : yrange)
+			{
+				for(size_t z : zrange)
+				{
+					univMailBoxes[x][y][z][player.id].push_back(pt.get());
+					++storedCount;
+				}
+			}
+		}
+	}
+
 	struct FleetAndAction
 	{
 		Fleet* fleet;
@@ -848,12 +955,16 @@ void execFleets(
 	{
 		Player const& player = mapFind(playerMap, iter->second.playerId)->second;
 		Fleet scriptModifiedFleet = iter->second;
+		Coord coord = scriptModifiedFleet.coord;
+		MailBox mails = univMailBoxes[coord.X][coord.Y][coord.Z][player.id];
+		earedCount += mails.size();
 		boost::optional<FleetAction> action =
 		  execFleetScript(univ_,
 		                  luaEngine,
 		                  codesMap[iter->second.playerId].fleetsCode,
 		                  player,
 		                  scriptModifiedFleet,
+		                  mails,
 		                  events);
 		FleetAndAction fleetAndAction =
 		{

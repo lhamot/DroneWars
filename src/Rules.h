@@ -56,6 +56,9 @@ size_t playerPtreeSize(Player const& player);
 //! Teste si ce TypedPtree est acceptable (nombre l'élément)
 bool acceptPtree(Player const& player, TypedPtree const& pt);
 
+//! Distance d'emision des message des flotte de ce joueur
+size_t playerEmissionRange(Player const& player);
+
 namespace InternalRules
 {
 //! Test si la flote de ce joueur peut coloniser cette planète

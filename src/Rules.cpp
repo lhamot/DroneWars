@@ -349,6 +349,12 @@ bool acceptPtree(Player const& player, TypedPtree const& pt)
 	return treeItemCount <= maxItemCount;
 }
 
+
+size_t playerEmissionRange(Player const& player)
+{
+	return player.skilltab[Skill::Emission];
+}
+
 namespace InternalRules
 {
 //! Test si la flotte peut colonizer la planète

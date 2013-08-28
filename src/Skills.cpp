@@ -165,6 +165,29 @@ public:
 	MemorySkill(): ISkill("Memory") {}
 };
 
+
+//! Compétance Emition
+class EmissionSkill : public ISkill
+{
+	virtual bool canUpgradeImpl(Player const& //player
+	                           ) const
+	{
+		return true;
+	}
+	virtual size_t skillCostImpl(size_t skillCurrentLevel) const
+	{
+		return size_t(pow(skillCurrentLevel + 3, 4));
+	}
+	virtual std::string effectMessageImpl(Player const& player) const
+	{
+		using namespace boost::locale;
+		return (format(translate("Your messages can reachs up to {1} cases")) %
+		        playerEmissionRange(player)).str();
+	}
+public:
+	EmissionSkill(): ISkill("Emission") {}
+};
+
 //! Initialise la liste de skill
 std::vector<std::shared_ptr<ISkill> > InitSkills()
 {
@@ -176,7 +199,7 @@ std::vector<std::shared_ptr<ISkill> > InitSkills()
 	list.push_back(std::make_shared<ServerFarmSkill>());
 	list.push_back(std::make_shared<ChronosSkill>());
 	list.push_back(std::make_shared<MemorySkill>());
-	list.push_back(std::make_shared<DummySkill>("Communication"));
+	list.push_back(std::make_shared<EmissionSkill>());
 	list.push_back(std::make_shared<DummySkill>("Spy"));
 	list.push_back(std::make_shared<DummySkill>("BlackBox"));
 	list.push_back(std::make_shared<DummySkill>("Log"));

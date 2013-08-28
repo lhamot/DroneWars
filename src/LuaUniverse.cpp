@@ -282,7 +282,8 @@ extern "C" int initDroneWars(lua_State* L)
 	.read_only("action", &FleetAction::action)
 	.read_only("target", &FleetAction::target);
 	Class<Player>(L, "Player");
-	Class<TypedPtree>(L, "ptree")
+	Class<TypedPtree>(L, "userdata")
+	.ctor()
 	.methode("size", &TypedPtree::size)
 	.methode("empty", &TypedPtree::empty)
 	.methode("clear", &TypedPtree::clear)
@@ -298,6 +299,9 @@ extern "C" int initDroneWars(lua_State* L)
 	Class<TypedPtree::iterator>(L, "ptree_iterator")
 	.methode("gey_key", &ptree_iter_key)
 	.toString(&ptree_iter_tostring)
+	;
+	Class<std::vector<TypedPtree*> >(L, "MailBox")
+	.methode("size", &std::vector<TypedPtree*>::size)
 	;
 
 	return 0;
