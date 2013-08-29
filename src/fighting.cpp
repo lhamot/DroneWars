@@ -377,17 +377,47 @@ struct FleetPair
 //! Excecute un combat entre deux armés (armé = Fleet ou Planet)
 template<typename F1, typename F2>
 void handleFighterPair(
+  std::vector<Event>& events,
   FleetPair const& fleetPair,
-  Report<F1>& report1, F1& fighter1, Polua::object script1,
-  Report<F2>& report2, F2& fighter2, Polua::object script2
+  Report<F1>& report1, F1& fighter1, PlayerCodes::ObjectMap& funcMap1,
+  Report<F2>& report2, F2& fighter2, PlayerCodes::ObjectMap& funcMap2
 )
 {
+	Polua::object doFight1 = funcMap1.functions["do_fight"];
+	Polua::object doFight2 = funcMap2.functions["do_fight"];
+
+	bool player1fight = true;
+	bool player2fight = true;
+
+	try
+	{
+		if(doFight1 && doFight1->is_valid())
+			player1fight = doFight1->call<bool>(fighter1, fighter2);
+	}
+	catch(Polua::Exception& ex)
+	{
+		addErrorMessage(funcMap1, ex.what(), events);
+	}
+	try
+	{
+		if(doFight2 && doFight2->is_valid())
+			player2fight = doFight2->call<bool>(fighter2, fighter1);
+	}
+	catch(Polua::Exception& ex)
+	{
+		addErrorMessage(funcMap2, ex.what(), events);
+	}
+	if(!player1fight && !player2fight)
+		return;
+
 	report1.enemySet.insert(fleetPair.index2);
 	report2.enemySet.insert(fleetPair.index1);
 
 	report1.hasFight = true;
 	report2.hasFight = true;
-	FightStatus const status = fight(fighter1, script1, fighter2, script2);
+	FightStatus const status = fight(
+	                             fighter1, funcMap1.functions["fight_round"],
+	                             fighter2, funcMap2.functions["fight_round"]);
 	switch(status)
 	{
 	case Fighter1Win:
@@ -410,7 +440,8 @@ void handleFighterPair(
 void fight(std::vector<Fleet*> const& fleetList,
            Planet* planet,
            PlayerCodeMap& codesMap,
-           FightReport& reportList)
+           FightReport& reportList,
+           std::vector<Event>& events)
 {
 	static size_t const PlanetIndex = size_t(-1);
 
@@ -476,9 +507,9 @@ void fight(std::vector<Fleet*> const& fleetList,
 
 	//! Pour extraire le script du joueur pour les round de combat
 	auto getRoundScript = [&]
-	                      (Player::ID pid)
+	                      (Player::ID pid) -> PlayerCodes::ObjectMap&
 	{
-		return codesMap[pid].fleetsCode.functions["fight_round"];
+		return codesMap[pid].fleetsCode;
 	};
 
 	//! Pour toute les combinaisons de 2 combatant - Combat:
@@ -491,6 +522,7 @@ void fight(std::vector<Fleet*> const& fleetList,
 			Report<Fleet>& report2 = reportList.fleetList[fleetPair.index2];
 			Fleet& fleet = *fleetList[fleetPair.index2];
 			handleFighterPair<Planet, Fleet>(
+			  events,
 			  fleetPair,
 			  report1, *planet, getRoundScript(planet->playerId),
 			  report2, fleet, getRoundScript(fleet.playerId));
@@ -502,6 +534,7 @@ void fight(std::vector<Fleet*> const& fleetList,
 			Report<Planet>& report2 = reportList.planet.get();
 			Fleet& fleet = *fleetList[fleetPair.index1];
 			handleFighterPair<Fleet, Planet>(
+			  events,
 			  fleetPair,
 			  report1, fleet, getRoundScript(fleet.playerId),
 			  report2, *planet, getRoundScript(planet->playerId));
@@ -514,6 +547,7 @@ void fight(std::vector<Fleet*> const& fleetList,
 			Report<Fleet>& report2 = reportList.fleetList[fleetPair.index2];
 			Fleet* fighterPtr2 = fleetList[fleetPair.index2];
 			handleFighterPair<Fleet, Fleet>(
+			  events,
 			  fleetPair,
 			  report1, *fighterPtr1, getRoundScript(fighterPtr1->playerId),
 			  report2, *fighterPtr2, getRoundScript(fighterPtr2->playerId));

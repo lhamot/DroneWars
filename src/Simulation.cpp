@@ -83,45 +83,6 @@ void Simulation::reloadPlayer(Player::ID pid)
 }
 
 
-//! @brief Traite une erreur de scripte en ajoutant un Event
-Event makeCodeErrorEvent(Player::ID pid,
-                         CodeData::Target target,
-                         size_t codeID,
-                         std::string const& message)
-{
-	return Event(pid,
-	             time(0),
-	             target == CodeData::Fleet ?
-	             Event::FleetCodeError :
-	             Event::PlanetCodeError)
-	       .setComment(message)
-	       .setValue(codeID);
-}
-
-
-//! @brief Traite une erreur de scripte en ajoutant un Event
-void addErrorMessage(CodeData const& codeData,
-                     std::string const& message,
-                     std::vector<Event>& events)
-{
-	events.push_back(
-	  makeCodeErrorEvent(
-	    codeData.playerId, codeData.target, codeData.id, message));
-}
-
-
-//! @brief Traite une erreur de scripte en ajoutant un Event
-void addErrorMessage(PlayerCodes::ObjectMap& objMap,
-                     std::string const& message,
-                     std::vector<Event>& events)
-{
-	events.push_back(
-	  makeCodeErrorEvent(
-	    objMap.playerId, objMap.target, objMap.scriptID, message));
-	objMap.functions.clear();
-}
-
-
 //! Fait interpreter un script à lua et le transforme en PlayerCodes::ObjectMap
 PlayerCodes::ObjectMap registerCode(
   LuaTools::LuaEngine& luaEngine,
@@ -680,7 +641,7 @@ void execFights(Universe& univ_,
 		UpToUniqueLock writeLock(lockFleets);
 		//! - On excecute le combats
 		FightReport fightReport;
-		fight(fleetVect, planetPtr, codesMap, fightReport);
+		fight(fleetVect, planetPtr, codesMap, fightReport, events);
 		calcExperience(playerMap, fightReport);
 		bool hasFight = false;
 		auto range = make_zip_range(fleetVect, fightReport.fleetList);

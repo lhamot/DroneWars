@@ -7,6 +7,46 @@
 #include "Model.h"
 #include "PlayerCodes.h"
 
+
+//! @brief Traite une erreur de scripte en ajoutant un Event
+inline Event makeCodeErrorEvent(Player::ID pid,
+                                CodeData::Target target,
+                                size_t codeID,
+                                std::string const& message)
+{
+	return Event(pid,
+	             time(0),
+	             target == CodeData::Fleet ?
+	             Event::FleetCodeError :
+	             Event::PlanetCodeError)
+	       .setComment(message)
+	       .setValue(codeID);
+}
+
+
+//! @brief Traite une erreur de scripte en ajoutant un Event
+inline void addErrorMessage(CodeData const& codeData,
+                            std::string const& message,
+                            std::vector<Event>& events)
+{
+	events.push_back(
+	  makeCodeErrorEvent(
+	    codeData.playerId, codeData.target, codeData.id, message));
+}
+
+
+//! @brief Traite une erreur de scripte en ajoutant un Event
+inline void addErrorMessage(PlayerCodes::ObjectMap& objMap,
+                            std::string const& message,
+                            std::vector<Event>& events)
+{
+	events.push_back(
+	  makeCodeErrorEvent(
+	    objMap.playerId, objMap.target, objMap.scriptID, message));
+	objMap.functions.clear();
+}
+
+
 //! @brief Combatant : Pointeur de flotte ou de planète
 //!
 //! Union réencapsulée d'un pointeur de Fleet et d'un pointeur de Planet
@@ -51,7 +91,8 @@ public:
 void fight(std::vector<Fleet*> const& fleetList,
            Planet* planet,
            PlayerCodeMap& codesMap,
-           FightReport& reportList);
+           FightReport& reportList,
+           std::vector<Event>& events);
 
 
 #endif //__BTA_FIGHTING__

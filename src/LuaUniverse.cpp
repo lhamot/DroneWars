@@ -177,8 +177,20 @@ int luaCFunction_planetage(lua_State* L)
 }
 
 
+int luaCFunction_true(lua_State* L)
+{
+	lua_pushboolean(L, 1);
+	return 1;
+}
 
-extern "C" int initDroneWars(lua_State* L)
+int luaCFunction_false(lua_State* L)
+{
+	lua_pushboolean(L, 0);
+	return 1;
+}
+
+
+int initDroneWars(lua_State* L)
 {
 	using namespace Polua;
 
@@ -241,12 +253,15 @@ extern "C" int initDroneWars(lua_State* L)
 	Class<Planet>(L, "Planet")
 	.methode("isFree", &planetIsFree)
 	.methode("age", luaCFunction_planetage)
+	.methode("is_planet", luaCFunction_true)
+	.methode("is_fleet", luaCFunction_false)
 	.property("memory", &Planet::memory)
 	.read_only("coord", &Planet::coord)
 	.read_only("playerId", &Planet::playerId)
 	.read_only("buildingList", &Planet::buildingList)
 	.read_only("cannonTab", &Planet::cannonTab)
-	.read_only("ressourceSet", &Planet::ressourceSet);
+	.read_only("ressourceSet", &Planet::ressourceSet)
+	;
 	Class<Ship>(L, "Ship")
 	.enumValue("Mosquito",     Ship::Mosquito   + 1)
 	.enumValue("Hornet",       Ship::Hornet     + 1)
@@ -259,6 +274,8 @@ extern "C" int initDroneWars(lua_State* L)
 	.enumValue("LargeCargo",   Ship::LargeCargo + 1);
 	Class<Fleet>(L, "Fleet")
 	.methode("age", luaCFunction_fleetage)
+	.methode("is_planet", luaCFunction_false)
+	.methode("is_fleet", luaCFunction_true)
 	.property("memory", &Fleet::memory)
 	.property("id", &Fleet::id)
 	.property("playerId", &Fleet::playerId)
@@ -266,7 +283,8 @@ extern "C" int initDroneWars(lua_State* L)
 	.property("origin", &Fleet::origin)
 	.property("name", &Fleet::name)
 	.property("shipList", &Fleet::shipList)
-	.property("ressourceSet", &Fleet::ressourceSet);
+	.property("ressourceSet", &Fleet::ressourceSet)
+	;
 	Class<PlanetAction>(L, "PlanetAction")
 	.enumValue("Building", PlanetAction::Building)
 	.enumValue("Ship",     PlanetAction::Ship)

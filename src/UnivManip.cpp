@@ -156,7 +156,7 @@ void getNewPlayerCode(std::vector<std::string>& codes)
 		  "function AI:do_gather(myFleet, otherFleet)\n"
 		  "  return true\n"
 		  "end\n"
-		  "function AI:do_fight(myFleet, otherFleet)\n"
+		  "function AI:do_fight(myFleet, fighter)\n"
 		  "  return true\n"
 		  "end\n"
 		  "function AI:action(myFleet, planet)\n"
