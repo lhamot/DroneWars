@@ -20,7 +20,7 @@ inline bool operator == (NilType, NilType)
 //! Liste des types(dans l'ordre) contenue dans un Any
 enum class AnyTypeList {Nil, Boolean, Integer, Decimal, Text};
 //! Object qui peut etre different types a l'excecution
-typedef boost::variant<NilType, bool, int64_t, double, std::string> Any;
+typedef boost::variant<NilType, bool, ptrdiff_t, double, std::string> Any;
 //! Arbre assosiant un nom a un Any
 typedef boost::property_tree::basic_ptree<std::string, Any> TypedPtree;
 //! Supprime les élément inutile d'un TypedPtree (c-a-d les NilType)

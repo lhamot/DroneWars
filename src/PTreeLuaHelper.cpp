@@ -12,7 +12,7 @@ void push(lua_State* L, Any const& any)
 		lua_pushboolean(L, boost::get<bool>(any));
 		break;
 	case AnyTypeList::Integer:
-		lua_pushinteger(L, boost::get<int64_t>(any));
+		lua_pushinteger(L, boost::get<ptrdiff_t>(any));
 		break;
 	case AnyTypeList::Decimal:
 		lua_pushnumber(L, boost::get<double>(any));

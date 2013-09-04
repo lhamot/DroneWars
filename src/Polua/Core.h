@@ -38,7 +38,7 @@ class CheckStack
 public:
 	lua_State* const L;         //!< Données de l'interpreteur Lua
 	int const expectedDiff;  //!< Difference attendue entre debut et fin
-	size_t const startValue;    //!< Taille de la pile au debut
+	int const startValue;    //!< Taille de la pile au debut
 	std::string const funcName; //!< Nom de la fonction téstée
 
 	CheckStack(lua_State* L,          //!<Données de l'interpreteur Lua
@@ -74,7 +74,7 @@ public:
 inline void printStack(lua_State* L)
 {
 	POLUA_CHECK_STACK(L, 0);
-	size_t const nbArgs = lua_gettop(L);
+	int const nbArgs = lua_gettop(L);
 	for(int i = 1; i <= nbArgs; ++i)
 	{
 		char const* const tostring = lua_tostring(L, i);
