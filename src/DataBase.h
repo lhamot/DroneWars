@@ -176,11 +176,11 @@ public:
 	//***************************  FightReport  *******************************
 
 	//! @brief Ajoute un rapport de combat à la base
-	//!
 	//! @return ID du rapport de combat
 	size_t addFightReport(FightReport const& report);
 
-	//! Ajoute une liste de Rapport de combat
+	//! @brief Ajoute une liste de Rapport de combat
+	//! @return Dernier ID inseré
 	size_t addFightReports(std::vector<FightReport> const& reports);
 
 	//! @brief Extrait un rapport de combat depuit la base

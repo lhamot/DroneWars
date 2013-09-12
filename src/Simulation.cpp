@@ -678,7 +678,8 @@ void execFights(Universe& univ_,
 				if(informedPlayer.count(fleet.playerId) == 0)
 				{
 					tempEvents.push_back(
-					  Event(fleet.playerId, time(0), Event::FleetLose));
+					  Event(fleet.playerId, time(0), Event::FleetLose)
+					  .setValue(tempReports.size()));
 					informedPlayer.insert(fleet.playerId);
 				}
 			}
@@ -686,6 +687,7 @@ void execFights(Universe& univ_,
 			{
 				tempEvents.push_back(
 				  Event(fleet.playerId, time(0), Event::FleetWin)
+				  .setValue(tempReports.size())
 				  .setFleetID(fleet.id));
 			}
 		}
@@ -699,7 +701,8 @@ void execFights(Universe& univ_,
 				if(planet.playerId != Player::NoId)
 				{
 					tempEvents.push_back(
-					  Event(planet.playerId, time(0), Event::PlanetLose));
+					  Event(planet.playerId, time(0), Event::PlanetLose)
+					  .setValue(tempReports.size()));
 					informedPlayer.insert(planet.playerId);
 				}
 			}
@@ -710,6 +713,7 @@ void execFights(Universe& univ_,
 					  std::logic_error("planet.playerId == Player::NoId"));
 				tempEvents.push_back(
 				  Event(planet.playerId, time(0), Event::PlanetWin)
+				  .setValue(tempReports.size())
 				  .setPlanetCoord(planet.coord));
 			}
 		}
@@ -726,9 +730,9 @@ void execFights(Universe& univ_,
 		}
 	}
 
-	size_t const firstReportID = 1 + database.addFightReports(tempReports) - tempReports.size();
-	for(size_t i = 0; i < tempEvents.size(); ++i)
-		tempEvents[i].setValue(firstReportID + i);
+	size_t const firstReportID = database.addFightReports(tempReports) - tempReports.size();
+	for(Event& event: tempEvents)
+		event.value += firstReportID;
 	events.insert(events.end(), tempEvents.begin(), tempEvents.end());
 
 	//! On envoie dans la base les gain d'eperience
