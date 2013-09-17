@@ -273,6 +273,15 @@ struct IPairs
 	}
 };
 
+template<typename T>
+struct Length
+{
+	static int len(lua_State*)
+	{
+		return 0;
+	}
+};
+
 
 //! Permet d'enregistrer une class c++ dans lua
 template<typename T>
@@ -542,6 +551,7 @@ public:
 		setInMetatable(L, "__index", &__index);
 		setInMetatable(L, "__ipairs", &IPairs<T>::ipairs);
 		setInMetatable(L, "__pairs", &IPairs<T>::pairs);
+		setInMetatable(L, "__len", &Length<T>::len);
 	}
 
 	//! Ajoute un constructeur au type T

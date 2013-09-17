@@ -61,6 +61,8 @@ public:
 		return ref >= 0;
 	}
 
+	lua_State* state() {return L;}
+
 	//! Appel this en tant que function qui ne retourne pas de résultat
 	//! @throw Polua::Exception en cas d'erreur
 	template<typename ...Args>

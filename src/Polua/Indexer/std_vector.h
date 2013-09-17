@@ -85,6 +85,20 @@ struct IPairs<std::vector<T> >
 	}
 };
 
+template<typename T>
+struct Length<std::vector<T> >
+{
+	typedef std::vector<T> Container;
+
+	//Sur un vector, ipairs et pairs font la même chose
+	static int len(lua_State* L)
+	{
+		Container* obj = userdata_fromstack<Container>(L, 1);
+		lua_pushinteger(L, obj->size());
+		return 1;
+	}
+};
+
 }
 
 #endif //__POLUA_INDEXER_STD_VECTOR__
