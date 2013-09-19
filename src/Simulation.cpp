@@ -52,11 +52,13 @@ static size_t const LuaMaxInstruction = 20000;
 
 //! callback appelé par lua quand le nombre d'instruction max est dépassé
 void luaCountHook(lua_State* L,
-                  lua_Debug* //ar
+                  lua_Debug* ar
                  )
 {
 	lua_sethook(L, luaCountHook, LUA_MASKCOUNT, 1);
-	luaL_error(L, "timeout was reached");
+	if(lua_getinfo(L, "l", ar) == 0)
+		luaL_error(L, "timeout was reached and lua_getinfo failed");
+	luaL_error(L, "timeout was reached at line %d", ar->currentline);
 }
 
 //! Place un joueur dans les registre lua sous le nom "currentPlayer"
@@ -731,7 +733,7 @@ void execFights(Universe& univ_,
 	}
 
 	size_t const firstReportID = database.addFightReports(tempReports) - tempReports.size();
-	for(Event& event: tempEvents)
+	for(Event & event : tempEvents)
 		event.value += firstReportID;
 	events.insert(events.end(), tempEvents.begin(), tempEvents.end());
 
