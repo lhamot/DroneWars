@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "fighting.h"
+#include "LuaTools.h"
 
 #include "Polua/Core.h"
 
@@ -12,6 +13,7 @@
 
 
 using namespace std;
+using namespace LuaTools;
 
 
 //! Données d'un vaisseau ou d'une flotte pendant un combat
@@ -391,6 +393,9 @@ void handleFighterPair(
 
 	try
 	{
+		//! @TOTO: Faire le setCurrentPlayer
+		lua_sethook(
+		  doFight1->state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 		if(doFight1 && doFight1->is_valid())
 			player1fight = doFight1->call<bool>(fighter1, fighter2);
 	}
@@ -400,6 +405,8 @@ void handleFighterPair(
 	}
 	try
 	{
+		lua_sethook(
+		  doFight2->state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 		if(doFight2 && doFight2->is_valid())
 			player2fight = doFight2->call<bool>(fighter2, fighter1);
 	}

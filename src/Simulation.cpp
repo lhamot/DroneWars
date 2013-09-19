@@ -46,21 +46,6 @@ using namespace log4cplus;
 static Logger logger = Logger::getInstance(LOG4CPLUS_TEXT("Simulation"));
 
 
-//! Nombre d'instruction max authorisé dans l'éxcecution d'un script lua
-static size_t const LuaMaxInstruction = 20000;
-
-
-//! callback appelé par lua quand le nombre d'instruction max est dépassé
-void luaCountHook(lua_State* L,
-                  lua_Debug* ar
-                 )
-{
-	lua_sethook(L, luaCountHook, LUA_MASKCOUNT, 1);
-	if(lua_getinfo(L, "l", ar) == 0)
-		luaL_error(L, "timeout was reached and lua_getinfo failed");
-	luaL_error(L, "timeout was reached at line %d", ar->currentline);
-}
-
 //! Place un joueur dans les registre lua sous le nom "currentPlayer"
 void setCurrentPlayer(LuaEngine& luaEngine, Player const& player)
 {
