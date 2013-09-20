@@ -394,10 +394,12 @@ void handleFighterPair(
 	try
 	{
 		//! @TOTO: Faire le setCurrentPlayer
-		lua_sethook(
-		  doFight1->state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 		if(doFight1 && doFight1->is_valid())
+		{
+			lua_sethook(
+			  doFight1->state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 			player1fight = doFight1->call<bool>(fighter1, fighter2);
+		}
 	}
 	catch(Polua::Exception& ex)
 	{
@@ -405,10 +407,12 @@ void handleFighterPair(
 	}
 	try
 	{
-		lua_sethook(
-		  doFight2->state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 		if(doFight2 && doFight2->is_valid())
+		{
+			lua_sethook(
+			  doFight2->state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 			player2fight = doFight2->call<bool>(fighter2, fighter1);
+		}
 	}
 	catch(Polua::Exception& ex)
 	{
