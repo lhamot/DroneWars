@@ -104,6 +104,14 @@ h2, h3
 	border-radius: 5px;
 }
 
+.myself
+{
+	border-color: #00FF00;
+	border-width: 3px;
+	border-style: solid;
+	border-radius: 5px;
+}
+
 .enemy
 {
 	border-color: #FF0000;

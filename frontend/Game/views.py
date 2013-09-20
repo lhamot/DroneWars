@@ -196,6 +196,23 @@ def getEventAndFightReport(request, service, eventList):
     return target_event, fight_report
     
 
+def prepareFightReport(fight_report, playerId):
+    allyEnemyFilled = False
+    def fillAllyEnemy(enemySet, fight_report):
+        for index in enemySet:
+            if index == -1:
+                fight_report.planet.enemy = True
+            else:
+                fight_report.fleetList[index].enemy = True
+
+    for fleetReport in fight_report.fleetList:
+        if fleetReport.fightInfo.before.playerId == playerId:
+            fillAllyEnemy(fleetReport.enemySet, fight_report);
+            allyEnemyFilled = True
+            break;
+    if allyEnemyFilled == False and fight_report.planet and fight_report.planet.fightInfo.before.playerId == playerId:
+        fillAllyEnemy(fight_report.planet.enemySet, fight_report);
+
 
 @updateLastRequest
 def PlanetView(request):
@@ -215,9 +232,13 @@ def PlanetView(request):
         
     timeInfo = service.getTimeInfo();
     
-    (target_event, fight_report) = getEventAndFightReport(request, service, target.eventList) 
+    (target_event, fight_report) = getEventAndFightReport(request, service, target.eventList)
     
-    player = {"id": pid}; #Pour éviter une requete au serveur(Les raport de combat ont besoin de l'id)
+    if fight_report:
+        prepareFightReport(fight_report, pid) 
+    
+    player = Player()
+    player.id = pid; #Pour éviter une requete au serveur(Les raport de combat ont besoin de l'id)
     
     return render(request, 'planetview.html', {
         'player': player,
@@ -301,9 +322,13 @@ def FleetView(request):
         
     timeInfo = service.getTimeInfo();
     
-    (target_event, fight_report) = getEventAndFightReport(request, service, fleet.eventList) 
+    (target_event, fight_report) = getEventAndFightReport(request, service, fleet.eventList)
+    
+    if fight_report:
+        prepareFightReport(fight_report, pid) 
 
-    player = {"id": pid}; #Pour éviter une requete au serveur(Les raport de combat ont besoin de l'id)
+    player = Player()
+    player.id = pid; #Pour éviter une requete au serveur(Les raport de combat ont besoin de l'id)
     
     return render(request, 'fleetview.html', {
         'player': player,
@@ -345,7 +370,10 @@ def ReportsView(request):
     player = service.getPlayer(pid)
     eventList = service.getPlayerEvents(player.id)
     
-    (target, fight_report) = getEventAndFightReport(request, service, eventList) 
+    (target, fight_report) = getEventAndFightReport(request, service, eventList)
+    
+    if fight_report:
+        prepareFightReport(fight_report, player.id)
 
     ReportViewTutoTag = "ReportView"
     if not ReportViewTutoTag in player.tutoDisplayed:

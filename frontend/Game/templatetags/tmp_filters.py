@@ -157,3 +157,19 @@ def bbcode(code):
 @register.filter
 def at(vect, index):
     return vect[index]
+
+@register.filter
+def allyOrEnemy(fighter, player):
+    if player.id == fighter.fightInfo.before.playerId:
+        return "myself"
+    elif "enemy" in fighter.__dict__:
+        return "enemy"
+    else:
+        return "ally"
+
+@register.filter
+def winnerOrLooser(fleetReport):
+    if fleetReport.isDead:
+        return "looser"
+    else:
+        return "winner"
