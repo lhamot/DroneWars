@@ -10,6 +10,14 @@ register = template.Library()
 
 
 @register.filter
+def div(num, den):
+    return num / den 
+
+@register.filter
+def mult(a, b):
+    return a * b 
+
+@register.filter
 def shipname(value):
     return  _(Ship_Enum._VALUES_TO_NAMES[value])
 
@@ -157,6 +165,22 @@ def bbcode(code):
 @register.filter
 def at(vect, index):
     return vect[index]
+
+@register.filter
+def allyOrEnemy(fighter, player):
+    if player.id == fighter.fightInfo.before.playerId:
+        return "myself"
+    elif "enemy" in fighter.__dict__:
+        return "enemy"
+    else:
+        return "ally"
+
+@register.filter
+def winnerOrLooser(fleetReport):
+    if fleetReport.isDead:
+        return "looser"
+    else:
+        return "winner"
 
 @register.filter
 def allyOrEnemy(fighter, player):
