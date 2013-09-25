@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-09 18:42+0200\n"
-"PO-Revision-Date: 2013-08-06 22:52+0100\n"
+"POT-Creation-Date: 2013-09-25 19:39+0200\n"
+"PO-Revision-Date: 2013-09-25 20:58+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "MIME-Version: 1.0\n"
@@ -468,7 +468,7 @@ msgstr "Mot de passe"
 msgid "Password2"
 msgstr "Mot de passe (vérif)"
 
-#: .\Game\views.py:76 .\Game\views.py:559
+#: .\Game\views.py:76 .\Game\views.py:595
 msgid "Passwords don't match!"
 msgstr "Les mots de passes ne correspondent pas!"
 
@@ -491,44 +491,44 @@ msgstr ""
 "savoir plus. \n"
 "Cliquez sur \"Commandement pour commencer le tutoriel\""
 
-#: .\Game\views.py:255
+#: .\Game\views.py:280
 msgid "FLEET_TUTOS"
 msgstr ""
 "Ici, vous verrez la liste de vos flottes. Si il n'y en a pas, demandez à vos "
 "planètes d'en fabriquer."
 
-#: .\Game\views.py:349
+#: .\Game\views.py:381
 msgid "REPORT_TUTOS"
 msgstr ""
 "Ici vous verrez les 10 derniers événements importants qui se sont produits "
 "dans votre empire."
 
-#: .\Game\views.py:387 .\Game\views.py:419 .\Game\views.py:454
-#: .\Game\views.py:493
+#: .\Game\views.py:419 .\Game\views.py:452 .\Game\views.py:488
+#: .\Game\views.py:528
 msgid "Code successfully saved"
 msgstr "Code sauvegardé avec succès."
 
-#: .\Game\views.py:458
+#: .\Game\views.py:492
 msgid "See in planets tab if the building is in progress"
 msgstr ""
 "Code sauvegardé avec succès.<br/>\n"
 "Allez voir dans l'onglet \"Planètes\" si votre nouveau bâtiment est en cours "
 "de création. (Cela peut prendre quelque minutes)"
 
-#: .\Game\views.py:466
+#: .\Game\views.py:500
 msgid "CODE_TUTOS"
 msgstr ""
 "Ici, vous pourrez définir la ligne de conduite de vos amiraux(flottes) et "
 "gouverneurs(planètes). Allez dans l'onglet \"Planètes : Blocks\" pour "
 "commencer le tutoriel."
 
-#: .\Game\templatetags\tmp_filters.py:90
+#: .\Game\templatetags\tmp_filters.py:98
 #, python-format
 msgid "(%i;%i;%i)"
 msgstr "(%i; %i; %i)"
 
-#: .\Game\templatetags\tmp_filters.py:102
-#: .\Game\templatetags\tmp_filters.py:113
+#: .\Game\templatetags\tmp_filters.py:110
+#: .\Game\templatetags\tmp_filters.py:121
 #, python-format
 msgid "%s:%s;"
 msgstr "%s : %s;"
@@ -1013,46 +1013,57 @@ msgstr "Objet"
 msgid "Fleet ID"
 msgstr "ID de flotte"
 
-#: .\template\report_func.html.py:8 .\template\report_func.html.py:23
+#: .\template\report_func.html.py:8 .\template\report_func.html.py:28
+#: .\template\report_func.html.py:30
 msgid "Player"
 msgstr "Joueur"
 
-#: .\template\report_func.html.py:9 .\template\report_func.html.py:24
-msgid "Has fight"
-msgstr "A combattu"
+#: .\template\report_func.html.py:9
+msgid "Wanted escape"
+msgstr "Voulait s'enfuire?"
 
-#: .\template\report_func.html.py:9 .\template\report_func.html.py:10
-#: .\template\report_func.html.py:24 .\template\report_func.html.py:25
+#: .\template\report_func.html.py:9 .\template\report_func.html.py:13
+#: .\template\report_func.html.py:14 .\template\report_func.html.py:32
+#: .\template\report_func.html.py:33
 msgid "Yes"
 msgstr "Oui"
 
-#: .\template\report_func.html.py:9 .\template\report_func.html.py:10
-#: .\template\report_func.html.py:24 .\template\report_func.html.py:25
+#: .\template\report_func.html.py:9 .\template\report_func.html.py:13
+#: .\template\report_func.html.py:14 .\template\report_func.html.py:32
+#: .\template\report_func.html.py:33
 msgid "No"
 msgstr "Non"
 
-#: .\template\report_func.html.py:10 .\template\report_func.html.py:25
+#: .\template\report_func.html.py:11 .\template\report_func.html.py:41
+msgid "Escape probability"
+msgstr "Probabilités de fuite"
+
+#: .\template\report_func.html.py:13 .\template\report_func.html.py:32
+msgid "Has fight"
+msgstr "A combattu"
+
+#: .\template\report_func.html.py:14 .\template\report_func.html.py:33
 msgid "Is dead"
 msgstr "Est détruit"
 
-#: .\template\report_func.html.py:11 .\template\report_func.html.py:26
+#: .\template\report_func.html.py:15 .\template\report_func.html.py:34
 #: .\template\scoreview.html.py:20
 msgid "XP"
 msgstr "XP"
 
-#: .\template\report_func.html.py:12 .\template\report_func.html.py:27
+#: .\template\report_func.html.py:16 .\template\report_func.html.py:35
 msgid "Start"
 msgstr "Début"
 
-#: .\template\report_func.html.py:13 .\template\report_func.html.py:28
+#: .\template\report_func.html.py:17 .\template\report_func.html.py:36
 msgid "End"
 msgstr "Fin"
 
-#: .\template\report_func.html.py:14 .\template\report_func.html.py:29
+#: .\template\report_func.html.py:18 .\template\report_func.html.py:37
 msgid "Report ID"
 msgstr "ID Raport"
 
-#: .\template\report_func.html.py:20
+#: .\template\report_func.html.py:24
 msgid "Planet coordinate"
 msgstr "Coordonnées de planète"
 
@@ -1116,59 +1127,59 @@ msgstr "DroneWars : Ordre"
 #: .\template\codesview\blockly_fleet.html.py:14
 #: .\template\codesview\blockly_fleet.html.py:34
 #: .\template\codesview\blockly_fleet.html.py:62
-#: .\template\codesview\blockly_fleet.html.py:180
+#: .\template\codesview\blockly_fleet.html.py:182
 #: .\template\codesview\blockly_planet.html.py:22
 #: .\template\codesview\blockly_planet.html.py:46
 #: .\template\codesview\blockly_planet.html.py:70
-#: .\template\codesview\blockly_planet.html.py:190
+#: .\template\codesview\blockly_planet.html.py:192
 msgid "Procedures"
 msgstr "Procédures"
 
 #: .\template\codesview\blockly_fleet.html.py:17
 #: .\template\codesview\blockly_fleet.html.py:37
 #: .\template\codesview\blockly_fleet.html.py:65
-#: .\template\codesview\blockly_fleet.html.py:134
+#: .\template\codesview\blockly_fleet.html.py:136
 #: .\template\codesview\blockly_planet.html.py:25
 #: .\template\codesview\blockly_planet.html.py:49
 #: .\template\codesview\blockly_planet.html.py:73
-#: .\template\codesview\blockly_planet.html.py:144
+#: .\template\codesview\blockly_planet.html.py:146
 msgid "Math"
 msgstr "Math"
 
 #: .\template\codesview\blockly_fleet.html.py:20
 #: .\template\codesview\blockly_fleet.html.py:41
 #: .\template\codesview\blockly_fleet.html.py:69
-#: .\template\codesview\blockly_fleet.html.py:126
+#: .\template\codesview\blockly_fleet.html.py:128
 #: .\template\codesview\blockly_planet.html.py:28
 #: .\template\codesview\blockly_planet.html.py:52
 #: .\template\codesview\blockly_planet.html.py:76
-#: .\template\codesview\blockly_planet.html.py:136
+#: .\template\codesview\blockly_planet.html.py:138
 msgid "Logic"
 msgstr "Logique"
 
 #: .\template\codesview\blockly_fleet.html.py:24
 #: .\template\codesview\blockly_fleet.html.py:45
 #: .\template\codesview\blockly_fleet.html.py:73
-#: .\template\codesview\blockly_fleet.html.py:179
+#: .\template\codesview\blockly_fleet.html.py:181
 #: .\template\codesview\blockly_planet.html.py:31
 #: .\template\codesview\blockly_planet.html.py:55
 #: .\template\codesview\blockly_planet.html.py:79
-#: .\template\codesview\blockly_planet.html.py:189
+#: .\template\codesview\blockly_planet.html.py:191
 msgid "Variables"
 msgstr "Variables"
 
 #: .\template\codesview\blockly_fleet.html.py:31
 #: .\template\codesview\blockly_fleet.html.py:59
-#: .\template\codesview\blockly_fleet.html.py:95
+#: .\template\codesview\blockly_fleet.html.py:96
 #: .\template\codesview\blockly_planet.html.py:43
 #: .\template\codesview\blockly_planet.html.py:67
-#: .\template\codesview\blockly_planet.html.py:103
+#: .\template\codesview\blockly_planet.html.py:104
 msgid "DroneWars: Fleet"
 msgstr "DroneWars : Flotte"
 
 #: .\template\codesview\blockly_fleet.html.py:56
-#: .\template\codesview\blockly_fleet.html.py:110
-#: .\template\codesview\blockly_planet.html.py:120
+#: .\template\codesview\blockly_fleet.html.py:112
+#: .\template\codesview\blockly_planet.html.py:122
 msgid "DroneWars: Coordinates"
 msgstr "DroneWars : Coordonnées"
 
@@ -1180,23 +1191,23 @@ msgstr "DroneWars : Coordonnées"
 msgid "DroneWars: Planet"
 msgstr "DroneWars : Planète"
 
-#: .\template\codesview\blockly_fleet.html.py:106
-#: .\template\codesview\blockly_planet.html.py:115
+#: .\template\codesview\blockly_fleet.html.py:108
+#: .\template\codesview\blockly_planet.html.py:117
 msgid "DroneWars: Resources"
 msgstr "DroneWars : Ressources"
 
-#: .\template\codesview\blockly_fleet.html.py:115
-#: .\template\codesview\blockly_planet.html.py:125
+#: .\template\codesview\blockly_fleet.html.py:117
+#: .\template\codesview\blockly_planet.html.py:127
 msgid "Controls"
 msgstr "Controles"
 
-#: .\template\codesview\blockly_fleet.html.py:155
-#: .\template\codesview\blockly_planet.html.py:165
+#: .\template\codesview\blockly_fleet.html.py:157
+#: .\template\codesview\blockly_planet.html.py:167
 msgid "Text"
 msgstr "Texte"
 
-#: .\template\codesview\blockly_fleet.html.py:169
-#: .\template\codesview\blockly_planet.html.py:179
+#: .\template\codesview\blockly_fleet.html.py:171
+#: .\template\codesview\blockly_planet.html.py:181
 msgid "Lists"
 msgstr "Listes"
 

@@ -146,6 +146,7 @@ ndw::Event eventToThrift(Event const& event)
 	res.type = static_cast<ndw::Event_Type::type>(event.type);
 	res.comment = event.comment;
 	res.value = NUMCAST(event.value);
+	res.value2 = NUMCAST(event.value2);
 	res.viewed = event.viewed;
 	return res;
 }
@@ -249,6 +250,8 @@ ndw::FleetReport fleetReportToThrift(Report<Fleet> const& fleetReport)
 	result.isDead = fleetReport.isDead;
 	result.hasFight = fleetReport.hasFight;
 	result.experience = fleetReport.experience;
+	result.wantEscape = fleetReport.wantEscape;
+	result.escapeProba = fleetReport.escapeProba;
 	for(intptr_t id : fleetReport.enemySet)
 		result.enemySet.insert(numeric_cast<int32_t>(id));
 	result.fightInfo.before = fleetToThrift(fleetReport.fightInfo.before);

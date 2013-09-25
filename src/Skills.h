@@ -68,7 +68,8 @@ struct Skill
 	  Emission,
 	  Spy,
 	  BlackBox,
-	  Log
+	  Log,
+	  Escape
 	};
 
 	static size_t const Count = SkillCount; //!< Nombre total de skill

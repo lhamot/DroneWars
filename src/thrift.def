@@ -29,6 +29,7 @@ enum Event_Type
 	PlanetLose
 	PlanetWin
 	CannonMade
+	FightAvoided
 	Count
 }
 
@@ -41,7 +42,8 @@ struct Event
 	30: Event_Type type
 	40: string comment
 	50: i32 value
-	60: bool viewed
+	60: i32 value2
+	70: bool viewed
 }
 
 
@@ -275,6 +277,8 @@ struct FleetReport
 	30: i32 experience
 	40: set<i32> enemySet
 	50: FleetFightInfo fightInfo
+	60: bool wantEscape
+	70: double escapeProba
 }
 
 

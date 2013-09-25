@@ -47,10 +47,15 @@ static Logger logger = Logger::getInstance(LOG4CPLUS_TEXT("Simulation"));
 
 
 //! Place un joueur dans les registre lua sous le nom "currentPlayer"
-void setCurrentPlayer(LuaEngine& luaEngine, Player const& player)
+void setCurrentPlayer(lua_State* L, Player const& player)
 {
-	Polua::pushTemp(luaEngine.state(), player);
-	lua_setglobal(luaEngine.state(), "currentPlayer");
+	Polua::pushTemp(L, player);
+	lua_setglobal(L, "currentPlayer");
+}
+
+void setCurrentPlayer(LuaEngine& engine, Player const& player)
+{
+	setCurrentPlayer(engine.state(), player);
 }
 
 
@@ -84,6 +89,7 @@ try
 	luaL_dostring(luaEngine.state(), "AI_do_gather = nil");
 	luaL_dostring(luaEngine.state(), "AI_do_fight = nil");
 	luaL_dostring(luaEngine.state(), "AI_emit = nil");
+	luaL_dostring(luaEngine.state(), "AI_do_escape = nil");
 
 	std::string codeString = code.code;
 
@@ -116,6 +122,9 @@ try
 		auto emitFunc = Polua::refFromName(luaEngine.state(), "AI_emit");
 		if(emitFunc->is_valid())
 			result.functions["emit"] = emitFunc;
+		auto escapeFunc = Polua::refFromName(luaEngine.state(), "AI_do_escape");
+		if(escapeFunc->is_valid())
+			result.functions["do_escape"] = escapeFunc;
 		return result;
 	}
 }
@@ -149,13 +158,12 @@ try
 		return boost::none;
 	}
 
-	lua_sethook(
-	  luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
-
 	if(planet.buildingList.size() != Building::Count)
 		BOOST_THROW_EXCEPTION(
 		  std::logic_error("planet.buildingList.size() != Building::Count"));
 
+	lua_sethook(
+	  luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 	setCurrentPlayer(luaEngine, player);
 	PlanetAction action = code->call<PlanetAction>(planet, fleetList);
 	cleanPtreeNil(planet.memory);
@@ -319,9 +327,9 @@ try
 		planet = &(planetIter->second);
 	using namespace Polua;
 	FleetAction action(FleetAction::Nothing);
-	lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 	if(planet && fleetCanSeePlanet(fleet, *planet, univ_) == false)
 		planet = nullptr;
+	lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 	setCurrentPlayer(luaEngine, player);
 	if(planet)
 		action = actionFunc->call<FleetAction>(fleet, *planet, mails);
@@ -547,6 +555,66 @@ void execPlanets(Universe& univ_,
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
+//! Retire les flotte qui veulent et parviennent à s'échaper
+//! @return La liste des flottes echapées
+std::vector<Fleet*> removeEscapedFleet(
+  std::map<Player::ID, Player> const playerMap,
+  Planet const* planetPtr,
+  PlayerCodeMap& codesMap,
+  std::vector<Event>& events,
+  std::map<Fleet::ID, double>& escapeProbaMap,
+  std::vector<Fleet*>& fleetVect)
+{
+	std::vector<Fleet*> escapedFleets;
+	std::vector<Fleet*> fightingFleets;
+	std::vector<Fleet const*> otherFleets(fleetVect.begin() + 1, fleetVect.end());
+	for(size_t i = 0; i < fleetVect.size(); ++i)
+	{
+		Fleet* fleet = fleetVect[i];
+		Player const& player = mapFind(playerMap, fleet->playerId)->second;
+		auto fleetScripts = codesMap[player.id].fleetsCode;
+		Polua::object doEscape = fleetScripts.functions["do_escape"];
+		bool wantEscape = false;
+		if(doEscape && doEscape->is_valid() && doEscape->type() == LUA_TFUNCTION)
+			try
+			{
+				lua_sethook(doEscape->state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
+				setCurrentPlayer(doEscape->state(), player);
+				if(planetPtr)
+					wantEscape = doEscape->call<bool>(fleet, *planetPtr, otherFleets);
+				else
+					wantEscape = doEscape->call<bool>(fleet, false, otherFleets);
+			}
+			catch(Polua::Exception& ex)
+			{
+				addErrorMessage(fleetScripts, ex.what(), events);
+			}
+		if(wantEscape)
+		{
+			double const escapeProba = calcEscapeProba(player, *fleet, planetPtr, otherFleets);
+			escapeProbaMap[fleet->id] = escapeProba;
+			if(isEscapeSuccess(escapeProba) == false)
+			{
+				//if(fleet->playerId == 52)
+				//	std::cout << "La flotte : " << fleet->id << " c'est faite repérer!!" << std::endl;
+				fightingFleets.push_back(fleet);
+			}
+			else
+			{
+				//if(fleet->playerId == 52)
+				//	std::cout << "La flotte : " << fleet->id << " c'est echapé avec succes!!" << std::endl;
+				escapedFleets.push_back(fleet);
+			}
+		}
+		else
+			fightingFleets.push_back(fleet);
+
+		if(i < otherFleets.size())
+			otherFleets[i] = fleet;
+	}
+	std::swap(fightingFleets, fleetVect);
+	return escapedFleets;
+}
 
 //! Les combats
 void execFights(Universe& univ_,
@@ -569,18 +637,12 @@ void execFights(Universe& univ_,
 	vector<Coord> lostPlanets;
 	lostPlanets.reserve(univ_.planetMap.size());
 	typedef std::multimap<Coord, FighterPtr, CompCoord> FleetCoordMultimap;
-	static FleetCoordMultimap fleetMultimap;
+	FleetCoordMultimap fleetMultimap;
 
-	if(fleetMultimap.empty())
-		for(Planet & planet : univ_.planetMap | boost::adaptors::map_values)
-			fleetMultimap.insert(make_pair(planet.coord, FighterPtr(&planet)));
-	else
+	for(Planet & planet : univ_.planetMap | boost::adaptors::map_values)
 	{
-		map_remove_erase_if(fleetMultimap, []
-		                    (FleetCoordMultimap::value_type const & nvp)
-		{
-			return nvp.second.isPlanet() == false;
-		});
+		if(planet.playerId != Player::NoId)
+			fleetMultimap.insert(make_pair(planet.coord, FighterPtr(&planet)));
 	}
 
 	//! Remplissage de la multimap de flote Coord=>flote
@@ -615,18 +677,35 @@ void execFights(Universe& univ_,
 		auto fleetRange = make_pair(iter1, iter2);
 		fleetVect.clear();
 		Planet* planetPtr = nullptr;
+		std::set<Player::ID> playerSet;
 		for(FighterPtr const & fighterPtr : fleetRange | boost::adaptors::map_values)
 		{
 			if(fighterPtr.isPlanet())
+			{
 				planetPtr = fighterPtr.getPlanet();
+				playerSet.insert(planetPtr->playerId);
+			}
 			else
+			{
 				fleetVect.push_back(fighterPtr.getFleet());
+				playerSet.insert(fleetVect.back()->playerId);
+			}
 		}
+		if(playerSet.size() < 2)
+			continue;
+
 		//if(planetPtr && planetPtr->playerId != Player::NoId)
 		//	planetPtr = nullptr;
 
 		UpToUniqueLock writeLock(lockFleets);
 		//! - On excecute le combats
+
+		//! - Retrait de ceux qui s'échapent
+		std::map<Fleet::ID, double> escapeProbaMap;
+		std::vector<Fleet*> escapedFleets =
+		  removeEscapedFleet(
+		    playerMap, planetPtr, codesMap, events, escapeProbaMap, fleetVect);
+
 		FightReport fightReport;
 		fight(fleetVect, planetPtr, codesMap, fightReport, events);
 		calcExperience(playerMap, fightReport);
@@ -648,17 +727,17 @@ void execFights(Universe& univ_,
 		if(hasFight == false)
 			continue;
 
-		//! - On ajoute le rapport dans la base de donné
-		tempReports.push_back(fightReport);
-
 		//! - On ajoute les evenement/message dans les flottes/joueur
 		std::set<Player::ID> informedPlayer;
 		for(auto fleetReportPair : range)
 		{
 			//! --Pour les flotes
 			Fleet* fleetPtr = fleetReportPair.get<0>();
-			Report<Fleet> const& report = fleetReportPair.get<1>();
+			Report<Fleet>& report = fleetReportPair.get<1>();
 			Fleet const& fleet = *fleetPtr;
+			auto escapeMapIter = escapeProbaMap.find(fleet.id);
+			report.wantEscape = escapeMapIter != escapeProbaMap.end();
+			report.escapeProba = report.wantEscape ? escapeMapIter->second : 0.;
 			if(report.isDead)
 			{
 				deadFleets.push_back(fleet.id);
@@ -690,7 +769,6 @@ void execFights(Universe& univ_,
 					tempEvents.push_back(
 					  Event(planet.playerId, time(0), Event::PlanetLose)
 					  .setValue(tempReports.size()));
-					informedPlayer.insert(planet.playerId);
 				}
 			}
 			else if(fightReport.planet.get().hasFight)
@@ -704,6 +782,15 @@ void execFights(Universe& univ_,
 				  .setPlanetCoord(planet.coord));
 			}
 		}
+		for(Fleet * fleet : escapedFleets)
+		{
+			double escaProba = escapeProbaMap[fleet->id];
+			tempEvents.push_back(
+			  Event(fleet->playerId, time(0), Event::FightAvoided)
+			  .setValue(tempReports.size())
+			  .setValue2(boost::numeric_cast<intptr_t>(escaProba * 1000000))
+			  .setFleetID(fleet->id));
+		}
 
 		//! - On cumul l'experience gagné par les joueurs
 		for(Report<Fleet> const & fleetReport : fightReport.fleetList)
@@ -715,9 +802,12 @@ void execFights(Universe& univ_,
 			experienceMap[report.fightInfo.before.playerId] +=
 			  report.experience;
 		}
+
+		//! - On ajoute le rapport dans la base de donné
+		tempReports.push_back(fightReport);
 	}
 
-	size_t const firstReportID = database.addFightReports(tempReports) - tempReports.size();
+	size_t const firstReportID = 1 + database.addFightReports(tempReports) - tempReports.size();
 	for(Event & event : tempEvents)
 		event.value += firstReportID;
 	events.insert(events.end(), tempEvents.begin(), tempEvents.end());
@@ -844,6 +934,12 @@ void execFleets(
 		fleetRound(univ_, iter->second, events, playersPlanetCount);
 	}
 
+	map_remove_erase_if(univ_.fleetMap, []
+	                    (Universe::FleetMap::value_type const & nvp)
+	{
+		return boost::accumulate(nvp.second.shipList, 0) == 0;
+	});
+
 	//Excecution et stockage des émissions
 	using namespace boost;
 	std::vector<std::shared_ptr<TypedPtree> > mailOwner;
@@ -869,8 +965,10 @@ void execFleets(
 		if(!pt)
 			continue;
 		++emitedCount;
-		mailOwner.push_back(pt);
 		int const dist = numeric_cast<int>(playerEmissionRange(player));
+		if(dist == 0)
+			continue;
+		mailOwner.push_back(pt);
 		auto bornedRange = [](int first, int pastLast, int bornSup)
 		{
 			return
@@ -1074,6 +1172,7 @@ void openlibs(lua_State* L)
 {
 	static const luaL_Reg preloadedlibs[] =
 	{
+		{LUA_MATHLIBNAME, luaopen_math},
 		{NULL, NULL}
 	};
 

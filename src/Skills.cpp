@@ -188,6 +188,28 @@ public:
 	EmissionSkill(): ISkill("Emission") {}
 };
 
+
+//! Compétance Evasion
+class EvasionSkill : public ISkill
+{
+	virtual bool canUpgradeImpl(Player const& //player
+	                           ) const
+	{
+		return true;
+	}
+	virtual size_t skillCostImpl(size_t skillCurrentLevel) const
+	{
+		return size_t(pow(skillCurrentLevel + 1, 5));
+	}
+	virtual std::string effectMessageImpl(Player const&) const
+	{
+		return std::string();
+	}
+public:
+	EvasionSkill(): ISkill("Evasion") {}
+};
+
+
 //! Initialise la liste de skill
 std::vector<std::shared_ptr<ISkill> > InitSkills()
 {
@@ -203,6 +225,7 @@ std::vector<std::shared_ptr<ISkill> > InitSkills()
 	list.push_back(std::make_shared<DummySkill>("Spy"));
 	list.push_back(std::make_shared<DummySkill>("BlackBox"));
 	list.push_back(std::make_shared<DummySkill>("Log"));
+	list.push_back(std::make_shared<EvasionSkill>());
 	return list;
 };
 

@@ -33,7 +33,8 @@ class Event_Type:
   PlanetLose = 13
   PlanetWin = 14
   CannonMade = 15
-  Count = 16
+  FightAvoided = 16
+  Count = 17
 
   _VALUES_TO_NAMES = {
     0: "FleetCodeError",
@@ -52,7 +53,8 @@ class Event_Type:
     13: "PlanetLose",
     14: "PlanetWin",
     15: "CannonMade",
-    16: "Count",
+    16: "FightAvoided",
+    17: "Count",
   }
 
   _NAMES_TO_VALUES = {
@@ -72,7 +74,8 @@ class Event_Type:
     "PlanetLose": 13,
     "PlanetWin": 14,
     "CannonMade": 15,
-    "Count": 16,
+    "FightAvoided": 16,
+    "Count": 17,
   }
 
 class Ressource:
@@ -409,6 +412,7 @@ class Event:
    - type
    - comment
    - value
+   - value2
    - viewed
   """
 
@@ -473,15 +477,26 @@ class Event:
     None, # 57
     None, # 58
     None, # 59
-    (60, TType.BOOL, 'viewed', None, None, ), # 60
+    (60, TType.I32, 'value2', None, None, ), # 60
+    None, # 61
+    None, # 62
+    None, # 63
+    None, # 64
+    None, # 65
+    None, # 66
+    None, # 67
+    None, # 68
+    None, # 69
+    (70, TType.BOOL, 'viewed', None, None, ), # 70
   )
 
-  def __init__(self, id=None, time=None, type=None, comment=None, value=None, viewed=None,):
+  def __init__(self, id=None, time=None, type=None, comment=None, value=None, value2=None, viewed=None,):
     self.id = id
     self.time = time
     self.type = type
     self.comment = comment
     self.value = value
+    self.value2 = value2
     self.viewed = viewed
 
   def read(self, iprot):
@@ -519,6 +534,11 @@ class Event:
         else:
           iprot.skip(ftype)
       elif fid == 60:
+        if ftype == TType.I32:
+          self.value2 = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 70:
         if ftype == TType.BOOL:
           self.viewed = iprot.readBool();
         else:
@@ -553,8 +573,12 @@ class Event:
       oprot.writeFieldBegin('value', TType.I32, 50)
       oprot.writeI32(self.value)
       oprot.writeFieldEnd()
+    if self.value2 is not None:
+      oprot.writeFieldBegin('value2', TType.I32, 60)
+      oprot.writeI32(self.value2)
+      oprot.writeFieldEnd()
     if self.viewed is not None:
-      oprot.writeFieldBegin('viewed', TType.BOOL, 60)
+      oprot.writeFieldBegin('viewed', TType.BOOL, 70)
       oprot.writeBool(self.viewed)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -2672,6 +2696,8 @@ class FleetReport:
    - experience
    - enemySet
    - fightInfo
+   - wantEscape
+   - escapeProba
   """
 
   thrift_spec = (
@@ -2726,14 +2752,36 @@ class FleetReport:
     None, # 48
     None, # 49
     (50, TType.STRUCT, 'fightInfo', (FleetFightInfo, FleetFightInfo.thrift_spec), None, ), # 50
+    None, # 51
+    None, # 52
+    None, # 53
+    None, # 54
+    None, # 55
+    None, # 56
+    None, # 57
+    None, # 58
+    None, # 59
+    (60, TType.BOOL, 'wantEscape', None, None, ), # 60
+    None, # 61
+    None, # 62
+    None, # 63
+    None, # 64
+    None, # 65
+    None, # 66
+    None, # 67
+    None, # 68
+    None, # 69
+    (70, TType.DOUBLE, 'escapeProba', None, None, ), # 70
   )
 
-  def __init__(self, isDead=None, hasFight=None, experience=None, enemySet=None, fightInfo=None,):
+  def __init__(self, isDead=None, hasFight=None, experience=None, enemySet=None, fightInfo=None, wantEscape=None, escapeProba=None,):
     self.isDead = isDead
     self.hasFight = hasFight
     self.experience = experience
     self.enemySet = enemySet
     self.fightInfo = fightInfo
+    self.wantEscape = wantEscape
+    self.escapeProba = escapeProba
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -2775,6 +2823,16 @@ class FleetReport:
           self.fightInfo.read(iprot)
         else:
           iprot.skip(ftype)
+      elif fid == 60:
+        if ftype == TType.BOOL:
+          self.wantEscape = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 70:
+        if ftype == TType.DOUBLE:
+          self.escapeProba = iprot.readDouble();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -2807,6 +2865,14 @@ class FleetReport:
     if self.fightInfo is not None:
       oprot.writeFieldBegin('fightInfo', TType.STRUCT, 50)
       self.fightInfo.write(oprot)
+      oprot.writeFieldEnd()
+    if self.wantEscape is not None:
+      oprot.writeFieldBegin('wantEscape', TType.BOOL, 60)
+      oprot.writeBool(self.wantEscape)
+      oprot.writeFieldEnd()
+    if self.escapeProba is not None:
+      oprot.writeFieldBegin('escapeProba', TType.DOUBLE, 70)
+      oprot.writeDouble(self.escapeProba)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

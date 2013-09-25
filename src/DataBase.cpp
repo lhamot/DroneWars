@@ -134,6 +134,7 @@ try
 	            "  type INTEGER NOT NULL,"
 	            "  comment VARCHAR(500) NOT NULL,"
 	            "  value INTEGER NOT NULL,"
+	            "  value2 INTEGER NOT NULL,"
 	            "  viewed INTEGER NOT NULL,"
 	            "  playerID INTEGER NOT NULL,"
 	            "  fleetID INTEGER NOT NULL,"
@@ -500,8 +501,8 @@ try
 {
 	if(events.empty())
 		return;
-	typedef Poco::Tuple < time_t, int, std::string const&, intptr_t, int,
-	        Player::ID, Fleet::ID, Coord::Value, Coord::Value,
+	typedef Poco::Tuple < time_t, int, std::string const&, intptr_t, intptr_t,
+	        int, Player::ID, Fleet::ID, Coord::Value, Coord::Value,
 	        Coord::Value > DBEvent;
 	std::vector<DBEvent> dbEvents;
 	dbEvents.reserve(events.size());
@@ -509,7 +510,7 @@ try
 	{
 		dbEvents.push_back(
 		  DBEvent(event.time, event.type, event.comment, event.value,
-		          event.viewed, event.playerID, event.fleetID,
+		          event.value2, event.viewed, event.playerID, event.fleetID,
 		          event.planetCoord.X, event.planetCoord.Y,
 		          event.planetCoord.Z));
 		if(event.playerID == Player::NoId)
@@ -519,9 +520,9 @@ try
 	Transaction trans(*session_);
 	(*session_) <<
 	            "INSERT INTO Event "
-	            "(time, type, comment, value, viewed, playerID, "
+	            "(time, type, comment, value, value2, viewed, playerID, "
 	            "  fleetID, planetCoordX, planetCoordY, planetCoordZ) "
-	            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", use(dbEvents), now;
+	            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", use(dbEvents), now;
 	trans.commit();
 }
 DB_CATCH
@@ -569,23 +570,25 @@ DB_CATCH
 
 //! Tuple pour stoker les donnée d'un Event quand il sort de la base de donnée
 typedef Poco::Tuple < Event::ID, time_t, size_t, std::string, intptr_t,
-        int, Player::ID, Fleet::ID, Coord::Value, Coord::Value, Coord::Value >
+        intptr_t, int, Player::ID, Fleet::ID, Coord::Value, Coord::Value,
+        Coord::Value >
         DBEvent;
 
 
 //! Convertie un DBEvent en Event
 Event toEvent(DBEvent const& ev)
 {
-	Event res(ev.get<6>(), ev.get<1>(), Event::Type(ev.get<2>()));
+	Event res(ev.get<7>(), ev.get<1>(), Event::Type(ev.get<2>()));
 	res.id = ev.get<0>();
 	res.time = ev.get<1>();
 	res.type = Event::Type(ev.get<2>());
 	res.comment = ev.get<3>();
 	res.value = ev.get<4>();
-	res.viewed = ev.get<5>() != 0;
-	res.playerID = ev.get<6>();
-	res.fleetID = ev.get<7>();
-	res.planetCoord = Coord(ev.get<8>(), ev.get<9>(), ev.get<10>());
+	res.value2 = ev.get<5>();
+	res.viewed = ev.get<6>() != 0;
+	res.playerID = ev.get<7>();
+	res.fleetID = ev.get<8>();
+	res.planetCoord = Coord(ev.get<9>(), ev.get<10>(), ev.get<11>());
 	return res;
 }
 

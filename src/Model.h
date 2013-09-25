@@ -459,6 +459,11 @@ struct Fleet
 		if(playerId >= 100000)
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 	}
+
+	bool empty() const
+	{
+		return boost::accumulate(shipList, 0) == 0;
+	}
 };
 
 
@@ -493,9 +498,11 @@ private:
 	friend boost_serialization_access; //!< Pour donner access a boost
 	//! Serialize l'objet
 	template<class Archive>
-	void serialize(Archive& ar, const unsigned int)
+	void serialize(Archive& ar, const unsigned int version)
 	{
 		ar& isDead& hasFight& experience& enemySet& fightInfo;
+		if(version > 0)
+			ar& wantEscape& escapeProba;
 	}
 	//! Constructeur par default utilisé uniquement par boost::serialization
 	Report() {}
@@ -504,6 +511,8 @@ public:
 	bool isDead;         //!< True si l'armée est détruite
 	bool hasFight;       //!< True si l'armée a combatue
 	uint32_t experience; //!< Points d'experience gagnés
+	bool wantEscape;     //!< Si la flotte voulai s'enfuire
+	double escapeProba;  //!< Probabilité qu'elle avait de s'enfuire
 	//! Liste des énemie combatue, par index dans le FightReport
 	std::set<intptr_t> enemySet;
 	//! Etat des flottes/planètes avant et apprés un combat
@@ -543,6 +552,8 @@ public:
 		isDead(false),
 		hasFight(false),
 		experience(0),
+		wantEscape(false),
+		escapeProba(0.),
 		fightInfo(makeFightInfo(fighter))
 	{
 	}
@@ -555,6 +566,8 @@ public:
 		  fightInfo.heap_size();
 	}
 };
+BOOST_CLASS_VERSION(Report<Planet>, 1);
+BOOST_CLASS_VERSION(Report<Fleet>, 1);
 
 
 //! Rapport de combat
@@ -590,18 +603,6 @@ struct FightReport
 //! Un evenement ayant eu lieu durant la simulation et lié à un joueur
 struct Event
 {
-private:
-	friend boost_serialization_access; //!< Pour donner access a boost
-	//! Serialize l'objet
-	template<class Archive>
-	void serialize(Archive& ar, const unsigned int)
-	{
-		ar& id& time& type& comment& value;
-	}
-	//! Constructeur par defaut, pour boost::serialization
-	Event() {}
-
-public:
 	//! Les types d'évenements
 	enum Type : uint8_t
 	{
@@ -621,6 +622,7 @@ public:
 	  PlanetLose,
 	  PlanetWin,
 	  CannonMade,
+	  FightAvoided,
 	  Count
 	};
 
@@ -630,6 +632,7 @@ public:
 	Type type;           //!< Type d'évenement
 	std::string comment; //!< Commentaire
 	intptr_t value;      //!< Valeur numerique utile pour certain Event::Type
+	intptr_t value2;     //!< 2dn valeur numerique utile pour certain Event::Type
 	bool viewed;         //!< true si l'évenement a été vu par son propriétaire
 	Player::ID playerID; //!< Propriétaire
 	Fleet::ID fleetID;   //!< Flotte lié, si applicable, sinon Fleet::NoID
@@ -644,7 +647,7 @@ public:
 	//! Constructeur
 	//! @pre pid != Player::NoId
 	Event(Player::ID pid, time_t ti, Type ty):
-		id(0), time(ti), type(ty), value(-1), viewed(false),
+		id(0), time(ti), type(ty), value(-1), value2(-1), viewed(false),
 		playerID(pid), fleetID(Fleet::NoId)
 	{
 		if(playerID == Player::NoId)
@@ -653,6 +656,8 @@ public:
 
 	//! Modifie Event::value
 	Event& setValue(intptr_t val)       {value = val; return *this;}
+	//! Modifie Event::value
+	Event& setValue2(intptr_t val)      {value2 = val; return *this;}
 	//! Modifie Event::comment
 	Event& setComment(std::string const& comm)  {comment = comm; return *this;}
 	//! Modifie Event::fleetID

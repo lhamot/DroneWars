@@ -51,7 +51,7 @@ auto make_zip_iterator(I1 const& iter1, I2 const& iter2)
 
 //! Crée un range pour parcourir deux conteneurs à la fois (voir zip en python)
 template<typename C1, typename C2>
-auto make_zip_range(C1 const& c1, C2 const& c2)
+auto make_zip_range(C1& c1, C2& c2)
 -> decltype(boost::make_iterator_range(
               make_zip_iterator(boost::begin(c1), boost::begin(c2)),
               make_zip_iterator(boost::end(c1), boost::end(c2))))

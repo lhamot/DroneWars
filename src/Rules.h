@@ -59,6 +59,13 @@ bool acceptPtree(Player const& player, TypedPtree const& pt);
 //! Distance d'emision des message des flotte de ce joueur
 size_t playerEmissionRange(Player const& player);
 
+bool isEscapeSuccess(double escapeProba);
+
+double calcEscapeProba(Player const& player,
+                       Fleet const& fighter,
+                       Planet const* planet,
+                       std::vector<Fleet const*> const& otherFleets);
+
 namespace InternalRules
 {
 //! Test si la flote de ce joueur peut coloniser cette planète

@@ -355,6 +355,27 @@ size_t playerEmissionRange(Player const& player)
 	return player.skilltab[Skill::Emission];
 }
 
+double calcEscapeProba(Player const& player,
+                       Fleet const& fighter,
+                       Planet const*, //planet
+                       std::vector<Fleet const*> const& //otherFleets
+                      )
+{
+	static size_t const fraction = 1000000;
+	size_t const shipCount = boost::accumulate(fighter.shipList, 0);
+	size_t const lvl = player.skilltab[Skill::Escape];
+	size_t failRate = (shipCount * fraction) / ((lvl * lvl * lvl) + 1);
+	if(failRate > fraction)
+		failRate = fraction;
+	return (fraction - failRate) / double(fraction);
+}
+
+bool isEscapeSuccess(double escapeProba)
+{
+	static size_t const fraction = 100;
+	return (rand() % fraction) < escapeProba * fraction;
+}
+
 namespace InternalRules
 {
 //! Test si la flotte peut colonizer la planète
