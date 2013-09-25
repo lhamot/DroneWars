@@ -1,4 +1,3 @@
-thrift --gen cpp thrift.def
-thrift --gen py thrift.def
-rename gen-py gen_py
+thrift --gen cpp -out gen-cpp thrift.def
+thrift --gen py -out gen_py thrift.def
 pause
