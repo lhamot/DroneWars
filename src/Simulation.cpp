@@ -47,16 +47,15 @@ static Logger logger = Logger::getInstance(LOG4CPLUS_TEXT("Simulation"));
 
 
 //! Place un joueur dans les registre lua sous le nom "currentPlayer"
-void setCurrentPlayer(lua_State* L, Player const& player)
+//!  et reinitialise le hook compteur d'instruction.
+void prepareLuaCall(Polua::object stript, Player const& player)
 {
-	Polua::pushTemp(L, player);
-	lua_setglobal(L, "currentPlayer");
+	lua_sethook(
+	  stript->state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
+	Polua::pushTemp(stript->state(), player);
+	lua_setglobal(stript->state(), "currentPlayer");
 }
 
-void setCurrentPlayer(LuaEngine& engine, Player const& player)
-{
-	setCurrentPlayer(engine.state(), player);
-}
 
 
 static size_t const RoundSecond = 10; //!< Nombre de secondes min par round
@@ -137,7 +136,6 @@ catch(Polua::Exception& ex)
 
 //! Excecute le code de la planete et lui ajoute des tache
 boost::optional<PlanetAction> execPlanetScript(
-  LuaEngine& luaEngine,
   PlayerCodes::ObjectMap& codeMap,
   Player const& player,
   Planet& planet,
@@ -162,9 +160,7 @@ try
 		BOOST_THROW_EXCEPTION(
 		  std::logic_error("planet.buildingList.size() != Building::Count"));
 
-	lua_sethook(
-	  luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
-	setCurrentPlayer(luaEngine, player);
+	prepareLuaCall(code, player);
 	PlanetAction action = code->call<PlanetAction>(planet, fleetList);
 	cleanPtreeNil(planet.memory);
 	if(acceptPtree(player, planet.memory) == false)
@@ -268,7 +264,6 @@ void gatherIfWant(
 {
 	auto localFleetsKV = fleetMap.equal_range(fleet.coord);
 	auto fleetIter = localFleetsKV.first;
-	setCurrentPlayer(luaEngine, player);
 	Polua::Caller caller(luaEngine.state());
 	if(checkLuaMethode(codeMap, "do_gather", events))
 	{
@@ -280,9 +275,9 @@ void gatherIfWant(
 			   (otherFleet.playerId == fleet.playerId) &&
 			   canGather(player, fleet, otherFleet))
 			{
-				lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
+				prepareLuaCall(do_gather, player);
 				bool const wantGather1 = do_gather->call<bool>(fleet, otherFleet);
-				lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
+				prepareLuaCall(do_gather, player);
 				bool const wantGather2 = do_gather->call<bool>(otherFleet, fleet);
 
 				//! @todo: Décoreler script et traitement
@@ -310,7 +305,6 @@ typedef std::vector<TypedPtree*> MailBox;
 //! Excecute le script de la flotte
 boost::optional<FleetAction> execFleetScript(
   Universe const& univ_,
-  LuaEngine& luaEngine,
   PlayerCodes::ObjectMap& codeMap,
   Player const& player,
   Fleet& fleet,
@@ -329,8 +323,7 @@ try
 	FleetAction action(FleetAction::Nothing);
 	if(planet && fleetCanSeePlanet(fleet, *planet, univ_) == false)
 		planet = nullptr;
-	lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
-	setCurrentPlayer(luaEngine, player);
+	prepareLuaCall(actionFunc, player);
 	if(planet)
 		action = actionFunc->call<FleetAction>(fleet, *planet, mails);
 	else
@@ -454,7 +447,6 @@ std::map<Player::ID, Player> getPlayerMap(DataBase const& database)
 //! Simule le round pour toute les planètes
 void execPlanets(Universe& univ_,
                  DataBase const& database,
-                 LuaTools::LuaEngine& luaEngine,
                  PlayerCodeMap& codesMap,
                  std::vector<Event>& events)
 {
@@ -528,8 +520,7 @@ void execPlanets(Universe& univ_,
 		Planet planet = sciptInputs.planet;
 		Player const& player = mapFind(playerMap, planet.playerId)->second;
 		boost::optional<PlanetAction> action =
-		  execPlanetScript(luaEngine,
-		                   codesMap[planet.playerId].planetsCode,
+		  execPlanetScript(codesMap[planet.playerId].planetsCode,
 		                   player,
 		                   planet,
 		                   sciptInputs.fleetList,
@@ -578,8 +569,7 @@ std::vector<Fleet*> removeEscapedFleet(
 		if(doEscape && doEscape->is_valid() && doEscape->type() == LUA_TFUNCTION)
 			try
 			{
-				lua_sethook(doEscape->state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
-				setCurrentPlayer(doEscape->state(), player);
+				prepareLuaCall(doEscape, player);
 				if(planetPtr)
 					wantEscape = doEscape->call<bool>(fleet, *planetPtr, otherFleets);
 				else
@@ -858,7 +848,6 @@ void execFights(Universe& univ_,
 
 TypedPtreePtr getFleetEmission(
   Universe const& univ_,
-  LuaEngine& luaEngine,
   PlayerCodes::ObjectMap& codeMap,
   Player const& player,
   Fleet& fleet,
@@ -873,10 +862,9 @@ try
 	if(planetIter != univ_.planetMap.end())
 		planet = &(planetIter->second);
 	using namespace Polua;
-	lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 	if(planet && fleetCanSeePlanet(fleet, *planet, univ_) == false)
 		planet = nullptr;
-	setCurrentPlayer(luaEngine, player);
+	prepareLuaCall(emitFunc, player);
 	TypedPtreePtr pt = make_shared<TypedPtree>();
 	if(planet)
 		*pt = emitFunc->call<TypedPtree>(fleet, *planet);
@@ -957,7 +945,6 @@ void execFleets(
 		Fleet fleet = iter->second;
 		Coord const coord = fleet.coord;
 		TypedPtreePtr pt = getFleetEmission(univ_,
-		                                    luaEngine,
 		                                    codesMap[iter->second.playerId].fleetsCode,
 		                                    player,
 		                                    fleet,
@@ -1010,7 +997,6 @@ void execFleets(
 		earedCount += mails.size();
 		boost::optional<FleetAction> action =
 		  execFleetScript(univ_,
-		                  luaEngine,
 		                  codesMap[iter->second.playerId].fleetsCode,
 		                  player,
 		                  scriptModifiedFleet,
@@ -1038,7 +1024,7 @@ void execFleets(
 	std::map<Fleet::ID, Fleet> newFleetMap;
 	for(Fleet & fleet : fleetMap | boost::adaptors::map_values)
 	{
-		if(boost::accumulate(fleet.shipList, 0) > 0) //Si flotte vide, on garde pas
+		if(fleet.empty() == false) //Si flotte vide, on garde pas
 			newFleetMap.insert(make_pair(fleet.id, fleet));
 	}
 	UpToUniqueLock writeLock(lockFleets);
@@ -1068,7 +1054,7 @@ try
 
 	//! Excecution du code des planetes(modifie l'univers)
 	//SharedLock writeLock(univ_.playersMutex);
-	execPlanets(univ_, database_, luaEngine, codesMap, events);
+	execPlanets(univ_, database_, codesMap, events);
 
 	//! Les combats
 	execFights(univ_, database_, codesMap, events);
@@ -1202,7 +1188,6 @@ try
 	using namespace boost::chrono;
 
 	LuaTools::LuaEngine luaEngine;
-	//lua_sethook(luaEngine.state(), luaCountHook, LUA_MASKCOUNT, 20000);
 	PlayerCodeMap codesMap; //Donné non partagée entre thread
 
 	//! @todo: remplacer openlibs par luaL_openlibs qui semble faire pareil
