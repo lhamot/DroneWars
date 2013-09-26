@@ -332,7 +332,7 @@ try
 	if(acceptPtree(player, fleet.memory) == false)
 	{
 		addErrorMessage(codeMap,
-		                BL::gettext("Too mush items in your "
+		                BL::gettext("Too much items in your "
 		                            "fleet's memory for your Memory skill level."),
 		                events);
 		return boost::none;
@@ -606,6 +606,42 @@ std::vector<Fleet*> removeEscapedFleet(
 	return escapedFleets;
 }
 
+
+//! @brief Verifie si player1 est ostile contre player2
+//!
+//! Si l'information n'est pas déja playerFightPlayer, 
+//! demande au script do_fight pour savoir si player1 veut attaquer player2 
+//! et ajoute le résultat dans playerFightPlayer
+void addIfTheyWantFight(
+	Player const& player1,                 //!< Player attaquant
+	Player const& player2,                 //!< Player attaqué
+	PlayersFightingMap& playerFightPlayer, //!< Qui veut attaquer qui
+	PlayerCodeMap& codesMap,
+	std::vector<Event>& events)
+{
+	auto iter = playerFightPlayer.find(std::make_pair(player1.id, player2.id));
+	if(iter == playerFightPlayer.end())
+	{
+		bool result = true;
+		auto fleetScripts = codesMap[player1.id].fleetsCode;
+		Polua::object doFight = fleetScripts.functions["do_fight"];
+		if(isFunction(doFight))
+		{
+			prepareLuaCall(doFight, player1);
+			try
+			{
+				result = doFight->call<bool>(player1, player2);
+			}
+			catch(Polua::Exception& ex)
+			{
+				addErrorMessage(fleetScripts, ex.what(), events);
+			}
+		}
+		playerFightPlayer[make_pair(player1.id, player2.id)] = result;
+	}
+}
+
+
 //! Les combats
 void execFights(Universe& univ_,
                 DataBase& database,
@@ -642,6 +678,7 @@ void execFights(Universe& univ_,
 	std::vector<Fleet*> fleetVect;
 	std::vector<Event> tempEvents;
 	std::vector<FightReport> tempReports;
+	PlayersFightingMap playerFightPlayer;
 	tempEvents.reserve(1000000);
 	tempReports.reserve(1000000);
 	//! Pour chaque coordonées, on accede au range des flotes
@@ -696,8 +733,38 @@ void execFights(Universe& univ_,
 		  removeEscapedFleet(
 		    playerMap, planetPtr, codesMap, events, escapeProbaMap, fleetVect);
 
+		playerSet.clear();
+		for(auto fleet : fleetVect)
+			playerSet.insert(fleet->playerId);
+		if(planetPtr)
+			playerSet.insert(planetPtr->playerId);
+		if(playerSet.size() < 2)
+			continue;
+
+		{
+			std::vector<Player::ID> playerVect(playerSet.begin(), playerSet.end());
+			for(auto iter1 = playerVect.begin(); iter1 != playerVect.end(); ++iter1)
+			{
+				for(auto iter2 = iter1 + 1; iter2 != playerVect.end(); ++iter2)
+				{
+					Player const& player1 = mapFind(playerMap, *iter1)->second;
+					Player const& player2 = mapFind(playerMap, *iter2)->second;
+					addIfTheyWantFight(player1,
+					                   player2,
+					                   playerFightPlayer,
+					                   codesMap,
+					                   events);
+					addIfTheyWantFight(player2,
+					                   player1,
+					                   playerFightPlayer,
+					                   codesMap,
+					                   events);
+				}
+			}
+		}
+
 		FightReport fightReport;
-		fight(fleetVect, planetPtr, codesMap, fightReport, events);
+		fight(fleetVect, playerFightPlayer, planetPtr, codesMap, fightReport);
 		calcExperience(playerMap, fightReport);
 		bool hasFight = false;
 		auto range = make_zip_range(fleetVect, fightReport.fleetList);
@@ -874,7 +941,7 @@ try
 	if(acceptPtree(player, fleet.memory) == false)
 	{
 		addErrorMessage(codeMap,
-		                BL::gettext("Too mush items in your "
+		                BL::gettext("Too much items in your "
 		                            "fleet's memory for your Memory skill level."),
 		                events);
 		return TypedPtreePtr();

@@ -151,7 +151,9 @@ void getNewPlayerCode(std::vector<std::string>& codes)
 		   BL::gettext("order") %
 		   BL::gettext("DO_GATHER_CODE_COMMENT") %
 		   BL::gettext("DO_FIGHT_CODE_COMMENT") %
-		   BL::gettext("FLEET_ACTION_CODE_COMMENT")).str();
+		   BL::gettext("FLEET_ACTION_CODE_COMMENT") %
+		   BL::gettext("myself_player") %
+		   BL::gettext("other_player")).str();
 		std::string const code =
 		  "function AI:do_gather(myFleet, otherFleet)\n"
 		  "  return true\n"

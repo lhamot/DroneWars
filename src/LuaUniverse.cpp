@@ -300,7 +300,12 @@ int initDroneWars(lua_State* L)
 	.ctor<FleetAction::Type>()
 	.read_only("action", &FleetAction::action)
 	.read_only("target", &FleetAction::target);
-	Class<Player>(L, "Player");
+	Class<Player>(L, "Player")
+	.read_only("id", &Player::id)
+	.read_only("allianceID", &Player::allianceID)
+	.read_only("mainPlanet", &Player::mainPlanet)
+	.read_only("score", &Player::score)
+	;
 	Class<TypedPtree>(L, "userdata")
 	.ctor()
 	.methode("size", &TypedPtree::size)

@@ -87,12 +87,14 @@ public:
 	}
 };
 
+typedef std::map<std::pair<Player::ID, Player::ID>, bool> PlayersFightingMap;
+
 //! Planet peut etre NULL
 void fight(std::vector<Fleet*> const& fleetList,
+           PlayersFightingMap const&,
            Planet* planet,
            PlayerCodeMap& codesMap,
-           FightReport& reportList,
-           std::vector<Event>& events);
+           FightReport& reportList);
 
 
 #endif //__BTA_FIGHTING__

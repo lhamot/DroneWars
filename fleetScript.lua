@@ -8,7 +8,7 @@ taille_flottes2 = 10
 function AI_do_gather(my_fleet2, autre_flotte2)
   return true
 end
-function AI_do_fight(my_fleet2, autre_flotte2)
+function AI_do_fight(myself, other_player)
   return true
 end
 function AI_action(my_fleet2, planete_locale2)

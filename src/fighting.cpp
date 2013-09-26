@@ -379,45 +379,23 @@ struct FleetPair
 //! Excecute un combat entre deux armés (armé = Fleet ou Planet)
 template<typename F1, typename F2>
 void handleFighterPair(
-  std::vector<Event>& events,
+  PlayersFightingMap const& playerFightPlayer,
   FleetPair const& fleetPair,
   Report<F1>& report1, F1& fighter1, PlayerCodes::ObjectMap& funcMap1,
   Report<F2>& report2, F2& fighter2, PlayerCodes::ObjectMap& funcMap2
 )
 {
-	Polua::object doFight1 = funcMap1.functions["do_fight"];
-	Polua::object doFight2 = funcMap2.functions["do_fight"];
+	auto doFight = [&](Player::ID player1, Player::ID player2)
+	{
+		auto iter = playerFightPlayer.find(std::make_pair(player1, player2));
+		if(iter == playerFightPlayer.end())
+			return true;
+		else
+			return iter->second;
+	};
+	bool const player1fight = doFight(fighter1.playerId, fighter2.playerId);
+	bool const player2fight = doFight(fighter2.playerId, fighter1.playerId);
 
-	bool player1fight = true;
-	bool player2fight = true;
-
-	try
-	{
-		//! @TOTO: Faire le setCurrentPlayer
-		if(doFight1 && doFight1->is_valid())
-		{
-			lua_sethook(
-			  doFight1->state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
-			player1fight = doFight1->call<bool>(fighter1, fighter2);
-		}
-	}
-	catch(Polua::Exception& ex)
-	{
-		addErrorMessage(funcMap1, ex.what(), events);
-	}
-	try
-	{
-		if(doFight2 && doFight2->is_valid())
-		{
-			lua_sethook(
-			  doFight2->state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
-			player2fight = doFight2->call<bool>(fighter2, fighter1);
-		}
-	}
-	catch(Polua::Exception& ex)
-	{
-		addErrorMessage(funcMap2, ex.what(), events);
-	}
 	if(!player1fight && !player2fight)
 		return;
 
@@ -449,10 +427,10 @@ void handleFighterPair(
 }
 
 void fight(std::vector<Fleet*> const& fleetList,
+           PlayersFightingMap const& playerFightPlayer,
            Planet* planet,
            PlayerCodeMap& codesMap,
-           FightReport& reportList,
-           std::vector<Event>& events)
+           FightReport& reportList)
 {
 	static size_t const PlanetIndex = size_t(-1);
 
@@ -533,7 +511,7 @@ void fight(std::vector<Fleet*> const& fleetList,
 			Report<Fleet>& report2 = reportList.fleetList[fleetPair.index2];
 			Fleet& fleet = *fleetList[fleetPair.index2];
 			handleFighterPair<Planet, Fleet>(
-			  events,
+			  playerFightPlayer,
 			  fleetPair,
 			  report1, *planet, getRoundScript(planet->playerId),
 			  report2, fleet, getRoundScript(fleet.playerId));
@@ -545,7 +523,7 @@ void fight(std::vector<Fleet*> const& fleetList,
 			Report<Planet>& report2 = reportList.planet.get();
 			Fleet& fleet = *fleetList[fleetPair.index1];
 			handleFighterPair<Fleet, Planet>(
-			  events,
+			  playerFightPlayer,
 			  fleetPair,
 			  report1, fleet, getRoundScript(fleet.playerId),
 			  report2, *planet, getRoundScript(planet->playerId));
@@ -558,7 +536,7 @@ void fight(std::vector<Fleet*> const& fleetList,
 			Report<Fleet>& report2 = reportList.fleetList[fleetPair.index2];
 			Fleet* fighterPtr2 = fleetList[fleetPair.index2];
 			handleFighterPair<Fleet, Fleet>(
-			  events,
+			  playerFightPlayer,
 			  fleetPair,
 			  report1, *fighterPtr1, getRoundScript(fighterPtr1->playerId),
 			  report2, *fighterPtr2, getRoundScript(fighterPtr2->playerId));

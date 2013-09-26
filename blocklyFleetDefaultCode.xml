@@ -14,8 +14,8 @@
   </block>
   <block type="procedures_defreturn" inline="false" x="59" y="-129">
     <mutation>
-      <arg name="%1%"></arg>
-      <arg name="%2%"></arg>
+      <arg name="%8%"></arg>
+      <arg name="%9%"></arg>
     </mutation>
     <title name="NAME">AI:do_fight</title>
     <comment pinned="false" h="200" w="400">%6%</comment>
