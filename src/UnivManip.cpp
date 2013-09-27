@@ -223,7 +223,7 @@ void construct(Universe& univ, DataBase& database)
 
 		if(false == coordSet.count(coord))
 		{
-			Planet planet(coord);
+			Planet planet(coord, 0);
 			planet.ressourceSet = ress;
 			planet.name = nameGen();
 			planet.parentCoord = coord;
@@ -553,7 +553,10 @@ void execTask(Universe& univ,
 			break;
 		case PlanetTask::MakeShip:
 		{
-			Fleet newFleet(univ.nextFleetID++, planet.playerId, planet.coord);
+			Fleet newFleet(univ.nextFleetID++, 
+				           planet.playerId, 
+						   planet.coord, 
+						   univ.roundCount);
 			newFleet.shipList[task.value] += task.value2;
 			univ.fleetMap.insert(make_pair(newFleet.id, newFleet));
 			Event event(planet.playerId, time(0), Event::ShipMade);
@@ -632,6 +635,7 @@ void execTask(Universe& univ,
 					                           RessourceSet(2000, 500, 0).tab);
 					planet.playerId = fleet.playerId;
 					planet.parentCoord = fleet.origin;
+					planet.firstRound = univ.roundCount;
 					if(planet.playerId > 100000)
 						BOOST_THROW_EXCEPTION(
 						  std::logic_error("planet.playerId > 100000"));

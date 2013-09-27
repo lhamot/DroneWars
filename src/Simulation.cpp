@@ -48,12 +48,14 @@ static Logger logger = Logger::getInstance(LOG4CPLUS_TEXT("Simulation"));
 
 //! Place un joueur dans les registre lua sous le nom "currentPlayer"
 //!  et reinitialise le hook compteur d'instruction.
-void prepareLuaCall(Polua::object stript, Player const& player)
+void prepareLuaCall(Universe const& univ, Polua::object stript, Player const& player)
 {
 	lua_sethook(
 	  stript->state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
 	Polua::pushTemp(stript->state(), player);
 	lua_setglobal(stript->state(), "currentPlayer");
+	lua_pushinteger(stript->state(), univ.roundCount);
+	lua_setglobal(stript->state(), "roundIndex");
 }
 
 
@@ -136,6 +138,7 @@ catch(Polua::Exception& ex)
 
 //! Excecute le code de la planete et lui ajoute des tache
 boost::optional<PlanetAction> execPlanetScript(
+  Universe const& univ,
   PlayerCodes::ObjectMap& codeMap,
   Player const& player,
   Planet& planet,
@@ -160,7 +163,7 @@ try
 		BOOST_THROW_EXCEPTION(
 		  std::logic_error("planet.buildingList.size() != Building::Count"));
 
-	prepareLuaCall(code, player);
+	prepareLuaCall(univ, code, player);
 	PlanetAction action = code->call<PlanetAction>(planet, fleetList);
 	cleanPtreeNil(planet.memory);
 	if(acceptPtree(player, planet.memory) == false)
@@ -255,6 +258,7 @@ bool checkLuaMethode(PlayerCodes::ObjectMap& codeMap,
 
 
 void gatherIfWant(
+  Universe const& univ,
   Player const& player,
   LuaEngine& luaEngine,
   PlayerCodes::ObjectMap& codeMap,
@@ -275,9 +279,9 @@ void gatherIfWant(
 			   (otherFleet.playerId == fleet.playerId) &&
 			   canGather(player, fleet, otherFleet))
 			{
-				prepareLuaCall(do_gather, player);
+				prepareLuaCall(univ, do_gather, player);
 				bool const wantGather1 = do_gather->call<bool>(fleet, otherFleet);
-				prepareLuaCall(do_gather, player);
+				prepareLuaCall(univ, do_gather, player);
 				bool const wantGather2 = do_gather->call<bool>(otherFleet, fleet);
 
 				//! @todo: Décoreler script et traitement
@@ -323,7 +327,7 @@ try
 	FleetAction action(FleetAction::Nothing);
 	if(planet && fleetCanSeePlanet(fleet, *planet, univ_) == false)
 		planet = nullptr;
-	prepareLuaCall(actionFunc, player);
+	prepareLuaCall(univ_, actionFunc, player);
 	if(planet)
 		action = actionFunc->call<FleetAction>(fleet, *planet, mails);
 	else
@@ -520,7 +524,8 @@ void execPlanets(Universe& univ_,
 		Planet planet = sciptInputs.planet;
 		Player const& player = mapFind(playerMap, planet.playerId)->second;
 		boost::optional<PlanetAction> action =
-		  execPlanetScript(codesMap[planet.playerId].planetsCode,
+		  execPlanetScript(univ_,
+		                   codesMap[planet.playerId].planetsCode,
 		                   player,
 		                   planet,
 		                   sciptInputs.fleetList,
@@ -549,6 +554,7 @@ void execPlanets(Universe& univ_,
 //! Retire les flotte qui veulent et parviennent à s'échaper
 //! @return La liste des flottes echapées
 std::vector<Fleet*> removeEscapedFleet(
+  Universe const& univ,
   std::map<Player::ID, Player> const playerMap,
   Planet const* planetPtr,
   PlayerCodeMap& codesMap,
@@ -569,7 +575,7 @@ std::vector<Fleet*> removeEscapedFleet(
 		if(doEscape && doEscape->is_valid() && doEscape->type() == LUA_TFUNCTION)
 			try
 			{
-				prepareLuaCall(doEscape, player);
+				prepareLuaCall(univ, doEscape, player);
 				if(planetPtr)
 					wantEscape = doEscape->call<bool>(fleet, *planetPtr, otherFleets);
 				else
@@ -609,15 +615,16 @@ std::vector<Fleet*> removeEscapedFleet(
 
 //! @brief Verifie si player1 est ostile contre player2
 //!
-//! Si l'information n'est pas déja playerFightPlayer, 
-//! demande au script do_fight pour savoir si player1 veut attaquer player2 
+//! Si l'information n'est pas déja playerFightPlayer,
+//! demande au script do_fight pour savoir si player1 veut attaquer player2
 //! et ajoute le résultat dans playerFightPlayer
 void addIfTheyWantFight(
-	Player const& player1,                 //!< Player attaquant
-	Player const& player2,                 //!< Player attaqué
-	PlayersFightingMap& playerFightPlayer, //!< Qui veut attaquer qui
-	PlayerCodeMap& codesMap,
-	std::vector<Event>& events)
+  Universe const& univ,
+  Player const& player1,                 //!< Player attaquant
+  Player const& player2,                 //!< Player attaqué
+  PlayersFightingMap& playerFightPlayer, //!< Qui veut attaquer qui
+  PlayerCodeMap& codesMap,
+  std::vector<Event>& events)
 {
 	auto iter = playerFightPlayer.find(std::make_pair(player1.id, player2.id));
 	if(iter == playerFightPlayer.end())
@@ -627,7 +634,7 @@ void addIfTheyWantFight(
 		Polua::object doFight = fleetScripts.functions["do_fight"];
 		if(isFunction(doFight))
 		{
-			prepareLuaCall(doFight, player1);
+			prepareLuaCall(univ, doFight, player1);
 			try
 			{
 				result = doFight->call<bool>(player1, player2);
@@ -731,7 +738,7 @@ void execFights(Universe& univ_,
 		std::map<Fleet::ID, double> escapeProbaMap;
 		std::vector<Fleet*> escapedFleets =
 		  removeEscapedFleet(
-		    playerMap, planetPtr, codesMap, events, escapeProbaMap, fleetVect);
+		    univ_, playerMap, planetPtr, codesMap, events, escapeProbaMap, fleetVect);
 
 		playerSet.clear();
 		for(auto fleet : fleetVect)
@@ -749,12 +756,14 @@ void execFights(Universe& univ_,
 				{
 					Player const& player1 = mapFind(playerMap, *iter1)->second;
 					Player const& player2 = mapFind(playerMap, *iter2)->second;
-					addIfTheyWantFight(player1,
+					addIfTheyWantFight(univ_,
+					                   player1,
 					                   player2,
 					                   playerFightPlayer,
 					                   codesMap,
 					                   events);
-					addIfTheyWantFight(player2,
+					addIfTheyWantFight(univ_,
+					                   player2,
 					                   player1,
 					                   playerFightPlayer,
 					                   codesMap,
@@ -931,7 +940,7 @@ try
 	using namespace Polua;
 	if(planet && fleetCanSeePlanet(fleet, *planet, univ_) == false)
 		planet = nullptr;
-	prepareLuaCall(emitFunc, player);
+	prepareLuaCall(univ_, emitFunc, player);
 	TypedPtreePtr pt = make_shared<TypedPtree>();
 	if(planet)
 		*pt = emitFunc->call<TypedPtree>(fleet, *planet);
@@ -980,7 +989,8 @@ void execFleets(
 	for(auto iter = fleetMap.begin(); iter != fleetMap.end(); ++iter)
 	{
 		UpToUniqueLock writeLock(lockFleets);
-		gatherIfWant(mapFind(playerMap, iter->second.playerId)->second,
+		gatherIfWant(univ_,
+		             mapFind(playerMap, iter->second.playerId)->second,
 		             luaEngine,
 		             codesMap[iter->second.playerId].fleetsCode,
 		             iter->second,

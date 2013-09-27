@@ -148,31 +148,20 @@ RessourceSet buildingPrice(Building::Enum building, size_t level)
 	return getBuilingPrice(Building::Enum(building - 1), level);
 }
 
-//! lua_CFunction qui pousse l'age d'une flotte sur la pile lua
-int luaCFunction_fleetage(lua_State* L)
+//! lua_CFunction qui pousse l'age d'une flotte/planet sur la pile lua
+template<typename T>
+int luaCFunction_age(lua_State* L)
 {
 	Polua::object playerObj = Polua::refFromName(L, "currentPlayer");
+	Polua::object roundObj = Polua::refFromName(L, "roundIndex");
 	Player currentPlayer = playerObj->get<Player>();
-	Fleet const& fleet = Polua::fromstackAny<Fleet>(L, -1);
+	size_t round = roundObj->get<size_t>();
+	T const& fleetOrPlanet = Polua::fromstackAny<T>(L, -1);
 	if(currentPlayer.skilltab[Skill::Chronos] < 1 ||
-	   fleet.playerId != currentPlayer.id)
-		Polua::push(L, 0);
+	   fleetOrPlanet.playerId != currentPlayer.id)
+		lua_pushnil(L);
 	else
-		Polua::push(L, time(0) - fleet.time);
-	return 1;
-}
-
-//! lua_CFunction qui pousse l'age d'une planète sur la pile lua
-int luaCFunction_planetage(lua_State* L)
-{
-	Polua::object playerObj = Polua::refFromName(L, "currentPlayer");
-	Player const& currentPlayer = playerObj->get<Player const&>();
-	Planet const& planet = Polua::fromstackAny<Planet>(L, -1);
-	if(currentPlayer.skilltab[Skill::Chronos] < 1 ||
-	   planet.playerId != currentPlayer.id)
-		Polua::push(L, 0);
-	else
-		Polua::push(L, time(0) - planet.time);
+		Polua::push(L, round - fleetOrPlanet.firstRound);
 	return 1;
 }
 
@@ -253,7 +242,7 @@ int initDroneWars(lua_State* L)
 	.enumValue("Cannon6", Cannon::Cannon6 + 1);
 	Class<Planet>(L, "Planet")
 	.methode("isFree", &planetIsFree)
-	.methode("age", luaCFunction_planetage)
+	.methode("age", luaCFunction_age<Planet>)
 	.methode("is_planet", luaCFunction_true)
 	.methode("is_fleet", luaCFunction_false)
 	.property("memory", &Planet::memory)
@@ -274,7 +263,7 @@ int initDroneWars(lua_State* L)
 	.enumValue("Cargo",        Ship::Cargo      + 1)
 	.enumValue("LargeCargo",   Ship::LargeCargo + 1);
 	Class<Fleet>(L, "Fleet")
-	.methode("age", luaCFunction_fleetage)
+	.methode("age", luaCFunction_age<Fleet>)
 	.methode("is_planet", luaCFunction_false)
 	.methode("is_fleet", luaCFunction_true)
 	.property("memory", &Fleet::memory)

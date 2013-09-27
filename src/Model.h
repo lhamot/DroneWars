@@ -264,7 +264,7 @@ struct Planet
 {
 	//! Serialize l'objet
 	template<class Archive>
-	void serialize(Archive& ar, const unsigned int)
+	void serialize(Archive& ar, unsigned int const version)
 	{
 		staticIf<Archive::is_saving::value>([&]()
 		{
@@ -296,6 +296,10 @@ struct Planet
 			BOOST_THROW_EXCEPTION(std::logic_error("buildingList.size() != Building::Count"));
 		ar& parentCoord;
 		ar& time;
+		if(version >= 1)
+			ar& firstRound;
+		else
+			firstRound = 0;
 		ar& memory;
 	}
 
@@ -313,6 +317,7 @@ struct Planet
 	CannonTab cannonTab;               //!< Nombre de canons pour chaque type
 	Coord parentCoord;                 //!< Coordonées de la planète parente
 	time_t time;                       //!< Date de création
+	size_t firstRound;              //!< Round de création
 	TypedPtree memory; //!< Données utilisateur
 
 	//! Taille ocupée dans le tas (pour profiling)
@@ -324,9 +329,10 @@ struct Planet
 		  taskQueue.capacity() * sizeof(PlanetTask);
 	}
 	//! Constructeur par defaut
-	Planet(): playerId(55555), time(0) {}
+	Planet(): playerId(55555), time(0), firstRound(0) {}
 	//! Constructeur
-	Planet(Coord c): coord(c), playerId(Player::NoId), time(::time(0))
+	Planet(Coord c, size_t round): 
+		coord(c), playerId(Player::NoId), time(::time(0)), firstRound(round)
 	{
 		buildingList.fill(0);
 		cannonTab.fill(0);
@@ -339,6 +345,7 @@ struct Planet
 		return playerId == Player::NoId;
 	}
 };
+BOOST_CLASS_VERSION(Planet, 1);
 
 
 //! Ordre donné par le script lua a une planète
@@ -406,7 +413,7 @@ struct Fleet
 {
 	//! Serialize l'objet
 	template<class Archive>
-	void serialize(Archive& ar, const unsigned int) //version
+	void serialize(Archive& ar, const unsigned int version)
 	{
 		staticIf<Archive::is_saving::value>([&]()
 		{
@@ -424,6 +431,10 @@ struct Fleet
 		ar& taskQueue;
 		if(playerId >= 100000)
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
+		if(version >= 1)
+			ar& firstRound;
+		else
+			firstRound = 0;
 		ar& memory;
 	}
 
@@ -439,6 +450,7 @@ struct Fleet
 	std::string name;         //!< Nom
 	ShipTab shipList;         //!< Quantité de chaque type de vaisseaux présent
 	time_t time;              //!< Date de création
+	size_t firstRound;     //!< Round de creation
 	RessourceSet ressourceSet;        //!< Ressources transportés par la flotte
 	std::vector<FleetTask> taskQueue; //!< Liste de taque a éxcecuter
 	TypedPtree memory; //!< Données utilisateurs
@@ -450,10 +462,21 @@ struct Fleet
 	}
 
 	//! Constructeur par defaut
-	Fleet(): id(NoId), playerId(Player::NoId), time(0) {shipList.assign(0);}
+	//! @todo: suprimer default ctor
+	Fleet():
+		id(NoId), playerId(Player::NoId), time(0), firstRound(0)
+	{
+		shipList.assign(0);
+	}
+
 	//! Constructeur
-	Fleet(ID fid, Player::ID pid, Coord c):
-		id(fid), playerId(pid), coord(c), origin(c), time(::time(0))
+	Fleet(ID fid, Player::ID pid, Coord c, size_t round):
+		id(fid),
+		playerId(pid),
+		coord(c),
+		origin(c),
+		time(::time(0)),
+		firstRound(round)
 	{
 		shipList.fill(0);
 		if(playerId >= 100000)
@@ -465,6 +488,7 @@ struct Fleet
 		return boost::accumulate(shipList, 0) == 0;
 	}
 };
+BOOST_CLASS_VERSION(Fleet, 1);
 
 
 //! Ordre qu'un scrupt LUA peut donner a une flotte
