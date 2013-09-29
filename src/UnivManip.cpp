@@ -553,10 +553,10 @@ void execTask(Universe& univ,
 			break;
 		case PlanetTask::MakeShip:
 		{
-			Fleet newFleet(univ.nextFleetID++, 
-				           planet.playerId, 
-						   planet.coord, 
-						   univ.roundCount);
+			Fleet newFleet(univ.nextFleetID++,
+			               planet.playerId,
+			               planet.coord,
+			               univ.roundCount);
 			newFleet.shipList[task.value] += task.value2;
 			univ.fleetMap.insert(make_pair(newFleet.id, newFleet));
 			Event event(planet.playerId, time(0), Event::ShipMade);

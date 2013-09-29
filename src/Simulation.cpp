@@ -46,6 +46,26 @@ using namespace log4cplus;
 static Logger logger = Logger::getInstance(LOG4CPLUS_TEXT("Simulation"));
 
 
+bool checkPtree(
+  PlayerCodes::ObjectMap& codeMap,
+  Player const& player,
+  TypedPtree& pt,
+  std::vector<Event>& events)
+{
+	cleanPtreeNil(pt);
+	if(acceptPtree(player, pt) == false)
+	{
+		addErrorMessage(codeMap,
+		                BL::gettext("Too much items in your "
+		                            "planet memory for your Memory skill level."),
+		                events);
+		return false;
+	}
+	else
+		return true;
+}
+
+
 //! Place un joueur dans les registre lua sous le nom "currentPlayer"
 //!  et reinitialise le hook compteur d'instruction.
 void prepareLuaCall(Universe const& univ, Polua::object stript, Player const& player)
@@ -165,17 +185,10 @@ try
 
 	prepareLuaCall(univ, code, player);
 	PlanetAction action = code->call<PlanetAction>(planet, fleetList);
-	cleanPtreeNil(planet.memory);
-	if(acceptPtree(player, planet.memory) == false)
-	{
-		addErrorMessage(codeMap,
-		                BL::gettext("Too mush items in your "
-		                            "planet memory for your Memory skill level."),
-		                events);
-		return boost::none;
-	}
-	else
+	if(checkPtree(codeMap, player, planet.memory, events))
 		return action;
+	else
+		return boost::none;
 }
 catch(Polua::Exception const& ex)
 {
@@ -332,17 +345,10 @@ try
 		action = actionFunc->call<FleetAction>(fleet, *planet, mails);
 	else
 		action = actionFunc->call<FleetAction>(fleet, false, mails);
-	cleanPtreeNil(fleet.memory);
-	if(acceptPtree(player, fleet.memory) == false)
-	{
-		addErrorMessage(codeMap,
-		                BL::gettext("Too much items in your "
-		                            "fleet's memory for your Memory skill level."),
-		                events);
-		return boost::none;
-	}
-	else
+	if(checkPtree(codeMap, player, fleet.memory, events))
 		return action;
+	else
+		return boost::none;
 }
 catch(Polua::Exception const& ex)
 {
@@ -946,17 +952,10 @@ try
 		*pt = emitFunc->call<TypedPtree>(fleet, *planet);
 	else
 		*pt = emitFunc->call<TypedPtree>(fleet, false);
-	cleanPtreeNil(fleet.memory);
-	if(acceptPtree(player, fleet.memory) == false)
-	{
-		addErrorMessage(codeMap,
-		                BL::gettext("Too much items in your "
-		                            "fleet's memory for your Memory skill level."),
-		                events);
-		return TypedPtreePtr();
-	}
-	else
+	if(checkPtree(codeMap, player, fleet.memory, events))
 		return pt;
+	else
+		return TypedPtreePtr();
 }
 catch(Polua::Exception const& ex)
 {

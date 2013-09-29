@@ -331,7 +331,7 @@ struct Planet
 	//! Constructeur par defaut
 	Planet(): playerId(55555), time(0), firstRound(0) {}
 	//! Constructeur
-	Planet(Coord c, size_t round): 
+	Planet(Coord c, size_t round):
 		coord(c), playerId(Player::NoId), time(::time(0)), firstRound(round)
 	{
 		buildingList.fill(0);
