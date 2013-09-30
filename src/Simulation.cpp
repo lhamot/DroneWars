@@ -46,25 +46,42 @@ using namespace log4cplus;
 static Logger logger = Logger::getInstance(LOG4CPLUS_TEXT("Simulation"));
 
 
-bool checkPtree(
-  PlayerCodes::ObjectMap& codeMap,
-  Player const& player,
-  TypedPtree& pt,
-  std::vector<Event>& events)
+class CheckMemory : boost::noncopyable
 {
-	cleanPtreeNil(pt);
-	if(acceptPtree(player, pt) == false)
+public:
+	template<typename T>
+	CheckMemory(PlayerCodes::ObjectMap& codeMap,
+	            Player const& player,
+	            T& fleetOrPlanet,
+	            std::vector<Event>& events):
+		codeMap_(codeMap),
+		player_(player),
+		oldMem_(fleetOrPlanet.memory),
+		memory_(fleetOrPlanet.memory),
+		events_(events)
 	{
-		addErrorMessage(codeMap,
-		                BL::gettext("Too much items in your "
-		                            "planet memory for your Memory skill level."),
-		                events);
-		return false;
 	}
-	else
-		return true;
-}
 
+	~CheckMemory()
+	{
+		cleanPtreeNil(memory_);
+		if(acceptPtree(player_, memory_) == false)
+		{
+			memory_ = oldMem_;
+			addErrorMessage(codeMap_,
+			                BL::gettext("Too much items in your "
+			                            "planet memory for your Memory skill level."),
+			                events_);
+		}
+	}
+
+private:
+	PlayerCodes::ObjectMap& codeMap_;
+	Player const& player_;
+	TypedPtree oldMem_;
+	TypedPtree& memory_;
+	std::vector<Event>& events_;
+};
 
 //! Place un joueur dans les registre lua sous le nom "currentPlayer"
 //!  et reinitialise le hook compteur d'instruction.
@@ -184,11 +201,9 @@ try
 		  std::logic_error("planet.buildingList.size() != Building::Count"));
 
 	prepareLuaCall(univ, code, player);
+	CheckMemory checkPlanetMem(codeMap, player, planet, events);
 	PlanetAction action = code->call<PlanetAction>(planet, fleetList);
-	if(checkPtree(codeMap, player, planet.memory, events))
-		return action;
-	else
-		return boost::none;
+	return action;
 }
 catch(Polua::Exception const& ex)
 {
@@ -293,8 +308,10 @@ void gatherIfWant(
 			   canGather(player, fleet, otherFleet))
 			{
 				prepareLuaCall(univ, do_gather, player);
+				CheckMemory checkFleet1Mem(codeMap, player, fleet, events);
 				bool const wantGather1 = do_gather->call<bool>(fleet, otherFleet);
 				prepareLuaCall(univ, do_gather, player);
+				CheckMemory checkFleet2Mem(codeMap, player, otherFleet, events);
 				bool const wantGather2 = do_gather->call<bool>(otherFleet, fleet);
 
 				//! @todo: Décoreler script et traitement
@@ -341,14 +358,12 @@ try
 	if(planet && fleetCanSeePlanet(fleet, *planet, univ_) == false)
 		planet = nullptr;
 	prepareLuaCall(univ_, actionFunc, player);
+	CheckMemory checkFleetMem(codeMap, player, fleet, events);
 	if(planet)
 		action = actionFunc->call<FleetAction>(fleet, *planet, mails);
 	else
 		action = actionFunc->call<FleetAction>(fleet, false, mails);
-	if(checkPtree(codeMap, player, fleet.memory, events))
-		return action;
-	else
-		return boost::none;
+	return action;
 }
 catch(Polua::Exception const& ex)
 {
@@ -582,6 +597,7 @@ std::vector<Fleet*> removeEscapedFleet(
 			try
 			{
 				prepareLuaCall(univ, doEscape, player);
+				CheckMemory checkFleetMem(codesMap[player.id].fleetsCode, player, *fleet, events);
 				if(planetPtr)
 					wantEscape = doEscape->call<bool>(fleet, *planetPtr, otherFleets);
 				else
@@ -947,15 +963,13 @@ try
 	if(planet && fleetCanSeePlanet(fleet, *planet, univ_) == false)
 		planet = nullptr;
 	prepareLuaCall(univ_, emitFunc, player);
+	CheckMemory checkFleetMem(codeMap, player, fleet, events);
 	TypedPtreePtr pt = make_shared<TypedPtree>();
 	if(planet)
 		*pt = emitFunc->call<TypedPtree>(fleet, *planet);
 	else
 		*pt = emitFunc->call<TypedPtree>(fleet, false);
-	if(checkPtree(codeMap, player, fleet.memory, events))
-		return pt;
-	else
-		return TypedPtreePtr();
+	return pt;
 }
 catch(Polua::Exception const& ex)
 {
