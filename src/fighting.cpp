@@ -5,6 +5,9 @@
 #include "fighting.h"
 #include "LuaTools.h"
 
+#include <boost/random/mersenne_twister.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
+
 #include "Polua/Core.h"
 
 
@@ -77,22 +80,24 @@ void fillShipList(Planet const& planet, UnitTab& shipTab)
 	}
 }
 
+boost::random::mt19937 gen(static_cast<uint32_t>(time(0)));
 
 //! Effectue l'attaque de la flotte unitTab1 contre unitTab2
 void applyRound(UnitTab& unitTab1, UnitTab& unitTab2)
 {
-	size_t pos = 0;
-	size_t const size = unitTab2.size();
 	//! Pour chaque vaisseau de la flotte unitTab1
 	for(Unit & ship : unitTab1)
 	{
-		//! - On calcule ca puissance
+		//! - On calcule sa puissance
 		uint16_t power =
 		  (ship.type < Ship::Count) ?
 		  Ship::List[ship.type].power :
 		  Cannon::List[ship.type - Ship::Count].power;
 
 		//! - Si il est moin puissant que bouclier enemi: On diminu le bouclier
+		boost::random::uniform_int_distribution<> dist(
+		  0, boost::numeric_cast<int>(unitTab2.size() - 1));
+		size_t const pos = dist(gen);
 		Unit& unity = unitTab2[pos];
 		uint16_t& shield = unity.shield;
 		if(power < shield)
@@ -110,12 +115,7 @@ void applyRound(UnitTab& unitTab1, UnitTab& unitTab2)
 			if(power < life)
 				life -= power;
 			else
-			{
 				life = 0;
-				++pos;
-				if(pos == size)
-					pos = 0;
-			}
 		}
 	}
 }
@@ -270,7 +270,7 @@ enum FightStatus : uint8_t
 
 //! Simule un combat entre deux combatant
 template<typename F1, typename F2>
-FightStatus fight(F1& fighter1, Polua::object roundFunc1,
+FightStatus fight(F1& fighter1, Polua::object roundFunc1, //!< @todo: supprimer les Polua::object
                   F2& fighter2, Polua::object roundFunc2
                  )
 {
