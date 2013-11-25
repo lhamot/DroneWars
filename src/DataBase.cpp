@@ -260,22 +260,24 @@ try
 
 	/*for(size_t p1: boost::irange(1, 101))
 	{
+		if(p1 == 52)
+			continue;
 		(*session_) <<
 			"INSERT INTO `script`(`playerID`, `time`, `target`, `code`) VALUES (?, NOW(), 1, \'"
 			"taille_flottes2 = 10\n"
 			"function AI_do_gather(my_fleet2, autre_flotte2)\n"
 			"  return true\n"
 			"end\n"
-			"function AI_do_fight(my_fleet2, autre_flotte2)\n"
-			"  return true\n"
+			"function AI_do_fight(myself, other_player)\n"
+			"  return (myself.id % 4) ~= (other_player.id % 4)\n"
 			"end\n"
-			"function AI_emit(my_fleet2, planete_locale2)\n"
-			"  message = userdata()\n"
-			"  message:put(\"X\", my_fleet2.coord.X)\n"
-			"  message:put(\"Y\", my_fleet2.coord.Y)\n"
-			"  message:put(\"Z\", my_fleet2.coord.Z)\n"
-			"  return message\n"
-			"end\n"
+			//"function AI_emit(my_fleet2, planete_locale2)\n"
+			//"  message = userdata()\n"
+			//"  message:put(\"X\", my_fleet2.coord.X)\n"
+			//"  message:put(\"Y\", my_fleet2.coord.Y)\n"
+			//"  message:put(\"Z\", my_fleet2.coord.Z)\n"
+			//"  return message\n"
+			//"end\n"
 			"function AI_action(my_fleet2, planete_locale2, mails)\n"
 			"  --print(mails:size())\n"
 			"  --if mails:size() > 0 then\n"

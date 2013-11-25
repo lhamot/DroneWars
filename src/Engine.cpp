@@ -11,8 +11,8 @@
 using namespace std;
 using namespace boost;
 
-typedef boost::unique_lock<Universe::Mutex> UniqueLock; //!< Verou en écriture
-typedef boost::shared_lock<Universe::Mutex> SharedLock; //!< Verou en lecture
+typedef boost::unique_lock<boost::shared_mutex> UniqueLock; //!< Verou en écriture
+typedef boost::shared_lock<boost::shared_mutex> SharedLock; //!< Verou en lecture
 
 Engine::Engine():
 	simulation_(new Simulation(univ_))
@@ -57,7 +57,6 @@ Engine::Engine():
 
 void Engine::load(string const& univName, size_t version)
 {
-	UniqueLock lock(univ_.mutex);
 	using namespace std;
 	ifstream loadFile(univName, ios::in | ios::binary);
 	if(loadFile.is_open() == false)
@@ -88,10 +87,9 @@ void Engine::stop()
 }
 
 
-Coord Engine::addPlayer(Player::ID pid)
+void Engine::addPlayer(Player::ID pid)
 {
-	UniqueLock lock(univ_.mutex);
-	return createMainPlanet(univ_, pid); //Modifie une planete
+	simulation_->createMainPlanet(pid); //Modifie une planete
 }
 
 

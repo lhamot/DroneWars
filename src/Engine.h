@@ -59,7 +59,7 @@ public:
 	//********** Requetes qui modifient la base *******************************
 
 	//! Ajoute un joueur dans le simulateur (lui donne une planète)
-	Coord addPlayer(Player::ID pid);
+	void addPlayer(Player::ID pid);
 
 	//! Extrait des info temporel de l'Univers
 	TimeInfo getTimeInfo() const;

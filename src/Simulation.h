@@ -4,6 +4,7 @@
 #ifndef __DRONEWARS_SIMULATION__
 #define __DRONEWARS_SIMULATION__
 
+#include <queue>
 #include <boost/thread/locks.hpp>
 #include "Model.h"
 #include "DataBase.h"
@@ -40,6 +41,8 @@ public:
 	//! Donne l'age total de l'univers en rounds, y comprie le round actuel
 	double getUnivTime();
 
+	void createMainPlanet(Player::ID pid);
+
 private:
 
 	//! Excecute un round
@@ -58,14 +61,19 @@ private:
 	//! Supprime les sauvegardes considérées comme trop vielles
 	void removeOldSaves() const;
 
+	//! Prépare des planètes pour les nouveaux joueurs
+	void createNewPlayersPlanets(Universe& univCopy);
+
 	//! Mutex de playerToReload_
 	mutable boost::shared_mutex reloadPlayerMutex_;
+	mutable boost::shared_mutex planetToCreateMutex_;
 	//! Liste des joueurs a recharger au prochain tour
 	std::set<Player::ID> playerToReload_;
 	//! Date du début du round
 	boost::chrono::system_clock::time_point roundStart;
 	Universe& univ_;                     //!< Universe
 	DataBase database_;                  //!< Acces a la base de donnée
+	std::queue<Player::ID> planetToCreate_;
 	mutable boost::thread savingThread_; //!< thread de sauvegarde
 };
 

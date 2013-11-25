@@ -323,9 +323,7 @@ bool EngineServerHandler::addPlayer(const string& login,
 	Player::ID const pid = database_.addPlayer(login, password, codes);
 	if(pid != Player::NoId)
 	{
-		Coord coord = engine_.addPlayer(pid);
-		database_.setPlayerMainPlanet(pid, coord);
-		engine_.reloadPlayer(pid);
+		engine_.addPlayer(pid);
 		return true;
 	}
 	else

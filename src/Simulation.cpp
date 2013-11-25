@@ -178,7 +178,7 @@ boost::optional<PlanetAction> execPlanetScript(
   Universe const& univ,
   PlayerCodes::ObjectMap& codeMap,
   Player const& player,
-  Planet& planet,
+  Planet& planetCopy,
   std::vector<Fleet const*> const& fleetList,
   std::vector<Event>& events)
 try
@@ -196,13 +196,13 @@ try
 		return boost::none;
 	}
 
-	if(planet.buildingList.size() != Building::Count)
+	if(planetCopy.buildingList.size() != Building::Count)
 		BOOST_THROW_EXCEPTION(
 		  std::logic_error("planet.buildingList.size() != Building::Count"));
 
 	prepareLuaCall(univ, code, player);
-	CheckMemory checkPlanetMem(codeMap, player, planet, events);
-	PlanetAction action = code->call<PlanetAction>(planet, fleetList);
+	CheckMemory checkPlanetMem(codeMap, player, planetCopy, events);
+	PlanetAction action = code->call<PlanetAction>(planetCopy, fleetList);
 	return action;
 }
 catch(Polua::Exception const& ex)
@@ -212,8 +212,9 @@ catch(Polua::Exception const& ex)
 }
 
 //! Applique l'action demandé par le script de la planete
+//! C-à-d ajoute ou arrete une tache de la planète
 void applyPlanetAction(
-  Universe& univ_,
+  Universe const& univ_,
   std::map<Player::ID, Player> const& playerMap,
   Planet& sciptModifiedPlanet,
   Planet& planet,
@@ -295,11 +296,11 @@ void gatherIfWant(
   std::vector<Event>& events)
 {
 	auto localFleetsKV = fleetMap.equal_range(fleet.coord);
-	auto fleetIter = localFleetsKV.first;
 	Polua::Caller caller(luaEngine.state());
 	if(checkLuaMethode(codeMap, "do_gather", events))
 	{
 		Polua::object do_gather = mapFind(codeMap.functions, "do_gather")->second;
+		auto fleetIter = localFleetsKV.first;
 		while(fleetIter != localFleetsKV.second)
 		{
 			Fleet& otherFleet = fleetIter->second;
@@ -481,7 +482,6 @@ void execPlanets(Universe& univ_,
 
 	std::map<Player::ID, size_t> playerFleetCounts;
 
-	UpgradeLock lockPlanet(univ_.mutex);
 	FleetCoordMap fleetMap;
 	for(Fleet const & fleet : univ_.fleetMap | boost::adaptors::map_values)
 	{
@@ -491,7 +491,6 @@ void execPlanets(Universe& univ_,
 
 	//Les planètes
 	{
-		UpToUniqueLock writeLock(lockPlanet);
 		for(Planet & planet : univ_.planetMap | boost::adaptors::map_values)
 			planetRound(univ_, planet, events);
 	}
@@ -556,7 +555,6 @@ void execPlanets(Universe& univ_,
 	}
 
 	{
-		UpToUniqueLock writeLock(lockPlanet);
 		for(ExtPlanetAction & extAction : planetActionList)
 		{
 			Planet& planet = univ_.planetMap[extAction.planetCoord];
@@ -679,7 +677,6 @@ void execFights(Universe& univ_,
 {
 	LOG4CPLUS_TRACE(logger, "enter");
 
-	UpgradeLock lockFleets(univ_.mutex);
 	if(univ_.fleetMap.empty()) //si il y as des flottes
 		return;
 
@@ -716,9 +713,6 @@ void execFights(Universe& univ_,
 	    iter1 != fleetMultimapEnd;
 	    iter1 = iter2, iter2 = nextNot(fleetMultimap, iter1))
 	{
-		lockFleets.unlock(); //On peut deverouiller temporairement car on sait que
-		lockFleets.lock();   //   l'autre thread ne fera que lire les flottes(pas d'ajout)
-
 		//! - Si 0 ou 1 combatant, on passe
 		{
 			auto testShipNumber = iter1;
@@ -753,7 +747,6 @@ void execFights(Universe& univ_,
 		//if(planetPtr && planetPtr->playerId != Player::NoId)
 		//	planetPtr = nullptr;
 
-		UpToUniqueLock writeLock(lockFleets);
 		//! - On excecute le combats
 
 		//! - Retrait de ceux qui s'échapent
@@ -903,7 +896,6 @@ void execFights(Universe& univ_,
 	//! On envoie dans la base les gain d'eperience
 	database.updateXP(experienceMap);
 
-	UpToUniqueLock writeLock(lockFleets);
 	//! On gère chaque planete perdues(onPlanetLose)
 	std::unordered_map<Coord, Coord> newParentMap;
 	for(Coord planetCoord : lostPlanets)
@@ -987,8 +979,6 @@ void execFleets(
 {
 	LOG4CPLUS_TRACE(logger, "enter");
 
-	UpgradeLock lockFleets(univ_.mutex);
-
 	std::map<Player::ID, Player> const playerMap = getPlayerMap(database);
 
 	FleetCoordMap fleetMap;
@@ -1001,7 +991,6 @@ void execFleets(
 
 	for(auto iter = fleetMap.begin(); iter != fleetMap.end(); ++iter)
 	{
-		UpToUniqueLock writeLock(lockFleets);
 		gatherIfWant(univ_,
 		             mapFind(playerMap, iter->second.playerId)->second,
 		             luaEngine,
@@ -1117,12 +1106,25 @@ void execFleets(
 		if(fleet.empty() == false) //Si flotte vide, on garde pas
 			newFleetMap.insert(make_pair(fleet.id, fleet));
 	}
-	UpToUniqueLock writeLock(lockFleets);
 	newFleetMap.swap(univ_.fleetMap);
 
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
+void Simulation::createNewPlayersPlanets(Universe& univCopy)
+{
+	UniqueLock lock(planetToCreateMutex_);
+	while(planetToCreate_.empty() == false)
+	{
+		Player::ID const pid = planetToCreate_.front();
+		planetToCreate_.pop();
+		lock.unlock();
+		Coord const coord = ::createMainPlanet(univCopy, pid);
+		database_.setPlayerMainPlanet(pid, coord);
+		reloadPlayer(pid);
+		lock.lock();
+	}
+}
 
 void Simulation::round(LuaTools::LuaEngine& luaEngine,
                        PlayerCodeMap& codesMap,
@@ -1136,21 +1138,26 @@ try
 
 	univ_.roundCount += 1; //1 round
 
+	Universe univCopy = univ_;
+
 	//! Désactivation de tout les codes qui echoue
-	//disableFailingCode(univ_, codesMap);
+	//disableFailingCode(univCopy, codesMap);
+
+	//! Création des pkanètes des nouveaux joueurs
+	createNewPlayersPlanets(univCopy);
 
 	//! Rechargement des codes flote/planet des joueurs dont le code a été changé
 	updatePlayersCode(luaEngine, codesMap, events);
 
 	//! Excecution du code des planetes(modifie l'univers)
-	//SharedLock writeLock(univ_.playersMutex);
-	execPlanets(univ_, database_, codesMap, events);
+	//SharedLock writeLock(univCopy.playersMutex);
+	execPlanets(univCopy, database_, codesMap, events);
 
 	//! Les combats
-	execFights(univ_, database_, codesMap, events);
+	execFights(univCopy, database_, codesMap, events);
 
 	//! Les flottes
-	execFleets(univ_, database_, luaEngine, codesMap, events);
+	execFleets(univCopy, database_, luaEngine, codesMap, events);
 
 	//! Supprime evenement trop vieux dans les Player et les Rapport plus utile
 	{
@@ -1178,13 +1185,17 @@ try
 
 	//! Met a jour les score des joueurs (modifie les joueurs)
 	LOG4CPLUS_TRACE(logger, "updateScore start");
-	updateScore(univ_, database_);
+	updateScore(univCopy, database_);
 
 	//! CheckTutos
 	LOG4CPLUS_TRACE(logger, "checkTutos start");
-	checkTutos(univ_, database_, events);
+	checkTutos(univCopy, database_, events);
 	LOG4CPLUS_TRACE(logger, "checkTutos end");
 
+	{
+		UniqueLock lock(univ_.mutex);
+		univ_.swap(univCopy);
+	}
 
 	//std::cout << lexical_cast<std::string>(time(0)) + "_save.bta ";
 	//save(lexical_cast<std::string>(time(0)) + "_save.bta");
@@ -1491,4 +1502,10 @@ void Simulation::removeOldSaves() const
 		}
 	}
 	while(end != timeSet.begin());
+}
+
+void Simulation::createMainPlanet(Player::ID pid)
+{
+	UniqueLock lock(planetToCreateMutex_);
+	planetToCreate_.push(pid);
 }
