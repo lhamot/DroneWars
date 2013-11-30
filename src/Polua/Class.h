@@ -121,7 +121,7 @@ struct MemCallerR<R(T::*)(Args...)>
 	ObjAndMethode<typename Normalize<T>::type, FuncPtr> OMP(L);
 	Polua::pushTemp(
 	  L,
-	  (OMP.object->*OMP.methode)(fromStack(L, ArgIdxList())...));
+	  (OMP.object->*OMP.methode)(fromStack<ArgIdxList>(L)...));
 	return 1;
 }
 
@@ -144,7 +144,7 @@ struct MemCallerR<R(T::*)(Args...) const>
 		ObjAndMethode<typename Normalize<T>::type, FuncPtr> OMP(L);
 		Polua::pushTemp(
 		  L,
-		  (OMP.object->*OMP.methode)(fromStack(L, ArgIdxList())...));
+		  (OMP.object->*OMP.methode)(fromStack<ArgIdxList>(L)...));
 		return 1;
 	}
 
@@ -169,7 +169,7 @@ struct MemCallerR<R(*)(T, Args...)>
 	Polua::pushTemp(
 	  L,
 	  OMP.methode(PtrToType<T>::get(OMP.object),
-	              fromStack(L, ArgIdxList())...));
+	              fromStack<ArgIdxList>(L)...));
 	return 1;
 }
 static int call(lua_State* L)
@@ -192,7 +192,7 @@ struct MemCaller<void(T::*)(Args...)>
 {
 	using namespace detail;
 	ObjAndMethode<typename Normalize<T>::type, FuncPtr> OMP(L);
-	(OMP.object->*OMP.methode)(fromStack(L, ArgIdxList())...);
+	(OMP.object->*OMP.methode)(fromStack<ArgIdxList>(L)...);
 	return 0;
 }
 static int call(lua_State* L)
@@ -232,7 +232,7 @@ struct MemCaller<void(*)(T, Args...)>
 	using namespace detail;
 	ObjAndMethode<typename Normalize<T>::type, FuncPtr> OMP(L);
 	OMP.methode(PtrToType<T>::get(OMP.object),
-	            fromStack(L, ArgIdxList())...);
+	            fromStack<ArgIdxList>(L)...);
 	return 1;
 }
 static int call(lua_State* L)
@@ -297,9 +297,9 @@ class Class
 	static int __call(lua_State* L)
 	{
 		//Dans la pile: 1 = objet
-		size_t const nbArgs = lua_gettop(L) - 1;
+		std::int32_t const nbArgs = lua_gettop(L) - 1;
 		char funcName[50];
-		std::sprintf(funcName, "ctor%u", nbArgs);
+		std::sprintf(funcName, "ctor%i", nbArgs);
 		lua_getmetatable(L, 1);      //Pousse la metatable du type
 		lua_pushstring(L, funcName); //Pousse le nom du constructeur
 		lua_rawget(L, -2);		     //Pousse le ctor (à la place du nom)
@@ -409,12 +409,11 @@ class Class
 	template<typename... Args>
 	struct Ctor
 	{
-		template<typename T, int I>
-		static auto ctorFromStack(lua_State* L,
-		                          detail::TypeWithIdx<T, I> const&)
-		-> decltype(Polua::fromstackAny<T>(L, I))
+		template<typename TI>
+		static auto ctorFromStack(lua_State* L)
+		-> decltype(Polua::fromstackAny<typename TI::Type>(L, TI::Index))
 		{
-			return Polua::fromstackAny<T>(L, I - 1);
+			return Polua::fromstackAny<typename TI::Type>(L, TI::Index - 1);
 		}
 
 		template<typename... ArgIdxList>
@@ -426,7 +425,7 @@ class Class
 			  (CopyWrapper<T>*)lua_newuserdata(L, sizeof(CopyWrapper<T>));
 			luaL_setmetatable(L, typeid(T).name());
 			new(ptr) CopyWrapper<T>(
-			  ctorFromStack(L, detail::ArgIdxList())...);
+			  ctorFromStack<ArgIdxList>(L)...);
 			return 1;
 		}
 
@@ -561,9 +560,9 @@ public:
 		POLUA_CHECK_STACK(L, 0);
 		pushMetatable();
 		lua_getmetatable(L, -1);
-		size_t const nbArgs = sizeof...(Args);
+		std::int32_t const nbArgs = sizeof...(Args);
 		char funcName[50];
-		std::sprintf(funcName, "ctor%u", nbArgs);
+		std::sprintf(funcName, "ctor%i", nbArgs);
 		setInMetatable(L, funcName, &Ctor<Args...>::constructor);
 		lua_pop(L, 2);
 		return *this;

@@ -62,7 +62,7 @@ struct Caller<R(*)(Args...)>
 {
 	using namespace detail;
 	FuncPtr ptr = (FuncPtr)lua_touserdata(L, lua_upvalueindex(1));
-	pushTemp(L, ptr(fromStack(L, ArgIdxList())...));
+	pushTemp(L, ptr(fromStack<ArgIdxList>(L)...));
 	return 1;
 }
 
@@ -84,7 +84,7 @@ struct Caller<void(*)(Args...)>
 {
 	using namespace detail;
 	FuncPtr ptr = (FuncPtr)lua_touserdata(L, lua_upvalueindex(1));
-	ptr(fromStack(L, ArgIdxList())...);
+	ptr(fromStack<ArgIdxList>(L)...);
 	return 0;
 }
 

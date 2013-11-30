@@ -8,7 +8,8 @@ namespace detail
 template<typename T, int I>
 struct TypeWithIdx
 {
-	TypeWithIdx() {}
+	typedef T Type;
+	static int const Index = I;
 };
 
 template<typename... Args>
@@ -60,11 +61,11 @@ struct ArgIdxListMaker<>
 	typedef TypeList<> Type;
 };
 
-template<typename T, int I>
-static auto fromStack(lua_State* L, detail::TypeWithIdx<T, I> const&)
--> decltype(Polua::fromstackAny<T>(L, I))
+template<typename TI>
+static auto fromStack(lua_State* L)
+-> decltype(Polua::fromstackAny<typename TI::Type>(L, TI::Index))
 {
-	return Polua::fromstackAny<T>(L, I);
+	return Polua::fromstackAny<typename TI::Type>(L, TI::Index);
 }
 }
 }
