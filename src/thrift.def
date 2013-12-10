@@ -30,6 +30,7 @@ enum Event_Type
 	PlanetWin
 	CannonMade
 	FightAvoided
+	PlayerLog
 	Count
 }
 

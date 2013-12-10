@@ -5,8 +5,11 @@
 #include "fighting.h"
 #include "LuaTools.h"
 
+#pragma warning(push)
+#pragma warning(disable: 4724 6385 6294 6201)
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
+#pragma warning(pop)
 
 #include "Polua/Core.h"
 

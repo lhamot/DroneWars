@@ -6,9 +6,6 @@
 #include "LuaUniverse.h"
 
 #include "Model.h"
-#pragma warning(push)
-#pragma warning(disable: 4189 4100)
-#pragma warning(pop)
 #include <boost/format.hpp>
 
 #include "Polua/Class.h"
@@ -179,6 +176,25 @@ int luaCFunction_false(lua_State* L)
 }
 
 
+int luaCFunction_log(lua_State* L)
+{
+	std::string newMessage = Polua::fromstack<std::string>(L, -1);
+	Polua::object logger = Polua::refFromName(L, "logger");
+	std::string const oldText =
+	  logger->is_valid() ? logger->get<std::string>() : std::string("");
+	lua_Debug ar;
+	lua_getstack(L, 1, &ar);
+	lua_getinfo(L, "nSl", &ar);
+	int const line = ar.currentline;
+	std::string const newText =
+	  oldText + "__LINE__ " + boost::lexical_cast<std::string>(line) +
+	  " - " + newMessage + "\n";
+	Polua::push(L, newText);
+	lua_setglobal(L, "logger");
+	return 0;
+}
+
+
 int initDroneWars(lua_State* L)
 {
 	using namespace Polua;
@@ -198,6 +214,7 @@ int initDroneWars(lua_State* L)
 	regFunc(L, "makeShip", makeShip);
 	regFunc(L, "makeCannon", makeCannon);
 	regFunc(L, "noPlanetAction", noPlanetAction);
+	regFunc(L, "log", luaCFunction_log);
 	Class<Ressource>(L, "Ressource")
 	.enumValue("Metal", Ressource::Metal)
 	.enumValue("Carbon", Ressource::Carbon)

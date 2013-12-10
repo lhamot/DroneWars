@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-25 19:39+0200\n"
-"PO-Revision-Date: 2013-09-25 20:58+0100\n"
+"POT-Creation-Date: 2013-12-07 15:35+0100\n"
+"PO-Revision-Date: 2013-12-07 15:36+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 "X-Poedit-KeywordsList: gettext;gettextWT\n"
 "X-Poedit-Basepath: I:\\C\\Bit_them_all\\src\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 1.6.1\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: .\Game\TranslationTools.py:3
@@ -274,100 +274,108 @@ msgstr "Victoire d'une planète"
 msgid "CannonMade"
 msgstr "Canon fabriqué"
 
+#: .\Game\TranslationTools.py:72
+msgid "FightAvoided"
+msgstr "Flotte échapée"
+
 #: .\Game\TranslationTools.py:73
+msgid "PlayerLog"
+msgstr "Journal d'IA"
+
+#: .\Game\TranslationTools.py:75
 msgid "Cannon1"
 msgstr "Laser leger"
 
-#: .\Game\TranslationTools.py:74
+#: .\Game\TranslationTools.py:76
 msgid "CANNON_BRIEF_0"
 msgstr ""
 
-#: .\Game\TranslationTools.py:75
+#: .\Game\TranslationTools.py:77
 msgid "Cannon2"
 msgstr "Lance missile"
 
-#: .\Game\TranslationTools.py:76
+#: .\Game\TranslationTools.py:78
 msgid "CANNON_BRIEF_1"
 msgstr ""
 
-#: .\Game\TranslationTools.py:77
+#: .\Game\TranslationTools.py:79
 msgid "Cannon3"
 msgstr "Laser lourd"
 
-#: .\Game\TranslationTools.py:78
+#: .\Game\TranslationTools.py:80
 msgid "CANNON_BRIEF_2"
 msgstr ""
 
-#: .\Game\TranslationTools.py:79
+#: .\Game\TranslationTools.py:81
 msgid "Cannon4"
 msgstr "Nucléaire leger"
 
-#: .\Game\TranslationTools.py:80
+#: .\Game\TranslationTools.py:82
 msgid "CANNON_BRIEF_3"
 msgstr ""
 
-#: .\Game\TranslationTools.py:81
+#: .\Game\TranslationTools.py:83
 msgid "Cannon5"
 msgstr "Cannon SST"
 
-#: .\Game\TranslationTools.py:82
+#: .\Game\TranslationTools.py:84
 msgid "CANNON_BRIEF_4"
 msgstr ""
 
-#: .\Game\TranslationTools.py:83
+#: .\Game\TranslationTools.py:85
 msgid "Cannon6"
 msgstr "Nucleaire lourd"
 
-#: .\Game\TranslationTools.py:84
+#: .\Game\TranslationTools.py:86
 msgid "CANNON_BRIEF_5"
 msgstr ""
 
-#: .\Game\TranslationTools.py:86
+#: .\Game\TranslationTools.py:88
 msgid "BLOCKLY_TUTO_0"
 msgstr ""
 "Ceci est la première étape du tutoriel:<br/>\n"
 "Demandez à votre planète de créer un batiment \"<strong>Mine de métal</"
 "strong>\" à chaque tour (en envoyant le bon ordre)."
 
-#: .\Game\TranslationTools.py:87
+#: .\Game\TranslationTools.py:89
 msgid "BLOCKLY_TUTO_1"
 msgstr ""
 "Ceci est la deuxième étape du tutoriel :<br/>\n"
 "Essayez de créer une fabrique une fois que votre mine de métal a atteint le "
 "niveau 4."
 
-#: .\Game\TranslationTools.py:88
+#: .\Game\TranslationTools.py:90
 msgid "BLOCKLY_TUTO_2"
 msgstr ""
 "Ceci est la troisième étape du tutoriel : <br/>\n"
 "Pour continuer, vous aurez besoin de vaisseaux. Fabriquez des Mosquito."
 
-#: .\Game\TranslationTools.py:89
+#: .\Game\TranslationTools.py:91
 msgid "BLOCKLY_TUTO_3"
 msgstr "Etape 4 : Créez au moins 3 flottes."
 
-#: .\Game\TranslationTools.py:90
+#: .\Game\TranslationTools.py:92
 msgid "BLOCKLY_TUTO_4"
 msgstr ""
 "Etape 5 : Créez au moins 3 flottes composées de 5 mosquitos exactement."
 
-#: .\Game\TranslationTools.py:91
+#: .\Game\TranslationTools.py:93
 msgid "BLOCKLY_TUTO_5"
 msgstr "Etape 6 : Envoyez 6 flottes dans 6 endroits différents."
 
-#: .\Game\TranslationTools.py:92
+#: .\Game\TranslationTools.py:94
 msgid "BLOCKLY_TUTO_6"
 msgstr ""
 "Pour réussir la septième étape du tutoriel, récoltez un maximum de "
 "ressources sur les planètes inhabitées."
 
-#: .\Game\TranslationTools.py:93
+#: .\Game\TranslationTools.py:95
 msgid "BLOCKLY_TUTO_7"
 msgstr ""
 "Votre prochain objectif est de rapporter des ressources récoltées sur votre "
 "planète mère."
 
-#: .\Game\TranslationTools.py:94
+#: .\Game\TranslationTools.py:96
 msgid "BLOCKLY_TUTO_8"
 msgstr "Votre prochain objectif est de coloniser d'autres planètes."
 
@@ -522,13 +530,17 @@ msgstr ""
 "gouverneurs(planètes). Allez dans l'onglet \"Planètes : Blocks\" pour "
 "commencer le tutoriel."
 
-#: .\Game\templatetags\tmp_filters.py:98
+#: .\Game\templatetags\tmp_filters.py:40
+msgid "Line:"
+msgstr "Ligne :"
+
+#: .\Game\templatetags\tmp_filters.py:102
 #, python-format
 msgid "(%i;%i;%i)"
 msgstr "(%i; %i; %i)"
 
-#: .\Game\templatetags\tmp_filters.py:110
-#: .\Game\templatetags\tmp_filters.py:121
+#: .\Game\templatetags\tmp_filters.py:114
+#: .\Game\templatetags\tmp_filters.py:125
 #, python-format
 msgid "%s:%s;"
 msgstr "%s : %s;"
@@ -1013,8 +1025,8 @@ msgstr "Objet"
 msgid "Fleet ID"
 msgstr "ID de flotte"
 
-#: .\template\report_func.html.py:8 .\template\report_func.html.py:28
-#: .\template\report_func.html.py:30
+#: .\template\report_func.html.py:8 .\template\report_func.html.py:26
+#: .\template\report_func.html.py:28
 msgid "Player"
 msgstr "Joueur"
 
@@ -1022,48 +1034,36 @@ msgstr "Joueur"
 msgid "Wanted escape"
 msgstr "Voulait s'enfuire?"
 
-#: .\template\report_func.html.py:9 .\template\report_func.html.py:13
-#: .\template\report_func.html.py:14 .\template\report_func.html.py:32
-#: .\template\report_func.html.py:33
+#: .\template\report_func.html.py:9
 msgid "Yes"
 msgstr "Oui"
 
-#: .\template\report_func.html.py:9 .\template\report_func.html.py:13
-#: .\template\report_func.html.py:14 .\template\report_func.html.py:32
-#: .\template\report_func.html.py:33
+#: .\template\report_func.html.py:9
 msgid "No"
 msgstr "Non"
 
-#: .\template\report_func.html.py:11 .\template\report_func.html.py:41
+#: .\template\report_func.html.py:11 .\template\report_func.html.py:37
 msgid "Escape probability"
 msgstr "Probabilités de fuite"
 
-#: .\template\report_func.html.py:13 .\template\report_func.html.py:32
-msgid "Has fight"
-msgstr "A combattu"
-
-#: .\template\report_func.html.py:14 .\template\report_func.html.py:33
-msgid "Is dead"
-msgstr "Est détruit"
-
-#: .\template\report_func.html.py:15 .\template\report_func.html.py:34
+#: .\template\report_func.html.py:13 .\template\report_func.html.py:30
 #: .\template\scoreview.html.py:20
 msgid "XP"
 msgstr "XP"
 
-#: .\template\report_func.html.py:16 .\template\report_func.html.py:35
+#: .\template\report_func.html.py:14 .\template\report_func.html.py:31
 msgid "Start"
 msgstr "Début"
 
-#: .\template\report_func.html.py:17 .\template\report_func.html.py:36
+#: .\template\report_func.html.py:15 .\template\report_func.html.py:32
 msgid "End"
 msgstr "Fin"
 
-#: .\template\report_func.html.py:18 .\template\report_func.html.py:37
+#: .\template\report_func.html.py:16 .\template\report_func.html.py:33
 msgid "Report ID"
 msgstr "ID Raport"
 
-#: .\template\report_func.html.py:24
+#: .\template\report_func.html.py:22
 msgid "Planet coordinate"
 msgstr "Coordonnées de planète"
 
@@ -1091,7 +1091,7 @@ msgstr "Monter"
 msgid "Effect"
 msgstr "Effet"
 
-#: .\template\skillsview.html.py:25
+#: .\template\skillsview.html.py:27
 msgid "Cost : "
 msgstr "Coût :"
 
@@ -1210,6 +1210,15 @@ msgstr "Texte"
 #: .\template\codesview\blockly_planet.html.py:181
 msgid "Lists"
 msgstr "Listes"
+
+#~ msgid "LogFailed"
+#~ msgstr "Enregistrement échoué"
+
+#~ msgid "Has fight"
+#~ msgstr "A combattu"
+
+#~ msgid "Is dead"
+#~ msgstr "Est détruit"
 
 #~ msgid "You can create up to %i planets."
 #~ msgstr "Vous pouvez créer jusqu'as %i planètes."

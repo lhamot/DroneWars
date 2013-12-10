@@ -30,6 +30,7 @@ int _kEvent_TypeValues[] =
 	Event_Type::PlanetWin,
 	Event_Type::CannonMade,
 	Event_Type::FightAvoided,
+	Event_Type::PlayerLog,
 	Event_Type::Count
 };
 const char* _kEvent_TypeNames[] =
@@ -51,9 +52,10 @@ const char* _kEvent_TypeNames[] =
 	"PlanetWin",
 	"CannonMade",
 	"FightAvoided",
+	"PlayerLog",
 	"Count"
 };
-const std::map<int, const char*> _Event_Type_VALUES_TO_NAMES(::apache::thrift::TEnumIterator(18, _kEvent_TypeValues, _kEvent_TypeNames), ::apache::thrift::TEnumIterator(-1, NULL, NULL));
+const std::map<int, const char*> _Event_Type_VALUES_TO_NAMES(::apache::thrift::TEnumIterator(19, _kEvent_TypeValues, _kEvent_TypeNames), ::apache::thrift::TEnumIterator(-1, NULL, NULL));
 
 int _kRessourceValues[] =
 {

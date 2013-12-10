@@ -22,7 +22,11 @@
 			<tr>
 				<td onclick="document.location.href='?skill_id={{forloop.counter0}}'">{{skill.name}}</td>
 				<td>{{skill.level}}</td>
-				<td><a class="btn btn-success" href="?buySkill={{forloop.counter0}}">{% trans "Cost : " %} {{skill.cost}}</a></td>
+				<td>
+				{% if skill.canUpdate %}
+					<a class="btn btn-success" href="?buySkill={{forloop.counter0}}">{% trans "Cost : " %} {{skill.cost}}</a>
+				{% endif %}
+				</td>
 				<td>{{skill.effectMessage}}</td>
 			</tr>
 			{% endfor %}

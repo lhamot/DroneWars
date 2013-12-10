@@ -69,6 +69,8 @@ _("FleetDrop");
 _("PlanetLose");
 _("PlanetWin");
 _("CannonMade");
+_("FightAvoided");
+_("PlayerLog");
 
 _("Cannon1");
 _("CANNON_BRIEF_0");

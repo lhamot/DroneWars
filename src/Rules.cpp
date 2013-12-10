@@ -370,6 +370,13 @@ double calcEscapeProba(Player const& player,
 	return (fraction - failRate) / double(fraction);
 }
 
+
+bool playerCanLog(Player const& player)
+{
+	return player.skilltab[Skill::Log] != 0;
+}
+
+
 bool isEscapeSuccess(double escapeProba)
 {
 	static size_t const fraction = 100;

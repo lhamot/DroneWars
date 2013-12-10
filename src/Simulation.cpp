@@ -45,6 +45,68 @@ using namespace log4cplus;
 //! Logger du thread de simulation
 static Logger logger = Logger::getInstance(LOG4CPLUS_TEXT("Simulation"));
 
+class CheckPlayerLog : boost::noncopyable
+{
+public:
+	CheckPlayerLog(lua_State* L,
+	               PlayerCodes::ObjectMap& codeMap,
+	               Player const& player,
+	               Coord const& coord,
+	               vector<Event>& events) :
+		state_(L),
+		codeMap_(codeMap),
+		player_(player),
+		coord_(coord),
+		events_(events)
+	{
+	}
+	CheckPlayerLog(lua_State* L,
+	               PlayerCodes::ObjectMap& codeMap,
+	               Player const& player,
+	               Fleet::ID const& fleetId,
+	               vector<Event>& events) :
+		state_(L),
+		codeMap_(codeMap),
+		player_(player),
+		fleetID_(fleetId),
+		events_(events)
+	{
+	}
+
+	~CheckPlayerLog()
+	try
+	{
+		Polua::object logger = Polua::refFromName(state_, "logger");
+		if(logger->is_valid())
+		{
+			if(playerCanLog(player_))
+			{
+				Event event(player_.id, time(0), Event::PlayerLog);
+				event.setComment(logger->get<std::string>());
+				if(fleetID_ == Fleet::NoId)
+					event.setPlanetCoord(coord_);
+				else
+					event.setFleetID(fleetID_);
+				events_.push_back(Event(event));
+			}
+			else
+			{
+				addErrorMessage(codeMap_,
+				                BL::gettext("Log failed"),
+				                events_);
+			}
+		}
+	}
+	CATCH_LOG_EXCEPTION(logger);
+
+private:
+	lua_State* state_;
+	PlayerCodes::ObjectMap& codeMap_;
+	Player const& player_;
+	Coord coord_ = Coord();
+	Fleet::ID fleetID_ = Fleet::NoId;
+	std::vector<Event>& events_;
+};
 
 class CheckMemory : boost::noncopyable
 {
@@ -63,6 +125,7 @@ public:
 	}
 
 	~CheckMemory()
+	try
 	{
 		cleanPtreeNil(memory_);
 		if(acceptPtree(player_, memory_) == false)
@@ -74,6 +137,7 @@ public:
 			                events_);
 		}
 	}
+	CATCH_LOG_EXCEPTION(logger);
 
 private:
 	PlayerCodes::ObjectMap& codeMap_;
@@ -81,6 +145,55 @@ private:
 	TypedPtree oldMem_;
 	TypedPtree& memory_;
 	std::vector<Event>& events_;
+};
+
+class DWObject
+{
+public:
+	DWObject(Polua::object const& obj) : obj_(obj)
+	{
+	}
+
+	static Coord getID(Planet const& planet)
+	{
+		return planet.coord;
+	}
+
+	static Fleet::ID getID(Fleet const& fleet)
+	{
+		return fleet.id;
+	}
+
+	template<typename T, typename ...Args>
+	void call(
+	  Player const& player,
+	  PlayerCodes::ObjectMap& codeMap,
+	  vector<Event>& events,
+	  T& fleetOrPlanet,
+	  Args const& ... args)
+	{
+		CheckMemory checkMem(codeMap, player, fleetOrPlanet, events);
+		CheckPlayerLog checkPlayerLog(
+		  obj_->state(), player, getID(fleetOrPlanet), events);
+		return obj_->call(fleetOrPlanet, args...);
+	}
+
+	template<typename R, typename T, typename ...Args>
+	R call(
+	  Player const& player,
+	  PlayerCodes::ObjectMap& codeMap,
+	  vector<Event>& events,
+	  T& fleetOrPlanet,
+	  Args const& ... args)
+	{
+		CheckMemory checkMem(codeMap, player, fleetOrPlanet, events);
+		CheckPlayerLog checkPlayerLog(
+		  obj_->state(), codeMap, player, getID(fleetOrPlanet), events);
+		return obj_->call<R>(fleetOrPlanet, args...);
+	}
+
+private:
+	Polua::object obj_;
 };
 
 //! Place un joueur dans les registre lua sous le nom "currentPlayer"
@@ -93,6 +206,8 @@ void prepareLuaCall(Universe const& univ, Polua::object stript, Player const& pl
 	lua_setglobal(stript->state(), "currentPlayer");
 	lua_pushinteger(stript->state(), univ.roundCount);
 	lua_setglobal(stript->state(), "roundIndex");
+	lua_pushnil(stript->state());
+	lua_setglobal(stript->state(), "logger");
 }
 
 
@@ -201,8 +316,10 @@ try
 		  std::logic_error("planet.buildingList.size() != Building::Count"));
 
 	prepareLuaCall(univ, code, player);
-	CheckMemory checkPlanetMem(codeMap, player, planetCopy, events);
-	PlanetAction action = code->call<PlanetAction>(planetCopy, fleetList);
+	DWObject code2(code);
+	PlanetAction action = code2.call<PlanetAction>(
+	                        player, codeMap, events,
+	                        planetCopy, fleetList);
 	return action;
 }
 catch(Polua::Exception const& ex)
@@ -308,12 +425,18 @@ void gatherIfWant(
 			   (otherFleet.playerId == fleet.playerId) &&
 			   canGather(player, fleet, otherFleet))
 			{
-				prepareLuaCall(univ, do_gather, player);
-				CheckMemory checkFleet1Mem(codeMap, player, fleet, events);
-				bool const wantGather1 = do_gather->call<bool>(fleet, otherFleet);
-				prepareLuaCall(univ, do_gather, player);
-				CheckMemory checkFleet2Mem(codeMap, player, otherFleet, events);
-				bool const wantGather2 = do_gather->call<bool>(otherFleet, fleet);
+				bool wantGather1 = false, wantGather2 = false;
+				{
+					prepareLuaCall(univ, do_gather, player);
+					DWObject do_gather2(do_gather);
+					wantGather1 = do_gather2.call<bool>(
+					                player, codeMap, events,
+					                fleet, otherFleet);
+					prepareLuaCall(univ, do_gather, player);
+					wantGather2 = do_gather2.call<bool>(
+					                player, codeMap, events,
+					                otherFleet, fleet);
+				}
 
 				//! @todo: Décoreler script et traitement
 				if(wantGather1 && wantGather2)
@@ -359,11 +482,15 @@ try
 	if(planet && fleetCanSeePlanet(fleet, *planet, univ_) == false)
 		planet = nullptr;
 	prepareLuaCall(univ_, actionFunc, player);
-	CheckMemory checkFleetMem(codeMap, player, fleet, events);
+	DWObject actionFunc2(actionFunc);
 	if(planet)
-		action = actionFunc->call<FleetAction>(fleet, *planet, mails);
+		action = actionFunc2.call<FleetAction>(
+		           player, codeMap, events,
+		           fleet, *planet, mails);
 	else
-		action = actionFunc->call<FleetAction>(fleet, false, mails);
+		action = actionFunc2.call<FleetAction>(
+		           player, codeMap, events,
+		           fleet, false, mails);
 	return action;
 }
 catch(Polua::Exception const& ex)
@@ -595,11 +722,15 @@ std::vector<Fleet*> removeEscapedFleet(
 			try
 			{
 				prepareLuaCall(univ, doEscape, player);
-				CheckMemory checkFleetMem(codesMap[player.id].fleetsCode, player, *fleet, events);
+				DWObject doEscape2(doEscape);
 				if(planetPtr)
-					wantEscape = doEscape->call<bool>(fleet, *planetPtr, otherFleets);
+					wantEscape = doEscape2.call<bool>(
+					               player, codesMap[player.id].fleetsCode, events,
+					               *fleet, *planetPtr, otherFleets);
 				else
-					wantEscape = doEscape->call<bool>(fleet, false, otherFleets);
+					wantEscape = doEscape2.call<bool>(
+					               player, codesMap[player.id].fleetsCode, events,
+					               *fleet, false, otherFleets);
 			}
 			catch(Polua::Exception& ex)
 			{
@@ -955,12 +1086,14 @@ try
 	if(planet && fleetCanSeePlanet(fleet, *planet, univ_) == false)
 		planet = nullptr;
 	prepareLuaCall(univ_, emitFunc, player);
-	CheckMemory checkFleetMem(codeMap, player, fleet, events);
 	TypedPtreePtr pt = make_shared<TypedPtree>();
+	DWObject emitFunc2(emitFunc);
 	if(planet)
-		*pt = emitFunc->call<TypedPtree>(fleet, *planet);
+		*pt = emitFunc2.call<TypedPtree>(player, codeMap, events,
+		                                 fleet, *planet);
 	else
-		*pt = emitFunc->call<TypedPtree>(fleet, false);
+		*pt = emitFunc2.call<TypedPtree>(player, codeMap, events,
+		                                 fleet, false);
 	return pt;
 }
 catch(Polua::Exception const& ex)
@@ -1067,6 +1200,7 @@ void execFleets(
 		boost::optional<FleetAction> action;
 	};
 	std::vector<FleetAndAction> scriptInputsList;
+	scriptInputsList.reserve(fleetMap.size());
 	for(auto iter = fleetMap.begin(); iter != fleetMap.end(); ++iter)
 	{
 		Player const& player = mapFind(playerMap, iter->second.playerId)->second;
@@ -1143,14 +1277,13 @@ try
 	//! Désactivation de tout les codes qui echoue
 	//disableFailingCode(univCopy, codesMap);
 
-	//! Création des pkanètes des nouveaux joueurs
+	//! Création des planètes des nouveaux joueurs
 	createNewPlayersPlanets(univCopy);
 
 	//! Rechargement des codes flote/planet des joueurs dont le code a été changé
 	updatePlayersCode(luaEngine, codesMap, events);
 
 	//! Excecution du code des planetes(modifie l'univers)
-	//SharedLock writeLock(univCopy.playersMutex);
 	execPlanets(univCopy, database_, codesMap, events);
 
 	//! Les combats

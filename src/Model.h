@@ -647,6 +647,7 @@ struct Event
 	  PlanetWin,
 	  CannonMade,
 	  FightAvoided,
+	  PlayerLog,
 	  Count
 	};
 

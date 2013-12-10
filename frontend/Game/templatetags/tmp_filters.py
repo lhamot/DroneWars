@@ -5,6 +5,7 @@ from gen_py.thrift.ttypes import *
 import datetime
 from Game.views import Ship_Enum
 import bbcode as BBCode
+import string
 
 register = template.Library()
 
@@ -34,9 +35,13 @@ def eventname(value):
 
 @register.filter
 def eventvalue(event):
-    if event.value == -1:
+    if event.type == Event_Type.PlayerLog:
+        toto = unicode(event.comment)
+        toto = toto.replace("__LINE__", u"{0}".format(_("Line:")))
+        return toto
+    elif event.value == -1:
         return ""
-    if event.type == Event_Type.CannonMade:
+    elif event.type == Event_Type.CannonMade:
         return  _(Cannon_Enum._VALUES_TO_NAMES[event.value])
     elif event.type == Event_Type.ShipMade:
         return  _(Ship_Enum._VALUES_TO_NAMES[event.value])

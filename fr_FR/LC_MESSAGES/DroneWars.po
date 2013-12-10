@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-26 22:53+0100\n"
-"PO-Revision-Date: 2013-09-26 22:53+0100\n"
+"POT-Creation-Date: 2013-12-07 15:22+0100\n"
+"PO-Revision-Date: 2013-12-07 15:29+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "Language: fr\n"
@@ -18,33 +18,32 @@ msgstr ""
 "X-Poedit-KeywordsList: gettext;gettextWT;translate\n"
 "X-Poedit-Basepath: I:\\C\\Bit_them_all\\src\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 1.6.1\n"
 "Plural-Forms: Plural-Forms: nplurals=2; plural=n == 1 ? 0 : 1;\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: LuaUniverse.cpp:112 LuaUniverse.cpp:125
+#: LuaUniverse.cpp:109 LuaUniverse.cpp:122
 msgid "%1% expect a number in the range [1: %2%]"
 msgstr "%1% attend un nombre entre 1 et %2% compris."
 
-#: LuaUniverse.cpp:141
+#: LuaUniverse.cpp:138
 msgid "%1% expect a building number in the range [1: %2%]"
 msgstr "attend un numero de batiment entre 1 et %2% compris"
 
-#: Simulation.cpp:153 Simulation.cpp:249
-msgid "Procedure \"%1%\" not found."
-msgstr "Procédure \"%1%\" introuvable."
+#: Simulation.cpp:95
+msgid "Log failed"
+msgstr ""
+"Tentative d'écriture dans le journal sans avoir la competence \"Journal\"."
 
-#: Simulation.cpp:169
-msgid "Too mush items in your planet memory for your Memory skill level."
+#: Simulation.cpp:135
+msgid "Too much items in your planet memory for your Memory skill level."
 msgstr ""
 "Il y as trop d'élément dans votre planète par rapport à votre niveau dans la "
 "competance Mémoire."
 
-#: Simulation.cpp:335 Simulation.cpp:937
-msgid "Too much items in your fleet's memory for your Memory skill level."
-msgstr ""
-"Il y as trop d'éléments dans votre flotte par rapport à votre niveau dans la "
-"competance Mémoire."
+#: Simulation.cpp:308 Simulation.cpp:398
+msgid "Procedure \"%1%\" not found."
+msgstr "Procédure \"%1%\" introuvable."
 
 #: Skills.cpp:39
 msgid "You can create up to {1} planets."
@@ -153,6 +152,11 @@ msgstr "moi_meme"
 msgid "other_player"
 msgstr "autre_joueur"
 
+#~ msgid "Too much items in your fleet's memory for your Memory skill level."
+#~ msgstr ""
+#~ "Il y as trop d'éléments dans votre flotte par rapport à votre niveau dans "
+#~ "la competance Mémoire."
+
 #~ msgid "Too mush items in your fleet's memory for your Memory skill level."
 #~ msgstr ""
 #~ "Il y as trop d'éléments dans votre flotte par rapport à votre niveau dans "
@@ -166,9 +170,6 @@ msgstr "autre_joueur"
 
 #~ msgid "Password"
 #~ msgstr "Mot de passe"
-
-#~ msgid "Log in"
-#~ msgstr "Connexion"
 
 #~ msgid "INTRO_TEXT"
 #~ msgstr ""

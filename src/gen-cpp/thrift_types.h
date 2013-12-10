@@ -38,7 +38,8 @@ struct Event_Type
 	  PlanetWin = 14,
 	  CannonMade = 15,
 	  FightAvoided = 16,
-	  Count = 17
+	  PlayerLog = 17,
+	  Count = 18
 	};
 };
 

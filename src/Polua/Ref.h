@@ -42,6 +42,8 @@ public:
 	inline void push() const
 	{
 		POLUA_CHECK_STACK(L, 1);
+		if(is_valid() == false)
+			BOOST_THROW_EXCEPTION(Polua::Exception(0, "Try to call invalid reference"));
 		lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
 	}
 
@@ -69,8 +71,6 @@ public:
 	void call(Args const& ... args)
 	{
 		POLUA_CHECK_STACK(L, 0);
-		if(is_valid() == false)
-			BOOST_THROW_EXCEPTION(Polua::Exception(0, "Try to call invalid reference"));
 		push();
 		Caller caller(L);
 		return caller.call(args...);
@@ -83,8 +83,6 @@ public:
 	R call(Args const& ... args)
 	{
 		POLUA_CHECK_STACK(L, 0);
-		if(is_valid() == false)
-			BOOST_THROW_EXCEPTION(Polua::Exception(0, "Try to call invalid reference"));
 		push();
 		Caller caller(L);
 		return caller.call<R>(args...);

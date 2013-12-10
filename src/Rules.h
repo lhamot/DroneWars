@@ -66,6 +66,8 @@ double calcEscapeProba(Player const& player,
                        Planet const* planet,
                        std::vector<Fleet const*> const& otherFleets);
 
+bool playerCanLog(Player const& player);
+
 namespace InternalRules
 {
 //! Test si la flote de ce joueur peut coloniser cette planète
