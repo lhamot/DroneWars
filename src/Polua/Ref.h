@@ -1,3 +1,5 @@
+//! @file
+//! @author Loïc HAMOT
 #ifndef __POLUA_REF__
 #define __POLUA_REF__
 
@@ -10,19 +12,21 @@ namespace Polua
 //! Référence un objet stoké dans les registre de lua
 class Ref
 {
-	Ref(Ref const&);
-	Ref& operator=(Ref const&);
+	Ref(Ref const&);            //!< Désactivation du constructeur par copie
+	Ref& operator=(Ref const&); //!< Désactivation de l'opérateur de copie
 
 	lua_State* L; //!< Données de l'interpreteur lua
 	int ref;      //!< Identifiant de l'obj dans les registres (0 si invalide)
 
 public:
+	//! crée une référence a partir de l'objet sur la pile, et le pop.
 	inline explicit Ref(lua_State* L):
 		L(L),
 		ref(luaL_ref(L, LUA_REGISTRYINDEX))
 	{
 	}
 
+	//! crée une référence a partir de la globale nommée
 	inline Ref(lua_State* L, std::string const& name): L(L), ref(LUA_REFNIL)
 	{
 		POLUA_CHECK_STACK(L, 0);
@@ -63,6 +67,7 @@ public:
 		return ref >= 0;
 	}
 
+	//! @return le lua_State duquel la référence provient
 	lua_State* state() {return L;}
 
 	//! Appel this en tant que function qui ne retourne pas de résultat
@@ -88,6 +93,8 @@ public:
 		return caller.call<R>(args...);
 	}
 
+	//! @return l'objet demandé
+	//! @throw luaL_error si pas le bon type
 	template<typename T>
 	T get()
 	{

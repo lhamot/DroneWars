@@ -23,20 +23,26 @@ struct Methode
 {
 	lua_CFunction caller;   //!< permet a lua d'appeler la methode
 	void* func;             //!< Pointeur sur la méthode a appeler
+	//! default ctor
 	Methode(): caller(nullptr), func(nullptr) {}
+	//! ctor
 	Methode(lua_CFunction caller, void* func): caller(caller), func(func) {}
 };
 //! @brief Pointeur de fonction servant a excecuter un Setter ou Getter
 //! (util pour le binding des propriétés)
 typedef int (*Xetter)(lua_State*, void*);
+
+//! Contient toutes les infos sur une méthode ou propriété d'un objet
 struct Member
 {
 	Methode methode;     //!< Wrapper de methode (peut ètre null)
 	Xetter getter;       //!< Wrapper de getter (peut ètre null)
 	Xetter setter;       //!< Wrapper de setter (peut ètre null)
 	void* attibPtr;      //!< Pointeur sur l'attribut des Xetter
+	//! ctor
 	explicit Member(Methode const f):
 		methode(f), getter(nullptr), setter(nullptr), attibPtr(nullptr) {}
+	//! ctor
 	Member(void* attibPtr, Xetter get, Xetter set = nullptr):
 		getter(get), setter(set), attibPtr(attibPtr) {assert(get);}
 };
@@ -89,9 +95,10 @@ void* memberToVoid(I in)
 template<typename Obj, typename MPtr>
 struct ObjAndMethode
 {
-	Obj* object;
-	MPtr methode;
+	Obj* object;  //!< Pointeur sur l'objet
+	MPtr methode; //!< Poinetru sur la methode
 
+	//! ctor : extrai l'obj et la methode de la pile en position 1 et 2.
 	ObjAndMethode(lua_State* L):
 		object(userdata_fromstack<Obj>(L, lua_upvalueindex(1))),
 		methode(toMember<MPtr>(lua_touserdata(L, lua_upvalueindex(2))))
@@ -100,14 +107,22 @@ struct ObjAndMethode
 };
 
 
-//! Obtient le type voulue(ref ou ptr) a partir un type forcement pointeur
-template<class T> struct PtrToType     {static T& get(T* val) {return *val;}};
+//! Obtient le type voulue(ref ou ptr) a partir d'un pointeur
+template<class T> struct PtrToType
+{
+	//! Version par defaut : retourne une ref a partir d'un ptr
+	static T& get(T* val) {return *val;}
+};
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 template<class T> struct PtrToType<T&> {static T& get(T* val) {return *val;}};
 template<class T> struct PtrToType<T*> {static T* get(T* val) {return val;}};
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 //! Crée la lua_CFunction qui appelera une methode membre C++ ayant un retour
 template<typename R, typename... Args>
 struct MemCallerR;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 template<typename R, typename T, typename... Args>
 struct MemCallerR<R(T::*)(Args...)>
@@ -178,9 +193,13 @@ static int call(lua_State* L)
 }
 };
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
 //! Crée la lua_CFunction qui appelera une methode membre C++ sans retour
 template<typename... Args>
 struct MemCaller;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 template<typename T, typename... Args>
 struct MemCaller<void(T::*)(Args...)>
@@ -241,17 +260,20 @@ static int call(lua_State* L)
 }
 };
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 }
 
-//! Traits pour indexer(utiliser []) le type T
+//! Traits pour indexer(utiliser []) le type T (conteneur c++)
 template<typename T>
 struct Indexer
 {
+	//! getter (qui dans cette version par defaut, déclanche une erreur lua)
 	static int get(lua_State* L)
 	{
 		return luaL_error(L, "Can't index type %s", typeid(T).name());
 	}
 
+	//! setter (qui dans cette version par defaut, déclanche une erreur lua)
 	static int set(lua_State* L)
 	{
 		return luaL_error(L, "Can't index type %s", typeid(T).name());
@@ -259,23 +281,27 @@ struct Indexer
 };
 
 
-//! Traits pour itérer le type T
+//! Traits pour itérer le type T (conteneur c++)
 template<typename T>
 struct IPairs
 {
+	//! Comme la methode lua ipairs. Mais ne fait rien par defaut.
 	static int ipairs(lua_State*)
 	{
 		return 0;
 	}
+	//! Comme la methode lua pairs. Mais ne fait rien par defaut.
 	static int pairs(lua_State*)
 	{
 		return 0;
 	}
 };
 
+//! Traits pour connaitre le nombre d'élément  du type T (conteneur c++)
 template<typename T>
 struct Length
 {
+	//! Recupere la taille du conteneur. (ne fait rien par defaut)
 	static int len(lua_State*)
 	{
 		return 0;
@@ -287,8 +313,8 @@ struct Length
 template<typename T>
 class Class
 {
-	Class(Class const&);
-	Class& operator=(Class const&);
+	Class(Class const&);             //!< class non copyable
+	Class& operator=(Class const&);  //!< class non copyable
 
 	lua_State* L;             //!< Donnée de l'interpreteur lua
 	std::string const& name;  //!< Nom de la class dans lua
@@ -409,6 +435,15 @@ class Class
 	template<typename... Args>
 	struct Ctor
 	{
+		//! lua_cfunction qui appelera le constructeur
+		static int constructor(lua_State* L)
+		{
+			return constructor2(
+			         L, detail::ArgIdxListMaker<Args...>::Type());
+		};
+
+	private:
+		//! Extrait un objet de la pile a l'index donné
 		template<typename TI>
 		static auto ctorFromStack(lua_State* L)
 		-> decltype(Polua::fromstackAny<typename TI::Type>(L, TI::Index))
@@ -416,6 +451,7 @@ class Class
 			return Polua::fromstackAny<typename TI::Type>(L, TI::Index - 1);
 		}
 
+		//! lua_cfunction qui appelera le constructeur (interne)
 		template<typename... ArgIdxList>
 		static int constructor2(
 		  lua_State* L,
@@ -428,13 +464,6 @@ class Class
 			  ctorFromStack<ArgIdxList>(L)...);
 			return 1;
 		}
-
-		//! lua_cfunction qui appelera le constructeur
-		static int constructor(lua_State* L)
-		{
-			return constructor2(
-			         L, detail::ArgIdxListMaker<Args...>::Type());
-		};
 	};
 
 	//! metamethode "__gc" appelé par lua pour detruire le userdata
@@ -518,23 +547,8 @@ class Class
 		return *this;
 	}
 
-	template<typename R, typename... Args>
-	struct GetFuncTypeR
-	{
-		typedef R(T::*MemberFunc)(Args...);
-		typedef R(T::*ConstMemberFunc)(Args...) const;
-		typedef R(*ExternFunc)(Args...);
-	};
-	template<typename... Args>
-	struct GetFuncType
-	{
-		typedef void(T::*MemberFunc)(Args...);
-		typedef void(T::*ConstMemberFunc)(Args...) const;
-		typedef void(*ExternFunc)(Args...);
-	};
-
-
 public:
+	//! ctor
 	Class(lua_State* state,            //!< Données de l'interpréteur lua
 	      std::string const& type_name //!< Nom du type dans lua
 	     ):
@@ -630,7 +644,7 @@ public:
 	template<typename... Args>
 	Class& methode(std::string const& name, void(T::*methode)(Args...))
 	{
-		typedef typename GetFuncType<Args...>::MemberFunc FuncPtr;
+		typedef void(T::*FuncPtr)(Args...);
 		Methode closure(&ClassHelpers::MemCaller<FuncPtr>::call,
 		                ClassHelpers::memberToVoid(methode));
 		setInMetatable(L, name, Member(closure));
@@ -641,7 +655,7 @@ public:
 	template<typename... Args>
 	Class& methode(std::string const& name, void(T::*methode)(Args...) const)
 	{
-		typedef typename GetFuncType<Args...>::ConstMemberFunc FuncPtr;
+		typedef void(T::*FuncPtr)(Args...) const;
 		Methode closure(&ClassHelpers::MemCaller<FuncPtr>::call,
 		                ClassHelpers::memberToVoid(methode));
 		setInMetatable(L, name, Member(closure));
@@ -652,7 +666,7 @@ public:
 	template<typename... Args>
 	Class& methode(std::string const& name, void(*methode)(Args...))
 	{
-		typedef typename GetFuncType<Args...>::ExternFunc FuncPtr;
+		typedef void(*FuncPtr)(Args...);
 		Methode closure(&ClassHelpers::MemCaller<FuncPtr>::call,
 		                ClassHelpers::memberToVoid(methode));
 		setInMetatable(L, name, Member(closure));
@@ -663,7 +677,7 @@ public:
 	template<typename R, typename... Args>
 	Class& methode(std::string const& name, R(T::*methode)(Args...))
 	{
-		typedef typename GetFuncTypeR<R, Args...>::MemberFunc FuncPtr;
+		typedef R(T::*FuncPtr)(Args...);
 		Methode closure(&ClassHelpers::MemCallerR<FuncPtr>::call,
 		                ClassHelpers::memberToVoid(methode));
 		setInMetatable(L, name, Member(closure));
@@ -674,7 +688,7 @@ public:
 	template<typename R, typename... Args>
 	Class& methode(std::string const& name, R(T::*methode)(Args...) const)
 	{
-		typedef typename GetFuncTypeR<R, Args...>::ConstMemberFunc FuncPtr;
+		typedef R(T::*FuncPtr)(Args...) const;
 		Methode closure(&ClassHelpers::MemCallerR<FuncPtr>::call,
 		                ClassHelpers::memberToVoid(methode));
 		setInMetatable(L, name, Member(closure));
@@ -685,7 +699,7 @@ public:
 	template<typename R, typename... Args>
 	Class& methode(std::string const& name, R(*methode)(Args...))
 	{
-		typedef typename GetFuncTypeR<R, Args...>::ExternFunc FuncPtr;
+		typedef R(*FuncPtr)(Args...);
 		Methode closure(&ClassHelpers::MemCallerR<FuncPtr>::call,
 		                ClassHelpers::memberToVoid(methode));
 		setInMetatable(L, name, Member(closure));

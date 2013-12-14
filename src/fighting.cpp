@@ -83,6 +83,7 @@ void fillShipList(Planet const& planet, UnitTab& shipTab)
 	}
 }
 
+//! Générateur de nombre pseudo-aléatoire
 boost::random::mt19937 gen(static_cast<uint32_t>(time(0)));
 
 //! Effectue l'attaque de la flotte unitTab1 contre unitTab2
@@ -273,8 +274,10 @@ enum FightStatus : uint8_t
 
 //! Simule un combat entre deux combatant
 template<typename F1, typename F2>
-FightStatus fight(F1& fighter1, Polua::object roundFunc1, //!< @todo: supprimer les Polua::object
-                  F2& fighter2, Polua::object roundFunc2
+FightStatus fight(F1& fighter1,             //!< flotte ou planète
+                  Polua::object roundFunc1, //!< @todo: supprimer les Polua::object
+                  F2& fighter2,             //!< flotte ou planète
+                  Polua::object roundFunc2  //!< @todo: supprimer les Polua::object
                  )
 {
 	//! Construction des deux listes de vaisseaux (fillShipList)

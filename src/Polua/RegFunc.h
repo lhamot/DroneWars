@@ -46,8 +46,11 @@ void regFunc(lua_State* L,             //!< Donnée de l'interpréteur lua
 //!   pour enregistrer des function c++ dans lua
 namespace Function
 {
+//! @brief Wrapper qui crée une lua_CFunction appelant une fonction C++ donnée
 template<typename T>
 struct Caller;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 //! @brief Wrapper servant à créer une lua_CFunction appelant
 //! une fonction C++ donnée et ayant une valeur de retour
@@ -77,7 +80,7 @@ static int call(lua_State* L)
 template<typename... Args>
 struct Caller<void(*)(Args...)>
 {
-  typedef void(*FuncPtr)(Args...);
+  typedef void(*FuncPtr)(Args...); //!< Pointeur sur la fonction C++
 
   template<typename... ArgIdxList>
   static int call2(lua_State* L, detail::TypeList<ArgIdxList...> const&)
@@ -93,6 +96,8 @@ static int call(lua_State* L)
 	return call2(L, detail::ArgIdxListMaker<Args...>::Type());
 }
 };
+
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 }
 

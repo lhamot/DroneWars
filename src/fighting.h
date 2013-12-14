@@ -87,14 +87,16 @@ public:
 	}
 };
 
+//! Pour chaque pairs de joueur, A attaque t'il B ou non?
 typedef std::map<std::pair<Player::ID, Player::ID>, bool> PlayersFightingMap;
 
 //! Planet peut etre NULL
-void fight(std::vector<Fleet*> const& fleetList,
-           PlayersFightingMap const&,
-           Planet* planet,
-           PlayerCodeMap& codesMap,
-           FightReport& reportList);
+void fight(std::vector<Fleet*> const& fleetList,//!< [in/out] Liste des flottes
+           PlayersFightingMap const&,           //!< Qui veut attaquer qui?
+           Planet* planet,           //!< [in/out] Planet de la zone (optionel)
+           PlayerCodeMap& codesMap,  //!< [in/out] Codes de tout les joueurs
+           FightReport& reportList   //!< [in/out] Rapport de combat
+          );
 
 
 #endif //__BTA_FIGHTING__

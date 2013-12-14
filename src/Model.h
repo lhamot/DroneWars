@@ -483,6 +483,7 @@ struct Fleet
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 	}
 
+	//! test si la flotte est vide
 	bool empty() const
 	{
 		return boost::accumulate(shipList, 0) == 0;

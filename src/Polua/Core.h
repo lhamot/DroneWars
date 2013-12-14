@@ -37,12 +37,13 @@ class CheckStack
 
 public:
 	lua_State* const L;         //!< Données de l'interpreteur Lua
-	int const expectedDiff;  //!< Difference attendue entre debut et fin
-	int const startValue;    //!< Taille de la pile au debut
+	int const expectedDiff;     //!< Difference attendue entre debut et fin
+	int const startValue;       //!< Taille de la pile au debut
 	std::string const funcName; //!< Nom de la fonction téstée
 
+	//! ctor
 	CheckStack(lua_State* L,          //!<Données de l'interpreteur Lua
-	           int expDiff,        //!< Diff attendue entre debut et fin
+	           int expDiff,           //!< Diff attendue entre debut et fin
 	           char const* const func //!< Nom de la fonction téstée
 	          ):
 		L(L),
@@ -88,7 +89,10 @@ inline void printStack(lua_State* L)
 struct Exception : std::runtime_error
 {
 	int errCode; //!< Code d'érreur lua, quand applicable
-	Exception(int err, std::string const& mess):
+	//! ctor
+	Exception(int err,                   //!< Code d'érreur lua, ou zero
+	          std::string const& mess    //!< Message d'erreur
+	         ):
 		std::runtime_error(mess),
 		errCode(err)
 	{
@@ -98,23 +102,29 @@ struct Exception : std::runtime_error
 
 //! @brief Traits permettant de savoir
 //!  si un type peut ètre considéré comme un type primitife pour lua
-template<typename T>struct IsPrimitive {static bool const value = false; struct IsNot {};};
-template<>struct IsPrimitive<   bool>      {static bool const value = true; struct Is {};};
+template<typename T>struct IsPrimitive
+{
+	static bool const value = false; //!< true si primitife (false par defaut)
+	struct IsNot {};
+};
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+template<>struct IsPrimitive<bool    > {static bool const value = true; struct Is {};};
 
-template<>struct IsPrimitive<int8_t >      {static bool const value = true; struct Is {};};
-template<>struct IsPrimitive<int16_t>      {static bool const value = true; struct Is {};};
-template<>struct IsPrimitive<int32_t>      {static bool const value = true; struct Is {};};
-template<>struct IsPrimitive<int64_t>      {static bool const value = true; struct Is {};};
+template<>struct IsPrimitive<int8_t  > {static bool const value = true; struct Is {}; };
+template<>struct IsPrimitive<int16_t > {static bool const value = true; struct Is {}; };
+template<>struct IsPrimitive<int32_t > {static bool const value = true; struct Is {}; };
+template<>struct IsPrimitive<int64_t > {static bool const value = true; struct Is {}; };
 
-template<>struct IsPrimitive<uint8_t>      {static bool const value = true; struct Is {};};
-template<>struct IsPrimitive<uint16_t>     {static bool const value = true; struct Is {};};
-template<>struct IsPrimitive<uint32_t>     {static bool const value = true; struct Is {};};
-template<>struct IsPrimitive<uint64_t>     {static bool const value = true; struct Is {};};
-template<>struct IsPrimitive<lua_CFunction> {static bool const value = true; struct Is {};};
-template<>struct IsPrimitive<std::string  > {static bool const value = true; struct Is {};};
+template<>struct IsPrimitive<uint8_t > {static bool const value = true; struct Is {}; };
+template<>struct IsPrimitive<uint16_t> {static bool const value = true; struct Is {}; };
+template<>struct IsPrimitive<uint32_t> {static bool const value = true; struct Is {}; };
+template<>struct IsPrimitive<uint64_t> {static bool const value = true; struct Is {}; };
+template<>struct IsPrimitive<lua_CFunction> {static bool const value = true; struct Is {}; };
+template<>struct IsPrimitive<std::string  > {static bool const value = true; struct Is {}; };
 
 template<>struct IsPrimitive<double> {static bool const value = true; struct Is {};};
 template<>struct IsPrimitive<float> {static bool const value = true; struct Is {};};
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 //! Lance une Polua::Exception si le code d'erreur n'est pas 0(OK)
 inline void throwOnError(lua_State* L, int errCode)
@@ -129,17 +139,19 @@ inline void throwOnError(lua_State* L, int errCode)
 }
 
 //! @brief Stock un objet c++. Copie une rédérence.
-//! Déstiné a etre crée en temps de userdata.
+//! Déstiné a etre crée en temps que userdata.
 template<typename T>
 class WrapperBase
 {
-	WrapperBase(WrapperBase const&);
-	WrapperBase& operator=(WrapperBase const&);
+	WrapperBase(WrapperBase const&);             //!< Non copyable
+	WrapperBase& operator=(WrapperBase const&);  //!< Non copyable
 public:
 	WrapperBase() {}
 
+	//! Destructeur virtuel
 	virtual ~WrapperBase() = 0 {};
 
+	//! Recupere le pointeur sur l'objet stoqué
 	virtual T* getPtr() = 0;
 };
 
@@ -147,12 +159,14 @@ public:
 template<typename T>
 class CopyWrapper : public WrapperBase<T>
 {
-	T copy_;
+	T copy_;  //!< Copie de l'objet stocké
 
 public:
+	//! Construit l'objet stocké par copie ou autre
 	template<typename ...Args>
 	explicit CopyWrapper(Args const& ... args): copy_(args...) {}
 
+	//! Recupere le pointeur sur l'objet stoqué
 	virtual T* getPtr() {return &copy_;}
 };
 
@@ -160,11 +174,13 @@ public:
 template<typename T>
 class RefWrapper : public WrapperBase<T>
 {
-	T& ref_;
+	T& ref_;  //!< stocke une référence sur l'objet
 
 public:
+	//! Prend la référence sur l'objet donné
 	explicit RefWrapper(T& ref): ref_(ref) {}
 
+	//! Recupere le pointeur sur l'objet stoqué
 	virtual T* getPtr() {return &ref_;}
 };
 
@@ -202,14 +218,13 @@ static T* check(lua_State* L, int narg)
 }
 
 //! @brief Extrait un objet primitif de la pile
-//!
 //! @remark Ne compile pas si T n'est pas primitif
 template<typename T>
 T fromstack(lua_State* L, int index)
 {
 	static_assert(false, "Can't compile with this type");
 }
-
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 template<>
 inline bool fromstack<bool>(lua_State* L, int index)
 {
@@ -302,23 +317,28 @@ inline float fromstack<float>(lua_State* L, int index)
 	return static_cast<float>(fromstack<double>(L, index));
 }
 
-//! Pousse un type primitif dans la pile
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+
+//! Pousse un type booleen dans la pile lua
 inline void push(lua_State* L, bool value)
 {
 	lua_pushboolean(L, value);
 }
 
+//! Pousse un type lua_CFunction dans la pile lua
 inline void push(lua_State* L, lua_CFunction value)
 {
 	lua_pushcfunction(L, value);
 }
 
+//! Pousse un type std::string dans la pile lua
 inline void push(lua_State* L, std::string const& value)
 {
 	lua_pushstring(L, value.c_str());
 }
 
-
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 inline void push(lua_State* L, double value) {lua_pushnumber(L, value);}
 inline void push(lua_State* L, float  value) {lua_pushnumber(L, value);}
 
@@ -330,12 +350,17 @@ inline void push(lua_State* L,  int8_t  value) {lua_pushinteger(L, value);}
 inline void push(lua_State* L,  int16_t value) {lua_pushinteger(L, value);}
 inline void push(lua_State* L,  int32_t value) {lua_pushinteger(L, value);}
 inline void push(lua_State* L,  int64_t value) {lua_pushinteger(L, static_cast<lua_Integer>(value));}
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 
+//! Traits pour pousser dans la pile lua un objet
 template<typename T, bool isPrim, bool isTemp>
 struct Push;
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
 // **************** Les type primitifs sont toujours copié ********************
+//! Traits pour pousser dans la pile lua un ptr sur un primitif persistant
 template<typename T>
 struct Push<T*, true, false>
 {
@@ -344,9 +369,10 @@ struct Push<T*, true, false>
 		Polua::push(L, *ptr);
 	}
 };
+//! Traits pour pousser dans la pile lua un ptr sur un primitif temporaire
 template<typename T> struct Push<T*, true, true> :
 	public Push<T*, true, false> {};
-
+//! Traits pour pousser dans la pile lua une réf sur un primitif persistant
 template<typename T>
 struct Push<T&, true, false>
 {
@@ -355,10 +381,10 @@ struct Push<T&, true, false>
 		Polua::push(L, ref);
 	}
 };
+//! Traits pour pousser dans la pile lua une réf sur un primitif temporaire
 template<typename T> struct Push<T&, true, true> :
 	public Push<T&, true, false> {};
-
-
+//! Traits pour pousser dans la pile lua un primitif persistant
 template<typename T>
 struct Push<T, true, false>
 {
@@ -367,6 +393,7 @@ struct Push<T, true, false>
 		Polua::push(L, obj);
 	}
 };
+//! Traits pour pousser dans la pile lua un primitif temporaire
 template<typename T> struct Push<T, true, true> :
 	public Push<T, true, false> {};
 
@@ -394,6 +421,7 @@ void pushUserdataRef(lua_State* L, T const& val)
 	new(usrdata) RefWrapper<T>(const_cast<T&>(val));
 }
 
+//! Traits pour pousser dans pile lua un ptr sur objet(non primitif) persistant
 template<typename T>
 struct Push<T*, false, false>
 {
@@ -402,9 +430,10 @@ struct Push<T*, false, false>
 		pushUserdataRef(L, *ptr);
 	}
 };
+//! Traits pour pousser dans pile lua un ptr sur objet(non primitif) temporaire
 template<typename T> struct Push<T*, false, true> :
 	public Push<T*, false, false> {};
-
+//!Traits pour pousser dans pile lua une ref sur objet(non primitif) persistant
 template<typename T>
 struct Push<T&, false, false>
 {
@@ -416,6 +445,7 @@ struct Push<T&, false, false>
 
 
 // ********** Le objet userdata persistent sont stoké par pointeur ************
+//! Traits pour pousser dans pile lua un objet(non primitif) persistant
 template<typename T>
 struct Push<T, false, false>
 {
@@ -426,6 +456,7 @@ struct Push<T, false, false>
 };
 
 // ********** Le objet userdata temporaire sont copié dans la pile ************
+//! Traits pour pousser dans pile lua un objet(non primitif) temporaire
 template<typename T>
 struct Push<T, false, true>
 {
@@ -435,10 +466,13 @@ struct Push<T, false, true>
 	}
 };
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
 //! Obtient un type T a partir de T*, T&, T const, ou T
 template<typename T>
 struct Normalize
 {
+	//! Type T mais sans reference ni pointeur ni const
 	typedef typename std::remove_cv <
 	typename std::remove_reference <
 	typename std::remove_pointer<T>::type >::type >::type type;
@@ -447,22 +481,25 @@ struct Normalize
 //! Test si la version non ptr, non ref et non const de T est primitive
 template<typename T>
 struct BaseIsPrim : public IsPrimitive<typename Normalize<T>::type> {};
-
+//! Pousse sur la pile un objet temporaire primitife
 template<typename T>
 void pushTemp(lua_State* L, T const& val, typename BaseIsPrim<T>::Is* = 0)
 {
 	Push<T, true, true>::push(L, val);
 }
+//! Pousse sur la pile un objet temporaire non primitife
 template<typename T>
 void pushTemp(lua_State* L, T const& val, typename BaseIsPrim<T>::IsNot* = 0)
 {
 	Push<T, false, true>::push(L, val);
 }
+//! Pousse sur la pile un objet persistant primitife
 template<typename T>
 void pushPers(lua_State* L, T const& val, typename BaseIsPrim<T>::Is* = 0)
 {
 	Push<T, true, false>::push(L, val);
 }
+//! Pousse sur la pile un objet persistant non primitife
 template<typename T>
 void pushPers(lua_State* L, T const& val, typename BaseIsPrim<T>::IsNot* = 0)
 {
@@ -472,6 +509,8 @@ void pushPers(lua_State* L, T const& val, typename BaseIsPrim<T>::IsNot* = 0)
 
 template<typename T, bool isPrim>
 struct Fromstack;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 // ***************** Le objet primitifs sont toujours copiés ******************
 template<typename T>
@@ -538,6 +577,9 @@ struct Fromstack<T, false>
 	}
 };
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+//! Récupère un objet depuit la pile lua a l'index donné
 template<typename T>
 typename Fromstack<T, true>::result_type
 fromstackAny(lua_State* L, int index, typename BaseIsPrim<T>::Is* = 0)
@@ -545,6 +587,7 @@ fromstackAny(lua_State* L, int index, typename BaseIsPrim<T>::Is* = 0)
 	return Fromstack<T, true>::fromstack(L, index);
 }
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 template <
 typename T,
          class = typename std::enable_if<std::is_enum<T>::value>::type >
@@ -560,8 +603,9 @@ fromstackEnum(lua_State* L, int index)
 {
 	return Fromstack<T, false>::fromstack(L, index);
 }
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-//! Récupère un objet depuit la pile lua a l'index donné
+//! Récupère un enum depuit la pile lua a l'index donné
 template<typename T>
 typename Fromstack<T, std::is_enum<T>::value>::result_type
 fromstackAny(

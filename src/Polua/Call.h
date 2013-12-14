@@ -19,16 +19,18 @@ class Caller
 {
 	lua_State* L;            //!< Donnée de l'interpréteur lua
 
-	//! Pousse dans la pile une liste d'argument
+	//! Pousse dans la pile un ou plusieurs d'argument
 	template<typename First, typename... Others>
 	void pushArgs(First const& first, Others const& ... others)
 	{
 		pushPers(L, first);
 		pushArgs(others...);
 	}
+	//! Pousse dans la pile zero argument (ne fait rien quoi)
 	void pushArgs() {}
 
 public:
+	//! ctor
 	Caller(lua_State* L): L(L) {}
 
 	//! Appel une function sur la pile lua, qui ne retourne pas de résultat

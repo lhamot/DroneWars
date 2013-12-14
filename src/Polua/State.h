@@ -17,10 +17,10 @@ namespace Polua
 //! Contient un lua_State et gère ca suppresion automatiquement
 class State
 {
-	State(State const&);
-	State& operator=(State const&);
+	State(State const&);            //!< class non copiable
+	State& operator=(State const&); //!< class non copiable
 
-	lua_State* const state_;
+	lua_State* const state_; //!< Etats lua internes
 
 	//! Appelée par lua pour gerer une erreur quand on est PAS dans un call
 	static int at_panic(lua_State* L)
@@ -32,6 +32,7 @@ class State
 	}
 
 public:
+	//! ctor
 	State(): state_(luaL_newstate())
 	{
 		if(state_ == NULL)
@@ -40,16 +41,19 @@ public:
 		lua_atpanic(state_, &State::at_panic);
 	}
 
+	//! destructeur
 	~State()
 	{
 		lua_close(state_);
 	}
 
+	//! Equivalent a luaL_openlibs
 	void openlibs()
 	{
 		luaL_openlibs(state_);
 	}
 
+	//! Equivalent à luaL_loadbuffer
 	int loadString(std::string const& code,
 	               std::string const& tag = std::string())
 	{
@@ -57,6 +61,7 @@ public:
 		         state_, code.c_str(), code.size(), tag.c_str());
 	}
 
+	//! Recupere le lua_State
 	lua_State* state()
 	{
 		return state_;

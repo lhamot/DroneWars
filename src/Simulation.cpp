@@ -45,9 +45,11 @@ using namespace log4cplus;
 //! Logger du thread de simulation
 static Logger logger = Logger::getInstance(LOG4CPLUS_TEXT("Simulation"));
 
+//! Verifie à la sortie du scope si le joueur a appelé la fonction de log
 class CheckPlayerLog : boost::noncopyable
 {
 public:
+	//! ctor
 	CheckPlayerLog(lua_State* L,
 	               PlayerCodes::ObjectMap& codeMap,
 	               Player const& player,
@@ -60,6 +62,7 @@ public:
 		events_(events)
 	{
 	}
+	//! ctor
 	CheckPlayerLog(lua_State* L,
 	               PlayerCodes::ObjectMap& codeMap,
 	               Player const& player,
@@ -73,6 +76,7 @@ public:
 	{
 	}
 
+	//! Ajoute les log du joueur dans la base si il as la compétence.
 	~CheckPlayerLog()
 	try
 	{
@@ -100,17 +104,20 @@ public:
 	CATCH_LOG_EXCEPTION(logger);
 
 private:
-	lua_State* state_;
-	PlayerCodes::ObjectMap& codeMap_;
-	Player const& player_;
-	Coord coord_ = Coord();
-	Fleet::ID fleetID_ = Fleet::NoId;
-	std::vector<Event>& events_;
+	lua_State* state_;                  //!< Etats lua
+	PlayerCodes::ObjectMap& codeMap_;   //!< Scripts du joueur
+	Player const& player_;              //!< Donées du joueur
+	Coord coord_ = Coord();             //!< Coordonée de la planète(optionel)
+	Fleet::ID fleetID_ = Fleet::NoId;   //!< ID de la flote (optionel)
+	std::vector<Event>& events_;        //!< Liste des evenements du round
 };
 
+//! @brief Verifie à la sortie du scope
+//!   si le joueur à modifié la memoire de sa planète ou flotte
 class CheckMemory : boost::noncopyable
 {
 public:
+	//! ctor
 	template<typename T>
 	CheckMemory(PlayerCodes::ObjectMap& codeMap,
 	            Player const& player,
@@ -124,6 +131,8 @@ public:
 	{
 	}
 
+	//! @brief Verifie si le joueur à modifié la memoire de sa planète / flotte
+	//! pour l'autoriser ou non, en fonction de son skill mémoire.
 	~CheckMemory()
 	try
 	{
@@ -140,30 +149,24 @@ public:
 	CATCH_LOG_EXCEPTION(logger);
 
 private:
-	PlayerCodes::ObjectMap& codeMap_;
-	Player const& player_;
-	TypedPtree oldMem_;
-	TypedPtree& memory_;
-	std::vector<Event>& events_;
+	PlayerCodes::ObjectMap& codeMap_;  //!< Scripts du joueur
+	Player const& player_;             //!< Donées du joueur
+	TypedPtree oldMem_;                //!< Mémoire d'origine
+	TypedPtree& memory_;               //!< Mémoire de sa planète / flotte (ref)
+	std::vector<Event>& events_;       //!< Liste des evenements du round
 };
 
+//! @brief Wrap une function lua en c++, tout en testant la mémoire et les log
+//! a l'aide de CheckPlayerLog et CheckMemory
 class DWObject
 {
 public:
+	//! ctor
 	DWObject(Polua::object const& obj) : obj_(obj)
 	{
 	}
 
-	static Coord getID(Planet const& planet)
-	{
-		return planet.coord;
-	}
-
-	static Fleet::ID getID(Fleet const& fleet)
-	{
-		return fleet.id;
-	}
-
+	//! Appel la fonction (avec retour) puis test la mémoire et les logs
 	template<typename T, typename ...Args>
 	void call(
 	  Player const& player,
@@ -178,6 +181,7 @@ public:
 		return obj_->call(fleetOrPlanet, args...);
 	}
 
+	//! Appel la fonction (sans retour) puis test la mémoire et les logs
 	template<typename R, typename T, typename ...Args>
 	R call(
 	  Player const& player,
@@ -193,7 +197,19 @@ public:
 	}
 
 private:
-	Polua::object obj_;
+	//! @return la coordoné de la planète
+	static Coord getID(Planet const& planet)
+	{
+		return planet.coord;
+	}
+
+	//! @return l'ID de la flotte
+	static Fleet::ID getID(Fleet const& fleet)
+	{
+		return fleet.id;
+	}
+
+	Polua::object obj_;   //!< Fonction lua
 };
 
 //! Place un joueur dans les registre lua sous le nom "currentPlayer"
@@ -457,7 +473,9 @@ void gatherIfWant(
 	}
 }
 
+//! std::shared_ptr de TypedPtree
 typedef std::shared_ptr<TypedPtree> TypedPtreePtr;
+//! std::vector de TypedPtree*
 typedef std::vector<TypedPtree*> MailBox;
 
 //! Excecute le script de la flotte
@@ -770,12 +788,13 @@ std::vector<Fleet*> removeEscapedFleet(
 //! demande au script do_fight pour savoir si player1 veut attaquer player2
 //! et ajoute le résultat dans playerFightPlayer
 void addIfTheyWantFight(
-  Universe const& univ,
+  Universe const& univ,                  //!< L'Univers
   Player const& player1,                 //!< Player attaquant
   Player const& player2,                 //!< Player attaqué
   PlayersFightingMap& playerFightPlayer, //!< Qui veut attaquer qui
-  PlayerCodeMap& codesMap,
-  std::vector<Event>& events)
+  PlayerCodeMap& codesMap,               //!< Scripts de tout les joueurs
+  std::vector<Event>& events             //!< Evenements du rounds
+)
 {
 	auto iter = playerFightPlayer.find(std::make_pair(player1.id, player2.id));
 	if(iter == playerFightPlayer.end())
@@ -1067,6 +1086,7 @@ void execFights(Universe& univ_,
 }
 
 
+//! Récupère les messages emit par une flotte
 TypedPtreePtr getFleetEmission(
   Universe const& univ_,
   PlayerCodes::ObjectMap& codeMap,

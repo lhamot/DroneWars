@@ -162,20 +162,21 @@ int luaCFunction_age(lua_State* L)
 	return 1;
 }
 
-
+//! luaCFunction qui renvoie forcement true
 int luaCFunction_true(lua_State* L)
 {
 	lua_pushboolean(L, 1);
 	return 1;
 }
 
+//! luaCFunction qui renvoie forcement false
 int luaCFunction_false(lua_State* L)
 {
 	lua_pushboolean(L, 0);
 	return 1;
 }
 
-
+//! luaCFunction ajoute un message de l'utilisateur dans la global "logger"
 int luaCFunction_log(lua_State* L)
 {
 	std::string newMessage = Polua::fromstack<std::string>(L, -1);

@@ -28,6 +28,7 @@ static size_t const LuaMaxInstruction = 20000;
 //! callback appelé par lua quand le nombre d'instruction max est dépassé
 void luaCountHook(lua_State* L, lua_Debug* ar);
 
+//! Ce Polua::object est t'il une fonction
 inline bool isFunction(Polua::object const& obj)
 {
 	return (obj && obj->is_valid() && obj->type() == LUA_TFUNCTION);

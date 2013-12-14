@@ -12,6 +12,7 @@ namespace Polua
 template<typename V>
 struct Indexer<std::vector<V> >
 {
+	//! Récupere une valeur dans le std::vector
 	static int get(lua_State* L)
 	{
 		int isnum = 0;
@@ -26,6 +27,7 @@ struct Indexer<std::vector<V> >
 		return 1;
 	}
 
+	//! set une valeur dans le std::vector
 	static int set(lua_State* L)
 	{
 		int isnum = 0;
@@ -41,16 +43,36 @@ struct Indexer<std::vector<V> >
 };
 
 
+//! Taits pour que lua sache iterer un std::vector
 template<typename T>
 struct IPairs<std::vector<T> >
 {
-	typedef std::vector<T> Container;
+	typedef std::vector<T> Container; //!< std::vector<T>
 
+	//! Comme la methode lua ipairs. Pour les std::vector
+	static int ipairs(lua_State* L)
+	{
+		lua_pushcfunction(L, &IPairs<Container>::iterator);
+		lua_pushvalue(L, 1);
+		lua_pushnil(L);
+		return 3;
+	}
+
+	//! @brief Comme la methode lua ipairs. Pour les std::vector.
+	//! @remarks Sur un vector, ipairs et pairs font la même chose.
+	static int pairs(lua_State* L)
+	{
+		return ipairs(L);
+	}
+
+private:
+
+	//! Iterateur fonctionel lua, pour les std::vector
 	static int iterator(lua_State* L)
 	{
 		/* 1: table
-			* 2: key
-			*/
+		* 2: key
+		*/
 		Container* obj = userdata_fromstack<Container>(L, 1);
 		//typedef typename Container::iterator iterator;
 		size_t index =
@@ -69,28 +91,15 @@ struct IPairs<std::vector<T> >
 		Polua::pushPers(L, (*obj)[index - 1]);
 		return 2;
 	}
-
-	static int ipairs(lua_State* L)
-	{
-		lua_pushcfunction(L, &IPairs<Container>::iterator);
-		lua_pushvalue(L, 1);
-		lua_pushnil(L);
-		return 3;
-	}
-
-	//Sur un vector, ipairs et pairs font la même chose
-	static int pairs(lua_State* L)
-	{
-		return ipairs(L);
-	}
 };
 
+//! Traits pour que Polua puisse obtenir la taille d'un std::vector
 template<typename T>
 struct Length<std::vector<T> >
 {
-	typedef std::vector<T> Container;
+	typedef std::vector<T> Container; //!< std::vector<T>
 
-	//Sur un vector, ipairs et pairs font la même chose
+	//! Retourne la taille du std::vector, en 1 sur la pile lua.
 	static int len(lua_State* L)
 	{
 		Container* obj = userdata_fromstack<Container>(L, 1);

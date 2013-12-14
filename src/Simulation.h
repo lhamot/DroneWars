@@ -41,6 +41,7 @@ public:
 	//! Donne l'age total de l'univers en rounds, y comprie le round actuel
 	double getUnivTime();
 
+	//! Demande la préparation d'une planete pour le nouveau joueur donnée
 	void createMainPlanet(Player::ID pid);
 
 private:
@@ -66,13 +67,15 @@ private:
 
 	//! Mutex de playerToReload_
 	mutable boost::shared_mutex reloadPlayerMutex_;
-	mutable boost::shared_mutex planetToCreateMutex_;
 	//! Liste des joueurs a recharger au prochain tour
 	std::set<Player::ID> playerToReload_;
 	//! Date du début du round
 	boost::chrono::system_clock::time_point roundStart;
 	Universe& univ_;                     //!< Universe
 	DataBase database_;                  //!< Acces a la base de donnée
+	//! Mutex de planetToCreate_
+	mutable boost::shared_mutex planetToCreateMutex_;
+	//! Queue de planètes a préparer pour des nouveaux joueurs
 	std::queue<Player::ID> planetToCreate_;
 	mutable boost::thread savingThread_; //!< thread de sauvegarde
 };
