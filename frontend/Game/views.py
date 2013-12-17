@@ -193,7 +193,8 @@ def getEventAndFightReport(request, service, eventList):
         if target_event and target_event.type in {Event_Type.FleetLose, Event_Type.FleetWin, 
                                       Event_Type.PlanetLose, Event_Type.PlanetWin, 
                                       Event_Type.FightAvoided}:
-            fight_report = service.getFightReport(target_event.value);
+            if target_event.value >= 0:
+                fight_report = service.getFightReport(target_event.value);
     return target_event, fight_report
     
 

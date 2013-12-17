@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-12-07 15:35+0100\n"
-"PO-Revision-Date: 2013-12-07 15:36+0100\n"
+"POT-Creation-Date: 2013-12-17 21:08+0100\n"
+"PO-Revision-Date: 2013-12-17 21:08+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "MIME-Version: 1.0\n"
@@ -476,7 +476,7 @@ msgstr "Mot de passe"
 msgid "Password2"
 msgstr "Mot de passe (vérif)"
 
-#: .\Game\views.py:76 .\Game\views.py:595
+#: .\Game\views.py:76 .\Game\views.py:596
 msgid "Passwords don't match!"
 msgstr "Les mots de passes ne correspondent pas!"
 
@@ -499,31 +499,31 @@ msgstr ""
 "savoir plus. \n"
 "Cliquez sur \"Commandement pour commencer le tutoriel\""
 
-#: .\Game\views.py:280
+#: .\Game\views.py:281
 msgid "FLEET_TUTOS"
 msgstr ""
 "Ici, vous verrez la liste de vos flottes. Si il n'y en a pas, demandez à vos "
 "planètes d'en fabriquer."
 
-#: .\Game\views.py:381
+#: .\Game\views.py:382
 msgid "REPORT_TUTOS"
 msgstr ""
 "Ici vous verrez les 10 derniers événements importants qui se sont produits "
 "dans votre empire."
 
-#: .\Game\views.py:419 .\Game\views.py:452 .\Game\views.py:488
-#: .\Game\views.py:528
+#: .\Game\views.py:420 .\Game\views.py:453 .\Game\views.py:489
+#: .\Game\views.py:529
 msgid "Code successfully saved"
 msgstr "Code sauvegardé avec succès."
 
-#: .\Game\views.py:492
+#: .\Game\views.py:493
 msgid "See in planets tab if the building is in progress"
 msgstr ""
 "Code sauvegardé avec succès.<br/>\n"
 "Allez voir dans l'onglet \"Planètes\" si votre nouveau bâtiment est en cours "
 "de création. (Cela peut prendre quelque minutes)"
 
-#: .\Game\views.py:500
+#: .\Game\views.py:501
 msgid "CODE_TUTOS"
 msgstr ""
 "Ici, vous pourrez définir la ligne de conduite de vos amiraux(flottes) et "
@@ -534,13 +534,13 @@ msgstr ""
 msgid "Line:"
 msgstr "Ligne :"
 
-#: .\Game\templatetags\tmp_filters.py:102
+#: .\Game\templatetags\tmp_filters.py:103
 #, python-format
 msgid "(%i;%i;%i)"
 msgstr "(%i; %i; %i)"
 
-#: .\Game\templatetags\tmp_filters.py:114
-#: .\Game\templatetags\tmp_filters.py:125
+#: .\Game\templatetags\tmp_filters.py:115
+#: .\Game\templatetags\tmp_filters.py:126
 #, python-format
 msgid "%s:%s;"
 msgstr "%s : %s;"
@@ -892,7 +892,11 @@ msgstr "Rapports"
 msgid "Date"
 msgstr "Date"
 
-#: .\template\fleetview.html.py:60 .\template\planetview.html.py:72
+#: .\template\fleetview.html.py:60 .\template\planetview.html.py:71
+msgid "Object"
+msgstr "Objet"
+
+#: .\template\fleetview.html.py:61 .\template\planetview.html.py:72
 msgid "Comment"
 msgstr "Commentaire"
 
@@ -1017,53 +1021,53 @@ msgstr "Envoyer par"
 msgid "What"
 msgstr "Quoi"
 
-#: .\template\planetview.html.py:71
-msgid "Object"
-msgstr "Objet"
+#: .\template\report_func.html.py:8
+msgid "No blackbox was found"
+msgstr "Aucune boite noir n'as été retrouvée."
 
-#: .\template\report_func.html.py:7
+#: .\template\report_func.html.py:13
 msgid "Fleet ID"
 msgstr "ID de flotte"
 
-#: .\template\report_func.html.py:8 .\template\report_func.html.py:26
-#: .\template\report_func.html.py:28
+#: .\template\report_func.html.py:14 .\template\report_func.html.py:32
+#: .\template\report_func.html.py:34
 msgid "Player"
 msgstr "Joueur"
 
-#: .\template\report_func.html.py:9
+#: .\template\report_func.html.py:15
 msgid "Wanted escape"
 msgstr "Voulait s'enfuire?"
 
-#: .\template\report_func.html.py:9
+#: .\template\report_func.html.py:15
 msgid "Yes"
 msgstr "Oui"
 
-#: .\template\report_func.html.py:9
+#: .\template\report_func.html.py:15
 msgid "No"
 msgstr "Non"
 
-#: .\template\report_func.html.py:11 .\template\report_func.html.py:37
+#: .\template\report_func.html.py:17 .\template\report_func.html.py:43
 msgid "Escape probability"
 msgstr "Probabilités de fuite"
 
-#: .\template\report_func.html.py:13 .\template\report_func.html.py:30
+#: .\template\report_func.html.py:19 .\template\report_func.html.py:36
 #: .\template\scoreview.html.py:20
 msgid "XP"
 msgstr "XP"
 
-#: .\template\report_func.html.py:14 .\template\report_func.html.py:31
+#: .\template\report_func.html.py:20 .\template\report_func.html.py:37
 msgid "Start"
 msgstr "Début"
 
-#: .\template\report_func.html.py:15 .\template\report_func.html.py:32
+#: .\template\report_func.html.py:21 .\template\report_func.html.py:38
 msgid "End"
 msgstr "Fin"
 
-#: .\template\report_func.html.py:16 .\template\report_func.html.py:33
+#: .\template\report_func.html.py:22 .\template\report_func.html.py:39
 msgid "Report ID"
 msgstr "ID Raport"
 
-#: .\template\report_func.html.py:22
+#: .\template\report_func.html.py:28
 msgid "Planet coordinate"
 msgstr "Coordonnées de planète"
 

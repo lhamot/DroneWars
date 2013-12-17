@@ -2,6 +2,12 @@
 {% load i18n %}
 			{% if target_event.type == Event_Type.FleetWin or target_event.type == Event_Type.FleetLose or target_event.type == Event_Type.PlanetLose or target_event.type == Event_Type.PlanetWin or target_event.type == Event_Type.FightAvoided %}
 			<h1>{{target_event.type|eventname}}</h1>
+			{% if not fight_report %}
+			<div class="alert">
+    			<button type="button" class="close" data-dismiss="alert">&times;</button>
+    			{% trans "No blackbox was found" %}
+    		</div>
+			{% endif %}
 			{% for fleetReport in fight_report.fleetList %}
 			<table class="table {{fleetReport|allyOrEnemy:player}} {{fleetReport|winnerOrLooser}}">
 				<tr><th>{% trans "Fleet ID" %}</th><td>{{fleetReport.fightInfo.before.id}}</td></tr>

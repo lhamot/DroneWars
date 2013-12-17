@@ -652,17 +652,17 @@ struct Event
 	  Count
 	};
 
-	typedef size_t ID;   //!< Type d'indentifiant d'évenement
-	ID id;               //!< Indentifiant unique
-	time_t time;         //!< Date de l'évenement
-	Type type;           //!< Type d'évenement
-	std::string comment; //!< Commentaire
-	intptr_t value;      //!< Valeur numerique utile pour certain Event::Type
-	intptr_t value2;     //!< 2dn valeur numerique utile pour certain Event::Type
-	bool viewed;         //!< true si l'évenement a été vu par son propriétaire
-	Player::ID playerID; //!< Propriétaire
-	Fleet::ID fleetID;   //!< Flotte lié, si applicable, sinon Fleet::NoID
-	Coord planetCoord;   //!< Planète lié, si applicable, sinon (0; 0; 0)
+	typedef size_t ID;       //!< Type d'indentifiant d'évenement
+	ID id = 0;               //!< Indentifiant unique
+	time_t time = 0;         //!< Date de l'évenement
+	Type type = Type::Count; //!< Type d'évenement
+	std::string comment;     //!< Commentaire
+	intptr_t value = -1;     //!< Valeur numerique utile pour certain Event::Type
+	intptr_t value2 = -1;    //!< 2dn valeur numerique utile pour certain Event::Type
+	bool viewed = false;     //!< true si l'évenement a été vu par son propriétaire
+	Player::ID playerID = Player::NoId; //!< Propriétaire
+	Fleet::ID fleetID   = Fleet::NoId;  //!< Flotte lié, si applicable, sinon Fleet::NoID
+	Coord planetCoord;       //!< Planète lié, si applicable, sinon (0; 0; 0)
 
 	//! Taile dans le tas (Pour profiling memoire)
 	size_t heap_size() const
@@ -673,8 +673,9 @@ struct Event
 	//! Constructeur
 	//! @pre pid != Player::NoId
 	Event(Player::ID pid, time_t ti, Type ty):
-		id(0), time(ti), type(ty), value(-1), value2(-1), viewed(false),
-		playerID(pid), fleetID(Fleet::NoId)
+		time(ti),
+		type(ty),
+		playerID(pid)
 	{
 		if(playerID == Player::NoId)
 			BOOST_THROW_EXCEPTION(std::logic_error("playerID == Player::NoId"));

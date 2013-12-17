@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-12-07 15:22+0100\n"
-"PO-Revision-Date: 2013-12-07 15:29+0100\n"
+"POT-Creation-Date: 2013-12-17 21:01+0100\n"
+"PO-Revision-Date: 2013-12-17 21:04+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "Language: fr\n"
@@ -30,18 +30,18 @@ msgstr "%1% attend un nombre entre 1 et %2% compris."
 msgid "%1% expect a building number in the range [1: %2%]"
 msgstr "attend un numero de batiment entre 1 et %2% compris"
 
-#: Simulation.cpp:95
+#: Simulation.cpp:99
 msgid "Log failed"
 msgstr ""
 "Tentative d'écriture dans le journal sans avoir la competence \"Journal\"."
 
-#: Simulation.cpp:135
+#: Simulation.cpp:144
 msgid "Too much items in your planet memory for your Memory skill level."
 msgstr ""
 "Il y as trop d'élément dans votre planète par rapport à votre niveau dans la "
 "competance Mémoire."
 
-#: Simulation.cpp:308 Simulation.cpp:398
+#: Simulation.cpp:324 Simulation.cpp:414
 msgid "Procedure \"%1%\" not found."
 msgstr "Procédure \"%1%\" introuvable."
 
@@ -57,28 +57,38 @@ msgstr "Vous pouvez créer jusqu'as {1} flottes."
 msgid "Your fleets can contains up to {1} ships."
 msgstr "Vos flottes peuvent contenir jusqu'as {1} vaisseaux."
 
-#: Skills.cpp:98
+#: Skills.cpp:99
 msgid "You can filter your messages"
 msgstr "Vous pouvez filter vos messages (Pas encors implementé)"
 
-#: Skills.cpp:115
+#: Skills.cpp:116
 msgid "You can now store up to {1} events."
 msgstr "Vous pouvez stocker jusqu'as {1} evenements."
 
-#: Skills.cpp:138
+#: Skills.cpp:139
 msgid "You can use the \"age()\" procedure on your fleets and planets"
 msgstr ""
 "Vous pouvez utiliser la procedure \":age()\" sur vos flottes et planètes."
 
-#: Skills.cpp:160
+#: Skills.cpp:161
 msgid "Your store up to {1} items in the \"memory\" of your fleets and planets"
 msgstr ""
 "Vous pouvez stocker jusqu'as {1} éléments dans la \"memoire\" de vos flottes "
 "et planètes."
 
-#: Skills.cpp:184
+#: Skills.cpp:185
 msgid "Your messages can reachs up to {1} cases"
 msgstr "Vos transmissions peuvent atteindre jusqu'as {1} cases de distance."
+
+#: Skills.cpp:273
+msgid "You can't receive fight report from destroyed fleets"
+msgstr "Vous ne pouvez recevoir les rapports de combat des flottes détruites."
+
+#: Skills.cpp:274
+msgid "You receive fight report from destroyed fleets"
+msgstr ""
+"Vous recevez les rapports de combat des flottes, même si elles sont "
+"détruites."
 
 #: UnivManip.cpp:123
 msgid "my_planet"

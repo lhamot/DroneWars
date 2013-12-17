@@ -959,6 +959,7 @@ void execFights(Universe& univ_,
 			continue;
 
 		//! - On ajoute les evenement/message dans les flottes/joueur
+		PlayerMap playerMap = getPlayerMap(database);
 		std::set<Player::ID> informedPlayer;
 		for(auto fleetReportPair : range)
 		{
@@ -975,8 +976,10 @@ void execFights(Universe& univ_,
 				if(informedPlayer.count(fleet.playerId) == 0)
 				{
 					tempEvents.push_back(
-					  Event(fleet.playerId, time(0), Event::FleetLose)
-					  .setValue(tempReports.size()));
+					  Event(fleet.playerId, time(0), Event::FleetLose));
+					if(playerCanSeeFightReport(
+					     mapFind(playerMap, fleet.playerId)->second))
+						tempEvents.back().setValue(tempReports.size());
 					informedPlayer.insert(fleet.playerId);
 				}
 			}
@@ -998,8 +1001,10 @@ void execFights(Universe& univ_,
 				if(planet.playerId != Player::NoId)
 				{
 					tempEvents.push_back(
-					  Event(planet.playerId, time(0), Event::PlanetLose)
-					  .setValue(tempReports.size()));
+					  Event(planet.playerId, time(0), Event::PlanetLose));
+					if(playerCanSeeFightReport(
+					     mapFind(playerMap, planet.playerId)->second))
+						tempEvents.back().setValue(tempReports.size());
 				}
 			}
 			else if(fightReport.planet.get().hasFight)
@@ -1040,7 +1045,8 @@ void execFights(Universe& univ_,
 
 	size_t const firstReportID = 1 + database.addFightReports(tempReports) - tempReports.size();
 	for(Event & event : tempEvents)
-		event.value += firstReportID;
+		if(event.value != -1)
+			event.value += firstReportID;
 	events.insert(events.end(), tempEvents.begin(), tempEvents.end());
 
 	//! On envoie dans la base les gain d'eperience

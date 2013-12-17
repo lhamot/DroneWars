@@ -71,6 +71,9 @@ double calcEscapeProba(Player const& player,
 //! Test si ce joueur a le droit de logger des messages dans ces scripts
 bool playerCanLog(Player const& player);
 
+//! Test si le joueur à le droit de recevoir ces rapport de combat
+bool playerCanSeeFightReport(Player const& player);
+
 namespace InternalRules
 {
 //! Test si la flote de ce joueur peut coloniser cette planète

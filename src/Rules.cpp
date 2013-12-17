@@ -383,6 +383,11 @@ bool isEscapeSuccess(double escapeProba)
 	return (rand() % fraction) < escapeProba * fraction;
 }
 
+bool playerCanSeeFightReport(Player const& player)
+{
+	return player.skilltab[Skill::BlackBox] > 0;
+}
+
 namespace InternalRules
 {
 //! Test si la flotte peut colonizer la planète

@@ -80,6 +80,7 @@ public:
 };
 
 //! Compétance Service d'information
+//! @toto: tout
 class InfoServiceSkill : public ISkill
 {
 	virtual bool canUpgradeImpl(Player const& player) const
@@ -231,6 +232,52 @@ public:
 };
 
 
+//! Compétance Simulation
+//! @toto: tout
+class SimulationSkill : public ISkill
+{
+	virtual bool canUpgradeImpl(Player const& //player
+	                           ) const
+	{
+		return true;
+	}
+	virtual size_t skillCostImpl(size_t skillCurrentLevel) const
+	{
+		return size_t(pow(skillCurrentLevel + 1, 2));
+	}
+	virtual std::string effectMessageImpl(Player const&) const
+	{
+		return std::string();
+	}
+public:
+	SimulationSkill() : ISkill("Simulation") {}
+};
+
+//! Compétance Boite noir
+class BlackBoxSkill : public ISkill
+{
+	virtual bool canUpgradeImpl(Player const& player) const
+	{
+		return player.skilltab[Skill::BlackBox] < 1;
+	}
+	virtual size_t skillCostImpl(size_t //skillCurrentLevel
+	                            ) const
+	{
+		return 10;
+	}
+	virtual std::string effectMessageImpl(Player const& player) const
+	{
+		using namespace boost::locale;
+		return player.skilltab[Skill::BlackBox] == 0 ?
+		       (format(translate("You can't receive fight report from destroyed fleets"))).str() :
+		       (format(translate("You receive fight report from destroyed fleets"))).str();
+	}
+
+public:
+	BlackBoxSkill() : ISkill("BlackBox") {}
+};
+
+
 //! Initialise la liste de skill
 std::vector<std::shared_ptr<ISkill> > InitSkills()
 {
@@ -243,8 +290,8 @@ std::vector<std::shared_ptr<ISkill> > InitSkills()
 	list.push_back(std::make_shared<ChronosSkill>());
 	list.push_back(std::make_shared<MemorySkill>());
 	list.push_back(std::make_shared<EmissionSkill>());
-	list.push_back(std::make_shared<DummySkill>("Spy"));
-	list.push_back(std::make_shared<DummySkill>("BlackBox"));
+	list.push_back(std::make_shared<SimulationSkill>());
+	list.push_back(std::make_shared<BlackBoxSkill>());
 	list.push_back(std::make_shared<LogSkill>());
 	list.push_back(std::make_shared<EvasionSkill>());
 	return list;
