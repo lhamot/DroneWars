@@ -253,7 +253,10 @@ public:
 
 	//! @brief Extrait les données d'une alliance
 	//! @remark si aid invalide l'ID de l'alliance sera zero
-	Alliance getAlliance(Alliance::ID aid);
+	Alliance getAlliance(Alliance::ID aid) const;
+
+	//! @brief Extrait toutes les alliances
+	std::vector<Alliance> getAlliances() const;
 
 	//! Modifie les données d'une alliance, si elle existe
 	void updateAlliance(Alliance const& alliance);

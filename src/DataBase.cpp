@@ -1312,24 +1312,52 @@ try
 DB_CATCH
 
 
-Alliance DataBase::getAlliance(Alliance::ID aid)
+Alliance DataBase::getAlliance(Alliance::ID aid) const
 try
 {
 	typedef Tuple < Alliance::ID, Player::ID,
-	        std::string, BLOB, std::string > MessageTup;
-	MessageTup messageTup;
+	        std::string, BLOB, std::string > AllianceTup;
+	AllianceTup allianceTup;
 	(*session_) <<
 	            "SELECT Alliance.*, Player.login FROM Alliance "
 	            "INNER JOIN Player "
 	            "ON masterID = Player.id "
 	            "WHERE Alliance.id = ? ",
-	            into(messageTup),
+	            into(allianceTup),
 	            use(aid), now;
-	return Alliance(messageTup.get<0>(),
-	                messageTup.get<1>(),
-	                messageTup.get<2>(),
-	                toString(messageTup.get<3>()),
-	                messageTup.get<4>());
+	return Alliance(allianceTup.get<0>(),
+	                allianceTup.get<1>(),
+	                allianceTup.get<2>(),
+	                toString(allianceTup.get<3>()),
+	                allianceTup.get<4>());
+}
+DB_CATCH
+
+std::vector<Alliance> DataBase::getAlliances() const
+try
+{
+	typedef Tuple < Alliance::ID, Player::ID,
+	        std::string, BLOB, std::string > AllianceTup;
+	std::vector<AllianceTup> allianceVect;
+	(*session_) <<
+	            "SELECT Alliance.*, Player.login FROM Alliance "
+	            "INNER JOIN Player "
+	            "ON masterID = Player.id ",
+	            into(allianceVect),
+	            now;
+	std::vector<Alliance> result;
+	result.reserve(allianceVect.size());
+	for(AllianceTup const & alliTup : allianceVect)
+	{
+		result.push_back(
+		  Alliance(alliTup.get<0>(),
+		           alliTup.get<1>(),
+		           alliTup.get<2>(),
+		           toString(alliTup.get<3>()),
+		           alliTup.get<4>()));
+	}
+	return result;
+
 }
 DB_CATCH
 

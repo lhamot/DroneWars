@@ -145,6 +145,7 @@ struct CodeData
 	}
 };
 
+struct Player;
 
 //! Description d'une alliance
 struct Alliance
@@ -156,6 +157,7 @@ struct Alliance
 	std::string name;         //!< Nom
 	std::string description;  //!< Description
 	std::string masterLogin;  //!< Login du propriétaire (Pas stoké dans SGBD)
+	Player* master = nullptr; //!< Pour les script lua uniquement
 
 	//! Constructeur
 	Alliance(Alliance::ID id,
@@ -190,6 +192,7 @@ struct Player
 	uint32_t experience;      //!< Experience
 	uint32_t skillpoints;     //!< Points de competances
 	SkillTab skilltab;        //!< Niveau du joueur dans chaque competance
+	Alliance* alliance = nullptr; //!< Pour les script lua uniquement
 
 	//! Constructeur
 	Player(ID i, std::string const& lg, std::string const& pass):

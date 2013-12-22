@@ -615,15 +615,23 @@ std::map<Player::ID, Player> getPlayerMap(DataBase const& database)
 	return playerMap;
 }
 
+//! Genere une map le joueur ID=>Joueur a partir de la base de donnée SQL
+std::map<Alliance::ID, Alliance> getAllianceMap(DataBase const& database)
+{
+	std::vector<Alliance> alliances = database.getAlliances();
+	std::map<Alliance::ID, Alliance> allianceMap;
+	for(Alliance const & alli : alliances)
+		allianceMap.insert(make_pair(alli.id, alli));
+	return allianceMap;
+}
+
 //! Simule le round pour toute les planètes
 void execPlanets(Universe& univ_,
-                 DataBase const& database,
+                 std::map<Player::ID, Player> const& playerMap,
                  PlayerCodeMap& codesMap,
                  std::vector<Event>& events)
 {
 	LOG4CPLUS_TRACE(logger, "enter");
-
-	std::map<Player::ID, Player> const playerMap = getPlayerMap(database);
 
 	std::map<Player::ID, size_t> playerFleetCounts;
 
@@ -822,6 +830,7 @@ void addIfTheyWantFight(
 //! Les combats
 void execFights(Universe& univ_,
                 DataBase& database,
+                std::map<Player::ID, Player> const& playerMap,
                 PlayerCodeMap& codesMap,
                 std::vector<Event>& events)
 {
@@ -831,8 +840,6 @@ void execFights(Universe& univ_,
 		return;
 
 	std::map<Player::ID, uint32_t> experienceMap;
-
-	std::map<Player::ID, Player> const playerMap = getPlayerMap(database);
 
 	vector<Fleet::ID> deadFleets;
 	deadFleets.reserve(univ_.fleetMap.size());
@@ -959,7 +966,6 @@ void execFights(Universe& univ_,
 			continue;
 
 		//! - On ajoute les evenement/message dans les flottes/joueur
-		PlayerMap playerMap = getPlayerMap(database);
 		std::set<Player::ID> informedPlayer;
 		for(auto fleetReportPair : range)
 		{
@@ -1131,14 +1137,12 @@ catch(Polua::Exception const& ex)
 //! Excecutes les code des flottes
 void execFleets(
   Universe& univ_,
-  DataBase const& database,
+  std::map<Player::ID, Player> const& playerMap,
   LuaTools::LuaEngine& luaEngine,
   PlayerCodeMap& codesMap,
   std::vector<Event>& events)
 {
 	LOG4CPLUS_TRACE(logger, "enter");
-
-	std::map<Player::ID, Player> const playerMap = getPlayerMap(database);
 
 	FleetCoordMap fleetMap;
 	for(Fleet & fleet : univ_.fleetMap | boost::adaptors::map_values)
@@ -1298,7 +1302,23 @@ try
 
 	univ_.roundCount += 1; //1 round
 
+	std::map<Player::ID, Player> playerMap = getPlayerMap(database_);
+	std::map<Alliance::ID, Alliance> allienceMap = getAllianceMap(database_);
 	Universe univCopy = univ_;
+
+	for(Fleet & fleet : univCopy.fleetMap | boost::adaptors::map_values)
+		fleet.player = &mapFind(playerMap, fleet.playerId)->second;
+
+	for(Planet & planet : univCopy.planetMap | boost::adaptors::map_values)
+		if(planet.playerId != Player::NoId)
+			planet.player = &mapFind(playerMap, planet.playerId)->second;
+
+	for(Player & player : playerMap | boost::adaptors::map_values)
+		if(player.allianceID)
+			player.alliance = &mapFind(allienceMap, player.allianceID)->second;
+
+	for(Alliance & alliance : allienceMap | boost::adaptors::map_values)
+		alliance.master = &mapFind(playerMap, alliance.masterID)->second;
 
 	//! Désactivation de tout les codes qui echoue
 	//disableFailingCode(univCopy, codesMap);
@@ -1310,13 +1330,13 @@ try
 	updatePlayersCode(luaEngine, codesMap, events);
 
 	//! Excecution du code des planetes(modifie l'univers)
-	execPlanets(univCopy, database_, codesMap, events);
+	execPlanets(univCopy, playerMap, codesMap, events);
 
 	//! Les combats
-	execFights(univCopy, database_, codesMap, events);
+	execFights(univCopy, database_, playerMap, codesMap, events);
 
 	//! Les flottes
-	execFleets(univCopy, database_, luaEngine, codesMap, events);
+	execFleets(univCopy, playerMap, luaEngine, codesMap, events);
 
 	//! Supprime evenement trop vieux dans les Player et les Rapport plus utile
 	{
@@ -1350,6 +1370,9 @@ try
 	LOG4CPLUS_TRACE(logger, "checkTutos start");
 	checkTutos(univCopy, database_, events);
 	LOG4CPLUS_TRACE(logger, "checkTutos end");
+
+	for(Fleet & fleet : univCopy.fleetMap | boost::adaptors::map_values)
+		fleet.player = nullptr;
 
 	{
 		UniqueLock lock(univ_.mutex);

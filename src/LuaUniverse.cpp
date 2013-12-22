@@ -264,6 +264,7 @@ int initDroneWars(lua_State* L)
 	.methode("is_planet", luaCFunction_true)
 	.methode("is_fleet", luaCFunction_false)
 	.property("memory", &Planet::memory)
+	.read_only("player", &Planet::player)
 	.read_only("coord", &Planet::coord)
 	.read_only("playerId", &Planet::playerId)
 	.read_only("buildingList", &Planet::buildingList)
@@ -292,6 +293,7 @@ int initDroneWars(lua_State* L)
 	.property("name", &Fleet::name)
 	.property("shipList", &Fleet::shipList)
 	.property("ressourceSet", &Fleet::ressourceSet)
+	.read_only("player", &Fleet::player)
 	;
 	Class<PlanetAction>(L, "PlanetAction")
 	.enumValue("Building", PlanetAction::Building)
@@ -309,9 +311,10 @@ int initDroneWars(lua_State* L)
 	.read_only("target", &FleetAction::target);
 	Class<Player>(L, "Player")
 	.read_only("id", &Player::id)
-	.read_only("allianceID", &Player::allianceID)
+	.read_only("login", &Player::login)
 	.read_only("mainPlanet", &Player::mainPlanet)
 	.read_only("score", &Player::score)
+	.read_only("alliance", &Player::alliance)
 	;
 	Class<TypedPtree>(L, "userdata")
 	.ctor()
@@ -333,6 +336,12 @@ int initDroneWars(lua_State* L)
 	;
 	Class<std::vector<TypedPtree*> >(L, "MailBox")
 	.methode("size", &std::vector<TypedPtree*>::size)
+	;
+	Class<Alliance>(L, "Alliance")
+	.read_only("id",          &Alliance::id)
+	.read_only("master",      &Alliance::master)
+	.read_only("name",        &Alliance::name)
+	.read_only("description", &Alliance::description)
 	;
 
 	return 0;

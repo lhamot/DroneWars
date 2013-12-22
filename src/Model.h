@@ -317,8 +317,9 @@ struct Planet
 	CannonTab cannonTab;               //!< Nombre de canons pour chaque type
 	Coord parentCoord;                 //!< Coordonées de la planète parente
 	time_t time;                       //!< Date de création
-	size_t firstRound;              //!< Round de création
-	TypedPtree memory; //!< Données utilisateur
+	size_t firstRound;                 //!< Round de création
+	TypedPtree memory;                 //!< Données utilisateur
+	Player* player = nullptr;          //!< Pour les script lua
 
 	//! Taille ocupée dans le tas (pour profiling)
 	size_t heap_size() const
@@ -454,6 +455,7 @@ struct Fleet
 	RessourceSet ressourceSet;        //!< Ressources transportés par la flotte
 	std::vector<FleetTask> taskQueue; //!< Liste de taque a éxcecuter
 	TypedPtree memory; //!< Données utilisateurs
+	Player* player = nullptr;
 
 	//! Taille dans le tas. (Pour profiling)
 	size_t heap_size() const

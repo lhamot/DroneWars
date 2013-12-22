@@ -427,7 +427,10 @@ struct Push<T*, false, false>
 {
 	static void push(lua_State* L, T* ptr)
 	{
-		pushUserdataRef(L, *ptr);
+		if(ptr == nullptr)
+			lua_pushnil(L);
+		else
+			pushUserdataRef(L, *ptr);
 	}
 };
 //! Traits pour pousser dans pile lua un ptr sur objet(non primitif) temporaire
