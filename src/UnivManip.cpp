@@ -558,6 +558,7 @@ void execTask(Universe& univ,
 			               planet.coord,
 			               univ.roundCount);
 			newFleet.shipList[task.value] += task.value2;
+			newFleet.player = planet.player;
 			univ.fleetMap.insert(make_pair(newFleet.id, newFleet));
 			Event event(planet.playerId, time(0), Event::ShipMade);
 			event.setValue(intptr_t(task.value)).setPlanetCoord(planet.coord);
@@ -634,6 +635,7 @@ void execTask(Universe& univ,
 					boost::geometry::add_point(planet.ressourceSet.tab,
 					                           RessourceSet(2000, 500, 0).tab);
 					planet.playerId = fleet.playerId;
+					planet.player = fleet.player;
 					planet.parentCoord = fleet.origin;
 					planet.firstRound = univ.roundCount;
 					if(planet.playerId > 100000)

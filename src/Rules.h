@@ -74,6 +74,9 @@ bool playerCanLog(Player const& player);
 //! Test si le joueur à le droit de recevoir ces rapport de combat
 bool playerCanSeeFightReport(Player const& player);
 
+//! Calcul le nombre de passe effectuées pour chaque simulation de combat
+size_t playerFightSimulationCount(Player const& player);
+
 namespace InternalRules
 {
 //! Test si la flote de ce joueur peut coloniser cette planète

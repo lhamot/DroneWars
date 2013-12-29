@@ -21,6 +21,7 @@ void onPlanetLose(Coord planetCoord,
 	if(mapFind(playerMap, planet.playerId)->second.mainPlanet != planetCoord)
 	{
 		planet.playerId = Player::NoId;
+		planet.player = nullptr;
 		planet.buildingList.assign(0);
 		planet.taskQueue.clear();
 		newParentMap[planet.coord] = planet.parentCoord;
@@ -387,6 +388,13 @@ bool playerCanSeeFightReport(Player const& player)
 {
 	return player.skilltab[Skill::BlackBox] > 0;
 }
+
+
+size_t playerFightSimulationCount(Player const& player)
+{
+	return player.skilltab[Skill::Simulation];
+}
+
 
 namespace InternalRules
 {

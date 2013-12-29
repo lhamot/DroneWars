@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-12-17 21:01+0100\n"
-"PO-Revision-Date: 2013-12-17 21:04+0100\n"
+"POT-Creation-Date: 2013-12-29 16:28+0100\n"
+"PO-Revision-Date: 2013-12-29 16:28+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "Language: fr\n"
@@ -18,15 +18,15 @@ msgstr ""
 "X-Poedit-KeywordsList: gettext;gettextWT;translate\n"
 "X-Poedit-Basepath: I:\\C\\Bit_them_all\\src\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 1.6.1\n"
+"X-Generator: Poedit 1.6.3\n"
 "Plural-Forms: Plural-Forms: nplurals=2; plural=n == 1 ? 0 : 1;\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: LuaUniverse.cpp:109 LuaUniverse.cpp:122
+#: LuaUniverse.cpp:112 LuaUniverse.cpp:125
 msgid "%1% expect a number in the range [1: %2%]"
 msgstr "%1% attend un nombre entre 1 et %2% compris."
 
-#: LuaUniverse.cpp:138
+#: LuaUniverse.cpp:141
 msgid "%1% expect a building number in the range [1: %2%]"
 msgstr "attend un numero de batiment entre 1 et %2% compris"
 
@@ -41,7 +41,7 @@ msgstr ""
 "Il y as trop d'élément dans votre planète par rapport à votre niveau dans la "
 "competance Mémoire."
 
-#: Simulation.cpp:324 Simulation.cpp:414
+#: Simulation.cpp:314 Simulation.cpp:404
 msgid "Procedure \"%1%\" not found."
 msgstr "Procédure \"%1%\" introuvable."
 
@@ -80,11 +80,35 @@ msgstr ""
 msgid "Your messages can reachs up to {1} cases"
 msgstr "Vos transmissions peuvent atteindre jusqu'as {1} cases de distance."
 
-#: Skills.cpp:273
+#: Skills.cpp:208
+msgid "More you upgrade, better is your chance of evasion"
+msgstr "Plus cette competance est élevé, meilleurs sont vos chances d'évasion."
+
+#: Skills.cpp:231
+msgid "You can use the \"log\" function to create custom events"
+msgstr ""
+"Vous pouvez utiliser la fonction \"log\" pour créer des évenement "
+"personalisés."
+
+#: Skills.cpp:234
+msgid "You can't use the \"log\" function to create custom events"
+msgstr ""
+"Vous ne pouvez pas utiliser la fonction \"log\" pour créer des évenement "
+"personalisés."
+
+#: Skills.cpp:259
+msgid "Each call to \"simulates\" function process {1} simulations"
+msgstr "Chaque appel à la fonction \"simulate\" génere {1} simulations."
+
+#: Skills.cpp:264
+msgid "Each call to \"simulates\" function return false"
+msgstr "Chaque appel à la fonction \"simulate\" retourne \"faux\"."
+
+#: Skills.cpp:286
 msgid "You can't receive fight report from destroyed fleets"
 msgstr "Vous ne pouvez recevoir les rapports de combat des flottes détruites."
 
-#: Skills.cpp:274
+#: Skills.cpp:287
 msgid "You receive fight report from destroyed fleets"
 msgstr ""
 "Vous recevez les rapports de combat des flottes, même si elles sont "

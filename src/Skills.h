@@ -66,7 +66,7 @@ struct Skill
 	  Chronos,
 	  Memory,
 	  Emission,
-	  Spy,
+	  Simulation,
 	  BlackBox,
 	  Log,
 	  Escape

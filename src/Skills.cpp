@@ -204,7 +204,8 @@ class EvasionSkill : public ISkill
 	}
 	virtual std::string effectMessageImpl(Player const&) const
 	{
-		return std::string();
+		return boost::locale::translate(
+		         "More you upgrade, better is your chance of evasion");
 	}
 public:
 	EvasionSkill(): ISkill("Evasion") {}
@@ -223,9 +224,15 @@ class LogSkill : public ISkill
 	{
 		return 1000;
 	}
-	virtual std::string effectMessageImpl(Player const&) const
+	virtual std::string effectMessageImpl(Player const& player) const
 	{
-		return std::string();
+		using namespace boost::locale;
+		if(player.skilltab[Skill::Log])
+			return translate("You can use the \"log\" "
+			                 "function to create custom events");
+		else
+			return translate("You can't use the \"log\" "
+			                 "function to create custom events");
 	}
 public:
 	LogSkill() : ISkill("Log") {}
@@ -245,9 +252,16 @@ class SimulationSkill : public ISkill
 	{
 		return size_t(pow(skillCurrentLevel + 1, 2));
 	}
-	virtual std::string effectMessageImpl(Player const&) const
+	virtual std::string effectMessageImpl(Player const& player) const
 	{
-		return std::string();
+		using namespace boost::locale;
+		if(player.skilltab[Skill::Simulation])
+			return (format(translate("Each call to \"simulates\" "
+			                         "function process {1} simulations")) %
+			        playerFightSimulationCount(player)).str();
+		else
+			return translate(
+			         "Each call to \"simulates\" function return false");
 	}
 public:
 	SimulationSkill() : ISkill("Simulation") {}

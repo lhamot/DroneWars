@@ -262,16 +262,6 @@ try
 
 	std::string codeString = code.code;
 
-	auto replace = [&](char const * const str)
-	{
-		size_t pos = codeString.find(str);
-		if(pos != std::string::npos)
-			codeString[pos + 3] = '_';
-	};
-	replace(" AI:action(");
-	replace(" AI:do_gather(");
-	replace(" AI:do_fight(");
-
 	if(luaL_dostring(luaEngine.state(), codeString.c_str()) != 0)
 	{
 		char const* message = lua_tostring(luaEngine.state(), -1);
@@ -749,14 +739,15 @@ std::vector<Fleet*> removeEscapedFleet(
 			{
 				prepareLuaCall(univ, doEscape, player);
 				DWObject doEscape2(doEscape);
-				if(planetPtr)
-					wantEscape = doEscape2.call<bool>(
-					               player, codesMap[player.id].fleetsCode, events,
-					               *fleet, *planetPtr, otherFleets);
-				else
-					wantEscape = doEscape2.call<bool>(
-					               player, codesMap[player.id].fleetsCode, events,
-					               *fleet, false, otherFleets);
+				if(fleet->player == nullptr)
+				{
+					std::cout << "fleet->player == nullptr" << std::endl;
+					BOOST_THROW_EXCEPTION(
+					  std::logic_error("fleet->player == nullptr"));
+				}
+				wantEscape = doEscape2.call<bool>(
+				               player, codesMap[player.id].fleetsCode, events,
+				               *fleet, planetPtr, otherFleets);
 			}
 			catch(Polua::Exception& ex)
 			{
@@ -1302,10 +1293,12 @@ try
 
 	univ_.roundCount += 1; //1 round
 
-	std::map<Player::ID, Player> playerMap = getPlayerMap(database_);
-	std::map<Alliance::ID, Alliance> allienceMap = getAllianceMap(database_);
 	Universe univCopy = univ_;
 
+	//! Création des planètes des nouveaux joueurs
+	createNewPlayersPlanets(univCopy);
+
+	std::map<Player::ID, Player> playerMap = getPlayerMap(database_);
 	for(Fleet & fleet : univCopy.fleetMap | boost::adaptors::map_values)
 		fleet.player = &mapFind(playerMap, fleet.playerId)->second;
 
@@ -1313,7 +1306,8 @@ try
 		if(planet.playerId != Player::NoId)
 			planet.player = &mapFind(playerMap, planet.playerId)->second;
 
-	for(Player & player : playerMap | boost::adaptors::map_values)
+	std::map<Alliance::ID, Alliance> allienceMap = getAllianceMap(database_);
+	for (Player & player : playerMap | boost::adaptors::map_values)
 		if(player.allianceID)
 			player.alliance = &mapFind(allienceMap, player.allianceID)->second;
 
@@ -1322,9 +1316,6 @@ try
 
 	//! Désactivation de tout les codes qui echoue
 	//disableFailingCode(univCopy, codesMap);
-
-	//! Création des planètes des nouveaux joueurs
-	createNewPlayersPlanets(univCopy);
 
 	//! Rechargement des codes flote/planet des joueurs dont le code a été changé
 	updatePlayersCode(luaEngine, codesMap, events);

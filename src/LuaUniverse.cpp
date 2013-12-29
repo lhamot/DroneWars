@@ -17,6 +17,8 @@
 #include "UnivManip.h"
 #include "Skills.h"
 #include "PTreeLuaHelper.h"
+#include "fighting.h"
+#include "Rules.h"
 
 extern "C"
 {
@@ -195,6 +197,80 @@ int luaCFunction_log(lua_State* L)
 	return 0;
 }
 
+int luaCFunction_simul_fight(lua_State* L)
+{
+	//Recupération des arguments
+	Fleet* playerFleet = Polua::fromstackAny<Fleet*>(L, -3);
+	Planet* planetOri = lua_type(L, -2) == LUA_TNIL ?
+	                    nullptr :
+	                    Polua::fromstackAny<Planet*>(L, -2);
+	std::vector<Fleet const*>& fleetVectOri =
+	  Polua::fromstackAny<std::vector<Fleet const*>&>(L, -1);
+	if(playerFleet->player == nullptr)
+		BOOST_THROW_EXCEPTION(
+		  std::logic_error("playerFleet->player == nullptr"));
+
+	//Création de la liste des joueurs
+	struct PlayerComp
+	{
+		bool operator()(Player const& a, Player const& b)
+		{
+			return a.id < b.id;
+		}
+	};
+	std::set<Player, PlayerComp> playerSet;
+	playerSet.insert(*playerFleet->player);
+	if(planetOri)
+		playerSet.insert(*planetOri->player);
+	for (Fleet const* fleet : fleetVectOri)
+		playerSet.insert(*fleet->player);
+
+	//Création de la PlayersFightingMap
+	PlayersFightingMap playerFighting;
+	for (Player const& player : playerSet)
+	{
+		for (Player const& player2 : playerSet)
+		{
+			if (player.id != player2.id)
+				playerFighting[std::make_pair(player.id, player2.id)] = 
+					player.alliance == nullptr  ||
+					player2.alliance == nullptr ||
+					player.alliance->id != player2.alliance->id;
+		}
+	}
+
+	//Simulations N fois
+	size_t const simulCount = playerFightSimulationCount(*playerFleet->player);
+	size_t sum = 0;
+	for(size_t i = 0; i < simulCount; ++i)
+	{
+		//Copie des arguments pour ne pas que la simulation ne les modifie
+		std::vector<Fleet> fleetVectCpy;
+		std::vector<Fleet*> fleetPtrVect;
+		fleetVectCpy.reserve(fleetVectOri.size() + 1);
+		for(Fleet const * fleetPtr : fleetVectOri)
+		{
+			fleetVectCpy.push_back(*fleetPtr);
+			fleetPtrVect.push_back(&fleetVectCpy.back());
+		}
+		fleetVectCpy.push_back(*playerFleet);
+		fleetPtrVect.push_back(&fleetVectCpy.back());
+		Planet planetCpy = planetOri ? *planetOri : Planet();
+
+		//Lancement de la simualtion
+		FightReport report;
+		PlayerCodeMap codesMap;
+		fight(fleetPtrVect,
+		      playerFighting,
+		      planetOri ? &planetCpy : nullptr,
+		      codesMap,
+		      report);
+		sum += report.fleetList.back().isDead ? 0 : 1;
+	}
+	lua_pushnumber(L, (sum * 100.) / simulCount);
+	return 1;
+}
+
 
 int initDroneWars(lua_State* L)
 {
@@ -216,6 +292,7 @@ int initDroneWars(lua_State* L)
 	regFunc(L, "makeCannon", makeCannon);
 	regFunc(L, "noPlanetAction", noPlanetAction);
 	regFunc(L, "log", luaCFunction_log);
+	regFunc(L, "simulates", luaCFunction_simul_fight);
 	Class<Ressource>(L, "Ressource")
 	.enumValue("Metal", Ressource::Metal)
 	.enumValue("Carbon", Ressource::Carbon)
