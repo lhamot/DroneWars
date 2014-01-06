@@ -7,25 +7,17 @@
 #include "LuaUniverse.h"
 #include "Rules.h"
 #include "Tools.h"
-#include "LuaTools.h"
+#include "ScriptTools.h"
 #include "fighting.h"
 #include "Logger.h"
 #include "DataBase.h"
 #include "UnivManip.h"
-#include "Polua/Ref.h"
 
 #include <boost/range/numeric.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/irange.hpp>
 #include <boost/format.hpp>
 #include <boost/multi_array.hpp>
-
-
-extern "C"
-{
-#include "lua.h"
-#include "lualib.h"
-}
 
 
 //! Verrou en écriture
@@ -37,7 +29,6 @@ typedef boost::upgrade_lock<Universe::Mutex> UpgradeLock;
 //! Verrou en écriture construit a partir d'un UpgradeLock
 typedef boost::upgrade_to_unique_lock<Universe::Mutex> UpToUniqueLock;
 
-using namespace LuaTools;
 using namespace std;
 namespace BL = boost::locale;
 
@@ -50,7 +41,7 @@ class CheckPlayerLog : boost::noncopyable
 {
 public:
 	//! ctor
-	CheckPlayerLog(lua_State* L,
+	CheckPlayerLog(ScriptTools::Engine& L,
 	               PlayerCodes::ObjectMap& codeMap,
 	               Player const& player,
 	               Coord const& coord,
@@ -63,7 +54,7 @@ public:
 	{
 	}
 	//! ctor
-	CheckPlayerLog(lua_State* L,
+	CheckPlayerLog(ScriptTools::Engine& L,
 	               PlayerCodes::ObjectMap& codeMap,
 	               Player const& player,
 	               Fleet::ID const& fleetId,
@@ -80,13 +71,14 @@ public:
 	~CheckPlayerLog()
 	try
 	{
-		Polua::object logger = Polua::refFromName(state_, "logger");
-		if(logger->is_valid())
+		ScriptTools::Object logger =
+		  ScriptTools::refFromName(state_, "logger");
+		if(ScriptTools::isValid(logger) == false)
 		{
 			if(playerCanLog(player_))
 			{
 				Event event(player_.id, time(0), Event::PlayerLog);
-				event.setComment(logger->get<std::string>());
+				event.setComment(ScriptTools::extract<std::string>(logger));
 				if(fleetID_ == Fleet::NoId)
 					event.setPlanetCoord(coord_);
 				else
@@ -104,7 +96,7 @@ public:
 	CATCH_LOG_EXCEPTION(logger);
 
 private:
-	lua_State* state_;                  //!< Etats lua
+	ScriptTools::Engine& state_;        //!< Etats lua
 	PlayerCodes::ObjectMap& codeMap_;   //!< Scripts du joueur
 	Player const& player_;              //!< Donées du joueur
 	Coord coord_ = Coord();             //!< Coordonée de la planète(optionel)
@@ -162,13 +154,14 @@ class DWObject
 {
 public:
 	//! ctor
-	DWObject(Polua::object const& obj) : obj_(obj)
+	DWObject(ScriptTools::Object const& obj) : obj_(obj)
 	{
 	}
 
 	//! Appel la fonction (avec retour) puis test la mémoire et les logs
 	template<typename T, typename ...Args>
 	void call(
+	  ScriptTools::Engine& engine,
 	  Player const& player,
 	  PlayerCodes::ObjectMap& codeMap,
 	  vector<Event>& events,
@@ -177,13 +170,14 @@ public:
 	{
 		CheckMemory checkMem(codeMap, player, fleetOrPlanet, events);
 		CheckPlayerLog checkPlayerLog(
-		  obj_->state(), player, getID(fleetOrPlanet), events);
+		  engine, codeMap, player, getID(fleetOrPlanet), events);
 		return obj_->call(fleetOrPlanet, args...);
 	}
 
 	//! Appel la fonction (sans retour) puis test la mémoire et les logs
 	template<typename R, typename T, typename ...Args>
 	R call(
+	  ScriptTools::Engine& engine,
 	  Player const& player,
 	  PlayerCodes::ObjectMap& codeMap,
 	  vector<Event>& events,
@@ -192,7 +186,7 @@ public:
 	{
 		CheckMemory checkMem(codeMap, player, fleetOrPlanet, events);
 		CheckPlayerLog checkPlayerLog(
-		  obj_->state(), codeMap, player, getID(fleetOrPlanet), events);
+		  engine, codeMap, player, getID(fleetOrPlanet), events);
 		return obj_->call<R>(fleetOrPlanet, args...);
 	}
 
@@ -209,7 +203,7 @@ private:
 		return fleet.id;
 	}
 
-	Polua::object obj_;   //!< Fonction lua
+	ScriptTools::Object obj_;   //!< Fonction lua
 };
 
 //! Place un joueur dans les registre lua sous le nom "currentPlayer"
@@ -217,7 +211,7 @@ private:
 void prepareLuaCall(Universe const& univ, Polua::object stript, Player const& player)
 {
 	lua_sethook(
-	  stript->state(), luaCountHook, LUA_MASKCOUNT, LuaMaxInstruction);
+	  stript->state(), LuaTools::luaCountHook, LUA_MASKCOUNT, LuaTools::LuaMaxInstruction);
 	Polua::pushTemp(stript->state(), player);
 	lua_setglobal(stript->state(), "currentPlayer");
 	lua_pushinteger(stript->state(), univ.roundCount);
@@ -246,25 +240,25 @@ void Simulation::reloadPlayer(Player::ID pid)
 
 //! Fait interpreter un script à lua et le transforme en PlayerCodes::ObjectMap
 PlayerCodes::ObjectMap registerCode(
-  LuaTools::LuaEngine& luaEngine,
+  ScriptTools::Engine& scriptEngine,
   CodeData const& code,
   std::vector<Event>& events)
 try
 {
 	using namespace std;
 
-	luaL_dostring(luaEngine.state(), "AI = nil");
-	luaL_dostring(luaEngine.state(), "AI_action = nil");
-	luaL_dostring(luaEngine.state(), "AI_do_gather = nil");
-	luaL_dostring(luaEngine.state(), "AI_do_fight = nil");
-	luaL_dostring(luaEngine.state(), "AI_emit = nil");
-	luaL_dostring(luaEngine.state(), "AI_do_escape = nil");
+	luaL_dostring(scriptEngine.state(), "AI = nil");
+	luaL_dostring(scriptEngine.state(), "AI_action = nil");
+	luaL_dostring(scriptEngine.state(), "AI_do_gather = nil");
+	luaL_dostring(scriptEngine.state(), "AI_do_fight = nil");
+	luaL_dostring(scriptEngine.state(), "AI_emit = nil");
+	luaL_dostring(scriptEngine.state(), "AI_do_escape = nil");
 
 	std::string codeString = code.code;
 
-	if(luaL_dostring(luaEngine.state(), codeString.c_str()) != 0)
+	if(luaL_dostring(scriptEngine.state(), codeString.c_str()) != 0)
 	{
-		char const* message = lua_tostring(luaEngine.state(), -1);
+		char const* message = lua_tostring(scriptEngine.state(), -1);
 		addErrorMessage(code, message, events);
 		return PlayerCodes::ObjectMap(); //Vide car toute les fonction sont invalides
 	}
@@ -274,14 +268,14 @@ try
 		result.playerId = code.playerId;
 		result.scriptID = code.id;
 		result.target = code.target;
-		result.functions["AI"] = Polua::refFromName(luaEngine.state(), "AI");
-		result.functions["action"] = Polua::refFromName(luaEngine.state(), "AI_action");
-		result.functions["do_gather"] = Polua::refFromName(luaEngine.state(), "AI_do_gather");
-		result.functions["do_fight"] = Polua::refFromName(luaEngine.state(), "AI_do_fight");
-		auto emitFunc = Polua::refFromName(luaEngine.state(), "AI_emit");
+		result.functions["AI"] = ScriptTools::refFromName(scriptEngine, "AI");
+		result.functions["action"] = ScriptTools::refFromName(scriptEngine, "AI_action");
+		result.functions["do_gather"] = ScriptTools::refFromName(scriptEngine, "AI_do_gather");
+		result.functions["do_fight"] = ScriptTools::refFromName(scriptEngine, "AI_do_fight");
+		auto emitFunc = ScriptTools::refFromName(scriptEngine, "AI_emit");
 		if(emitFunc->is_valid())
 			result.functions["emit"] = emitFunc;
-		auto escapeFunc = Polua::refFromName(luaEngine.state(), "AI_do_escape");
+		auto escapeFunc = ScriptTools::refFromName(scriptEngine, "AI_do_escape");
 		if(escapeFunc->is_valid())
 			result.functions["do_escape"] = escapeFunc;
 		return result;
@@ -297,6 +291,7 @@ catch(Polua::Exception& ex)
 //! Excecute le code de la planete et lui ajoute des tache
 boost::optional<PlanetAction> execPlanetScript(
   Universe const& univ,
+  ScriptTools::Engine& engine,
   PlayerCodes::ObjectMap& codeMap,
   Player const& player,
   Planet& planetCopy,
@@ -307,8 +302,8 @@ try
 	auto codeIter = codeMap.functions.find("AI");
 	if(codeIter == codeMap.functions.end())
 		return boost::none; //Le code a été invalidé
-	Polua::object code = codeIter->second;
-	if(!code || code->type() != LUA_TFUNCTION)
+	ScriptTools::Object code = codeIter->second;
+	if(ScriptTools::isFunction(code) == false)
 	{
 		//call_function crash quand on lui passe autre chose qu'une fonction
 		boost::format trans(BL::gettext("Procedure \"%1%\" not found."));
@@ -324,7 +319,7 @@ try
 	prepareLuaCall(univ, code, player);
 	DWObject code2(code);
 	PlanetAction action = code2.call<PlanetAction>(
-	                        player, codeMap, events,
+	                        engine, player, codeMap, events,
 	                        planetCopy, fleetList);
 	return action;
 }
@@ -391,8 +386,8 @@ bool checkLuaMethode(PlayerCodes::ObjectMap& codeMap,
 		return false; //Le code à été invalidé
 	else
 	{
-		Polua::object methode = codeIter->second;
-		if(methode->type() == LUA_TFUNCTION)
+		ScriptTools::Object methode = codeIter->second;
+		if(ScriptTools::isFunction(methode))
 		{
 			if(codeMap.playerId == Player::NoId)
 				BOOST_THROW_EXCEPTION(std::logic_error("codeMap.playerId == Player::NoId"));
@@ -412,17 +407,16 @@ bool checkLuaMethode(PlayerCodes::ObjectMap& codeMap,
 void gatherIfWant(
   Universe const& univ,
   Player const& player,
-  LuaEngine& luaEngine,
+  ScriptTools::Engine& scriptEngine,
   PlayerCodes::ObjectMap& codeMap,
   Fleet& fleet,
   FleetCoordMap& fleetMap,
   std::vector<Event>& events)
 {
 	auto localFleetsKV = fleetMap.equal_range(fleet.coord);
-	Polua::Caller caller(luaEngine.state());
 	if(checkLuaMethode(codeMap, "do_gather", events))
 	{
-		Polua::object do_gather = mapFind(codeMap.functions, "do_gather")->second;
+		ScriptTools::Object do_gather = mapFind(codeMap.functions, "do_gather")->second;
 		auto fleetIter = localFleetsKV.first;
 		while(fleetIter != localFleetsKV.second)
 		{
@@ -436,11 +430,11 @@ void gatherIfWant(
 					prepareLuaCall(univ, do_gather, player);
 					DWObject do_gather2(do_gather);
 					wantGather1 = do_gather2.call<bool>(
-					                player, codeMap, events,
+					                scriptEngine, player, codeMap, events,
 					                fleet, otherFleet);
 					prepareLuaCall(univ, do_gather, player);
 					wantGather2 = do_gather2.call<bool>(
-					                player, codeMap, events,
+					                scriptEngine, player, codeMap, events,
 					                otherFleet, fleet);
 				}
 
@@ -471,6 +465,7 @@ typedef std::vector<TypedPtree*> MailBox;
 //! Excecute le script de la flotte
 boost::optional<FleetAction> execFleetScript(
   Universe const& univ_,
+  ScriptTools::Engine& engine,
   PlayerCodes::ObjectMap& codeMap,
   Player const& player,
   Fleet& fleet,
@@ -480,12 +475,11 @@ try
 {
 	if(checkLuaMethode(codeMap, "action", events) == false)
 		return boost::none;
-	Polua::object actionFunc = mapFind(codeMap.functions, "action")->second;
+	ScriptTools::Object actionFunc = mapFind(codeMap.functions, "action")->second;
 	auto planetIter = univ_.planetMap.find(fleet.coord);
 	Planet const* planet = nullptr;
 	if(planetIter != univ_.planetMap.end())
 		planet = &(planetIter->second);
-	using namespace Polua;
 	FleetAction action(FleetAction::Nothing);
 	if(planet && fleetCanSeePlanet(fleet, *planet, univ_) == false)
 		planet = nullptr;
@@ -493,11 +487,11 @@ try
 	DWObject actionFunc2(actionFunc);
 	if(planet)
 		action = actionFunc2.call<FleetAction>(
-		           player, codeMap, events,
+		           engine, player, codeMap, events,
 		           fleet, *planet, mails);
 	else
 		action = actionFunc2.call<FleetAction>(
-		           player, codeMap, events,
+		           engine, player, codeMap, events,
 		           fleet, false, mails);
 	return action;
 }
@@ -568,7 +562,7 @@ void applyFleetScript(Universe& univ_,
 
 //! Rechargement des codes flote/planet des joueurs dont le code a été changé,
 //! Modifie la codesMap et playerToReload_
-void Simulation::updatePlayersCode(LuaTools::LuaEngine& luaEngine,
+void Simulation::updatePlayersCode(ScriptTools::Engine& luaEngine,
                                    PlayerCodeMap& codesMap,
                                    std::vector<Event>& events)
 {
@@ -617,6 +611,7 @@ std::map<Alliance::ID, Alliance> getAllianceMap(DataBase const& database)
 
 //! Simule le round pour toute les planètes
 void execPlanets(Universe& univ_,
+                 ScriptTools::Engine& engine,
                  std::map<Player::ID, Player> const& playerMap,
                  PlayerCodeMap& codesMap,
                  std::vector<Event>& events)
@@ -688,6 +683,7 @@ void execPlanets(Universe& univ_,
 		Player const& player = mapFind(playerMap, planet.playerId)->second;
 		boost::optional<PlanetAction> action =
 		  execPlanetScript(univ_,
+		                   engine,
 		                   codesMap[planet.playerId].planetsCode,
 		                   player,
 		                   planet,
@@ -717,6 +713,7 @@ void execPlanets(Universe& univ_,
 //! @return La liste des flottes echapées
 std::vector<Fleet*> removeEscapedFleet(
   Universe const& univ,
+  ScriptTools::Engine& engine,
   std::map<Player::ID, Player> const playerMap,
   Planet const* planetPtr,
   PlayerCodeMap& codesMap,
@@ -732,9 +729,9 @@ std::vector<Fleet*> removeEscapedFleet(
 		Fleet* fleet = fleetVect[i];
 		Player const& player = mapFind(playerMap, fleet->playerId)->second;
 		auto fleetScripts = codesMap[player.id].fleetsCode;
-		Polua::object doEscape = fleetScripts.functions["do_escape"];
+		ScriptTools::Object doEscape = fleetScripts.functions["do_escape"];
 		bool wantEscape = false;
-		if(doEscape && doEscape->is_valid() && doEscape->type() == LUA_TFUNCTION)
+		if(ScriptTools::isFunction(doEscape))
 			try
 			{
 				prepareLuaCall(univ, doEscape, player);
@@ -746,7 +743,7 @@ std::vector<Fleet*> removeEscapedFleet(
 					  std::logic_error("fleet->player == nullptr"));
 				}
 				wantEscape = doEscape2.call<bool>(
-				               player, codesMap[player.id].fleetsCode, events,
+				               engine, player, codesMap[player.id].fleetsCode, events,
 				               *fleet, planetPtr, otherFleets);
 			}
 			catch(Polua::Exception& ex)
@@ -800,8 +797,8 @@ void addIfTheyWantFight(
 	{
 		bool result = true;
 		auto fleetScripts = codesMap[player1.id].fleetsCode;
-		Polua::object doFight = fleetScripts.functions["do_fight"];
-		if(isFunction(doFight))
+		ScriptTools::Object doFight = fleetScripts.functions["do_fight"];
+		if(ScriptTools::isFunction(doFight))
 		{
 			prepareLuaCall(univ, doFight, player1);
 			try
@@ -820,6 +817,7 @@ void addIfTheyWantFight(
 
 //! Les combats
 void execFights(Universe& univ_,
+                ScriptTools::Engine& engine,
                 DataBase& database,
                 std::map<Player::ID, Player> const& playerMap,
                 PlayerCodeMap& codesMap,
@@ -901,7 +899,7 @@ void execFights(Universe& univ_,
 		std::map<Fleet::ID, double> escapeProbaMap;
 		std::vector<Fleet*> escapedFleets =
 		  removeEscapedFleet(
-		    univ_, playerMap, planetPtr, codesMap, events, escapeProbaMap, fleetVect);
+		    univ_, engine, playerMap, planetPtr, codesMap, events, escapeProbaMap, fleetVect);
 
 		playerSet.clear();
 		for(auto fleet : fleetVect)
@@ -1092,6 +1090,7 @@ void execFights(Universe& univ_,
 //! Récupère les messages emit par une flotte
 TypedPtreePtr getFleetEmission(
   Universe const& univ_,
+  ScriptTools::Engine& engine,
   PlayerCodes::ObjectMap& codeMap,
   Player const& player,
   Fleet& fleet,
@@ -1100,22 +1099,21 @@ try
 {
 	if(checkLuaMethode(codeMap, "emit", events) == false)
 		return TypedPtreePtr();
-	Polua::object emitFunc = mapFind(codeMap.functions, "emit")->second;
+	ScriptTools::Object emitFunc = mapFind(codeMap.functions, "emit")->second;
 	auto planetIter = univ_.planetMap.find(fleet.coord);
 	Planet const* planet = nullptr;
 	if(planetIter != univ_.planetMap.end())
 		planet = &(planetIter->second);
-	using namespace Polua;
 	if(planet && fleetCanSeePlanet(fleet, *planet, univ_) == false)
 		planet = nullptr;
 	prepareLuaCall(univ_, emitFunc, player);
 	TypedPtreePtr pt = make_shared<TypedPtree>();
 	DWObject emitFunc2(emitFunc);
 	if(planet)
-		*pt = emitFunc2.call<TypedPtree>(player, codeMap, events,
+		*pt = emitFunc2.call<TypedPtree>(engine, player, codeMap, events,
 		                                 fleet, *planet);
 	else
-		*pt = emitFunc2.call<TypedPtree>(player, codeMap, events,
+		*pt = emitFunc2.call<TypedPtree>(engine, player, codeMap, events,
 		                                 fleet, false);
 	return pt;
 }
@@ -1129,7 +1127,7 @@ catch(Polua::Exception const& ex)
 void execFleets(
   Universe& univ_,
   std::map<Player::ID, Player> const& playerMap,
-  LuaTools::LuaEngine& luaEngine,
+  ScriptTools::Engine& engine,
   PlayerCodeMap& codesMap,
   std::vector<Event>& events)
 {
@@ -1147,7 +1145,7 @@ void execFleets(
 	{
 		gatherIfWant(univ_,
 		             mapFind(playerMap, iter->second.playerId)->second,
-		             luaEngine,
+		             engine,
 		             codesMap[iter->second.playerId].fleetsCode,
 		             iter->second,
 		             fleetMap,
@@ -1178,6 +1176,7 @@ void execFleets(
 		Fleet fleet = iter->second;
 		Coord const coord = fleet.coord;
 		TypedPtreePtr pt = getFleetEmission(univ_,
+		                                    engine,
 		                                    codesMap[iter->second.playerId].fleetsCode,
 		                                    player,
 		                                    fleet,
@@ -1231,6 +1230,7 @@ void execFleets(
 		earedCount += mails.size();
 		boost::optional<FleetAction> action =
 		  execFleetScript(univ_,
+		                  engine,
 		                  codesMap[iter->second.playerId].fleetsCode,
 		                  player,
 		                  scriptModifiedFleet,
@@ -1281,7 +1281,7 @@ void Simulation::createNewPlayersPlanets(Universe& univCopy)
 	}
 }
 
-void Simulation::round(LuaTools::LuaEngine& luaEngine,
+void Simulation::round(ScriptTools::Engine& scriptEngine,
                        PlayerCodeMap& codesMap,
                        std::vector<Event>& events)
 try
@@ -1307,7 +1307,7 @@ try
 			planet.player = &mapFind(playerMap, planet.playerId)->second;
 
 	std::map<Alliance::ID, Alliance> allienceMap = getAllianceMap(database_);
-	for (Player & player : playerMap | boost::adaptors::map_values)
+	for(Player & player : playerMap | boost::adaptors::map_values)
 		if(player.allianceID)
 			player.alliance = &mapFind(allienceMap, player.allianceID)->second;
 
@@ -1318,16 +1318,16 @@ try
 	//disableFailingCode(univCopy, codesMap);
 
 	//! Rechargement des codes flote/planet des joueurs dont le code a été changé
-	updatePlayersCode(luaEngine, codesMap, events);
+	updatePlayersCode(scriptEngine, codesMap, events);
 
 	//! Excecution du code des planetes(modifie l'univers)
-	execPlanets(univCopy, playerMap, codesMap, events);
+	execPlanets(univCopy, scriptEngine, playerMap, codesMap, events);
 
 	//! Les combats
-	execFights(univCopy, database_, playerMap, codesMap, events);
+	execFights(univCopy, scriptEngine, database_, playerMap, codesMap, events);
 
 	//! Les flottes
-	execFleets(univCopy, playerMap, luaEngine, codesMap, events);
+	execFleets(univCopy, playerMap, scriptEngine, codesMap, events);
 
 	//! Supprime evenement trop vieux dans les Player et les Rapport plus utile
 	{
@@ -1461,22 +1461,22 @@ try
 {
 	using namespace boost::chrono;
 
-	LuaTools::LuaEngine luaEngine;
+	ScriptTools::Engine scriptEngine;
 	PlayerCodeMap codesMap; //Donné non partagée entre thread
 
 	//! @todo: remplacer openlibs par luaL_openlibs qui semble faire pareil
-	openlibs(luaEngine.state());
-	//luaL_openlibs(luaEngine.state());
-	//luaopen_base(luaEngine.state());
-	//luaopen_package(luaEngine.state());
-	//luaopen_string(luaEngine.state());
-	//luaopen_table(luaEngine.state());
-	//luaopen_math(luaEngine.state());
-	//luaopen_io(luaEngine.state());
-	//luaopen_os(luaEngine.state());
-	//luaopen_debug(luaEngine.state());
+	openlibs(scriptEngine.state());
+	//luaL_openlibs(scriptEngine.state());
+	//luaopen_base(scriptEngine.state());
+	//luaopen_package(scriptEngine.state());
+	//luaopen_string(scriptEngine.state());
+	//luaopen_table(scriptEngine.state());
+	//luaopen_math(scriptEngine.state());
+	//luaopen_io(scriptEngine.state());
+	//luaopen_os(scriptEngine.state());
+	//luaopen_debug(scriptEngine.state());
 
-	initDroneWars(luaEngine.state());
+	initDroneWars(scriptEngine);
 
 	std::vector<Event> events;
 
@@ -1489,8 +1489,8 @@ try
 			CodeData const planetsCode = database_.getPlayerCode(player.id, CodeData::Planet);
 			PlayerCodes newCodes =
 			{
-				registerCode(luaEngine, fleetsCode, events),
-				registerCode(luaEngine, planetsCode, events)
+				registerCode(scriptEngine, fleetsCode, events),
+				registerCode(scriptEngine, planetsCode, events)
 			};
 			codesMap.insert(make_pair(player.id, newCodes));
 		}
@@ -1531,15 +1531,15 @@ try
 				}
 
 				//std::cout << newUpdate << " " << now << std::endl;
-				round(luaEngine, codesMap, events);
+				round(scriptEngine, codesMap, events);
 				events.clear();
 				newUpdate += RoundSecond;
 				gcCounter += 1;
 				if((gcCounter % 1) == 0)
 				{
-					std::cout << "GC : " << lua_gc(luaEngine.state(), LUA_GCCOUNT, 0);
-					lua_gc(luaEngine.state(), LUA_GCCOLLECT, 0);
-					std::cout << " -> " << lua_gc(luaEngine.state(), LUA_GCCOUNT, 0) << std::endl;
+					std::cout << "GC : " << lua_gc(scriptEngine.state(), LUA_GCCOUNT, 0);
+					lua_gc(scriptEngine.state(), LUA_GCCOLLECT, 0);
+					std::cout << " -> " << lua_gc(scriptEngine.state(), LUA_GCCOUNT, 0) << std::endl;
 				}
 			}
 		CATCH_LOG_RETHROW(logger)

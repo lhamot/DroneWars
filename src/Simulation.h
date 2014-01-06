@@ -12,17 +12,6 @@
 #include "PlayerCodes.h"
 
 
-namespace Polua
-{
-class State;
-};
-
-namespace LuaTools
-{
-typedef Polua::State LuaEngine;
-}
-
-
 //! Gère la simulation
 class Simulation
 {
@@ -47,12 +36,12 @@ public:
 private:
 
 	//! Excecute un round
-	void round(LuaTools::LuaEngine&,
+	void round(ScriptTools::Engine&,
 	           PlayerCodeMap& codesMap,
 	           std::vector<Event>& events);
 
 	//! Recharge les script des joueur dans la base de donnée
-	void updatePlayersCode(LuaTools::LuaEngine& luaEngine,
+	void updatePlayersCode(ScriptTools::Engine& luaEngine,
 	                       PlayerCodeMap& codesMap,
 	                       std::vector<Event>& events);
 

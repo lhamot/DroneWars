@@ -5,6 +5,7 @@
 #define __BTA_LUA_UNIVERSE__
 
 #include "stdafx.h"
+#include "LuaTools.h"
 
 extern "C"
 {
@@ -12,6 +13,6 @@ extern "C"
 }
 
 //! Enseigne l'API lua de DroneWars à la VM lua
-int initDroneWars(lua_State* L);
+int initDroneWars(LuaTools::Engine& engine);
 
 #endif //__BTA_LUA_UNIVERSE__

@@ -352,7 +352,7 @@ class Class
 		lua_pushvalue(L, 2);	 // Pousse le nom
 		lua_rawget(L, -2);		 // Pousse la valeur, a la place du nom
 
-		intmax_t const val = lua_tointeger(L, -1); // Recup la valeur
+		lua_Integer const val = lua_tointeger(L, -1); // Recup la valeur
 		lua_pop(L, 2);           // Pop le metatable et la valeur
 		lua_pushinteger(L, val); // Pousse la valeur sur la pile
 		return 1;

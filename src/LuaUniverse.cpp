@@ -222,20 +222,20 @@ int luaCFunction_simul_fight(lua_State* L)
 	playerSet.insert(*playerFleet->player);
 	if(planetOri)
 		playerSet.insert(*planetOri->player);
-	for (Fleet const* fleet : fleetVectOri)
+	for(Fleet const * fleet : fleetVectOri)
 		playerSet.insert(*fleet->player);
 
 	//Création de la PlayersFightingMap
 	PlayersFightingMap playerFighting;
-	for (Player const& player : playerSet)
+	for(Player const & player : playerSet)
 	{
-		for (Player const& player2 : playerSet)
+		for(Player const & player2 : playerSet)
 		{
-			if (player.id != player2.id)
-				playerFighting[std::make_pair(player.id, player2.id)] = 
-					player.alliance == nullptr  ||
-					player2.alliance == nullptr ||
-					player.alliance->id != player2.alliance->id;
+			if(player.id != player2.id)
+				playerFighting[std::make_pair(player.id, player2.id)] =
+				  player.alliance == nullptr  ||
+				  player2.alliance == nullptr ||
+				  player.alliance->id != player2.alliance->id;
 		}
 	}
 
@@ -272,9 +272,10 @@ int luaCFunction_simul_fight(lua_State* L)
 }
 
 
-int initDroneWars(lua_State* L)
+int initDroneWars(LuaTools::Engine& engine)
 {
 	using namespace Polua;
+	lua_State* L = engine.state();
 
 	//! @todo: ne plus avoir besoin de ca
 	Class<std::vector<Fleet const*> >(L, "FleetVector");

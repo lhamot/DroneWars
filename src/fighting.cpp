@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "fighting.h"
-#include "LuaTools.h"
+#include "ScriptTools.h"
 
 #pragma warning(push)
 #pragma warning(disable: 4724 6385 6294 6201)
@@ -11,15 +11,11 @@
 #include <boost/random/uniform_int_distribution.hpp>
 #pragma warning(pop)
 
-#include "Polua/Core.h"
-
-
 //! C'est une experience
 #define UNTIL(exp) while(!(exp))
 
 
 using namespace std;
-using namespace LuaTools;
 
 
 //! Données d'un vaisseau ou d'une flotte pendant un combat
@@ -274,10 +270,10 @@ enum FightStatus : uint8_t
 
 //! Simule un combat entre deux combatant
 template<typename F1, typename F2>
-FightStatus fight(F1& fighter1,             //!< flotte ou planète
-                  Polua::object roundFunc1, //!< @todo: supprimer les Polua::object
-                  F2& fighter2,             //!< flotte ou planète
-                  Polua::object roundFunc2  //!< @todo: supprimer les Polua::object
+FightStatus fight(F1& fighter1,               //!< flotte ou planète
+                  ScriptTools::Object const&, //!< @todo: supprimer les ScriptTools::Object
+                  F2& fighter2,               //!< flotte ou planète
+                  ScriptTools::Object const&  //!< @todo: supprimer les ScriptTools::Object
                  )
 {
 	//! Construction des deux listes de vaisseaux (fillShipList)

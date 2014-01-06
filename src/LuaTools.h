@@ -18,7 +18,8 @@ extern "C"
 //! Outils divers aidant l'utilisation de lua dans du c++
 namespace LuaTools
 {
-typedef Polua::State LuaEngine; //!< Interpréteur lua
+typedef Polua::object Object;
+typedef Polua::State Engine; //!< Interpréteur lua
 
 
 //! Nombre d'instruction max authorisé dans l'éxcecution d'un script lua
@@ -32,6 +33,22 @@ void luaCountHook(lua_State* L, lua_Debug* ar);
 inline bool isFunction(Polua::object const& obj)
 {
 	return (obj && obj->is_valid() && obj->type() == LUA_TFUNCTION);
+}
+
+inline Object refFromName(Engine& engine, std::string const& name)
+{
+	return Polua::refFromName(engine.state(), name);
+}
+
+inline bool isValid(Object const& obj)
+{
+	return obj->is_valid();
+}
+
+template<typename T>
+inline T extract(Object const& obj)
+{
+	return obj->get<T>();
 }
 
 }
