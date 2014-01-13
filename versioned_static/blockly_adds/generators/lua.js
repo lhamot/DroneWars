@@ -1,36 +1,18 @@
-/**
- * Visual Blocks Language
- *
- * Copyright 2012 Google Inc.
- * http://code.google.com/p/blockly/
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 /**
- * @fileoverview Helper functions for generating lua for blocks.
+ * @fileoverview Helper functions for generating Lua for blocks.
  * @author Loïc HAMOT
  * Due to the frequency of long strings, the 80-column wrap rule need not apply
  * to language files.
  */
 'use strict';
 
-Blockly.lua = Blockly.Generator.get('lua');
+goog.provide('Blockly.Lua');
 
-if (!Blockly.lua.RESERVED_WORDS_) {
-  Blockly.lua.RESERVED_WORDS_ = '';
-}
+goog.require('Blockly.Generator');
 
+
+Blockly.Lua = new Blockly.Generator('Lua');
 
 /**
  * List of illegal variable names.
@@ -39,7 +21,7 @@ if (!Blockly.lua.RESERVED_WORDS_) {
  * accidentally clobbering a built-in object or function.
  * @private
  */
-Blockly.lua.addReservedWords(
+Blockly.Lua.addReservedWords(
   // http://docs.python.org/reference/lexical_analysis.html#keywords
   'and,break,do,else,elseif,' +
   'end,false,for,function,if,' +
@@ -50,53 +32,60 @@ Blockly.lua.addReservedWords(
  * Order of operation ENUMs.
  * http://docs.python.org/reference/expressions.html#summary
  */
-Blockly.lua.ORDER_ATOMIC = 0;         // 0 "" ...
-Blockly.lua.ORDER_MEMBER = 1;         // . []
-Blockly.lua.ORDER_FUNCTION_CALL = 2; 
-Blockly.lua.ORDER_LOGICAL_OR = 3;       // or
-Blockly.lua.ORDER_LOGICAL_AND = 4;      // and
-Blockly.lua.ORDER_RELATIONAL = 5;       // <     >     <=    >=    ~=    ==
-Blockly.lua.ORDER_CONCATENATION = 6;    // ..
-Blockly.lua.ORDER_UNARY_SIGN = 7;       // + -
-Blockly.lua.ORDER_ADDITIVE = 8;       // + -
-Blockly.lua.ORDER_MULTIPLICATIVE = 9;   // * / %
-Blockly.lua.ORDER_LOGICAL_NOT = 10;      // not # -
-Blockly.lua.ORDER_EXPONENTIATION = 11;   // ^
-Blockly.lua.ORDER_NONE = 99;            // (...)
+Blockly.Lua.ORDER_ATOMIC = 0;         // 0 "" ...
+Blockly.Lua.ORDER_MEMBER = 1;         // . []
+Blockly.Lua.ORDER_HIGH = 2
+Blockly.Lua.ORDER_FUNCTION_CALL = 2; 
+Blockly.Lua.ORDER_LOGICAL_OR = 3;       // or
+Blockly.Lua.ORDER_LOGICAL_AND = 4;      // and
+Blockly.Lua.ORDER_RELATIONAL = 5;       // <     >     <=    >=    ~=    ==
+Blockly.Lua.ORDER_CONCATENATION = 6;    // ..
+Blockly.Lua.ORDER_UNARY_SIGN = 7;       // + -
+Blockly.Lua.ORDER_ADDITIVE = 8;       // + -
+Blockly.Lua.ORDER_MULTIPLICATIVE = 9;   // * / %
+Blockly.Lua.ORDER_LOGICAL_NOT = 10;      // not # -
+Blockly.Lua.ORDER_EXPONENTIATION = 11;   // ^
+Blockly.Lua.ORDER_NONE = 99;            // (...)
 
-
-
-
-Blockly.lua.INFINITE_LOOP_TRAP = null;
+/**
+ * Arbitrary code to inject into locations that risk causing infinite loops.
+ * Any instances of '%1' will be replaced by the block ID that failed.
+ * E.g. '  checkTimeout(%1)\n'
+ * @type ?string
+ */
+Blockly.Lua.INFINITE_LOOP_TRAP = null;
 
 /**
  * Initialise the database of variable names.
  */
-Blockly.lua.init = function()
+Blockly.Lua.init = function()
 {
 	// Create a dictionary of definitions to be printed before the code.
-	Blockly.lua.definitions_ = {};
+	Blockly.Lua.definitions_ = Object.create(null);
+    // Create a dictionary mapping desired function names in definitions_
+    // to actual function names (to avoid collisions with user functions).
+    Blockly.Lua.functionNames_ = Object.create(null);
 
 	if(Blockly.Variables)
-	{
-		if(!Blockly.lua.variableDB_)
-		{
-			Blockly.lua.variableDB_ =
-			  new Blockly.Names(Blockly.lua.RESERVED_WORDS_);
-		}
-		else
-		{
-			Blockly.lua.variableDB_.reset();
+    {
+		if(!Blockly.Lua.variableDB_)
+        {
+			Blockly.Lua.variableDB_ =
+			  new Blockly.Names(Blockly.Lua.RESERVED_WORDS_);
+		} 
+        else 
+        {
+			Blockly.Lua.variableDB_.reset();
 		}
 
 		var defvars = [];
 		var variables = Blockly.Variables.allVariables();
-		for(var x = 0; x < variables.length; x++)
-		{
-			defvars[x] = Blockly.lua.variableDB_.getDistinctName(variables[x],
+		for(var x = 0; x < variables.length; x++) 
+        {
+			defvars[x] = Blockly.Lua.variableDB_.getName(variables[x],
 			             Blockly.Variables.NAME_TYPE) + ' = nil';
 		}
-		Blockly.lua.definitions_['variables'] = defvars.join('\n');
+		Blockly.Lua.definitions_['variables'] = defvars.join('\n');
 	}
 };
 
@@ -105,13 +94,13 @@ Blockly.lua.init = function()
  * @param {string} code Generated code.
  * @return {string} Completed code.
  */
-Blockly.lua.finish = function(code)
+Blockly.Lua.finish = function(code)
 {
 	// Convert the definitions dictionary into a list.
 	var definitions = [];
-	for(var name in Blockly.lua.definitions_)
-	{
-		definitions.push(Blockly.lua.definitions_[name]);
+	for(var name in Blockly.Lua.definitions_)
+    {
+		definitions.push(Blockly.Lua.definitions_[name]);
 	}
 	return definitions.join('\n') + '\n\n' + code;
 };
@@ -122,7 +111,7 @@ Blockly.lua.finish = function(code)
  * @param {string} line Line of generated code.
  * @return {string} Legal line of code.
  */
-Blockly.lua.scrubNakedValue = function(line)
+Blockly.Lua.scrubNakedValue = function(line)
 {
 	return line + '\n';
 };
@@ -133,7 +122,7 @@ Blockly.lua.scrubNakedValue = function(line)
  * @return {string} Python string.
  * @private
  */
-Blockly.lua.quote_ = function(string)
+Blockly.Lua.quote_ = function(string)
 {
 	// TODO: This is a quick hack.  Replace with goog.string.quote
 	string = string.replace('/\\/g', '\\\\')
@@ -150,9 +139,10 @@ Blockly.lua.quote_ = function(string)
  * @param {!Blockly.Block} block The current block.
  * @param {string} code The Python code created for this block.
  * @return {string} Python code with comments and subsequent blocks added.
+ * @this {Blockly.CodeGenerator}
  * @private
  */
-Blockly.lua.scrub_ = function (block, code) {
+Blockly.Lua.scrub_ = function (block, code) {
   if (code === null) {
     // Block has handled code generation itself.
     return '';
@@ -163,7 +153,7 @@ Blockly.lua.scrub_ = function (block, code) {
     // Collect comment for this block.
     var comment = block.getCommentText();
     if (comment) {
-      commentCode += Blockly.Generator.prefixLines(comment, '-- ') + '\n';
+      commentCode += this.prefixLines(comment, '-- ') + '\n';
     }
     // Collect comments for all value arguments.
     // Don't collect comments for nested statements.
@@ -171,9 +161,9 @@ Blockly.lua.scrub_ = function (block, code) {
       if (block.inputList[x].type == Blockly.INPUT_VALUE) {
         var childBlock = block.inputList[x].connection.targetBlock();
         if (childBlock) {
-          var comment = Blockly.Generator.allNestedComments(childBlock);
+          var comment = this.allNestedComments(childBlock);
           if (comment) {
-            commentCode += Blockly.Generator.prefixLines(comment, '-- ');
+            commentCode += this.prefixLines(comment, '-- ');
           }
         }
       }
@@ -182,4 +172,32 @@ Blockly.lua.scrub_ = function (block, code) {
   var nextBlock = block.nextConnection && block.nextConnection.targetBlock();
   var nextCode = this.blockToCode(nextBlock);
   return commentCode + code + nextCode;
+};
+
+/**
+ * Define a function to be included in the generated code.
+ * The first time this is called with a given desiredName, the code is
+ * saved and an actual name is generated.  Subsequent calls with the
+ * same desiredName have no effect but have the same return value.
+ *
+ * It is up to the caller to make sure the same desiredName is not
+ * used for different code values.
+ *
+ * The code gets output when Blockly.Lua.finish() is called.
+ *
+ * @param {string} desiredName The desired name of the function (e.g., isPrime).
+ * @param {code} A list of Lua statements.
+ * @return {string} The actual name of the new function.  This may differ
+ *     from desiredName if the former has already been taken by the user.
+ * @private
+ */
+Blockly.Lua.provideFunction_ = function(desiredName, code) {
+  if (!Blockly.Lua.definitions_[desiredName]) {
+    var functionName = Blockly.Lua.variableDB_.getDistinctName(
+        desiredName, Blockly.Generator.NAME_TYPE);
+    Blockly.Lua.functionNames_[desiredName] = functionName;
+    Blockly.Lua.definitions_[desiredName] = code.join('\n').replace(
+        Blockly.Lua.FUNCTION_NAME_PLACEHOLDER_REGEXP_, functionName);
+  }
+  return Blockly.Lua.functionNames_[desiredName];
 };

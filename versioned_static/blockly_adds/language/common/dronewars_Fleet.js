@@ -1,6 +1,6 @@
+'use strict';
 
-if(!Blockly.Language) Blockly.Language = {};
-
+goog.provide('Blockly.Lua');
 
 //******************   Fleet    **********************************************
 addProperty('Fleet', 'id', Number, Blockly.LANG_DRONEWARS_FLEET_ID,
@@ -19,7 +19,7 @@ addProperty('Fleet', 'ressourceSet', 'RessourceSet', Blockly.LANG_DRONEWARS_FLEE
   Blockly.LANG_CATEGORY_DRONEWARS_FLEET);
 
 //ShipList
-Blockly.Language.dronewars_ship_in_fleet =
+Blockly.Blocks['dronewars_ship_in_fleet'] =
 {
 category:
 	Blockly.LANG_CATEGORY_DRONEWARS_FLEET,
@@ -29,25 +29,25 @@ init:
 		this.setColour(230);
 		this.setInputsInline(true);
 		this.appendDummyInput()
-      .appendTitle(getShipDropDown(), 'SHIP');
+      .appendField(getShipDropDown(), 'SHIP');
 	  this.appendValueInput('FLEET')
       .setCheck('Fleet')
-      .appendTitle(Blockly.LANG_DRONEWARS_SHIP_IN_FLEET);
+      .appendField(Blockly.LANG_DRONEWARS_SHIP_IN_FLEET);
 		this.setOutput(true, Number);
 	}
 };
 
-Blockly.lua.dronewars_ship_in_fleet = function()
+Blockly.Lua['dronewars_ship_in_fleet'] = function(block)
 {
-	var object = Blockly.lua.valueToCode(
-	               this, 'FLEET', Blockly.lua.ORDER_NONE) || 'nil';
-	return [object + '.shipList[Ship.' + this.getTitleValue('SHIP') + ']',
-	        Blockly.lua.ORDER_FUNCTION_CALL
+	var object = Blockly.Lua.valueToCode(
+	               block, 'FLEET', Blockly.Lua.ORDER_NONE) || 'nil';
+	return [object + '.shipList[Ship.' + block.getTitleValue('SHIP') + ']',
+	        Blockly.Lua.ORDER_HIGH
 	       ];
 };
 
 //ShipList
-Blockly.Language.dronewars_ressource_in_fleet =
+Blockly.Blocks['dronewars_ressource_in_fleet'] =
 {
   category:
     Blockly.LANG_CATEGORY_DRONEWARS_FLEET,
@@ -56,25 +56,25 @@ Blockly.Language.dronewars_ressource_in_fleet =
       this.setColour(230);
       this.setInputsInline(true);
       this.appendDummyInput()
-        .appendTitle(getRessourceDropDown(), 'RESSOURCE');
+        .appendField(getRessourceDropDown(), 'RESSOURCE');
       this.appendValueInput('FLEET')
         .setCheck('Fleet')
-        .appendTitle(Blockly.LANG_DRONEWARS_RESSOURCE_IN_FLEET);
+        .appendField(Blockly.LANG_DRONEWARS_RESSOURCE_IN_FLEET);
       this.setOutput(true, Number);
     }
 };
 
-Blockly.lua.dronewars_ressource_in_fleet = function () {
-  var object = Blockly.lua.valueToCode(
-	               this, 'FLEET', Blockly.lua.ORDER_NONE) || 'nil';
-  return [object + '.ressourceSet:at(Ressource.' + this.getTitleValue('RESSOURCE') + ')',
-	        Blockly.lua.ORDER_FUNCTION_CALL
+Blockly.Lua['dronewars_ressource_in_fleet'] = function (block) {
+  var object = Blockly.Lua.valueToCode(
+	               block, 'FLEET', Blockly.Lua.ORDER_NONE) || 'nil';
+  return [object + '.ressourceSet:at(Ressource.' + block.getTitleValue('RESSOURCE') + ')',
+	        Blockly.Lua.ORDER_HIGH
   ];
 };
 
 
 //ShipPrice
-Blockly.Language.dronewars_ship_price =
+Blockly.Blocks['dronewars_ship_price'] =
 {
 category:
     Blockly.LANG_CATEGORY_DRONEWARS_FLEET,
@@ -83,21 +83,21 @@ init:
     {
       this.setColour(230);
       this.appendDummyInput()
-      .appendTitle(Blockly.LANG_DRONEWARS_SHIP_PRICE)
-      .appendTitle(getShipDropDown(), 'SHIP');
+      .appendField(Blockly.LANG_DRONEWARS_SHIP_PRICE)
+      .appendField(getShipDropDown(), 'SHIP');
       this.setOutput(true, 'RessourceSet');
     }
 };
 
-Blockly.lua.dronewars_ship_price = function()
+Blockly.Lua['dronewars_ship_price'] = function(block)
 {
-    return ['shipPrice(Ship.' + this.getTitleValue('SHIP') + ')',
-            Blockly.lua.ORDER_FUNCTION_CALL
+    return ['shipPrice(Ship.' + block.getTitleValue('SHIP') + ')',
+            Blockly.Lua.ORDER_HIGH
            ];
 };
 
 
-Blockly.Language.dronewars_fleet_age =
+Blockly.Blocks['dronewars_fleet_age'] =
 {
 category:
     Blockly.LANG_CATEGORY_DRONEWARS_FLEET,
@@ -107,14 +107,14 @@ init:
         this.setColour(230);
         this.appendValueInput('FLEET')
             .setCheck('Fleet')
-            .appendTitle(Blockly.LANG_DRONEWARS_FLEET_AGE);
+            .appendField(Blockly.LANG_DRONEWARS_FLEET_AGE);
         this.setOutput(true, Number);
     }
 };
 
-Blockly.lua.dronewars_fleet_age = function()
+Blockly.Lua['dronewars_fleet_age'] = function(block)
 {
     var fleet = 
-        Blockly.lua.valueToCode(this, 'FLEET', Blockly.lua.ORDER_NONE) || 'nil';
-    return [fleet + ':age()', Blockly.lua.ORDER_FUNCTION_CALL];
+        Blockly.Lua.valueToCode(block, 'FLEET', Blockly.Lua.ORDER_NONE) || 'nil';
+    return [fleet + ':age()', Blockly.Lua.ORDER_HIGH];
 };

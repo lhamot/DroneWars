@@ -5,7 +5,7 @@
  * http://code.google.com/p/blockly/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * you may not use block file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
@@ -18,26 +18,30 @@
  */
 
 /**
- * @fileoverview Generating lua for variable blocks.
+ * @fileoverview Generating Lua for variable blocks.
  * @author Loïc HAMOT
  */
 
-Blockly.lua = Blockly.Generator.get('lua');
+'use strict';
 
-Blockly.lua.variables_get = function()
+goog.provide('Blockly.Lua.variables');
+
+goog.require('Blockly.Lua');
+
+Blockly.Lua['variables_get'] = function(block)
 {
 	// Variable getter.
-	code = Blockly.lua.variableDB_.getName(this.getTitleValue('VAR'),
+	code = Blockly.Lua.variableDB_.getName(block.getTitleValue('VAR'),
 	                                       Blockly.Variables.NAME_TYPE);
-	return [code, Blockly.lua.ORDER_ATOMIC];
+	return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
-Blockly.lua.variables_set = function()
+Blockly.Lua['variables_set'] = function(block)
 {
 	// Variable setter.
-	var argument0 = Blockly.lua.valueToCode(this, 'VALUE',
-	                                        Blockly.lua.ORDER_NONE) || 'nil';
-	var varName = Blockly.lua.variableDB_.getName(this.getTitleValue('VAR'),
+	var argument0 = Blockly.Lua.valueToCode(block, 'VALUE',
+	                                        Blockly.Lua.ORDER_NONE) || 'nil';
+	var varName = Blockly.Lua.variableDB_.getName(block.getTitleValue('VAR'),
 	              Blockly.Variables.NAME_TYPE);
 	return varName + ' = ' + argument0 + '\n';
 };

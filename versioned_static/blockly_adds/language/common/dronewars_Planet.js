@@ -1,10 +1,9 @@
+'use strict';
 
-if(!Blockly.Language) Blockly.Language = {};
-
-
+goog.provide('Blockly.Lua');
 
 //******************   PLANET    **********************************************
-Blockly.Language.dronewars_is_planet_free =
+Blockly.Blocks['dronewars_is_planet_free'] =
 {
 category:
 	Blockly.LANG_CATEGORY_DRONEWARS_PLANET,
@@ -15,22 +14,22 @@ init:
 		this.setInputsInline(true);
 	  this.appendValueInput('PLANET')
       .setCheck('Planet')
-      .appendTitle(Blockly.LANG_DRONEWARS_IS_PLANET_FREE_1);
+      .appendField(Blockly.LANG_DRONEWARS_IS_PLANET_FREE_1);
 	  this.appendDummyInput()
-      .appendTitle(Blockly.LANG_DRONEWARS_IS_PLANET_FREE_2);
+      .appendField(Blockly.LANG_DRONEWARS_IS_PLANET_FREE_2);
 		this.setOutput(true, Boolean);
 	}
 };
 
-Blockly.lua.dronewars_is_planet_free = function()
+Blockly.Lua['dronewars_is_planet_free'] = function(block)
 {
-	var planet = Blockly.lua.valueToCode(
-	               this, 'PLANET', Blockly.lua.ORDER_NONE) || 'nil';
-	return [ planet + ':isFree()', Blockly.lua.ORDER_FUNCTION_CALL];
+	var planet = Blockly.Lua.valueToCode(
+	               block, 'PLANET', Blockly.Lua.ORDER_NONE) || 'nil';
+	return [ planet + ':isFree()', Blockly.Lua.ORDER_HIGH];
 };
 
 
-Blockly.Language.dronewars_planet_age =
+Blockly.Blocks['dronewars_planet_age'] =
 {
 category:
     Blockly.LANG_CATEGORY_DRONEWARS_PLANET,
@@ -40,16 +39,16 @@ init:
         this.setColour(230);
         this.appendValueInput('PLANET')
             .setCheck('Planet')
-            .appendTitle(Blockly.LANG_DRONEWARS_PLANET_AGE);
+            .appendField(Blockly.LANG_DRONEWARS_PLANET_AGE);
         this.setOutput(true, Number);
     }
 };
 
-Blockly.lua.dronewars_planet_age = function()
+Blockly.Lua['dronewars_planet_age'] = function(block)
 {
     var planet = 
-        Blockly.lua.valueToCode(this, 'PLANET', Blockly.lua.ORDER_NONE) || 'nil';
-    return [planet + ':age()', Blockly.lua.ORDER_FUNCTION_CALL];
+        Blockly.Lua.valueToCode(block, 'PLANET', Blockly.Lua.ORDER_NONE) || 'nil';
+    return [planet + ':age()', Blockly.Lua.ORDER_HIGH];
 };
 
 
@@ -72,7 +71,7 @@ addProperty('Planet', 'ressourceSet', 'RessourceSet',
 //            Blockly.LANG_DRONEWARS_PLANET_IS_FREE);
 
 // BuildingList
-Blockly.Language.dronewars_building_in_planet =
+Blockly.Blocks['dronewars_building_in_planet'] =
 {
 category:
 	Blockly.LANG_CATEGORY_DRONEWARS_PLANET,
@@ -83,25 +82,25 @@ init:
 
 		this.setColour(230);
 		this.setInputsInline(true);
-		this.appendDummyInput().appendTitle(buildingDropdown, 'BUILDING');
+		this.appendDummyInput().appendField(buildingDropdown, 'BUILDING');
 	  this.appendValueInput('PLANET')
       .setCheck('Planet')
-      .appendTitle(Blockly.LANG_DRONEWARS_BUILDING_IN_PLANET);
+      .appendField(Blockly.LANG_DRONEWARS_BUILDING_IN_PLANET);
 		this.setOutput(true, Number);
 	}
 };
 
-Blockly.lua.dronewars_building_in_planet = function()
+Blockly.Lua['dronewars_building_in_planet'] = function(block)
 {
-	var object = Blockly.lua.valueToCode(
-	               this, 'PLANET', Blockly.lua.ORDER_NONE) || 'nil';
-	return [object + '.buildingList[Building.' + this.getTitleValue('BUILDING') + ']',
-	        Blockly.lua.ORDER_FUNCTION_CALL
+	var object = Blockly.Lua.valueToCode(
+	               block, 'PLANET', Blockly.Lua.ORDER_NONE) || 'nil';
+	return [object + '.buildingList[Building.' + block.getTitleValue('BUILDING') + ']',
+	        Blockly.Lua.ORDER_HIGH
 	       ];
 };
 
 //CannonList
-Blockly.Language.dronewars_cannon_in_planet =
+Blockly.Blocks['dronewars_cannon_in_planet'] =
 {
 category:
 	Blockly.LANG_CATEGORY_DRONEWARS_PLANET,
@@ -111,25 +110,25 @@ init:
 		this.setColour(230);
 		this.setInputsInline(true);
 		this.appendDummyInput()
-		  .appendTitle(getCannonDropdown(), 'CANNON');
+		  .appendField(getCannonDropdown(), 'CANNON');
 	  this.appendValueInput('PLANET')
       .setCheck('Planet')
-      .appendTitle(Blockly.LANG_DRONEWARS_CANNON_IN_PLANET);
+      .appendField(Blockly.LANG_DRONEWARS_CANNON_IN_PLANET);
 		this.setOutput(true, Number);
 	}
 };
 
-Blockly.lua.dronewars_cannon_in_planet = function()
+Blockly.Lua['dronewars_cannon_in_planet'] = function(block)
 {
-	var object = Blockly.lua.valueToCode(
-	               this, 'PLANET', Blockly.lua.ORDER_NONE) || 'nil';
-	return [object + '.cannonTab[Cannon.' + this.getTitleValue('CANNON') + ']',
-	        Blockly.lua.ORDER_FUNCTION_CALL
+	var object = Blockly.Lua.valueToCode(
+	               block, 'PLANET', Blockly.Lua.ORDER_NONE) || 'nil';
+	return [object + '.cannonTab[Cannon.' + block.getTitleValue('CANNON') + ']',
+	        Blockly.Lua.ORDER_HIGH
 	       ];
 };
 
 //RessourceSet
-Blockly.Language.dronewars_ressource_in_planet =
+Blockly.Blocks['dronewars_ressource_in_planet'] =
 {
   category:
     Blockly.LANG_CATEGORY_DRONEWARS_PLANET,
@@ -140,25 +139,25 @@ Blockly.Language.dronewars_ressource_in_planet =
       this.setColour(230);
       this.setInputsInline(true);
       this.appendDummyInput()
-        .appendTitle(buildingDropdown, 'RESSOURCE');
+        .appendField(buildingDropdown, 'RESSOURCE');
       this.appendValueInput('PLANET')
         .setCheck('Planet')
-        .appendTitle(Blockly.LANG_DRONEWARS_RESSOURCE_IN_PLANET);
+        .appendField(Blockly.LANG_DRONEWARS_RESSOURCE_IN_PLANET);
       this.setOutput(true, Number);
     }
 };
 
-Blockly.lua.dronewars_ressource_in_planet = function () {
-  var object = Blockly.lua.valueToCode(
-	               this, 'PLANET', Blockly.lua.ORDER_NONE) || 'nil';
-  return [object + '.ressourceSet:at(Ressource.' + this.getTitleValue('RESSOURCE') + ')',
-	        Blockly.lua.ORDER_FUNCTION_CALL
+Blockly.Lua['dronewars_ressource_in_planet'] = function (block) {
+  var object = Blockly.Lua.valueToCode(
+	               block, 'PLANET', Blockly.Lua.ORDER_NONE) || 'nil';
+  return [object + '.ressourceSet:at(Ressource.' + block.getTitleValue('RESSOURCE') + ')',
+	        Blockly.Lua.ORDER_HIGH
   ];
 };
 
 
 //CannonPrice
-Blockly.Language.dronewars_cannon_price =
+Blockly.Blocks['dronewars_cannon_price'] =
 {
 category:
     Blockly.LANG_CATEGORY_DRONEWARS_PLANET,
@@ -167,21 +166,21 @@ init:
     {
       this.setColour(230);
       this.appendDummyInput()
-      .appendTitle(Blockly.LANG_DRONEWARS_CANNON_PRICE)
-      .appendTitle(getCannonDropdown(), 'CANNON');
+      .appendField(Blockly.LANG_DRONEWARS_CANNON_PRICE)
+      .appendField(getCannonDropdown(), 'CANNON');
       this.setOutput(true, 'RessourceSet');
     }
 };
 
-Blockly.lua.dronewars_cannon_price = function()
+Blockly.Lua['dronewars_cannon_price'] = function(block)
 {
-    return ['cannonPrice(Cannon.' + this.getTitleValue('CANNON') + ')',
-            Blockly.lua.ORDER_FUNCTION_CALL
+    return ['cannonPrice(Cannon.' + block.getTitleValue('CANNON') + ')',
+            Blockly.Lua.ORDER_HIGH
            ];
 };
 
 //BuildingPrice
-Blockly.Language.dronewars_building_price =
+Blockly.Blocks['dronewars_building_price'] =
 {
 category:
     Blockly.LANG_CATEGORY_DRONEWARS_PLANET,
@@ -190,28 +189,28 @@ init:
     {
       this.setColour(230);
       this.appendDummyInput()
-      .appendTitle(Blockly.LANG_DRONEWARS_BUILDING_PRICE)
-      .appendTitle(getBuildingDropdown(), 'BUILDING');
+      .appendField(Blockly.LANG_DRONEWARS_BUILDING_PRICE)
+      .appendField(getBuildingDropdown(), 'BUILDING');
       this.appendValueInput("LEVEL")
-      .appendTitle(Blockly.LANG_DRONEWARS_BUILDING_PRICE2)
+      .appendField(Blockly.LANG_DRONEWARS_BUILDING_PRICE2)
       .setCheck(Number);
       this.setOutput(true, 'RessourceSet');
       this.setInputsInline(true);
     }
 };
 
-Blockly.lua.dronewars_building_price = function()
+Blockly.Lua['dronewars_building_price'] = function(block)
 {
-  var level = Blockly.lua.valueToCode(
-                   this, 'LEVEL', Blockly.lua.ORDER_NONE) || '1';    
-    return ['buildingPrice(Building.' + this.getTitleValue('BUILDING') + ', ' + level + ')',
-            Blockly.lua.ORDER_FUNCTION_CALL
+  var level = Blockly.Lua.valueToCode(
+                   block, 'LEVEL', Blockly.Lua.ORDER_NONE) || '1';    
+    return ['buildingPrice(Building.' + block.getTitleValue('BUILDING') + ', ' + level + ')',
+            Blockly.Lua.ORDER_HIGH
            ];
 };
 
 
 //Planet can pay
-Blockly.Language.dronewars_planet_can_play =
+Blockly.Blocks['dronewars_planet_can_play'] =
 {
 category:
     Blockly.LANG_CATEGORY_DRONEWARS_PLANET,
@@ -222,20 +221,20 @@ init:
       this.setInputsInline(true);
       this.appendValueInput('PLANET')
       .setCheck('Planet')
-      .appendTitle(Blockly.LANG_DRONEWARS_PLANET_CAN_PAY_1);
+      .appendField(Blockly.LANG_DRONEWARS_PLANET_CAN_PAY_1);
       this.appendValueInput('PRICE')
       .setCheck('RessourceSet')
-      .appendTitle(Blockly.LANG_DRONEWARS_PLANET_CAN_PAY_2);
+      .appendField(Blockly.LANG_DRONEWARS_PLANET_CAN_PAY_2);
       this.setOutput(true, Boolean);
     }
 };
 
-Blockly.lua.dronewars_planet_can_play = function()
+Blockly.Lua['dronewars_planet_can_play'] = function(block)
 {
-    var planet = Blockly.lua.valueToCode(
-                   this, 'PLANET', Blockly.lua.ORDER_NONE) || 'nil';
-    var price = Blockly.lua.valueToCode(
-                   this, 'PRICE', Blockly.lua.ORDER_NONE) || 'RessourceSet()';
-    return [ planet + '.ressourceSet:contains(' + price + ')', Blockly.lua.ORDER_FUNCTION_CALL];
+    var planet = Blockly.Lua.valueToCode(
+                   block, 'PLANET', Blockly.Lua.ORDER_NONE) || 'nil';
+    var price = Blockly.Lua.valueToCode(
+                   block, 'PRICE', Blockly.Lua.ORDER_NONE) || 'RessourceSet()';
+    return [ planet + '.ressourceSet:contains(' + price + ')', Blockly.Lua.ORDER_HIGH];
 };
 

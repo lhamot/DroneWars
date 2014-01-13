@@ -1,9 +1,9 @@
+'use strict';
 
-if(!Blockly.Language) Blockly.Language = {};
-
+goog.provide('Blockly.Lua');
 
 //********************* RessourceSet ******************************************
-Blockly.Language.dronewars_ressourceSet =
+Blockly.Blocks['dronewars_ressourceSet'] =
 {
 category:
 	Blockly.LANG_CATEGORY_DRONEWARS_RESSOURCESET,
@@ -12,24 +12,24 @@ init:
 	{
 		this.setColour(230);
 		this.appendDummyInput()
-      .appendTitle(Blockly.LANG_DRONEWARS_RESSOURCESET)
-      .appendTitle(new Blockly.FieldTextInput('0', checkNumber), 'R1')
-      .appendTitle(new Blockly.FieldTextInput('0', checkNumber), 'R2')
-      .appendTitle(new Blockly.FieldTextInput('0', checkNumber), 'R3');
+      .appendField(Blockly.LANG_DRONEWARS_RESSOURCESET)
+      .appendField(new Blockly.FieldTextInput('0', checkNumber), 'R1')
+      .appendField(new Blockly.FieldTextInput('0', checkNumber), 'R2')
+      .appendField(new Blockly.FieldTextInput('0', checkNumber), 'R3');
 		this.setOutput(true, 'RessourceSet');
 	}
 };
 
-Blockly.lua.dronewars_ressourceSet = function()
+Blockly.Lua['dronewars_ressourceSet'] = function(block)
 {
-	return ['RessourceSet(' + this.getTitleValue('R1') + ',' +
-	        this.getTitleValue('R2') + ',' +
-	        this.getTitleValue('R3') + ')',
-	        Blockly.lua.ORDER_FUNCTION_CALL
+	return ['RessourceSet(' + block.getTitleValue('R1') + ',' +
+	        block.getTitleValue('R2') + ',' +
+	        block.getTitleValue('R3') + ')',
+	        Blockly.Lua.ORDER_HIGH
 	       ];
 };
 
-Blockly.Language.dronewars_ressourceSet_at =
+Blockly.Blocks['dronewars_ressourceSet_at'] =
 {
 category:
 	Blockly.LANG_CATEGORY_DRONEWARS_RESSOURCESET,
@@ -40,26 +40,26 @@ init:
 		this.setInputsInline(true);
 		var dropdown = getRessourceDropDown();
 		this.appendDummyInput()
-      .appendTitle(dropdown, 'RESSOURCE');
+      .appendField(dropdown, 'RESSOURCE');
 	  this.appendValueInput('RESSOURCESET')
       .setCheck('RessourceSet')
-      .appendTitle(Blockly.LANG_DRONEWARS_RESSOURCESET_AT);
+      .appendField(Blockly.LANG_DRONEWARS_RESSOURCESET_AT);
 		this.setOutput(true, Number);
 	}
 };
 
-Blockly.lua.dronewars_ressourceSet_at = function()
+Blockly.Lua['dronewars_ressourceSet_at'] = function(block)
 {
-	var object = Blockly.lua.valueToCode(
-	               this, 'RESSOURCESET', Blockly.lua.ORDER_NONE) || 'nil';
-	return [object + ':at(Ressource.' + this.getTitleValue('RESSOURCE') + ')',
-	        Blockly.lua.ORDER_FUNCTION_CALL
+	var object = Blockly.Lua.valueToCode(
+	               block, 'RESSOURCESET', Blockly.Lua.ORDER_NONE) || 'nil';
+	return [object + ':at(Ressource.' + block.getTitleValue('RESSOURCE') + ')',
+	        Blockly.Lua.ORDER_HIGH
 	       ];
 };
 
 
 //RessourceSet contain
-Blockly.Language.dronewars_ressourceSet_contains =
+Blockly.Blocks['dronewars_ressourceSet_contains'] =
 {
 category:
     Blockly.LANG_CATEGORY_DRONEWARS_RESSOURCESET,
@@ -70,20 +70,20 @@ init:
       this.setInputsInline(true);
       this.appendValueInput('OUT')
       .setCheck('RessourceSet')
-      .appendTitle(Blockly.LANG_DRONEWARS_CONTAINS_1);
+      .appendField(Blockly.LANG_DRONEWARS_CONTAINS_1);
       this.appendValueInput('IN')
       .setCheck('RessourceSet')
-      .appendTitle(Blockly.LANG_DRONEWARS_CONTAINS_2);
+      .appendField(Blockly.LANG_DRONEWARS_CONTAINS_2);
         this.setOutput(true, Boolean);
     }
 };
 
-Blockly.lua.dronewars_ressourceSet_contains = function()
+Blockly.Lua['dronewars_ressourceSet_contains'] = function(block)
 {
-    var out = Blockly.lua.valueToCode(this, 'OUT', Blockly.lua.ORDER_NONE) || 'RessourceSet()';
-    var inner = Blockly.lua.valueToCode(this, 'IN', Blockly.lua.ORDER_NONE) || 'RessourceSet()';
+    var out = Blockly.Lua.valueToCode(block, 'OUT', Blockly.Lua.ORDER_NONE) || 'RessourceSet()';
+    var inner = Blockly.Lua.valueToCode(block, 'IN', Blockly.Lua.ORDER_NONE) || 'RessourceSet()';
 
     return [out + ':contains(' + inner + ')',
-            Blockly.lua.ORDER_FUNCTION_CALL
+            Blockly.Lua.ORDER_HIGH
            ];
 };

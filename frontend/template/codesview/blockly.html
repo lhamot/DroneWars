@@ -5,6 +5,9 @@
 {% block header_adds %}
     <meta charset="utf-8">
     <script type="text/javascript" src="{{ STATIC_URL }}blockly/blockly_compressed.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}blockly/blocks_compressed.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}blockly/msg/js/fr.js"></script>
+
     <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/language/fr/_messages.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/generators/lua.js">           </script>
     <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/generators/lua/control.js">   </script>
@@ -16,14 +19,7 @@
     <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/generators/lua/variables.js"> </script>
     <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/language/fr/dronewars.js">    </script>
     <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/language/common/dronewars.js"></script>
-    
-	<script type="text/javascript" src="{{ STATIC_URL }}blockly/language/common/control.js"></script>
-	<script type="text/javascript" src="{{ STATIC_URL }}blockly/language/common/text.js">          </script>
-	<script type="text/javascript" src="{{ STATIC_URL }}blockly/language/common/lists.js">         </script>
-	<script type="text/javascript" src="{{ STATIC_URL }}blockly/language/common/logic.js">         </script>
-	<script type="text/javascript" src="{{ STATIC_URL }}blockly/language/common/math.js">          </script>
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly/language/common/procedures.js">    </script>
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly/language/common/variables.js">     </script>
+
     <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/language/common/dronewars_Fleet.js">       </script>
     <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/language/common/dronewars_Planet.js">      </script>
     <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/language/common/dronewars_RessourceSet.js"></script>
@@ -75,7 +71,7 @@
 			<input class="btn btn-primary" type="submit" value="{% trans "Save" %}" name="save_button" onclick="
 					try
 					{
-						var code = window.Blockly.Generator.workspaceToCode('lua');
+						var code = window.Blockly.Lua.workspaceToCode();
 						document.getElementById('scriptXML').value = code;
 						var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
 						var xml_text = Blockly.Xml.domToText(xml);

@@ -5,7 +5,7 @@
  * http://code.google.com/p/blockly/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * you may not use block file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
@@ -18,25 +18,29 @@
  */
 
 /**
- * @fileoverview Generating lua for logic blocks.
+ * @fileoverview Generating Lua for logic blocks.
  * @author Loïc HAMOT
  */
 
-Blockly.lua = Blockly.Generator.get('lua');
+'use strict';
 
-Blockly.lua.logic_compare = function()
+goog.provide('Blockly.Lua.logic');
+
+goog.require('Blockly.Lua');
+
+Blockly.Lua['logic_compare'] = function(block)
 {
 	// Comparison operator.
-	var mode = this.getTitleValue('OP');
-	var operator = Blockly.lua.logic_compare.OPERATORS[mode];
-	var order = Blockly.lua.ORDER_RELATIONAL;
-	var argument0 = Blockly.lua.valueToCode(this, 'A', order) || '0';
-	var argument1 = Blockly.lua.valueToCode(this, 'B', order) || '0';
+	var mode = block.getTitleValue('OP');
+	var operator = Blockly.Lua.logic_compare.OPERATORS[mode];
+	var order = Blockly.Lua.ORDER_RELATIONAL;
+	var argument0 = Blockly.Lua.valueToCode(block, 'A', order) || '0';
+	var argument1 = Blockly.Lua.valueToCode(block, 'B', order) || '0';
 	var code = argument0 + ' ' + operator + ' ' + argument1;
 	return [code, order];
 };
 
-Blockly.lua.logic_compare.OPERATORS =
+Blockly.Lua['logic_compare'].OPERATORS =
 {
 EQ: '=='
 	,
@@ -51,47 +55,47 @@ GT: '>'
 GTE: '>='
 };
 
-Blockly.lua.logic_operation = function()
+Blockly.Lua['logic_operation'] = function(block)
 {
 	// Operations 'and', 'or'.
-	var operator = (this.getTitleValue('OP') == 'AND') ? 'and' : 'or';
-	var order = (operator == 'and') ? Blockly.lua.ORDER_LOGICAL_AND :
-	            Blockly.lua.ORDER_LOGICAL_OR;
-	var argument0 = Blockly.lua.valueToCode(this, 'A', order) || 'False';
-	var argument1 = Blockly.lua.valueToCode(this, 'B', order) || 'False';
+	var operator = (block.getTitleValue('OP') == 'AND') ? 'and' : 'or';
+	var order = (operator == 'and') ? Blockly.Lua.ORDER_LOGICAL_AND :
+	            Blockly.Lua.ORDER_LOGICAL_OR;
+	var argument0 = Blockly.Lua.valueToCode(block, 'A', order) || 'False';
+	var argument1 = Blockly.Lua.valueToCode(block, 'B', order) || 'False';
 	var code = argument0 + ' ' + operator + ' ' + argument1;
 	return [code, order];
 };
 
-Blockly.lua.logic_negate = function()
+Blockly.Lua['logic_negate'] = function(block)
 {
 	// Negation.
-	var argument0 = Blockly.lua.valueToCode(this, 'BOOL',
-	                                        Blockly.lua.ORDER_LOGICAL_NOT) || 'false';
+	var argument0 = Blockly.Lua.valueToCode(block, 'BOOL',
+	                                        Blockly.Lua.ORDER_LOGICAL_NOT) || 'false';
 	var code = 'not (' + argument0 + ')';
-	return [code, Blockly.lua.ORDER_LOGICAL_NOT];
+	return [code, Blockly.Lua.ORDER_LOGICAL_NOT];
 };
 
-Blockly.lua.logic_boolean = function()
+Blockly.Lua['logic_boolean'] = function(block)
 {
 	// Boolean values true and false.
-	var code = (this.getTitleValue('BOOL') == 'TRUE') ? 'true' : 'false';
-	return [code, Blockly.lua.ORDER_ATOMIC];
+	var code = (block.getTitleValue('BOOL') == 'TRUE') ? 'true' : 'false';
+	return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
-Blockly.lua.logic_null = function() {
+Blockly.Lua['logic_null'] = function(block) {
   // Null data type.
-  return ['nil', Blockly.lua.ORDER_ATOMIC];
+  return ['nil', Blockly.Lua.ORDER_ATOMIC];
 };
 
-Blockly.lua.logic_ternary = function() {
+Blockly.Lua['logic_ternary'] = function(block) {
   // Ternary operator.
-  var value_if = Blockly.lua.valueToCode(this, 'IF',
-      Blockly.lua.ORDER_RELATIONAL) || 'false';
-  var value_then = Blockly.lua.valueToCode(this, 'THEN',
-      Blockly.lua.ORDER_RELATIONAL) || 'null';
-  var value_else = Blockly.lua.valueToCode(this, 'ELSE',
-      Blockly.lua.ORDER_RELATIONAL) || 'null';
+  var value_if = Blockly.Lua.valueToCode(block, 'IF',
+      Blockly.Lua.ORDER_RELATIONAL) || 'false';
+  var value_then = Blockly.Lua.valueToCode(block, 'THEN',
+      Blockly.Lua.ORDER_RELATIONAL) || 'null';
+  var value_else = Blockly.Lua.valueToCode(block, 'ELSE',
+      Blockly.Lua.ORDER_RELATIONAL) || 'null';
   var code = value_if + ' and ' + value_then + ' or ' + value_else;
-  return [code, Blockly.lua.ORDER_RELATIONAL];
+  return [code, Blockly.Lua.ORDER_RELATIONAL];
 };

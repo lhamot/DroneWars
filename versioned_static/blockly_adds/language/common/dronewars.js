@@ -1,5 +1,4 @@
 
-if(!Blockly.Language) Blockly.Language = {};
 
 function checkNumber(text)
 {
@@ -70,7 +69,7 @@ function getRessourceDropDown() {
 function addProperty(className, propName, returnType, label, categ) {
   jsFuncName = 'dronewars_' + className + '_' + propName;
   upperClassName = className.toUpperCase();
-  Blockly.Language[jsFuncName] =
+  Blockly.Blocks[jsFuncName] =
 	{
 	  category:
         categ,//Blockly.LANG_CATEGORY_DRONEWARS,
@@ -80,25 +79,25 @@ function addProperty(className, propName, returnType, label, categ) {
           //this.setInputsInline(true);
           this.appendValueInput(upperClassName)
             .setCheck(className)
-            .appendTitle(label);
+            .appendField(label);
           this.setOutput(true, returnType);
         }
 	};
 
-  Blockly.lua[jsFuncName] = function () {
-    var object = Blockly.lua.valueToCode(
-		               this, upperClassName, Blockly.lua.ORDER_NONE) || 'nil';
-    return [object + '.' + propName, Blockly.lua.ORDER_FUNCTION_CALL];
+  Blockly.Lua[jsFuncName] = function () {
+    var object = Blockly.Lua.valueToCode(
+		               this, upperClassName, Blockly.Lua.ORDER_NONE) || 'nil';
+    return [object + '.' + propName, Blockly.Lua.ORDER_HIGH];
   };
 }
 
 
 
-Blockly.Language.procedures_return = {
+Blockly.Blocks['procedures_return'] = {
   init: function() {
     this.setColour(290);
     this.appendValueInput('VALUE')
-        .appendTitle(Blockly.LANG_PROCEDURES_DEFRETURN_RETURN);
+        .appendField(Blockly.LANG_PROCEDURES_DEFRETURN_RETURN);
     this.setInputsInline(true);
     this.setPreviousStatement(true);
     //this.setTooltip(Blockly.LANG_PROCEDURES_RETURN_TOOLTIP);
@@ -117,7 +116,7 @@ Blockly.Language.procedures_return = {
     if (!this.hasReturnValue_) {
       this.removeInput('VALUE');
       this.appendDummyInput('VALUE')
-        .appendTitle(Blockly.LANG_PROCEDURES_DEFRETURN_RETURN);
+        .appendField(Blockly.LANG_PROCEDURES_DEFRETURN_RETURN);
     }
   },
   onchange: function() {
@@ -141,13 +140,13 @@ Blockly.Language.procedures_return = {
       if (block.type == 'procedures_defnoreturn' && this.hasReturnValue_) {
         this.removeInput('VALUE');
         this.appendDummyInput('VALUE')
-          .appendTitle(Blockly.LANG_PROCEDURES_DEFRETURN_RETURN);
+          .appendField(Blockly.LANG_PROCEDURES_DEFRETURN_RETURN);
         this.hasReturnValue_ = false;
       } else if (block.type == 'procedures_defreturn' &&
                  !this.hasReturnValue_) {
         this.removeInput('VALUE');
         this.appendValueInput('VALUE')
-          .appendTitle(Blockly.LANG_PROCEDURES_DEFRETURN_RETURN);
+          .appendField(Blockly.LANG_PROCEDURES_DEFRETURN_RETURN);
         this.hasReturnValue_ = true;
       }
       this.setWarningText(null);

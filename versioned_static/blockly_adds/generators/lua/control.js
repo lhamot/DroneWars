@@ -5,7 +5,7 @@
  * http://code.google.com/p/blockly/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * you may not use block file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
@@ -24,40 +24,44 @@
  * to language files.
  */
 
-Blockly.lua = Blockly.Generator.get('lua');
+'use strict';
 
-Blockly.lua.controls_if = function()
+goog.provide('Blockly.Lua.controls');
+
+goog.require('Blockly.Lua');
+
+Blockly.Lua['controls_if'] = function(block)
 {
 	// If/elseif/else condition.
 	var n = 0;
-	var argument = Blockly.lua.valueToCode(this, 'IF' + n,
-	                                       Blockly.lua.ORDER_NONE) || 'false';
-	var branch = Blockly.lua.statementToCode(this, 'DO' + n) || '';
+	var argument = Blockly.Lua.valueToCode(block, 'IF' + n,
+	                                       Blockly.Lua.ORDER_NONE) || 'false';
+	var branch = Blockly.Lua.statementToCode(block, 'DO' + n) || '';
 	var code = 'if ' + argument + ' then\n' + branch;
-	for(n = 1; n <= this.elseifCount_; n++)
+	for(n = 1; n <= block.elseifCount_; n++)
 	{
-		argument = Blockly.lua.valueToCode(this, 'IF' + n,
-		                                   Blockly.lua.ORDER_NONE) || 'false';
-		branch = Blockly.lua.statementToCode(this, 'DO' + n) || '\n';
+		argument = Blockly.Lua.valueToCode(block, 'IF' + n,
+		                                   Blockly.Lua.ORDER_NONE) || 'false';
+		branch = Blockly.Lua.statementToCode(block, 'DO' + n) || '\n';
 		code += 'elseif ' + argument + ' then\n' + branch;
 	}
-	if(this.elseCount_)
+	if(block.elseCount_)
 	{
-		branch = Blockly.lua.statementToCode(this, 'ELSE') || '\n';
+		branch = Blockly.Lua.statementToCode(block, 'ELSE') || '\n';
 		code += 'else\n' + branch;
 	}
 	return code + 'end\n';
 };
 
-Blockly.lua.controls_whileUntil = function()
+Blockly.Lua['controls_whileUntil'] = function(block)
 {
 	// Do while/until loop.
-	var until = this.getTitleValue('MODE') == 'UNTIL';
-	var argument0 = Blockly.lua.valueToCode(this, 'BOOL',
-	                                        until ? Blockly.lua.ORDER_LOGICAL_NOT :
-	                                        Blockly.lua.ORDER_NONE) || 'false';
-	var branch0 = Blockly.lua.statementToCode(this, 'DO') || '';
-	if(this.getTitleValue('MODE') == 'UNTIL')
+	var until = block.getTitleValue('MODE') == 'UNTIL';
+	var argument0 = Blockly.Lua.valueToCode(block, 'BOOL',
+	                                        until ? Blockly.Lua.ORDER_LOGICAL_NOT :
+	                                        Blockly.Lua.ORDER_NONE) || 'false';
+	var branch0 = Blockly.Lua.statementToCode(block, 'DO') || '';
+	if(block.getTitleValue('MODE') == 'UNTIL')
 	{
 		if(!argument0.match( / ^ \w + $ /))
 		{
@@ -68,17 +72,17 @@ Blockly.lua.controls_whileUntil = function()
 	return 'while ' + argument0 + ' do\n' + branch0 + '  ::continue::\nend\n';
 };
 
-Blockly.lua.controls_for = function()
+Blockly.Lua['controls_for'] = function(block)
 {
 	// For loop.
-	var variable0 = Blockly.lua.variableDB_.getName(
-	                  this.getTitleValue('VAR'), Blockly.Variables.NAME_TYPE);
-	var argument0 = Blockly.lua.valueToCode(this, 'FROM',
-	                                        Blockly.lua.ORDER_NONE) || '0';
+	var variable0 = Blockly.Lua.variableDB_.getName(
+	                  block.getTitleValue('VAR'), Blockly.Variables.NAME_TYPE);
+	var argument0 = Blockly.Lua.valueToCode(block, 'FROM',
+	                                        Blockly.Lua.ORDER_NONE) || '0';
 	// If starting index is 0, omit it.
 	argument0 = parseInt(argument0, 10);
-	var argument1 = Blockly.lua.valueToCode(this, 'TO',
-	                                        Blockly.lua.ORDER_ADDITIVE) || '0';
+	var argument1 = Blockly.Lua.valueToCode(block, 'TO',
+	                                        Blockly.Lua.ORDER_ADDITIVE) || '0';
 	if(argument1.match( / ^ \d + $ /))
 	{
 		// If the index is a naked number, increment it right now.
@@ -89,19 +93,19 @@ Blockly.lua.controls_for = function()
 		// If the index is dynamic, increment it in code.
 		//argument1 += ' + 1';
 	}
-	var branch0 = Blockly.lua.statementToCode(this, 'DO') || '  pass\n';
+	var branch0 = Blockly.Lua.statementToCode(block, 'DO') || '  pass\n';
 	var code = 'for ' + variable0 + ' = ' + argument0 + ',' + argument1 + ',1 do\n' + branch0 + '  ::continue::\nend\n';
 	return code;
 };
 
-Blockly.lua.controls_forEach = function()
+Blockly.Lua['controls_forEach'] = function(block)
 {
 	// For each loop.
-    var variable0 = Blockly.lua.variableDB_.getName(
-                      this.getTitleValue('VAR'), Blockly.Variables.NAME_TYPE);	                  
-	var argument0 = Blockly.lua.valueToCode(this, 'LIST',
-	                                        Blockly.lua.ORDER_RELATIONAL) || '{}';
-	var branch0 = Blockly.lua.statementToCode(this, 'DO') || '';
+    var variable0 = Blockly.Lua.variableDB_.getName(
+                      block.getTitleValue('VAR'), Blockly.Variables.NAME_TYPE);	                  
+	var argument0 = Blockly.Lua.valueToCode(block, 'LIST',
+	                                        Blockly.Lua.ORDER_RELATIONAL) || '{}';
+	var branch0 = Blockly.Lua.statementToCode(block, 'DO') || '';
 
 	//var getRangeFunc = 'function(cont) if type(cont) == \'table\' then return ipairs(cont) else return cont:range() end end'
 	//var code = 'for _,' + variable0 + ' in (' + getRangeFunc + ')(' + argument0 + ') do\n' + branch0 + '  ::continue::\nend\n';
@@ -109,10 +113,10 @@ Blockly.lua.controls_forEach = function()
 	return code;
 };
 
-Blockly.lua.controls_flow_statements = function()
+Blockly.Lua['controls_flow_statements'] = function(block)
 {
 	// Flow statements: continue, break.
-	switch(this.getTitleValue('FLOW'))
+	switch(block.getTitleValue('FLOW'))
 	{
 	case 'BREAK':
 		return 'break\n';

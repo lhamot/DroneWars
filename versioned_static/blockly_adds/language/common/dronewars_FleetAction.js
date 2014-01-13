@@ -1,10 +1,9 @@
+'use strict';
 
-if(!Blockly.Language) Blockly.Language = {};
-
-
+goog.provide('Blockly.Lua');
 
 //********************** FleetAction ******************************************
-Blockly.Language.dronewars_fleetaction =
+Blockly.Blocks['dronewars_fleetaction'] =
 {
 category:
 	Blockly.LANG_CATEGORY_DRONEWARS_FLEETACTION,
@@ -13,28 +12,28 @@ init:
 	{
 		this.setColour(230);
 		this.setInputsInline(true);
-		this.appendDummyInput().appendTitle(Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_1);
-		this.appendDummyInput().appendTitle(getFleetActionDropdown(), 'ACTION');
+		this.appendDummyInput().appendField(Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_1);
+		this.appendDummyInput().appendField(getFleetActionDropdown(), 'ACTION');
 	  this.appendValueInput('DIREC')
       .setCheck('Direction')
-      .appendTitle(Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_2);
+      .appendField(Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_2);
 		this.setOutput(true, 'FleetAction');
 	}
 };
 
-Blockly.lua.dronewars_fleetaction = function()
+Blockly.Lua['dronewars_fleetaction'] = function(block)
 {
-	var coord = Blockly.lua.valueToCode(
-	              this, 'DIREC', Blockly.lua.ORDER_NONE) || 'Direction()';
-	return ['FleetAction(FleetAction.' + this.getTitleValue('ACTION') + ',' +
+	var coord = Blockly.Lua.valueToCode(
+	              block, 'DIREC', Blockly.Lua.ORDER_NONE) || 'Direction()';
+	return ['FleetAction(FleetAction.' + block.getTitleValue('ACTION') + ',' +
 	        coord + ')',
-	        Blockly.lua.ORDER_FUNCTION_CALL
+	        Blockly.Lua.ORDER_HIGH
 	       ];
 };
 
 
 //********************** FleetAction - Nothing ******************************************
-Blockly.Language.dronewars_fleetDoNothing =
+Blockly.Blocks['dronewars_fleetDoNothing'] =
 {
 category:
     Blockly.LANG_CATEGORY_DRONEWARS_FLEETACTION,
@@ -43,21 +42,21 @@ init:
     {
         this.setColour(230);
         this.setInputsInline(true);
-        this.appendDummyInput().appendTitle(Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_DO_NOTHING);
+        this.appendDummyInput().appendField(Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_DO_NOTHING);
         this.setOutput(true, 'FleetAction');
     }
 };
 
-Blockly.lua.dronewars_fleetDoNothing = function()
+Blockly.Lua['dronewars_fleetDoNothing'] = function(block)
 {
     return ['FleetAction(FleetAction.Nothing, Coord())',
-            Blockly.lua.ORDER_FUNCTION_CALL
+            Blockly.Lua.ORDER_HIGH
            ];
 };
 
 
 //********************** FleetAction - Move ******************************************
-Blockly.Language.dronewars_fleetMove =
+Blockly.Blocks['dronewars_fleetMove'] =
 {
 category:
     Blockly.LANG_CATEGORY_DRONEWARS_FLEETACTION,
@@ -66,25 +65,25 @@ init:
     {
         this.setColour(230);
         this.setInputsInline(true);
-        this.appendDummyInput().appendTitle(Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_MOVE);
+        this.appendDummyInput().appendField(Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_MOVE);
         this.appendValueInput('DIREC')
             .setCheck('Direction')
         this.setOutput(true, 'FleetAction');
     }
 };
 
-Blockly.lua.dronewars_fleetMove = function()
+Blockly.Lua['dronewars_fleetMove'] = function(block)
 {
-    var coord = Blockly.lua.valueToCode(
-                  this, 'DIREC', Blockly.lua.ORDER_NONE) || 'Direction()';
+    var coord = Blockly.Lua.valueToCode(
+                  block, 'DIREC', Blockly.Lua.ORDER_NONE) || 'Direction()';
     return ['FleetAction(FleetAction.Move,' + coord + ')',
-            Blockly.lua.ORDER_FUNCTION_CALL
+            Blockly.Lua.ORDER_HIGH
            ];
 };
 
 
 //********************** FleetAction - Harvest ******************************************
-Blockly.Language.dronewars_fleetHarvest =
+Blockly.Blocks['dronewars_fleetHarvest'] =
 {
 category:
     Blockly.LANG_CATEGORY_DRONEWARS_FLEETACTION,
@@ -93,21 +92,21 @@ init:
     {
         this.setColour(230);
         this.setInputsInline(true);
-        this.appendDummyInput().appendTitle(Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_HARVEST);
+        this.appendDummyInput().appendField(Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_HARVEST);
         this.setOutput(true, 'FleetAction');
     }
 };
 
-Blockly.lua.dronewars_fleetHarvest = function()
+Blockly.Lua['dronewars_fleetHarvest'] = function(block)
 {
     return ['FleetAction(FleetAction.Harvest, Coord())',
-            Blockly.lua.ORDER_FUNCTION_CALL
+            Blockly.Lua.ORDER_HIGH
            ];
 };
 
 
 //********************** FleetAction - Colonize ******************************************
-Blockly.Language.dronewars_fleetColonize =
+Blockly.Blocks['dronewars_fleetColonize'] =
 {
 category:
     Blockly.LANG_CATEGORY_DRONEWARS_FLEETACTION,
@@ -116,21 +115,21 @@ init:
     {
         this.setColour(230);
         this.setInputsInline(true);
-        this.appendDummyInput().appendTitle(Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_COLONIZE);
+        this.appendDummyInput().appendField(Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_COLONIZE);
         this.setOutput(true, 'FleetAction');
     }
 };
 
-Blockly.lua.dronewars_fleetColonize = function()
+Blockly.Lua['dronewars_fleetColonize'] = function(block)
 {
     return ['FleetAction(FleetAction.Colonize, Coord())',
-            Blockly.lua.ORDER_FUNCTION_CALL
+            Blockly.Lua.ORDER_HIGH
            ];
 };
 
 
 //********************** FleetAction - Drop ******************************************
-Blockly.Language.dronewars_fleetDrop =
+Blockly.Blocks['dronewars_fleetDrop'] =
 {
 category:
     Blockly.LANG_CATEGORY_DRONEWARS_FLEETACTION,
@@ -139,14 +138,14 @@ init:
     {
         this.setColour(230);
         this.setInputsInline(true);
-        this.appendDummyInput().appendTitle(Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_DROP);
+        this.appendDummyInput().appendField(Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_DROP);
         this.setOutput(true, 'FleetAction');
     }
 };
 
-Blockly.lua.dronewars_fleetDrop = function()
+Blockly.Lua['dronewars_fleetDrop'] = function(block)
 {
     return ['FleetAction(FleetAction.Drop, Coord())',
-            Blockly.lua.ORDER_FUNCTION_CALL
+            Blockly.Lua.ORDER_HIGH
            ];
 };

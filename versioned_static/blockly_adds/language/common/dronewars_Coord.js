@@ -1,9 +1,9 @@
+'use strict';
 
-if(!Blockly.Language) Blockly.Language = {};
-
+goog.provide('Blockly.Lua');
 
 //******************   COORD    ***********************************************
-Blockly.Language.dronewars_coord =
+Blockly.Blocks['dronewars_coord'] =
 {
 category:
 	Blockly.LANG_CATEGORY_DRONEWARS_COORD,
@@ -12,24 +12,24 @@ init:
 	{
 		this.setColour(230);
 		this.appendDummyInput()
-      .appendTitle(Blockly.LANG_DRONEWARS_COORD)
-      .appendTitle(new Blockly.FieldTextInput('0', checkNumber), 'X')
-      .appendTitle(new Blockly.FieldTextInput('0', checkNumber), 'Y')
-      .appendTitle(new Blockly.FieldTextInput('0', checkNumber), 'Z');
+      .appendField(Blockly.LANG_DRONEWARS_COORD)
+      .appendField(new Blockly.FieldTextInput('0', checkNumber), 'X')
+      .appendField(new Blockly.FieldTextInput('0', checkNumber), 'Y')
+      .appendField(new Blockly.FieldTextInput('0', checkNumber), 'Z');
 		this.setOutput(true, 'Coord');
 	}
 };
 
-Blockly.lua.dronewars_coord = function()
+Blockly.Lua['dronewars_coord'] = function(block)
 {
-	return ['Coord(' + this.getTitleValue('X') + ',' +
-	        this.getTitleValue('Y') + ',' +
-	        this.getTitleValue('Z') + ')',
-	        Blockly.lua.ORDER_FUNCTION_CALL
+	return ['Coord(' + block.getTitleValue('X') + ',' +
+	        block.getTitleValue('Y') + ',' +
+	        block.getTitleValue('Z') + ')',
+	        Blockly.Lua.ORDER_HIGH
 	       ];
 };
 
-Blockly.Language.dronewars_randDir =
+Blockly.Blocks['dronewars_randDir'] =
 {
 category:
 	Blockly.LANG_CATEGORY_DRONEWARS_COORD,
@@ -37,20 +37,20 @@ init:
 	function()
 	{
 		this.setColour(230);
-		this.appendDummyInput().appendTitle(Blockly.LANG_DRONEWARS_RANDDIR);
+		this.appendDummyInput().appendField(Blockly.LANG_DRONEWARS_RANDDIR);
 		this.setOutput(true, 'Direction');
 	}
 };
 
-Blockly.lua.dronewars_randDir = function()
+Blockly.Lua['dronewars_randDir'] = function(block)
 {
 	return ['directionRandom()',
-	        Blockly.lua.ORDER_FUNCTION_CALL
+	        Blockly.Lua.ORDER_HIGH
 	       ];
 };
 
 
-Blockly.Language.dronewars_dir_from_to =
+Blockly.Blocks['dronewars_dir_from_to'] =
 {
 category:
 	Blockly.LANG_CATEGORY_DRONEWARS_COORD,
@@ -61,21 +61,21 @@ init:
 		this.setInputsInline(true);
 	  this.appendValueInput('FROM')
       .setCheck('Coord')
-      .appendTitle(Blockly.LANG_DRONEWARS_DIR_FROM_TO_1);
+      .appendField(Blockly.LANG_DRONEWARS_DIR_FROM_TO_1);
 	  this.appendValueInput('TO')
       .setCheck('Coord')
-      .appendTitle(Blockly.LANG_DRONEWARS_DIR_FROM_TO_2);
+      .appendField(Blockly.LANG_DRONEWARS_DIR_FROM_TO_2);
 		this.setOutput(true, 'Direction');
 	}
 };
 
-Blockly.lua.dronewars_dir_from_to = function()
+Blockly.Lua['dronewars_dir_from_to'] = function(block)
 {
-	var from = Blockly.lua.valueToCode(this, 'FROM', Blockly.lua.ORDER_NONE) || 'Coord()';
-	var to = Blockly.lua.valueToCode(this, 'TO', Blockly.lua.ORDER_NONE) || 'Coord()';
+	var from = Blockly.Lua.valueToCode(block, 'FROM', Blockly.Lua.ORDER_NONE) || 'Coord()';
+	var to = Blockly.Lua.valueToCode(block, 'TO', Blockly.Lua.ORDER_NONE) || 'Coord()';
 
 	return ['directionFromTo(' + from + ',' + to + ')',
-	        Blockly.lua.ORDER_FUNCTION_CALL
+	        Blockly.Lua.ORDER_HIGH
 	       ];
 };
 
