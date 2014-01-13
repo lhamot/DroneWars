@@ -73,7 +73,7 @@ public:
 	{
 		ScriptTools::Object logger =
 		  ScriptTools::refFromName(state_, "logger");
-		if(ScriptTools::isValid(logger) == false)
+		if(ScriptTools::isValid(logger))
 		{
 			if(playerCanLog(player_))
 			{
