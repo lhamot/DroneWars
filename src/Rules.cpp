@@ -335,17 +335,32 @@ size_t getMaxEventCount(Player const& player)
 	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::ServerFarm] + 4.));
 }
 
-size_t playerPtreeSize(Player const& player)
+size_t memoryPtreeSize(Player const& player)
 {
 	size_t const memLevel = player.skilltab[Skill::Memory];
 	return memLevel ?
-	       size_t(pow(2., (int(player.skilltab[Skill::Memory]) - 2) * 0.6) * 4.) :
+	       size_t(pow(2., (int(memLevel) - 2) * 0.6) * 4.) :
 	       0;
 }
 
-bool acceptPtree(Player const& player, TypedPtree const& pt)
+bool acceptMemoryPtree(Player const& player, TypedPtree const& pt)
 {
-	size_t const maxItemCount = playerPtreeSize(player);
+	size_t const maxItemCount = memoryPtreeSize(player);
+	size_t const treeItemCount = countPtreeItem(pt);
+	return treeItemCount <= maxItemCount;
+}
+
+
+size_t emitionPTreeSize(Player const& player)
+{
+	int const memLevel = player.skilltab[Skill::EmissionRate] + 1;
+	return size_t(pow(2., (int(memLevel) - 2) * 0.6) * 4.);
+}
+
+
+bool acceptEmitionPtree(Player const& player, TypedPtree const& pt)
+{
+	size_t const maxItemCount = emitionPTreeSize(player);
 	size_t const treeItemCount = countPtreeItem(pt);
 	return treeItemCount <= maxItemCount;
 }
@@ -353,7 +368,7 @@ bool acceptPtree(Player const& player, TypedPtree const& pt)
 
 size_t playerEmissionRange(Player const& player)
 {
-	return player.skilltab[Skill::Emission];
+	return player.skilltab[Skill::EmissionRange];
 }
 
 double calcEscapeProba(Player const& player,

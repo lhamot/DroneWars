@@ -65,11 +65,12 @@ struct Skill
 	  ServerFarm,
 	  Chronos,
 	  Memory,
-	  Emission,
+	  EmissionRange,
 	  Simulation,
 	  BlackBox,
 	  Log,
-	  Escape
+	  Escape,
+	  EmissionRate
 	};
 
 	static size_t const Count = SkillCount; //!< Nombre total de skill

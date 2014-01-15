@@ -45,6 +45,10 @@
 			{% endif %}
 			{% if target_event.type == Event_Type.FleetCodeError or target_event.type == Event_Type.FleetCodeExecError or target_event.type == Event_Type.PlanetCodeError or target_event.type == Event_Type.PlanetCodeExecError %}
 			<h1>{{target_event.type|eventname}}</h1>
-			<p class="text-error span6"><strong>{{target_event.comment}}</strong></p>
+			<br>
+			<div class="alert alert-error">
+				<!--<h4>{{target_event.type|eventname}}</h4>-->
+    			{{target_event.comment}}
+    		</div>			
 			{% endif %}
 	

@@ -51,10 +51,15 @@ size_t getMaxFleetSize(Player const& player);
 size_t getMaxEventCount(Player const& player);
 
 //! Nombre maximum d'élément acceptés dans les "memory" des flottes et planètes
-size_t playerPtreeSize(Player const& player);
+size_t memoryPtreeSize(Player const& player);
 
 //! Teste si ce TypedPtree est acceptable (nombre l'élément)
-bool acceptPtree(Player const& player, TypedPtree const& pt);
+bool acceptMemoryPtree(Player const& player, TypedPtree const& pt);
+
+//! Quantité d'emision des message des flotte de ce joueur (nombre d'item)
+size_t emitionPTreeSize(Player const& player);
+
+bool acceptEmitionPtree(Player const& player, TypedPtree const& pt);
 
 //! Distance d'emision des message des flotte de ce joueur
 size_t playerEmissionRange(Player const& player);

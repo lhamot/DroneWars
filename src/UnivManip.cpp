@@ -53,6 +53,7 @@ static_assert(sizeof(Building::List) == (sizeof(Building) * Building::Count),
 
 Ship const Ship::List[] =
 {
+	//price               , life,  power, shield}
 	{RessourceSet(100, 0, 0),    1,       1,  1}, //Mosquito
 	{RessourceSet(400, 0, 0),    2,       2,  2}, //Hornet
 	{RessourceSet(2000, 0, 0),   4,       4,  4}, //Vulture

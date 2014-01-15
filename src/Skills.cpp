@@ -160,15 +160,15 @@ class MemorySkill : public ISkill
 		using namespace boost::locale;
 		return (format(translate("Your store up to {1} items in the \"memory\""
 		                         " of your fleets and planets")) %
-		        playerPtreeSize(player)).str();
+		        memoryPtreeSize(player)).str();
 	}
 public:
 	MemorySkill(): ISkill("Memory") {}
 };
 
 
-//! Compétance Emition
-class EmissionSkill : public ISkill
+//! Compétance Portée d'Emition
+class EmissionRangeSkill : public ISkill
 {
 	virtual bool canUpgradeImpl(Player const& //player
 	                           ) const
@@ -186,7 +186,7 @@ class EmissionSkill : public ISkill
 		        playerEmissionRange(player)).str();
 	}
 public:
-	EmissionSkill(): ISkill("Emission") {}
+	EmissionRangeSkill() : ISkill("EmissionRange") {}
 };
 
 
@@ -292,6 +292,29 @@ public:
 };
 
 
+//! Compétance Débit d'Emition
+class EmissionRateSkill : public ISkill
+{
+	virtual bool canUpgradeImpl(Player const& //player
+	                           ) const
+	{
+		return true;
+	}
+	virtual size_t skillCostImpl(size_t skillCurrentLevel) const
+	{
+		return size_t(pow(2., (int(skillCurrentLevel) - 1) * 0.6) * 4.);
+	}
+	virtual std::string effectMessageImpl(Player const& player) const
+	{
+		using namespace boost::locale;
+		return (format(translate("Your messages emit up to {1} values per round")) %
+		        emitionPTreeSize(player)).str();
+	}
+public:
+	EmissionRateSkill() : ISkill("EmissionRate") {}
+};
+
+
 //! Initialise la liste de skill
 std::vector<std::shared_ptr<ISkill> > InitSkills()
 {
@@ -303,11 +326,12 @@ std::vector<std::shared_ptr<ISkill> > InitSkills()
 	list.push_back(std::make_shared<ServerFarmSkill>());
 	list.push_back(std::make_shared<ChronosSkill>());
 	list.push_back(std::make_shared<MemorySkill>());
-	list.push_back(std::make_shared<EmissionSkill>());
+	list.push_back(std::make_shared<EmissionRangeSkill>());
 	list.push_back(std::make_shared<SimulationSkill>());
 	list.push_back(std::make_shared<BlackBoxSkill>());
 	list.push_back(std::make_shared<LogSkill>());
 	list.push_back(std::make_shared<EvasionSkill>());
+	list.push_back(std::make_shared<EmissionRateSkill>());
 	return list;
 };
 

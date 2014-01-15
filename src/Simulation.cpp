@@ -129,7 +129,7 @@ public:
 	try
 	{
 		cleanPtreeNil(memory_);
-		if(acceptPtree(player_, memory_) == false)
+		if(acceptMemoryPtree(player_, memory_) == false)
 		{
 			memory_ = oldMem_;
 			addErrorMessage(codeMap_,
@@ -1115,6 +1115,16 @@ try
 	else
 		*pt = emitFunc2.call<TypedPtree>(engine, player, codeMap, events,
 		                                 fleet, false);
+	if(acceptEmitionPtree(player, *pt) == false)
+	{
+		using namespace boost::locale;
+		addErrorMessage(
+		  codeMap,
+		  translate("Your emition rate don't allow to send so much elements"),
+		  events);
+		return TypedPtreePtr();
+	}
+
 	return pt;
 }
 catch(Polua::Exception const& ex)
