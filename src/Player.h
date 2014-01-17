@@ -193,6 +193,8 @@ struct Player
 	uint32_t skillpoints;     //!< Points de competances
 	SkillTab skilltab;        //!< Niveau du joueur dans chaque competance
 	Alliance* alliance = nullptr; //!< Pour les script lua uniquement
+	size_t planetCount = 0;   //!< Pour les script lua uniquement
+	size_t fleetCount = 0;    //!< Pour les script lua uniquement
 
 	//! Constructeur
 	Player(ID i, std::string const& lg, std::string const& pass):

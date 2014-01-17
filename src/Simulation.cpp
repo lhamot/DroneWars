@@ -1324,6 +1324,18 @@ try
 	for(Alliance & alliance : allienceMap | boost::adaptors::map_values)
 		alliance.master = &mapFind(playerMap, alliance.masterID)->second;
 
+	//! Calcule du nombre de flottes et planete de chaque joueur
+	for(Player & player : playerMap | boost::adaptors::map_values)
+	{
+		player.planetCount = boost::range::count_if(
+		                       univ_.planetMap | boost::adaptors::map_values,
+		                       boost::bind(&Planet::playerId, _1) == player.id);
+		player.fleetCount = boost::range::count_if(
+		                      univ_.fleetMap | boost::adaptors::map_values,
+		                      boost::bind(&Fleet::playerId, _1) == player.id);
+	}
+
+
 	//! Désactivation de tout les codes qui echoue
 	//disableFailingCode(univCopy, codesMap);
 
