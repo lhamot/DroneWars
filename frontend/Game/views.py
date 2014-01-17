@@ -229,8 +229,8 @@ def PlanetView(request):
     if len(planetList) == 0:
         raise Http404
     target = planetList[0]
-    if target.playerId != pid:
-        raise PermissionDenied
+    #if target.playerId != pid:
+    #    raise PermissionDenied
         
     timeInfo = service.getTimeInfo();
     

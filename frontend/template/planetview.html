@@ -13,7 +13,15 @@
 	<div class="row">
 		<div class="span3">
 			<h1>{{planet.name}}</h1>
-			<img class="img-polaroid" src="{{ STATIC_URL }}{{planet|img_path:'pl'}}"/>
+			{% if player.id == planet.playerId %}
+			<a href="planet.html?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}">
+				<img src="{{ STATIC_URL }}{{planet|img_path:'pl'}}" class="ally"/>
+			</a>
+			{% elif planet.playerId != 0 %}
+			<img src="{{ STATIC_URL }}{{planet|img_path:'pl'}}" class="enemy"/>
+			{% else %}
+				<img src="{{ STATIC_URL }}{{planet|img_path:'pl'}}" class="neutral"/>
+			{% endif %}
 			<br/>
 			<br/>
 			<table class="table table-condensed">
@@ -29,6 +37,7 @@
 				<tr><th>Z</th><td>{{planet.coord.Z}}</td></tr>
 			</table>
 		</div>
+		{% if player.id == planet.playerId %}
 		<div class="span4">
 			<table class="table table-condensed">
 				<caption>{% trans "Tasks" %}</caption>
@@ -82,6 +91,7 @@
 				{% endfor %}
 			</table>
 		</div>
+		{% endif %}
 	</div>
 	<div class="row">
 		{% if target_event %}
