@@ -420,6 +420,8 @@ struct Fleet
 		{
 			if(playerId >= 100000)
 				BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
+			if(playerId == 0)
+				BOOST_THROW_EXCEPTION(std::logic_error("playerId == 0!!"));
 		});
 		ar& id;
 		ar& playerId;
@@ -432,6 +434,8 @@ struct Fleet
 		ar& taskQueue;
 		if(playerId >= 100000)
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
+		if(playerId == 0)
+			BOOST_THROW_EXCEPTION(std::logic_error("playerId == 0!!"));
 		if(version >= 1)
 			ar& firstRound;
 		else

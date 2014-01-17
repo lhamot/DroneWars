@@ -155,6 +155,9 @@ ndw::Event eventToThrift(Event const& event)
 //! Convertie un Fleet en ndw::Fleet pour transfert par thrift
 ndw::Fleet fleetToThrift(Fleet const& fleet)
 {
+	if(fleet.playerId == 0)
+		BOOST_THROW_EXCEPTION(std::logic_error("playerId == 0!!"));
+
 	ndw::Fleet result;
 	result.id = NUMCAST(fleet.id);
 	result.playerId = NUMCAST(fleet.playerId);
