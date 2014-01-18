@@ -112,26 +112,17 @@ struct CodeData
 	  Undefined
 	};
 
-	size_t   id;             //!< ID de la version du code source lua
-	uint32_t playerId;       //!< Propriétaire
-	Target   target;         //!< Planète ou Flotte
+	size_t   id = 0;         //!< ID de la version du code source lua
+	uint32_t playerId = 0;   //!< Propriétaire
+	Target   target = Undefined;  //!< Planète ou Flotte
 	std::string code;        //!< Code lua
 	std::string blocklyCode; //!< Code blockly (XML)
 	std::string lastError;   //!< ernière erreur, si applicable
+	time_t blocklyCodeDate = 0;
+	time_t codeDate = 0;
 
 	//! Constructeur par defaut
-	CodeData(): id(0), playerId(0), target(Undefined)  {}
-
-	//! Constructeur par copie
-	CodeData(CodeData const& other):
-		id(other.id),
-		playerId(other.playerId),
-		target(other.target),
-		code(other.code),
-		blocklyCode(other.blocklyCode),
-		lastError(other.lastError)
-	{
-	}
+	CodeData() {}
 
 	//! Operateur de copie
 	CodeData& operator=(CodeData other)
@@ -142,6 +133,9 @@ struct CodeData
 		code.swap(other.code);
 		blocklyCode.swap(other.blocklyCode);
 		lastError.swap(other.lastError);
+		std::swap(blocklyCodeDate, other.blocklyCodeDate);
+		std::swap(codeDate, other.codeDate);
+		return *this;
 	}
 };
 

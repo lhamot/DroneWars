@@ -18,7 +18,7 @@
  */
 
 /**
- * @fileoverview Generating lua for procedures blocks.
+ * @fileoverview Generating Lua for procedures blocks.
  * @author Loïc HAMOT
  */
 'use strict';
@@ -35,7 +35,7 @@ Blockly.Lua['procedures_defreturn'] = function(block) {
 	for (var i = globals.length - 1; i >= 0; i--) {
 	  var varName = globals[i];
 	  if (block.arguments_.indexOf(varName) == -1) {
-	      globals[i] = Blockly.lua.variableDB_.getName(varName,
+	      globals[i] = Blockly.Lua.variableDB_.getName(varName,
 	        Blockly.Variables.NAME_TYPE);
 	  } else {
 	    // block variable has been explicitly passed to the function.
@@ -46,11 +46,11 @@ Blockly.Lua['procedures_defreturn'] = function(block) {
 	globals = globals.length ? '  global ' + globals.join(', ') + '\n' : '';  */
 	var funcName = block.getTitleValue('NAME');
 	if(funcName.indexOf("AI:") != 0)
-		funcName = Blockly.lua.variableDB_.getName(funcName,
+		funcName = Blockly.Lua.variableDB_.getName(funcName,
 		           Blockly.Procedures.NAME_TYPE);
-	var branch = Blockly.lua.statementToCode(block, 'STACK');
-	var returnValue = Blockly.lua.valueToCode(block, 'RETURN',
-	                  Blockly.lua.ORDER_NONE) || '';
+	var branch = Blockly.Lua.statementToCode(block, 'STACK');
+	var returnValue = Blockly.Lua.valueToCode(block, 'RETURN',
+	                  Blockly.Lua.ORDER_NONE) || '';
 	if(returnValue)
 	{
 		returnValue = '  return ' + returnValue + '\n';
@@ -62,13 +62,13 @@ Blockly.Lua['procedures_defreturn'] = function(block) {
 	var args = [];
 	for(var x = 0; x < block.arguments_.length; x++)
 	{
-		args[x] = Blockly.lua.variableDB_.getName(block.arguments_[x],
+		args[x] = Blockly.Lua.variableDB_.getName(block.arguments_[x],
 		          Blockly.Variables.NAME_TYPE);
 	}
 	var code = 'function ' + funcName + '(' + args.join(', ') + ')\n' +
 	           branch + returnValue + 'end';
-	code = Blockly.lua.scrub_(block, code);
-	Blockly.lua.definitions_[funcName] = code;
+	code = Blockly.Lua.scrub_(block, code);
+	Blockly.Lua.definitions_[funcName] = code;
   return null;
 };
 
@@ -79,27 +79,27 @@ Blockly.Lua['procedures_defnoreturn'] =
 
 Blockly.Lua['procedures_callreturn'] = function(block) {
   // Call a procedure with a return value.
-	var funcName = Blockly.lua.variableDB_.getName(block.getTitleValue('NAME'),
+	var funcName = Blockly.Lua.variableDB_.getName(block.getTitleValue('NAME'),
 	               Blockly.Procedures.NAME_TYPE);
 	var args = [];
 	for(var x = 0; x < block.arguments_.length; x++)
 	{
-		args[x] = Blockly.lua.valueToCode(block, 'ARG' + x,
-		                                  Blockly.lua.ORDER_NONE) || 'nil';
+		args[x] = Blockly.Lua.valueToCode(block, 'ARG' + x,
+		                                  Blockly.Lua.ORDER_NONE) || 'nil';
 	}
 	var code = funcName + '(' + args.join(', ') + ')';
-	return [code, Blockly.lua.ORDER_FUNCTION_CALL];
+	return [code, Blockly.Lua.ORDER_FUNCTION_CALL];
 };
 
 Blockly.Lua['procedures_callnoreturn'] = function(block) {
   // Call a procedure with no return value.
-	var funcName = Blockly.lua.variableDB_.getName(block.getTitleValue('NAME'),
+	var funcName = Blockly.Lua.variableDB_.getName(block.getTitleValue('NAME'),
 	               Blockly.Procedures.NAME_TYPE);
 	var args = [];
 	for(var x = 0; x < block.arguments_.length; x++)
 	{
-		args[x] = Blockly.lua.valueToCode(block, 'ARG' + x,
-		                                  Blockly.lua.ORDER_NONE) || 'nil';
+		args[x] = Blockly.Lua.valueToCode(block, 'ARG' + x,
+		                                  Blockly.Lua.ORDER_NONE) || 'nil';
 	}
 	var code = funcName + '(' + args.join(', ') + ')\n';
   return code;
@@ -108,12 +108,12 @@ Blockly.Lua['procedures_callnoreturn'] = function(block) {
 
 Blockly.Lua['procedures_ifreturn'] = function(block) {
   // Conditionally return value from a procedure.
-    var condition = Blockly.lua.valueToCode(block, 'CONDITION',
-        Blockly.lua.ORDER_NONE) || 'False';
+    var condition = Blockly.Lua.valueToCode(block, 'CONDITION',
+        Blockly.Lua.ORDER_NONE) || 'False';
     var code = 'if(' + condition + ') then\n';
     if (block.hasReturnValue_) {
-        var value = Blockly.lua.valueToCode(block, 'VALUE',
-            Blockly.lua.ORDER_NONE) || 'None';
+        var value = Blockly.Lua.valueToCode(block, 'VALUE',
+            Blockly.Lua.ORDER_NONE) || 'None';
         code += '  return ' + value + '\nend\n';
     } else {
         code += '  return\nend\n';
@@ -124,8 +124,8 @@ Blockly.Lua['procedures_ifreturn'] = function(block) {
 Blockly.Lua['procedures_return'] = function () {
     var code = '';
     if (block.hasReturnValue_) {
-        var value = Blockly.lua.valueToCode(block, 'VALUE',
-            Blockly.lua.ORDER_NONE) || 'None';
+        var value = Blockly.Lua.valueToCode(block, 'VALUE',
+            Blockly.Lua.ORDER_NONE) || 'None';
         code += 'return ' + value + '\n';
     } else {
         code += 'return\n';

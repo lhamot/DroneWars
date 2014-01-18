@@ -878,6 +878,8 @@ try
 	res.code = toString(scrData.get<4>());
 	res.blocklyCode = toString(bloData.get<4>());
 	res.lastError = toString(scrData.get<5>());
+	res.blocklyCodeDate = bloData.get<2>();
+	res.codeDate = scrData.get<2>();
 	return res;
 }
 DB_CATCH

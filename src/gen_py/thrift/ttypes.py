@@ -606,7 +606,9 @@ class CodeData:
   """
   Attributes:
    - blocklyCode
+   - blocklyCodeDate
    - code
+   - codeDate
    - lastError
   """
 
@@ -631,7 +633,7 @@ class CodeData:
     None, # 17
     None, # 18
     None, # 19
-    (20, TType.STRING, 'code', None, None, ), # 20
+    (20, TType.I32, 'blocklyCodeDate', None, None, ), # 20
     None, # 21
     None, # 22
     None, # 23
@@ -641,12 +643,34 @@ class CodeData:
     None, # 27
     None, # 28
     None, # 29
-    (30, TType.STRING, 'lastError', None, None, ), # 30
+    (30, TType.STRING, 'code', None, None, ), # 30
+    None, # 31
+    None, # 32
+    None, # 33
+    None, # 34
+    None, # 35
+    None, # 36
+    None, # 37
+    None, # 38
+    None, # 39
+    (40, TType.I32, 'codeDate', None, None, ), # 40
+    None, # 41
+    None, # 42
+    None, # 43
+    None, # 44
+    None, # 45
+    None, # 46
+    None, # 47
+    None, # 48
+    None, # 49
+    (50, TType.STRING, 'lastError', None, None, ), # 50
   )
 
-  def __init__(self, blocklyCode=None, code=None, lastError=None,):
+  def __init__(self, blocklyCode=None, blocklyCodeDate=None, code=None, codeDate=None, lastError=None,):
     self.blocklyCode = blocklyCode
+    self.blocklyCodeDate = blocklyCodeDate
     self.code = code
+    self.codeDate = codeDate
     self.lastError = lastError
 
   def read(self, iprot):
@@ -664,11 +688,21 @@ class CodeData:
         else:
           iprot.skip(ftype)
       elif fid == 20:
+        if ftype == TType.I32:
+          self.blocklyCodeDate = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 30:
         if ftype == TType.STRING:
           self.code = iprot.readString();
         else:
           iprot.skip(ftype)
-      elif fid == 30:
+      elif fid == 40:
+        if ftype == TType.I32:
+          self.codeDate = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 50:
         if ftype == TType.STRING:
           self.lastError = iprot.readString();
         else:
@@ -687,12 +721,20 @@ class CodeData:
       oprot.writeFieldBegin('blocklyCode', TType.STRING, 10)
       oprot.writeString(self.blocklyCode)
       oprot.writeFieldEnd()
+    if self.blocklyCodeDate is not None:
+      oprot.writeFieldBegin('blocklyCodeDate', TType.I32, 20)
+      oprot.writeI32(self.blocklyCodeDate)
+      oprot.writeFieldEnd()
     if self.code is not None:
-      oprot.writeFieldBegin('code', TType.STRING, 20)
+      oprot.writeFieldBegin('code', TType.STRING, 30)
       oprot.writeString(self.code)
       oprot.writeFieldEnd()
+    if self.codeDate is not None:
+      oprot.writeFieldBegin('codeDate', TType.I32, 40)
+      oprot.writeI32(self.codeDate)
+      oprot.writeFieldEnd()
     if self.lastError is not None:
-      oprot.writeFieldBegin('lastError', TType.STRING, 30)
+      oprot.writeFieldBegin('lastError', TType.STRING, 50)
       oprot.writeString(self.lastError)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()

@@ -1,18 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from datetime import timedelta, datetime
-
 from django.utils.translation import ugettext_lazy as _
-from django.utils.translation import ugettext_lazy as N_
 
 from django.shortcuts import render, redirect
 from django import forms
-from django.contrib.sessions.models import Session
-from django.utils import timezone
-import logging
 
-import thrift.transport.TSocket
-import thrift.protocol.TBinaryProtocol
 import gen_py.thrift.EngineServer
 
 

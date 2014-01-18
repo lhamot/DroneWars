@@ -207,7 +207,9 @@ ndw::Planet planetToThrift(Planet const& planet)
 void codeDataCppToThrift(CodeData const& in, ndw::CodeData& out)
 {
 	out.blocklyCode = in.blocklyCode;
+	out.blocklyCodeDate = NUMCAST(in.blocklyCodeDate);
 	out.code = in.code;
+	out.codeDate = NUMCAST(in.codeDate);
 	out.lastError = in.lastError;
 }
 

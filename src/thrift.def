@@ -51,8 +51,10 @@ struct Event
 struct CodeData
 {
 	10: string blocklyCode
-	20: string code
-	30: string lastError
+	20: i32 blocklyCodeDate
+	30: string code
+	40: i32 codeDate
+	50: string lastError
 }
 
 

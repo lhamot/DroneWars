@@ -11,7 +11,7 @@ from django.shortcuts import render, redirect
 from django import forms
 from django.contrib.sessions.models import Session
 from django.utils import timezone
-from django.core.exceptions import PermissionDenied
+#from django.core.exceptions import PermissionDenied
 import logging
 
 import thrift.transport.TSocket
@@ -415,10 +415,15 @@ def BlocklyFleetsCodesView(request):
     service = createEngineClient()
 
     message = ""
+    errorMessage = ""
     if request.method == "POST":
-        if "blocklyXML" in request.POST:
-            service.setPlayerFleetBlocklyCode(pid, request.POST["blocklyXML"].encode("utf8"))
+        if "save_button_error" in request.POST and len(request.POST["save_button_error"]):
+            errorMessage = request.POST["save_button_error"]
+            logger = logging.getLogger(__name__)
+            logger.error("javascript error when saving blockly code : " + message);
+        elif "blocklyXML" in request.POST:
             service.setPlayerFleetCode(pid, request.POST["scriptXML"].encode("utf8"))
+            service.setPlayerFleetBlocklyCode(pid, request.POST["blocklyXML"].encode("utf8"))
             message = _("Code successfully saved")
    
    
@@ -434,6 +439,7 @@ def BlocklyFleetsCodesView(request):
         "name": "Fleet",
         "level": plLvl,
         "message": message,
+        "errorMessage": errorMessage,
         "codeData": codeData,
         "tutosText": tutosText,
         "mode": "blockly",
@@ -479,9 +485,10 @@ def BlocklyPlanetsCodesView(request):
     player = None
 
     message = ""
+    errorMessage = ""
     if request.method == "POST":
         if "save_button_error" in request.POST and len(request.POST["save_button_error"]):
-            message = request.POST["save_button_error"]
+            errorMessage = request.POST["save_button_error"]
             logger = logging.getLogger(__name__)
             logger.error("javascript error when saving blockly code : " + message);
         elif "blocklyXML" in request.POST:
@@ -509,6 +516,7 @@ def BlocklyPlanetsCodesView(request):
         "name": "Planet",
         "level": plLvl,
         "message": message,
+        "errorMessage": errorMessage,
         "codeData": codeData,
         "tutosText": tutosText,
         "mode": "blockly",

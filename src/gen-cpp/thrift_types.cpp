@@ -489,8 +489,8 @@ void swap(Event& a, Event& b)
 	swap(a.__isset, b.__isset);
 }
 
-const char* CodeData::ascii_fingerprint = "2F7AE0E87A4ACA5D4DC3B9EB4C49DBEE";
-const uint8_t CodeData::binary_fingerprint[16] = {0x2F, 0x7A, 0xE0, 0xE8, 0x7A, 0x4A, 0xCA, 0x5D, 0x4D, 0xC3, 0xB9, 0xEB, 0x4C, 0x49, 0xDB, 0xEE};
+const char* CodeData::ascii_fingerprint = "E6CD2A5AF21635774A095F87B4F891AA";
+const uint8_t CodeData::binary_fingerprint[16] = {0xE6, 0xCD, 0x2A, 0x5A, 0xF2, 0x16, 0x35, 0x77, 0x4A, 0x09, 0x5F, 0x87, 0xB4, 0xF8, 0x91, 0xAA};
 
 uint32_t CodeData::read(::apache::thrift::protocol::TProtocol* iprot)
 {
@@ -526,6 +526,17 @@ uint32_t CodeData::read(::apache::thrift::protocol::TProtocol* iprot)
 			}
 			break;
 		case 20:
+			if(ftype == ::apache::thrift::protocol::T_I32)
+			{
+				xfer += iprot->readI32(this->blocklyCodeDate);
+				this->__isset.blocklyCodeDate = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		case 30:
 			if(ftype == ::apache::thrift::protocol::T_STRING)
 			{
 				xfer += iprot->readString(this->code);
@@ -536,7 +547,18 @@ uint32_t CodeData::read(::apache::thrift::protocol::TProtocol* iprot)
 				xfer += iprot->skip(ftype);
 			}
 			break;
-		case 30:
+		case 40:
+			if(ftype == ::apache::thrift::protocol::T_I32)
+			{
+				xfer += iprot->readI32(this->codeDate);
+				this->__isset.codeDate = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
+		case 50:
 			if(ftype == ::apache::thrift::protocol::T_STRING)
 			{
 				xfer += iprot->readString(this->lastError);
@@ -568,11 +590,19 @@ uint32_t CodeData::write(::apache::thrift::protocol::TProtocol* oprot) const
 	xfer += oprot->writeString(this->blocklyCode);
 	xfer += oprot->writeFieldEnd();
 
-	xfer += oprot->writeFieldBegin("code", ::apache::thrift::protocol::T_STRING, 20);
+	xfer += oprot->writeFieldBegin("blocklyCodeDate", ::apache::thrift::protocol::T_I32, 20);
+	xfer += oprot->writeI32(this->blocklyCodeDate);
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldBegin("code", ::apache::thrift::protocol::T_STRING, 30);
 	xfer += oprot->writeString(this->code);
 	xfer += oprot->writeFieldEnd();
 
-	xfer += oprot->writeFieldBegin("lastError", ::apache::thrift::protocol::T_STRING, 30);
+	xfer += oprot->writeFieldBegin("codeDate", ::apache::thrift::protocol::T_I32, 40);
+	xfer += oprot->writeI32(this->codeDate);
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldBegin("lastError", ::apache::thrift::protocol::T_STRING, 50);
 	xfer += oprot->writeString(this->lastError);
 	xfer += oprot->writeFieldEnd();
 
@@ -585,7 +615,9 @@ void swap(CodeData& a, CodeData& b)
 {
 	using ::std::swap;
 	swap(a.blocklyCode, b.blocklyCode);
+	swap(a.blocklyCodeDate, b.blocklyCodeDate);
 	swap(a.code, b.code);
+	swap(a.codeDate, b.codeDate);
 	swap(a.lastError, b.lastError);
 	swap(a.__isset, b.__isset);
 }
@@ -856,8 +888,8 @@ void swap(Skill& a, Skill& b)
 	swap(a.__isset, b.__isset);
 }
 
-const char* Player::ascii_fingerprint = "FABA7F1FF15D007DBFAB4923136AC0B8";
-const uint8_t Player::binary_fingerprint[16] = {0xFA, 0xBA, 0x7F, 0x1F, 0xF1, 0x5D, 0x00, 0x7D, 0xBF, 0xAB, 0x49, 0x23, 0x13, 0x6A, 0xC0, 0xB8};
+const char* Player::ascii_fingerprint = "548CF950EB8BE391A224A8F2ECE9FD09";
+const uint8_t Player::binary_fingerprint[16] = {0x54, 0x8C, 0xF9, 0x50, 0xEB, 0x8B, 0xE3, 0x91, 0xA2, 0x24, 0xA8, 0xF2, 0xEC, 0xE9, 0xFD, 0x09};
 
 uint32_t Player::read(::apache::thrift::protocol::TProtocol* iprot)
 {
@@ -3125,8 +3157,8 @@ void swap(FightReport& a, FightReport& b)
 	swap(a.__isset, b.__isset);
 }
 
-const char* Universe::ascii_fingerprint = "EFC82C4696C65450F79AF24E81B1DD13";
-const uint8_t Universe::binary_fingerprint[16] = {0xEF, 0xC8, 0x2C, 0x46, 0x96, 0xC6, 0x54, 0x50, 0xF7, 0x9A, 0xF2, 0x4E, 0x81, 0xB1, 0xDD, 0x13};
+const char* Universe::ascii_fingerprint = "259AB9154AF8F9F57576439842115D07";
+const uint8_t Universe::binary_fingerprint[16] = {0x25, 0x9A, 0xB9, 0x15, 0x4A, 0xF8, 0xF9, 0xF5, 0x75, 0x76, 0x43, 0x98, 0x42, 0x11, 0x5D, 0x07};
 
 uint32_t Universe::read(::apache::thrift::protocol::TProtocol* iprot)
 {
@@ -3386,8 +3418,8 @@ void swap(Universe& a, Universe& b)
 	swap(a.__isset, b.__isset);
 }
 
-const char* OptionalPlayer::ascii_fingerprint = "8C8E9E2A748076E9D6FE0EDEAA649832";
-const uint8_t OptionalPlayer::binary_fingerprint[16] = {0x8C, 0x8E, 0x9E, 0x2A, 0x74, 0x80, 0x76, 0xE9, 0xD6, 0xFE, 0x0E, 0xDE, 0xAA, 0x64, 0x98, 0x32};
+const char* OptionalPlayer::ascii_fingerprint = "C97EF2AD33EBCEAB450A6113477A1FD5";
+const uint8_t OptionalPlayer::binary_fingerprint[16] = {0xC9, 0x7E, 0xF2, 0xAD, 0x33, 0xEB, 0xCE, 0xAB, 0x45, 0x0A, 0x61, 0x13, 0x47, 0x7A, 0x1F, 0xD5};
 
 uint32_t OptionalPlayer::read(::apache::thrift::protocol::TProtocol* iprot)
 {
@@ -3953,8 +3985,8 @@ void swap(Message& a, Message& b)
 	swap(a.__isset, b.__isset);
 }
 
-const char* FriendshipRequests::ascii_fingerprint = "CF5DDF8BB04F33C274C6E1304FD89799";
-const uint8_t FriendshipRequests::binary_fingerprint[16] = {0xCF, 0x5D, 0xDF, 0x8B, 0xB0, 0x4F, 0x33, 0xC2, 0x74, 0xC6, 0xE1, 0x30, 0x4F, 0xD8, 0x97, 0x99};
+const char* FriendshipRequests::ascii_fingerprint = "46F7180F3B17CD46CBA1732E506534D7";
+const uint8_t FriendshipRequests::binary_fingerprint[16] = {0x46, 0xF7, 0x18, 0x0F, 0x3B, 0x17, 0xCD, 0x46, 0xCB, 0xA1, 0x73, 0x2E, 0x50, 0x65, 0x34, 0xD7};
 
 uint32_t FriendshipRequests::read(::apache::thrift::protocol::TProtocol* iprot)
 {
