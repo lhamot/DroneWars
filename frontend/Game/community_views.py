@@ -62,7 +62,10 @@ def CreateMessageView(request):
             messForm = MessageForm(request.POST)
             if messForm.is_valid():
                 messInfo = messForm.cleaned_data
-                service.addMessage(pid, recipientID, messInfo["subject"], messInfo["message"])
+                service.addMessage(pid, 
+                                   recipientID, 
+                                   messInfo["subject"].encode('utf-8'), 
+                                   messInfo["message"].encode('utf-8'))
                 messages = service.getMessages(pid)
                 return render(request, 'message_list.html', {
                     'messages': messages,
@@ -145,7 +148,9 @@ def AllianceView(request):
         if form.is_valid():
             alliInfo = form.cleaned_data
             if "create" in request.POST:
-                allianceID = service.addAlliance(pid, alliInfo["name"], alliInfo["description"])
+                allianceID = service.addAlliance(pid, 
+                                                 alliInfo["name"].encode('utf-8'), 
+                                                 alliInfo["description"].encode('utf-8'))
                 if allianceID == 0:
                     alert = _("Alliance name still exists or you still own an alliance")
                 else:
@@ -154,8 +159,8 @@ def AllianceView(request):
                 alliance = gen_py.thrift.ttypes.Alliance()
                 if allianceID == int(request.POST["allianceID"]):
                     alliance.id = allianceID
-                    alliance.name = alliInfo["name"]
-                    alliance.description = alliInfo["description"]
+                    alliance.name = alliInfo["name"].encode('utf-8')
+                    alliance.description = alliInfo["description"].encode('utf-8')
                     service.updateAlliance(alliance)
                 
         

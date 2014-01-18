@@ -76,7 +76,8 @@ def OutPage(request):
                     regMessage = _("Passwords don't match!")
                 else:
                     service = createEngineClient()
-                    added = service.addPlayer(userInfo["login"], userInfo["password"])
+                    added = service.addPlayer(userInfo["login"].encode('utf-8'), 
+                                              userInfo["password"].encode('utf-8'))
                     if added:
                         regMessage = _("Registration successful")
                         regMessageState = True
@@ -87,7 +88,8 @@ def OutPage(request):
             if logForm.is_valid():
                 userInfo = logForm.cleaned_data;
                 service = createEngineClient()
-                optPlayer = service.logPlayer(userInfo["login"], userInfo["password"])
+                optPlayer = service.logPlayer(userInfo["login"].encode('utf-8'), 
+                                              userInfo["password"].encode('utf-8'))
                 if optPlayer.player != None:
                     request.session.clear()
                     request.session["PlayerID"] = optPlayer.player.id
@@ -592,7 +594,7 @@ def AccountView(request):
     
     message = ""
     if "erase_account" in request.POST:
-        if service.eraseAccount(pid, request.POST["password"]) == False:
+        if service.eraseAccount(pid, request.POST["password"].encode('utf-8')) == False:
             message = _("Passwords don't match!")
         else:
             request.session.clear();
