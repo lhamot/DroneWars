@@ -483,6 +483,19 @@ try
 DB_CATCH
 
 
+std::map<Player::ID, Player> DataBase::getPlayerMap() const
+{
+	std::vector<PlayerTmp> playerList;
+	(*session_) << GetPlayerRequest, into(playerList), now;
+	std::map<Player::ID, Player> outPlayerList;
+	for(PlayerTmp const & player : playerList)
+		outPlayerList.insert(std::make_pair(player.get<0>(),
+		                                    playerFromTuple(player)));
+	return outPlayerList;
+}
+
+
+
 Player DataBase::getPlayer(Player::ID id) const
 try
 {

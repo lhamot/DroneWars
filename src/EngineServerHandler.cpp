@@ -153,7 +153,7 @@ ndw::Event eventToThrift(Event const& event)
 
 
 //! Convertie un Fleet en ndw::Fleet pour transfert par thrift
-ndw::Fleet fleetToThrift(Fleet const& fleet)
+ndw::Fleet fleetToThrift(Fleet const& fleet, Player const& player)
 {
 	if(fleet.playerId == 0)
 		BOOST_THROW_EXCEPTION(std::logic_error("playerId == 0!!"));
@@ -164,6 +164,7 @@ ndw::Fleet fleetToThrift(Fleet const& fleet)
 	result.coord = coordToThrift(fleet.coord);
 	result.origin = coordToThrift(fleet.origin);
 	result.name = fleet.name;
+	result.playerLogin = player.login;
 
 	result.shipList.reserve(fleet.shipList.size());
 	for(size_t value : fleet.shipList)
@@ -180,7 +181,7 @@ ndw::Fleet fleetToThrift(Fleet const& fleet)
 
 
 //! Convertie un Planet en ndw::Planet pour transfert par thrift
-ndw::Planet planetToThrift(Planet const& planet)
+ndw::Planet planetToThrift(Planet const& planet, Player const* player)
 {
 	ndw::Planet res;
 
@@ -188,6 +189,8 @@ ndw::Planet planetToThrift(Planet const& planet)
 	res.coord = coordToThrift(planet.coord);
 	res.playerId = NUMCAST(planet.playerId);
 	res.buildingList.reserve(planet.buildingList.size());
+	if(player)
+		res.playerLogin = player->login;
 	for(size_t value : planet.buildingList)
 		res.buildingList.push_back(NUMCAST(value));
 	res.taskQueue.reserve(planet.taskQueue.size());
@@ -249,7 +252,8 @@ ndw::Player playerToThrift(Player const& player)
 
 
 //! Convertie un FleetReport en ndw::FleetReport pour transfert par thrift
-ndw::FleetReport fleetReportToThrift(Report<Fleet> const& fleetReport)
+ndw::FleetReport fleetReportToThrift(Report<Fleet> const& fleetReport,
+                                     Player const& player)
 {
 	ndw::FleetReport result;
 	result.isDead = fleetReport.isDead;
@@ -259,14 +263,17 @@ ndw::FleetReport fleetReportToThrift(Report<Fleet> const& fleetReport)
 	result.escapeProba = fleetReport.escapeProba;
 	for(intptr_t id : fleetReport.enemySet)
 		result.enemySet.insert(numeric_cast<int32_t>(id));
-	result.fightInfo.before = fleetToThrift(fleetReport.fightInfo.before);
-	result.fightInfo.after = fleetToThrift(fleetReport.fightInfo.after);
+	result.fightInfo.before =
+	  fleetToThrift(fleetReport.fightInfo.before, player);
+	result.fightInfo.after =
+	  fleetToThrift(fleetReport.fightInfo.after, player);
 	return result;
 }
 
 
 //! Convertie un PlanetReport en ndw::PlanetReport pour transfert par thrift
-ndw::PlanetReport planetReportToThrift(Report<Planet> const& planetReport)
+ndw::PlanetReport planetReportToThrift(Report<Planet> const& planetReport,
+                                       Player const* player)
 {
 	ndw::PlanetReport result;
 	result.isDead = planetReport.isDead;
@@ -274,25 +281,38 @@ ndw::PlanetReport planetReportToThrift(Report<Planet> const& planetReport)
 	result.experience = planetReport.experience;
 	for(intptr_t id : planetReport.enemySet)
 		result.enemySet.insert(numeric_cast<int32_t>(id));
-	result.fightInfo.before = planetToThrift(planetReport.fightInfo.before);
-	result.fightInfo.after = planetToThrift(planetReport.fightInfo.after);
+	result.fightInfo.before =
+	  planetToThrift(planetReport.fightInfo.before, player);
+	result.fightInfo.after =
+	  planetToThrift(planetReport.fightInfo.after, player);
 	return result;
 }
 
 
 //! Convertie un FightReport en ndw::FightReport pour transfert par thrift
-ndw::FightReport fightReportToThrift(FightReport const& report)
+ndw::FightReport fightReportToThrift(
+  FightReport const& report,
+  std::map<Player::ID, Player> const& playerMap)
 {
 	ndw::FightReport result;
 	result.fleetList.reserve(report.fleetList.size());
 	for(Report<Fleet> const & fleetRep : report.fleetList)
-		result.fleetList.push_back(fleetReportToThrift(fleetRep));
+	{
+		Player const player =
+		  mapFind(playerMap, fleetRep.fightInfo.before.playerId)->second;
+		result.fleetList.push_back(fleetReportToThrift(fleetRep, player));
+	}
 	result.hasPlanet = report.hasPlanet;
 	if(result.hasPlanet != bool(report.planet))
 		BOOST_THROW_EXCEPTION(
 		  logic_error("Unconsistent FightReport::hasPlanet value"));
 	if(report.planet)
-		result.__set_planet(planetReportToThrift(report.planet.get()));
+	{
+		auto iter = playerMap.find(report.planet->fightInfo.before.playerId);
+		Player const* player =
+		  iter == playerMap.end() ? nullptr : &iter->second;
+		result.__set_planet(planetReportToThrift(report.planet.get(), player));
+	}
 	return result;
 }
 
@@ -422,16 +442,17 @@ void EngineServerHandler::getPlayerFleets(
 	_return.fleetList.reserve(endIndex - beginIndex);
 	auto pageRange = make_iterator_range(fleetList.begin() + beginIndex,
 	                                     fleetList.begin() + endIndex);
+	Player const player = database_.getPlayer(pid);
 	set<Coord, CompCoord> fleetCoordSet;
 	for(Fleet const & fleet : pageRange)
 	{
-		_return.fleetList.push_back(fleetToThrift(fleet));
+		_return.fleetList.push_back(fleetToThrift(fleet, player));
 		fleetCoordSet.insert(fleet.coord);
 	}
 	vector<Coord> fleetCoordVect(fleetCoordSet.begin(), fleetCoordSet.end());
 	auto planetList = engine_.getPlanets(fleetCoordVect);
 	for(Planet const & planet : planetList)
-		_return.planetList.push_back(planetToThrift(planet));
+		_return.planetList.push_back(planetToThrift(planet, &player));
 
 	_return.fleetCount = NUMCAST(fleetList.size());
 	LOG4CPLUS_TRACE(logger, "exit");
@@ -471,8 +492,9 @@ void EngineServerHandler::getPlayerPlanets(
 	_return.planetList.reserve(endIndex - beginIndex);
 	auto pageRange = make_iterator_range(planetList.begin() + beginIndex,
 	                                     planetList.begin() + endIndex);
+	Player const player = database_.getPlayer(pid);
 	for(Planet const & planet : pageRange)
-		_return.planetList.push_back(planetToThrift(planet));
+		_return.planetList.push_back(planetToThrift(planet, &player));
 	_return.planetCount = NUMCAST(planetList.size());
 	LOG4CPLUS_TRACE(logger, "exit");
 }
@@ -584,9 +606,15 @@ void EngineServerHandler::getPlanet(vector<ndw::Planet>& _return,
 	  numeric_cast<Coord::Value>(ndwCoord.Y),
 	  numeric_cast<Coord::Value>(ndwCoord.Z));
 	optional<Planet> planet = engine_.getPlanet(coord);
-	if(planet.is_initialized())
+	if(planet)
 	{
-		_return.push_back(planetToThrift(*planet));
+		if(planet->playerId)
+		{
+			Player const player = database_.getPlayer(planet->playerId);
+			_return.push_back(planetToThrift(*planet, &player));
+		}
+		else
+			_return.push_back(planetToThrift(*planet, nullptr));
 		vector<Event> events =
 		  database_.getPlanetEvents(planet->playerId, coord);
 		_return.front().eventList.reserve(events.size());
@@ -605,7 +633,8 @@ void EngineServerHandler::getFleet(ndw::Fleet& _return,
 	boost::optional<Fleet> const optFleet = engine_.getFleet(fid);
 	if(!optFleet)
 		BOOST_THROW_EXCEPTION(std::runtime_error("Fleet doesn't exist"));
-	_return = fleetToThrift(*optFleet);
+	Player const player = database_.getPlayer(optFleet->playerId);
+	_return = fleetToThrift(*optFleet, player);
 
 	vector<Event> events = database_.getFleetEvents(_return.playerId, fid);
 	_return.eventList.reserve(events.size());
@@ -653,7 +682,7 @@ void EngineServerHandler::getFightReport(ndw::FightReport& _return,
 {
 	LOG4CPLUS_TRACE(logger, "id : " << id);
 	FightReport fr = database_.getFightReport(id);
-	_return = fightReportToThrift(fr);
+	_return = fightReportToThrift(fr, database_.getPlayerMap());
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 
@@ -689,7 +718,8 @@ bool EngineServerHandler::eraseAccount(const ndw::Player_ID pid,
 
 
 void EngineServerHandler::getPlayerEvents(
-  vector<ndw::Event>& _return, const ndw::Player_ID pid)
+    vector<ndw::Event>& _return,
+    const ndw::Player_ID pid)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid);
 	vector<Event> events = database_.getPlayerEvents(pid);

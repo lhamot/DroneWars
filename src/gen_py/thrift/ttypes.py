@@ -2133,21 +2133,104 @@ class Planet:
    - ressourceSet
    - eventList
    - cannonTab
+   - playerLogin
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'name', None, None, ), # 1
-    (2, TType.STRUCT, 'coord', (Coord, Coord.thrift_spec), None, ), # 2
-    (3, TType.I32, 'playerId', None, None, ), # 3
-    (4, TType.LIST, 'buildingList', (TType.I32,None), None, ), # 4
-    (5, TType.LIST, 'taskQueue', (TType.STRUCT,(PlanetTask, PlanetTask.thrift_spec)), None, ), # 5
-    (6, TType.STRUCT, 'ressourceSet', (RessourceSet, RessourceSet.thrift_spec), None, ), # 6
-    (7, TType.LIST, 'eventList', (TType.STRUCT,(Event, Event.thrift_spec)), None, ), # 7
-    (8, TType.LIST, 'cannonTab', (TType.I32,None), None, ), # 8
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.STRING, 'name', None, None, ), # 10
+    None, # 11
+    None, # 12
+    None, # 13
+    None, # 14
+    None, # 15
+    None, # 16
+    None, # 17
+    None, # 18
+    None, # 19
+    (20, TType.STRUCT, 'coord', (Coord, Coord.thrift_spec), None, ), # 20
+    None, # 21
+    None, # 22
+    None, # 23
+    None, # 24
+    None, # 25
+    None, # 26
+    None, # 27
+    None, # 28
+    None, # 29
+    (30, TType.I32, 'playerId', None, None, ), # 30
+    None, # 31
+    None, # 32
+    None, # 33
+    None, # 34
+    None, # 35
+    None, # 36
+    None, # 37
+    None, # 38
+    None, # 39
+    (40, TType.LIST, 'buildingList', (TType.I32,None), None, ), # 40
+    None, # 41
+    None, # 42
+    None, # 43
+    None, # 44
+    None, # 45
+    None, # 46
+    None, # 47
+    None, # 48
+    None, # 49
+    (50, TType.LIST, 'taskQueue', (TType.STRUCT,(PlanetTask, PlanetTask.thrift_spec)), None, ), # 50
+    None, # 51
+    None, # 52
+    None, # 53
+    None, # 54
+    None, # 55
+    None, # 56
+    None, # 57
+    None, # 58
+    None, # 59
+    (60, TType.STRUCT, 'ressourceSet', (RessourceSet, RessourceSet.thrift_spec), None, ), # 60
+    None, # 61
+    None, # 62
+    None, # 63
+    None, # 64
+    None, # 65
+    None, # 66
+    None, # 67
+    None, # 68
+    None, # 69
+    (70, TType.LIST, 'eventList', (TType.STRUCT,(Event, Event.thrift_spec)), None, ), # 70
+    None, # 71
+    None, # 72
+    None, # 73
+    None, # 74
+    None, # 75
+    None, # 76
+    None, # 77
+    None, # 78
+    None, # 79
+    (80, TType.LIST, 'cannonTab', (TType.I32,None), None, ), # 80
+    None, # 81
+    None, # 82
+    None, # 83
+    None, # 84
+    None, # 85
+    None, # 86
+    None, # 87
+    None, # 88
+    None, # 89
+    (90, TType.STRING, 'playerLogin', None, None, ), # 90
   )
 
-  def __init__(self, name=None, coord=None, playerId=None, buildingList=None, taskQueue=None, ressourceSet=None, eventList=None, cannonTab=None,):
+  def __init__(self, name=None, coord=None, playerId=None, buildingList=None, taskQueue=None, ressourceSet=None, eventList=None, cannonTab=None, playerLogin=None,):
     self.name = name
     self.coord = coord
     self.playerId = playerId
@@ -2156,6 +2239,7 @@ class Planet:
     self.ressourceSet = ressourceSet
     self.eventList = eventList
     self.cannonTab = cannonTab
+    self.playerLogin = playerLogin
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -2166,23 +2250,23 @@ class Planet:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
+      if fid == 10:
         if ftype == TType.STRING:
           self.name = iprot.readString();
         else:
           iprot.skip(ftype)
-      elif fid == 2:
+      elif fid == 20:
         if ftype == TType.STRUCT:
           self.coord = Coord()
           self.coord.read(iprot)
         else:
           iprot.skip(ftype)
-      elif fid == 3:
+      elif fid == 30:
         if ftype == TType.I32:
           self.playerId = iprot.readI32();
         else:
           iprot.skip(ftype)
-      elif fid == 4:
+      elif fid == 40:
         if ftype == TType.LIST:
           self.buildingList = []
           (_etype26, _size23) = iprot.readListBegin()
@@ -2192,7 +2276,7 @@ class Planet:
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
-      elif fid == 5:
+      elif fid == 50:
         if ftype == TType.LIST:
           self.taskQueue = []
           (_etype32, _size29) = iprot.readListBegin()
@@ -2203,13 +2287,13 @@ class Planet:
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
-      elif fid == 6:
+      elif fid == 60:
         if ftype == TType.STRUCT:
           self.ressourceSet = RessourceSet()
           self.ressourceSet.read(iprot)
         else:
           iprot.skip(ftype)
-      elif fid == 7:
+      elif fid == 70:
         if ftype == TType.LIST:
           self.eventList = []
           (_etype38, _size35) = iprot.readListBegin()
@@ -2220,7 +2304,7 @@ class Planet:
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
-      elif fid == 8:
+      elif fid == 80:
         if ftype == TType.LIST:
           self.cannonTab = []
           (_etype44, _size41) = iprot.readListBegin()
@@ -2228,6 +2312,11 @@ class Planet:
             _elem46 = iprot.readI32();
             self.cannonTab.append(_elem46)
           iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 90:
+        if ftype == TType.STRING:
+          self.playerLogin = iprot.readString();
         else:
           iprot.skip(ftype)
       else:
@@ -2241,48 +2330,52 @@ class Planet:
       return
     oprot.writeStructBegin('Planet')
     if self.name is not None:
-      oprot.writeFieldBegin('name', TType.STRING, 1)
+      oprot.writeFieldBegin('name', TType.STRING, 10)
       oprot.writeString(self.name)
       oprot.writeFieldEnd()
     if self.coord is not None:
-      oprot.writeFieldBegin('coord', TType.STRUCT, 2)
+      oprot.writeFieldBegin('coord', TType.STRUCT, 20)
       self.coord.write(oprot)
       oprot.writeFieldEnd()
     if self.playerId is not None:
-      oprot.writeFieldBegin('playerId', TType.I32, 3)
+      oprot.writeFieldBegin('playerId', TType.I32, 30)
       oprot.writeI32(self.playerId)
       oprot.writeFieldEnd()
     if self.buildingList is not None:
-      oprot.writeFieldBegin('buildingList', TType.LIST, 4)
+      oprot.writeFieldBegin('buildingList', TType.LIST, 40)
       oprot.writeListBegin(TType.I32, len(self.buildingList))
       for iter47 in self.buildingList:
         oprot.writeI32(iter47)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.taskQueue is not None:
-      oprot.writeFieldBegin('taskQueue', TType.LIST, 5)
+      oprot.writeFieldBegin('taskQueue', TType.LIST, 50)
       oprot.writeListBegin(TType.STRUCT, len(self.taskQueue))
       for iter48 in self.taskQueue:
         iter48.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.ressourceSet is not None:
-      oprot.writeFieldBegin('ressourceSet', TType.STRUCT, 6)
+      oprot.writeFieldBegin('ressourceSet', TType.STRUCT, 60)
       self.ressourceSet.write(oprot)
       oprot.writeFieldEnd()
     if self.eventList is not None:
-      oprot.writeFieldBegin('eventList', TType.LIST, 7)
+      oprot.writeFieldBegin('eventList', TType.LIST, 70)
       oprot.writeListBegin(TType.STRUCT, len(self.eventList))
       for iter49 in self.eventList:
         iter49.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.cannonTab is not None:
-      oprot.writeFieldBegin('cannonTab', TType.LIST, 8)
+      oprot.writeFieldBegin('cannonTab', TType.LIST, 80)
       oprot.writeListBegin(TType.I32, len(self.cannonTab))
       for iter50 in self.cannonTab:
         oprot.writeI32(iter50)
       oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.playerLogin is not None:
+      oprot.writeFieldBegin('playerLogin', TType.STRING, 90)
+      oprot.writeString(self.playerLogin)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -2314,6 +2407,7 @@ class Fleet:
    - ressourceSet
    - taskQueue
    - eventList
+   - playerLogin
   """
 
   thrift_spec = (
@@ -2408,9 +2502,19 @@ class Fleet:
     None, # 88
     None, # 89
     (90, TType.LIST, 'eventList', (TType.STRUCT,(Event, Event.thrift_spec)), None, ), # 90
+    None, # 91
+    None, # 92
+    None, # 93
+    None, # 94
+    None, # 95
+    None, # 96
+    None, # 97
+    None, # 98
+    None, # 99
+    (100, TType.STRING, 'playerLogin', None, None, ), # 100
   )
 
-  def __init__(self, id=None, playerId=None, coord=None, origin=None, name=None, shipList=None, ressourceSet=None, taskQueue=None, eventList=None,):
+  def __init__(self, id=None, playerId=None, coord=None, origin=None, name=None, shipList=None, ressourceSet=None, taskQueue=None, eventList=None, playerLogin=None,):
     self.id = id
     self.playerId = playerId
     self.coord = coord
@@ -2420,6 +2524,7 @@ class Fleet:
     self.ressourceSet = ressourceSet
     self.taskQueue = taskQueue
     self.eventList = eventList
+    self.playerLogin = playerLogin
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -2495,6 +2600,11 @@ class Fleet:
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
+      elif fid == 100:
+        if ftype == TType.STRING:
+          self.playerLogin = iprot.readString();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -2549,6 +2659,10 @@ class Fleet:
       for iter71 in self.eventList:
         iter71.write(oprot)
       oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.playerLogin is not None:
+      oprot.writeFieldBegin('playerLogin', TType.STRING, 100)
+      oprot.writeString(self.playerLogin)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

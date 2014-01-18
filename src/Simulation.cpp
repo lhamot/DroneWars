@@ -586,20 +586,6 @@ void Simulation::updatePlayersCode(ScriptTools::Engine& luaEngine,
 
 
 //! Genere une map le joueur ID=>Joueur a partir de la base de donnée SQL
-std::map<Player::ID, Player> getPlayerMap(DataBase const& database)
-{
-	std::vector<Player> players = database.getPlayers();
-	std::map<Player::ID, Player> const playerMap = [&]()
-	{
-		std::map<Player::ID, Player> playerMap;
-		for(Player const & player : players)
-			playerMap.insert(make_pair(player.id, player));
-		return playerMap;
-	}();
-	return playerMap;
-}
-
-//! Genere une map le joueur ID=>Joueur a partir de la base de donnée SQL
 std::map<Alliance::ID, Alliance> getAllianceMap(DataBase const& database)
 {
 	std::vector<Alliance> alliances = database.getAlliances();
@@ -1308,7 +1294,7 @@ try
 	//! Création des planètes des nouveaux joueurs
 	createNewPlayersPlanets(univCopy);
 
-	std::map<Player::ID, Player> playerMap = getPlayerMap(database_);
+	std::map<Player::ID, Player> playerMap = database_.getPlayerMap();
 	for(Fleet & fleet : univCopy.fleetMap | boost::adaptors::map_values)
 		fleet.player = &mapFind(playerMap, fleet.playerId)->second;
 

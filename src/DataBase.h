@@ -104,6 +104,9 @@ public:
 	//! Extrait la liste des joueurs
 	std::vector<Player> getPlayers() const;
 
+	//! Extrait la liste des joueurs
+	std::map<Player::ID, Player> DataBase::getPlayerMap() const;
+
 	//! @brief Supprime le joueur
 	//!
 	//! Change le login et la mot de passe de manière que personne ne peut

@@ -219,14 +219,15 @@ typedef list<i32> BuildingTab
 
 struct Planet
 {
-	1: string name
-	2: Coord coord
-	3: Player_ID playerId
-	4: BuildingTab buildingList
-	5: list<PlanetTask> taskQueue
-	6: RessourceSet ressourceSet
-	7: list<Event> eventList
-	8: list<i32> cannonTab
+	10: string name
+	20: Coord coord
+	30: Player_ID playerId
+	40: BuildingTab buildingList
+	50: list<PlanetTask> taskQueue
+	60: RessourceSet ressourceSet
+	70: list<Event> eventList
+	80: list<i32> cannonTab
+	90: string playerLogin
 }
 
 
@@ -245,6 +246,7 @@ struct Fleet
 	70: RessourceSet ressourceSet
 	80: list<FleetTask> taskQueue
 	90: list<Event> eventList
+	100: string playerLogin
 }
 
 

@@ -11,7 +11,7 @@
 			{% for fleetReport in fight_report.fleetList %}
 			<table class="table {{fleetReport|allyOrEnemy:player}} {{fleetReport|winnerOrLooser}}">
 				<tr><th>{% trans "Fleet ID" %}</th><td>{{fleetReport.fightInfo.before.id}}</td></tr>
-				<tr><th>{% trans "Player" %}</th><td>{{fleetReport.fightInfo.before.playerId}}</td></tr>
+				<tr><th>{% trans "Player" %}</th><td>{{fleetReport.fightInfo.before.playerId|playerlink:fleetReport.fightInfo.before.playerLogin|safe}}</td></tr>
 				<tr><th>{% trans "Wanted escape" %}</th><td>{% if fleetReport.wantEscape %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</td></tr>
 				{% if fleetReport.wantEscape %}
 				<tr><th>{% trans "Escape probability" %}</th><td>{{fleetReport.escapeProba|mult:100|floatformat:0}}%</td></tr>
@@ -29,7 +29,7 @@
 					<td><img src="{{ STATIC_URL }}{{fight_report.planet.fightInfo.before|img_path:'min'}}" width="40"/>{{fight_report.planet.fightInfo.before.coord|coord}}</td>
 				</tr>
 				{% if fight_report.planet.fightInfo.after.playerId %}
-				<tr><th>{% trans "Player" %}</th><td>{{fight_report.planet.fightInfo.after.playerId}}</td></tr>
+				<tr><th>{% trans "Player" %}</th><td>{{fight_report.planet.fightInfo.after.playerId|playerlink:fight_report.planet.fightInfo.after.playerLogin|safe}}</td></tr>
 				{% else %}
 				<tr><th>{% trans "Player" %}</th><td>-</td></tr>
 				{% endif %}
