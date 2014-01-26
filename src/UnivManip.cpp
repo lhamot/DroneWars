@@ -523,7 +523,7 @@ void stopTask(Planet& planet,
 	                           (PlanetTask const & task)
 	{
 		return task.type == tasktype &&
-		       task.value == static_cast<size_t>(building);
+		       task.value == static_cast<uint32_t>(building);
 	});
 
 	if(iter != planet.taskQueue.end())
@@ -542,11 +542,11 @@ void execTask(Universe& univ,
 		switch(task.type)
 		{
 		case PlanetTask::UpgradeBuilding:
-			if(task.value >= planet.buildingList.size())
+			if(static_cast<size_t>(task.value) >= planet.buildingList.size())
 				BOOST_THROW_EXCEPTION(std::logic_error("Bad building type"));
 			else
 			{
-				planet.buildingList[task.value] += 1;
+				planet.buildingList[static_cast<size_t>(task.value)] += 1;
 				Event event(planet.playerId, time(0), Event::Upgraded);
 				event.setValue(task.value).setPlanetCoord(planet.coord);
 				events.push_back(event);
@@ -558,7 +558,7 @@ void execTask(Universe& univ,
 			               planet.playerId,
 			               planet.coord,
 			               univ.roundCount);
-			newFleet.shipList[task.value] += task.value2;
+			newFleet.shipList[static_cast<size_t>(task.value)] += task.value2;
 			newFleet.player = planet.player;
 			univ.fleetMap.insert(make_pair(newFleet.id, newFleet));
 			Event event(planet.playerId, time(0), Event::ShipMade);
@@ -569,7 +569,7 @@ void execTask(Universe& univ,
 		case PlanetTask::MakeCannon:
 			if(task.value < Cannon::Count)
 			{
-				planet.cannonTab[task.value] += 1;
+				planet.cannonTab[static_cast<size_t>(task.value)] += 1;
 				Event event(planet.playerId, time(0), Event::CannonMade);
 				event.setValue(task.value).setPlanetCoord(planet.coord);
 				events.push_back(event);
@@ -658,7 +658,7 @@ void execTask(Universe& univ,
 
 //! @brief Fait le travail d'un building, en connaissant son type et son niveau
 //! @todo: Remplacer par une liste de building polymorphic?
-void execBuilding(Planet& planet, Building::Enum type, uint32_t level)
+void execBuilding(Planet& planet, Building::Enum type, size_t level)
 {
 	size_t const speedMult = 4;
 	if(level == 0)
@@ -670,7 +670,8 @@ void execBuilding(Planet& planet, Building::Enum type, uint32_t level)
 		break;
 	case Building::MetalMine:
 		planet.ressourceSet.tab[Ressource::Metal] +=
-		  level * uint32_t(std::pow(1.1, double(level))) * speedMult;
+		  boost::numeric_cast<Ressource::Value>(
+		    level * size_t(std::pow(1.1, double(level))) * speedMult);
 		break;
 	case Building::CarbonMine:
 		break;

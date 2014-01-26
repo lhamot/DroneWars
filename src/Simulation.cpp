@@ -208,7 +208,7 @@ private:
 
 //! Place un joueur dans les registre lua sous le nom "currentPlayer"
 //!  et reinitialise le hook compteur d'instruction.
-void prepareLuaCall(Universe const& univ, Polua::object stript, Player const& player)
+void prepareLuaCall(Universe const& univ, Polua::object const& stript, Player const& player)
 {
 	lua_sethook(
 	  stript->state(), LuaTools::luaCountHook, LUA_MASKCOUNT, LuaTools::LuaMaxInstruction);
@@ -700,7 +700,7 @@ void execPlanets(Universe& univ_,
 std::vector<Fleet*> removeEscapedFleet(
   Universe const& univ,
   ScriptTools::Engine& engine,
-  std::map<Player::ID, Player> const playerMap,
+  std::map<Player::ID, Player> const& playerMap,
   Planet const* planetPtr,
   PlayerCodeMap& codesMap,
   std::vector<Event>& events,
@@ -1139,14 +1139,15 @@ void execFleets(
 
 	for(auto iter = fleetMap.begin(); iter != fleetMap.end(); ++iter)
 	{
+		Fleet& fleet = iter->second;
 		gatherIfWant(univ_,
-		             mapFind(playerMap, iter->second.playerId)->second,
+		             mapFind(playerMap, fleet.playerId)->second,
 		             engine,
-		             codesMap[iter->second.playerId].fleetsCode,
-		             iter->second,
+		             codesMap[fleet.playerId].fleetsCode,
+		             fleet,
 		             fleetMap,
 		             events);
-		fleetRound(univ_, iter->second, events, playersPlanetCount);
+		fleetRound(univ_, fleet, events, playersPlanetCount);
 	}
 
 	map_remove_erase_if(univ_.fleetMap, []
@@ -1165,15 +1166,14 @@ void execFleets(
 
 	size_t emitedCount = 0;
 	size_t storedCount = 0;
-	size_t earedCount = 0;
 	for(auto iter = fleetMap.begin(); iter != fleetMap.end(); ++iter)
 	{
-		Player const& player = mapFind(playerMap, iter->second.playerId)->second;
 		Fleet fleet = iter->second;
+		Player const& player = mapFind(playerMap, fleet.playerId)->second;
 		Coord const coord = fleet.coord;
 		TypedPtreePtr pt = getFleetEmission(univ_,
 		                                    engine,
-		                                    codesMap[iter->second.playerId].fleetsCode,
+		                                    codesMap[player.id].fleetsCode,
 		                                    player,
 		                                    fleet,
 		                                    events);
@@ -1202,7 +1202,7 @@ void execFleets(
 			{
 				for(size_t z : zrange)
 				{
-					univMailBoxes[x][y][z][player.id].push_back(pt.get());
+					univMailBoxes[x][y][z][static_cast<size_t>(player.id)].push_back(pt.get());
 					++storedCount;
 				}
 			}
@@ -1222,8 +1222,7 @@ void execFleets(
 		Player const& player = mapFind(playerMap, iter->second.playerId)->second;
 		Fleet scriptModifiedFleet = iter->second;
 		Coord coord = scriptModifiedFleet.coord;
-		MailBox mails = univMailBoxes[coord.X][coord.Y][coord.Z][player.id];
-		earedCount += mails.size();
+		MailBox mails = univMailBoxes[coord.X][coord.Y][coord.Z][static_cast<size_t>(player.id)];
 		boost::optional<FleetAction> action =
 		  execFleetScript(univ_,
 		                  engine,

@@ -422,11 +422,11 @@ void EngineServerHandler::getPlayerFleets(
 	                " endIndexC : " << endIndexC <<
 	                " sortType : " << sortType <<
 	                " asc : " << asc);
-	size_t beginIndex = beginIndexC;
-	size_t endIndex = endIndexC;
-	auto fleetList = engine_.getPlayerFleets(pid);
 	if(beginIndexC >= endIndexC || beginIndexC < 0)
 		BOOST_THROW_EXCEPTION(runtime_error("Unconsistent index"));
+	size_t beginIndex = NUMCAST(beginIndexC);
+	size_t endIndex = NUMCAST(endIndexC);
+	auto fleetList = engine_.getPlayerFleets(pid);
 	if(endIndex > fleetList.size())
 		endIndex = fleetList.size();
 	if(beginIndex > fleetList.size())
@@ -472,11 +472,11 @@ void EngineServerHandler::getPlayerPlanets(
 	                " endIndexC : " << endIndexC <<
 	                " sortType : " << sortType <<
 	                " asc : " << asc);
-	size_t beginIndex = beginIndexC;
-	size_t endIndex = endIndexC;
-	auto planetList = engine_.getPlayerPlanets(pid);
 	if(beginIndexC >= endIndexC || beginIndexC < 0)
 		BOOST_THROW_EXCEPTION(runtime_error("Unconsistent index"));
+	size_t beginIndex = NUMCAST(beginIndexC);
+	size_t endIndex = NUMCAST(endIndexC);
+	auto planetList = engine_.getPlayerPlanets(pid);
 	if(endIndex > planetList.size())
 		endIndex = planetList.size();
 	if(beginIndex > planetList.size())
@@ -681,7 +681,7 @@ void EngineServerHandler::getFightReport(ndw::FightReport& _return,
     const int32_t id)
 {
 	LOG4CPLUS_TRACE(logger, "id : " << id);
-	FightReport fr = database_.getFightReport(id);
+	FightReport fr = database_.getFightReport(NUMCAST(id));
 	_return = fightReportToThrift(fr, database_.getPlayerMap());
 	LOG4CPLUS_TRACE(logger, "exit");
 }
@@ -718,8 +718,8 @@ bool EngineServerHandler::eraseAccount(const ndw::Player_ID pid,
 
 
 void EngineServerHandler::getPlayerEvents(
-    vector<ndw::Event>& _return,
-    const ndw::Player_ID pid)
+  vector<ndw::Event>& _return,
+  const ndw::Player_ID pid)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid);
 	vector<Event> events = database_.getPlayerEvents(pid);

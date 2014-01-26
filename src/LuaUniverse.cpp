@@ -267,7 +267,7 @@ int luaCFunction_simul_fight(lua_State* L)
 		      report);
 		sum += report.fleetList.back().isDead ? 0 : 1;
 	}
-	lua_pushnumber(L, (sum * 100.) / simulCount);
+	lua_pushnumber(L, static_cast<lua_Number>((sum * 100.) / simulCount));
 	return 1;
 }
 

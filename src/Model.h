@@ -182,7 +182,7 @@ struct FleetTask
 struct Building
 {
 	//! Types de batiment
-	enum Enum
+	enum Enum : int8_t
 	{
 	  Undefined = -1,
 	  CommandCenter,
@@ -324,10 +324,9 @@ struct Planet
 	//! Taille ocupée dans le tas (pour profiling)
 	size_t heap_size() const
 	{
-		return
-		  name.capacity() +
-		  buildingList.size() * sizeof(size_t) +
-		  taskQueue.capacity() * sizeof(PlanetTask);
+		size_t const buildingSize = buildingList.size() * sizeof(size_t);
+		size_t const taskSize = taskQueue.capacity() * sizeof(PlanetTask);
+		return name.capacity() + buildingSize + taskSize;
 	}
 	//! Constructeur par defaut
 	Planet(): playerId(55555), time(0), firstRound(0) {}
@@ -363,46 +362,46 @@ struct PlanetAction
 	  Count
 	};
 
+	uint32_t number;         //!< Quantité de Building, Ship ou autre
 	Type action;             //!< Type d'ordre
 	Building::Enum building; //!< Building, si utile au Type
 	Ship::Enum ship;         //!< Ship, si utile au Type
 	Cannon::Enum cannon;     //!< Cannon, si utile au Type
-	uint32_t number;         //!< Quantité de Building, Ship ou autre
 
 	//! Constructeur par defaut
 	PlanetAction():
+		number(0),
 		action(Undefined),
 		building(Building::Undefined),
 		ship(Ship::Undefined),
-		cannon(Cannon::Undefined),
-		number(0)
+		cannon(Cannon::Undefined)
 	{
 	}
 	//! Constructeur pour les type concernant des Building
 	PlanetAction(Type a, Building::Enum b):
+		number(0),
 		action(a),
 		building(b),
 		ship(Ship::Undefined),
-		cannon(Cannon::Undefined),
-		number(0)
+		cannon(Cannon::Undefined)
 	{
 	}
 	//! Constructeur pour les type concernant des vaisseaux
 	PlanetAction(Type a, Ship::Enum s, uint32_t n):
+		number(n),
 		action(a),
 		building(Building::Undefined),
 		ship(s),
-		cannon(Cannon::Undefined),
-		number(n)
+		cannon(Cannon::Undefined)
 	{
 	}
 	//! Constructeur pour les type concernant des canons
 	PlanetAction(Type a, Cannon::Enum c, uint32_t n):
+		number(n),
 		action(a),
 		building(Building::Undefined),
 		ship(Ship::Undefined),
-		cannon(c),
-		number(n)
+		cannon(c)
 	{
 	}
 };
@@ -732,15 +731,16 @@ struct Universe
 	//! Calcul la taille approximative dans pile, pour du profiling memoire
 	size_t heap_size() const
 	{
+		static size_t const SizeTypeSize = sizeof(size_t);
 		size_t res = 0;
 		for(auto const & planetKV : planetMap)
 			res += sizeof(planetKV) +
 			       planetKV.second.heap_size() +
-			       2 * sizeof(size_t);
+			       2 * SizeTypeSize;
 		for(auto const & fleetKV : fleetMap)
 			res += sizeof(fleetKV) +
 			       fleetKV.second.heap_size() +
-			       2 * sizeof(size_t);
+			       2 * SizeTypeSize;
 		return res;
 	}
 

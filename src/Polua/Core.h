@@ -257,7 +257,7 @@ I int_fromstack(lua_State* L, int index)
 	if(num >= std::numeric_limits<I>::max() ||
 	   num < std::numeric_limits<I>::min())
 		return (I)luaL_error(
-		         L, "Can't store value %d in type %s", num, typeid(I).name());
+		         L, "Can't store value %d in type %s", (int)num, typeid(I).name());
 	return static_cast<I>(num);
 }
 
@@ -348,7 +348,7 @@ inline void push(lua_State* L, uint32_t value) {lua_pushunsigned(L, value);}
 inline void push(lua_State* L, uint64_t value) {lua_pushunsigned(L, static_cast<lua_Unsigned>(value));}
 inline void push(lua_State* L,  int8_t  value) {lua_pushinteger(L, value);}
 inline void push(lua_State* L,  int16_t value) {lua_pushinteger(L, value);}
-inline void push(lua_State* L,  int32_t value) {lua_pushinteger(L, value);}
+inline void push(lua_State* L,  int32_t value) {lua_pushinteger(L, static_cast<lua_Integer>(value)); }
 inline void push(lua_State* L,  int64_t value) {lua_pushinteger(L, static_cast<lua_Integer>(value));}
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 

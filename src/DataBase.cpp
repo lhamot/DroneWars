@@ -1040,7 +1040,7 @@ try
 	Transaction trans(*session_);
 	Player pla = getPlayer(pid);
 	size_t const cost = Skill::List[skillID]->skillCost(pla.skilltab.at(skillID)) * 100;
-	if(pla.skillpoints < cost)
+	if(pla.skillpoints < static_cast<uint32_t>(cost))
 		return false;
 	if(Skill::List[skillID]->canUpgrade(pla) == false)
 		return false;

@@ -105,7 +105,7 @@ public:
 	std::vector<Player> getPlayers() const;
 
 	//! Extrait la liste des joueurs
-	std::map<Player::ID, Player> DataBase::getPlayerMap() const;
+	std::map<Player::ID, Player> getPlayerMap() const;
 
 	//! @brief Supprime le joueur
 	//!

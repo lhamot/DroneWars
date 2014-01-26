@@ -43,13 +43,11 @@ void fillShipList(Fleet const& fleet, UnitTab& shipTab)
 {
 	//Contage
 	size_t shipNumber = 0;
-	for(int i = 0; i < Ship::Count; ++i)
+	for(size_t i = 0; i < Ship::Count; ++i)
 		shipNumber += fleet.shipList[i];
 
 	shipTab.reserve(shipNumber);
-	for(Ship::Enum type = Ship::Enum(0);
-	    type < Ship::Count;
-	    type = Ship::Enum(type + 1))
+	for(uint16_t type = 0; type < Ship::Count; ++type)
 	{
 		Ship const& def = Ship::List[type];
 		size_t const count = fleet.shipList[type];
@@ -64,13 +62,11 @@ void fillShipList(Planet const& planet, UnitTab& shipTab)
 {
 	//Contage
 	size_t shipNumber = 0;
-	for(int i = 0; i < Cannon::Count; ++i)
+	for(size_t i = 0; i < Cannon::Count; ++i)
 		shipNumber += planet.cannonTab[i];
 
 	shipTab.reserve(shipNumber);
-	for(Cannon::Enum type = Cannon::Enum(0);
-	    type < Cannon::Count;
-	    type = Cannon::Enum(type + 1))
+	for(uint16_t type = 0; type < Cannon::Count; ++type)
 	{
 		Cannon const& def = Cannon::List[type];
 		size_t const count = planet.cannonTab[type];

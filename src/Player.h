@@ -100,7 +100,7 @@ static size_t const MaxStringSize = 256; //!< Taille max des string courte
 struct CodeData
 {
 	//! @brief Taile max du code lua
-	static size_t const MaxCodeSize = 32 * 1024;
+	static size_t const MaxCodeSize = 32768;
 	//! @brief Taille max du code blockly
 	static size_t const MaxBlocklySize = MaxCodeSize * 8;
 

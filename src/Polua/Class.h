@@ -40,7 +40,7 @@ struct Member
 	Xetter setter;       //!< Wrapper de setter (peut ètre null)
 	void* attibPtr;      //!< Pointeur sur l'attribut des Xetter
 	//! ctor
-	explicit Member(Methode const f):
+	explicit Member(Methode const& f):
 		methode(f), getter(nullptr), setter(nullptr), attibPtr(nullptr) {}
 	//! ctor
 	Member(void* attibPtr, Xetter get, Xetter set = nullptr):
@@ -52,7 +52,7 @@ inline void setInMetatable(
   lua_State* L, std::string const& name, Member const& member)
 {
 	POLUA_CHECK_STACK(L, 0);
-	Member* ptr = (Member*)lua_newuserdata(L, sizeof(Member));
+	Member* ptr = static_cast<Member*>(lua_newuserdata(L, sizeof(Member)));
 	new(ptr) Member(member);
 	lua_setfield(L, -2, name.c_str()); //metatable[name] = val; puis pop la clé
 }
@@ -270,13 +270,13 @@ struct Indexer
 	//! getter (qui dans cette version par defaut, déclanche une erreur lua)
 	static int get(lua_State* L)
 	{
-		return luaL_error(L, "Can't index type %s", typeid(T).name());
+		return luaL_error(L, "Can't index (get) type %s", typeid(T).name());
 	}
 
 	//! setter (qui dans cette version par defaut, déclanche une erreur lua)
 	static int set(lua_State* L)
 	{
-		return luaL_error(L, "Can't index type %s", typeid(T).name());
+		return luaL_error(L, "Can't index (set) type %s", typeid(T).name());
 	}
 };
 
@@ -369,7 +369,7 @@ class Class
 		int const type = lua_type(L, -1);
 		if(type == LUA_TUSERDATA)
 		{
-			Member* member = (Member*)lua_touserdata(L, -1);
+			Member* member = static_cast<Member*>(lua_touserdata(L, -1));
 			lua_pop(L, 2);                                      // Pop metatable and Xetter/methode
 			if(member->methode.caller)                          // Si c'est une methode
 			{
@@ -412,7 +412,7 @@ class Class
 
 		if(lua_isuserdata(L, -1))
 		{
-			Member* member = (Member*)lua_touserdata(L, -1);
+			Member* member = static_cast<Member*>(lua_touserdata(L, -1));
 			lua_pop(L, 2);    // Pop metatable and member
 			if(member->setter)
 				return member->setter(

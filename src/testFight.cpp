@@ -36,7 +36,7 @@ void simulOneFight()
 		fleetPtrVect.push_back(&fleetVect[i]);
 	Planet planet(Coord(), 0);
 	Planet* planetPtr =
-	  rand() % 1 ?
+	  (rand() % 1) ?
 	  &planet :
 	  nullptr;
 	PlayersFightingMap playersFightingMap;

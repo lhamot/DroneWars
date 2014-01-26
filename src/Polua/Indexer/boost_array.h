@@ -19,13 +19,14 @@ struct Indexer<boost::array<V, S> >
 	{
 		POLUA_CHECK_STACK(L, 1);
 		int isnum = 0;
-		size_t const index = lua_tounsignedx(L, -1, &isnum);
+		size_t const index = static_cast<size_t>(lua_tounsignedx(L, -1, &isnum));
 		if(isnum == 0)
 			return 0;
 		Container* vect = userdata_fromstack<Container>(L, 1);
 		if(index < 1 || index > vect->size())
 			return 0;
-		typename Container::reference val = (*vect)[index - 1];
+		typename Container::reference val =
+		  (*vect)[static_cast<size_t>(index - 1)];
 		Polua::pushPers(L, val);
 		return 1;
 	}
@@ -35,13 +36,13 @@ struct Indexer<boost::array<V, S> >
 	{
 		POLUA_CHECK_STACK(L, 0);
 		int isnum = 0;
-		size_t const index = lua_tounsignedx(L, -2, &isnum);
+		size_t const index = static_cast<size_t>(lua_tounsignedx(L, -2, &isnum));
 		if(isnum == 0)
 			return 0;
 		Container* vect = userdata_fromstack<Container>(L, 1);
 		if(index < 1 || index > vect->size())
 			return 0;
-		(*vect)[index - 1] = Polua::fromstackAny<V>(L, -1);
+		(*vect)[static_cast<size_t>(index - 1)] = Polua::fromstackAny<V>(L, -1);
 		return 0;
 	}
 };

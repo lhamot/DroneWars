@@ -256,7 +256,7 @@ uint32_t calcExp(PlayerMap const& playerMap,
 				res += army.cannonTab[i] * Cannon::List[i].price.tab[0];
 			return res;
 		}
-	} armyPrice;
+	} armyPrice = {};
 
 	bool const isDead = allyReport.isDead;
 	bool const enemyIsDead = enemyReport.isDead;
@@ -267,7 +267,7 @@ uint32_t calcExp(PlayerMap const& playerMap,
 	Player const& enemy = mapFind(playerMap, enemyReport.fightInfo.before.playerId)->second;
 	//std::cout << exp << std::endl;
 	exp *= log(double(enemy.experience + 2)) / log(double(player.experience + 2));
-	size_t const fleetPrice = armyPrice(enemyReport.fightInfo.before) / 10;
+	size_t const fleetPrice = armyPrice(allyReport.fightInfo.before) / 10;
 	size_t const enemyFleetPrice = armyPrice(enemyReport.fightInfo.before) / 10;
 	//std::cout << exp << std::endl;
 	exp *= (enemyFleetPrice + 2) / log(fleetPrice + 2);
@@ -383,7 +383,7 @@ double calcEscapeProba(Player const& player,
 	size_t failRate = (shipCount * fraction) / ((lvl * lvl * lvl) + 1);
 	if(failRate > fraction)
 		failRate = fraction;
-	return (fraction - failRate) / double(fraction);
+	return double(fraction - failRate) / double(fraction);
 }
 
 
@@ -396,7 +396,7 @@ bool playerCanLog(Player const& player)
 bool isEscapeSuccess(double escapeProba)
 {
 	static size_t const fraction = 100;
-	return (rand() % fraction) < escapeProba * fraction;
+	return (rand() % fraction) < (escapeProba * double(fraction));
 }
 
 bool playerCanSeeFightReport(Player const& player)
