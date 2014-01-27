@@ -1205,7 +1205,7 @@ void execFleets(
 		UniverseMailBoxes::index_gen indices;
 		auto myview = univMailBoxes[indices[xrange][yrange][zrange]];
 		PlayerData const playerData(player.id, pt.get());
-		for (auto slice : myview)
+		for(auto slice : myview)
 		{
 			for(auto line : slice)
 			{
@@ -1331,16 +1331,11 @@ try
 		alliance.master = &mapFind(playerMap, alliance.masterID)->second;
 
 	//! Calcule du nombre de flottes et planete de chaque joueur
-	for(Player & player : playerMap | boost::adaptors::map_values)
-	{
-		player.planetCount = boost::range::count_if(
-		                       univ_.planetMap | boost::adaptors::map_values,
-		                       boost::bind(&Planet::playerId, _1) == player.id);
-		player.fleetCount = boost::range::count_if(
-		                      univ_.fleetMap | boost::adaptors::map_values,
-		                      boost::bind(&Fleet::playerId, _1) == player.id);
-	}
-
+	for(Universe::PlanetMap::value_type const & kvp : univ_.planetMap)
+		if(kvp.second.playerId != Player::NoId)
+			++playerMap.at(kvp.second.playerId).planetCount;
+	for(Universe::FleetMap::value_type const & kvp : univ_.fleetMap)
+		++playerMap.at(kvp.second.playerId).fleetCount;
 
 	//! Désactivation de tout les codes qui echoue
 	//disableFailingCode(univCopy, codesMap);
