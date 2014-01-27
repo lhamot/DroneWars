@@ -16,8 +16,12 @@
 #include <boost/range/numeric.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/irange.hpp>
+#include <boost/range/algorithm/copy.hpp>
 #include <boost/format.hpp>
+#pragma warning(push)
+#pragma warning(disable: 4189)
 #include <boost/multi_array.hpp>
+#pragma warning(pop)
 
 
 //! Verrou en écriture
@@ -1159,13 +1163,13 @@ void execFleets(
 	//Excecution et stockage des émissions
 	using namespace boost;
 	std::vector<std::shared_ptr<TypedPtree> > mailOwner;
-	typedef std::map<Player::ID, MailBox> PlayersMailBoxes;
-	typedef multi_array<PlayersMailBoxes, 3> UniverseMailBoxes;
-	UniverseMailBoxes univMailBoxes(
-	  extents[Universe::MapSizeZ][Universe::MapSizeY][Universe::MapSizeX]);
+	typedef std::pair<Player::ID, TypedPtree*> PlayerData;
+	typedef std::vector<PlayerData> PlayersData;
+	typedef boost::multi_array<PlayersData, 3> UniverseMailBoxes;
+	static UniverseMailBoxes univMailBoxes(
+	  boost::extents[Universe::MapSizeZ][Universe::MapSizeY][Universe::MapSizeX]);
 
 	size_t emitedCount = 0;
-	size_t storedCount = 0;
 	for(auto iter = fleetMap.begin(); iter != fleetMap.end(); ++iter)
 	{
 		Fleet fleet = iter->second;
@@ -1186,9 +1190,10 @@ void execFleets(
 		mailOwner.push_back(pt);
 		auto bornedRange = [](int first, int pastLast, int bornSup)
 		{
+			typedef boost::multi_array_types::index_range range;
 			return
-			  boost::irange(std::max<int>(std::min<int>(first, pastLast), 0),
-			                std::min<int>(pastLast, bornSup));
+			  range(std::max<int>(std::min<int>(first, pastLast), 0),
+			        std::min<int>(pastLast, bornSup));
 		};
 		auto xrange = bornedRange(
 		                coord.X - (dist - 1), coord.X + dist, Universe::MapSizeX);
@@ -1196,15 +1201,16 @@ void execFleets(
 		                coord.Y - (dist - 1), coord.Y + dist, Universe::MapSizeY);
 		auto zrange = bornedRange(
 		                coord.Z - (dist - 1), coord.Z + dist, Universe::MapSizeZ);
-		for(size_t x : xrange)
+
+		UniverseMailBoxes::index_gen indices;
+		auto myview = univMailBoxes[indices[xrange][yrange][zrange]];
+		PlayerData const playerData(player.id, pt.get());
+		for (auto slice : myview)
 		{
-			for(size_t y : yrange)
+			for(auto line : slice)
 			{
-				for(size_t z : zrange)
-				{
-					univMailBoxes[x][y][z][static_cast<size_t>(player.id)].push_back(pt.get());
-					++storedCount;
-				}
+				for(PlayersData & playersData : line)
+					playersData.push_back(playerData);
 			}
 		}
 	}
@@ -1222,14 +1228,20 @@ void execFleets(
 		Player const& player = mapFind(playerMap, iter->second.playerId)->second;
 		Fleet scriptModifiedFleet = iter->second;
 		Coord coord = scriptModifiedFleet.coord;
-		MailBox mails = univMailBoxes[coord.X][coord.Y][coord.Z][static_cast<size_t>(player.id)];
+		PlayersData allMails = univMailBoxes[coord.X][coord.Y][coord.Z];
+		MailBox playerMails;
+		boost::range::copy(
+		  allMails
+		  | boost::adaptors::filtered(bind(&PlayerData::first, _1) == player.id)
+		  | boost::adaptors::transformed(bind(&PlayerData::second, _1)),
+		  std::back_inserter(playerMails));
 		boost::optional<FleetAction> action =
 		  execFleetScript(univ_,
 		                  engine,
 		                  codesMap[iter->second.playerId].fleetsCode,
 		                  player,
 		                  scriptModifiedFleet,
-		                  mails,
+		                  playerMails,
 		                  events);
 		FleetAndAction fleetAndAction =
 		{
@@ -1257,6 +1269,15 @@ void execFleets(
 			newFleetMap.insert(make_pair(fleet.id, fleet));
 	}
 	newFleetMap.swap(univ_.fleetMap);
+
+	for(auto slice : univMailBoxes)
+	{
+		for(auto line : slice)
+		{
+			for(PlayersData & playersData : line)
+				playersData.clear();
+		}
+	}
 
 	LOG4CPLUS_TRACE(logger, "exit");
 }
