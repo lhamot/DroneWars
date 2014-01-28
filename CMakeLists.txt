@@ -6,10 +6,6 @@ find_path(BOOST_INCLUDE_DIR boost
    PATH_SUFFIXES boost
    DOC "Include directory for boost"
    )
-find_path(LUABIND_INCLUDE_DIR luabind
-   PATH_SUFFIXES luabind
-   DOC "Include directory for luabind"
-   )
 find_path(LUA_INCLUDE_DIR lua
    PATH_SUFFIXES lua
    DOC "Include directory for lua"
@@ -22,18 +18,21 @@ find_path(LOG4CPLUS_INCLUDE_DIR log4cplus
    PATH_SUFFIXES log4cplus
    DOC "Include directory for log4cplus"
    )
+find_path(POCO_INCLUDE_DIR poco
+   PATH_SUFFIXES poco
+   DOC "poco root directory for includes"
+   )   
 include_directories(${BOOST_INCLUDE_DIR})
-include_directories(${LUABIND_INCLUDE_DIR})
 include_directories(${LUA_INCLUDE_DIR})
 include_directories(${THRIFT_INCLUDE_DIR})
 include_directories(${LOG4CPLUS_INCLUDE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/luabind)
+include_directories(${POCO_INCLUDE_DIR}/Foundation/include)
+include_directories(${POCO_INCLUDE_DIR}/Data/include)
+include_directories(${POCO_INCLUDE_DIR}/Data/MySQL/include)
 
 find_path(BOOST_LIBRARY NAMES boost
           DOC "The boost libraries path"
-)
-find_path(LUABIND_LIBRARY NAMES luabind
-          DOC "The luabind libraries path"
 )
 find_path(LUA_LIBRARY NAMES lua
           DOC "The lua libraries path"
@@ -44,37 +43,43 @@ find_path(THRIFT_LIBRARY NAMES thrift
 find_path(LOG4CPLUS_LIBRARY NAMES log4cplus
           DOC "The log4cplus libraries path"
 )
+find_path(POCO_LIBRARY NAMES poco
+          DOC "The POCO libraries path"
+)
 
 link_directories(${BOOST_LIBRARY})
-link_directories(${LUABIND_LIBRARY})
 link_directories(${LUA_LIBRARY})
 link_directories(${THRIFT_LIBRARY})
 link_directories(${LOG4CPLUS_LIBRARY})
+link_directories(${POCO_LIBRARY})
 
 # Déclaration de l'exécutable
 add_executable(
     DroneWars
-    src/Engine.cpp       
-    src/EngineServerHandler.cpp       
+    src/DataBase.cpp
+    src/Engine.cpp
+    src/EngineServerHandler.cpp
     src/fighting.cpp
     src/LuaTools.cpp
     src/LuaUniverse.cpp
     src/main.cpp
-    src/Model.cpp
     src/NameGen.cpp
-    src/Simulation.cpp
-    src/stdafx.cpp
-    src/stl_container_adapter.cpp
+    src/portable_binary_iarchive.cpp
+    src/portable_binary_oarchive.cpp
+    src/PTreeLuaHelper.cpp
     src/Rules.cpp
+    src/Simulation.cpp
+    src/Skills.cpp
+    src/stdafx.cpp
+    src/testFight.cpp
+    src/Tools.cpp
+    src/TypedPtree.cpp
+    src/UnivManip.cpp
     src/gen-cpp/EngineServer.cpp
     src/gen-cpp/thrift_constants.cpp
     src/gen-cpp/thrift_types.cpp
-    src/portable_binary_iarchive.cpp
-    src/portable_binary_oarchive.cpp
 )
 
-target_link_libraries( DroneWars debug luabindd )
-target_link_libraries( DroneWars optimized luabind )
 
 target_link_libraries( DroneWars debug luad )
 target_link_libraries( DroneWars optimized lua )

@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <iostream>
 #include <type_traits>
+#include <limits>
 
 extern "C"
 {

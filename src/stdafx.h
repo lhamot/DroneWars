@@ -58,3 +58,4 @@
 #include <boost/property_tree/ptree.hpp>
 #pragma warning(pop)
 
+#define NOMINMAX
