@@ -24,7 +24,7 @@ public:
 	//! @param name : Nom du skill
 	explicit ISkill(std::string const& name): name_(name) {}
 
-	virtual ~ISkill() = 0 {};
+	virtual ~ISkill() {};
 
 	//! Retourne le nom du skill
 	std::string const& getName() const

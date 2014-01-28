@@ -26,7 +26,6 @@
 #include <Poco/Data/MySQL/Connector.h>
 #include <Poco/Data/BLOB.h>
 #include <Poco/Tuple.h>
-#include <Poco/Nullable.h>
 #pragma warning(pop)
 
 #include "NameGen.h"
@@ -438,8 +437,9 @@ Player playerFromTuple(PlayerTmp const& playerTup)
 		boost::split(strs, playerTup.get<10>(), boost::is_any_of(","));
 		if(strs.size() > player.skilltab.size())
 			BOOST_THROW_EXCEPTION(std::logic_error("Too mush skills in tab"));
+		auto toUInt16 = [](string const & str) {return lexical_cast<uint16_t>(str);};
 		transform(
-		  strs, player.skilltab.begin(), lexical_cast<uint16_t, string>);
+		  strs, player.skilltab.begin(), toUInt16);
 	}
 	return player;
 }
@@ -1030,6 +1030,18 @@ try
 }
 DB_CATCH
 
+std::string skillTabToString(Player::SkillTab const& skillTab)
+{
+	std::stringstream ss;
+	bool first = true;
+	for(uint16_t val : skillTab)
+	{
+		if(!first)
+			ss << ",";
+		ss << val;
+	}
+	return ss.str();
+}
 
 bool DataBase::buySkill(Player::ID pid, int16_t skillID)
 try
@@ -1047,8 +1059,7 @@ try
 
 	pla.skilltab.at(skillID) += 1;
 
-	string const skilltabstr =
-	  join(pla.skilltab | transformed(lexical_cast<string, uint16_t>), ",");
+	string const skilltabstr = skillTabToString(pla.skilltab);
 	(*session_) <<
 	            "UPDATE Player SET "
 	            "skillpoints = skillpoints - ?, "
@@ -1069,8 +1080,7 @@ void DataBase::setPlayerSkills(Player::ID pid,
 {
 	Transaction trans(*session_);
 
-	string const skilltabstr =
-	  join(skillTab | transformed(lexical_cast<string, uint16_t>), ",");
+	string const skilltabstr = skillTabToString(skillTab);
 	(*session_) <<
 	            "UPDATE Player SET "
 	            "skilltab = ? "
