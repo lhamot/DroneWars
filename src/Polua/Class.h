@@ -17,20 +17,31 @@ extern "C"
 
 namespace Polua
 {
+// C'est tres tres moche mais j'ai besoin de stocker tout type de pointeurs
+// dans un meme emplacement memoire.
+struct VoidPtr
+{
+	void* a;
+	void* b;
+	void* c;
+};
+
+static VoidPtr const NullPtr = { 0, 0, 0 };
+
 //! @brief Contient un pointeur sur une methode avec son wrapper lua
 //! (util pour le binding de methodes)
 struct Methode
 {
 	lua_CFunction caller;   //!< permet a lua d'appeler la methode
-	void* func;             //!< Pointeur sur la méthode a appeler
+	VoidPtr func;           //!< Pointeur sur la méthode a appeler
 	//! default ctor
-	Methode(): caller(nullptr), func(nullptr) {}
+	Methode() : caller(nullptr), func(NullPtr) {}
 	//! ctor
-	Methode(lua_CFunction caller, void* func): caller(caller), func(func) {}
+	Methode(lua_CFunction caller, VoidPtr func) : caller(caller), func(func) {}
 };
 //! @brief Pointeur de fonction servant a excecuter un Setter ou Getter
 //! (util pour le binding des propriétés)
-typedef int (*Xetter)(lua_State*, void*);
+typedef int(*Xetter)(lua_State*, VoidPtr);
 
 //! Contient toutes les infos sur une méthode ou propriété d'un objet
 struct Member
@@ -38,12 +49,12 @@ struct Member
 	Methode methode;     //!< Wrapper de methode (peut ètre null)
 	Xetter getter;       //!< Wrapper de getter (peut ètre null)
 	Xetter setter;       //!< Wrapper de setter (peut ètre null)
-	void* attibPtr;      //!< Pointeur sur l'attribut des Xetter
+	VoidPtr attibPtr;    //!< Pointeur sur l'attribut des Xetter
 	//! ctor
 	explicit Member(Methode const& f):
-		methode(f), getter(nullptr), setter(nullptr), attibPtr(nullptr) {}
+		methode(f), getter(nullptr), setter(nullptr), attibPtr(NullPtr) {}
 	//! ctor
-	Member(void* attibPtr, Xetter get, Xetter set = nullptr):
+	Member(VoidPtr attibPtr, Xetter get, Xetter set = nullptr) :
 		getter(get), setter(set), attibPtr(attibPtr) {assert(get);}
 };
 
@@ -61,30 +72,31 @@ inline void setInMetatable(
 namespace ClassHelpers
 {
 
-//! Convertie un void* dans le type véritable d'une methode menbre
+//! Convertie un VoidPtr dans le type véritable d'une methode menbre
 template<typename O>
-static O toMember(void* in)
+static O toMember(VoidPtr in)
 {
-	static_assert(sizeof(void*) >= sizeof(O), "Can't cast");
+	static_assert(sizeof(VoidPtr) >= sizeof(O), "Can't cast");
 	union
 	{
-		void* input;
+		VoidPtr input;
 		O output;
 	};
 	input = in;
 	return output;
 }
 
-//! Convertie le type véritable d'une methode membre en void*
+//! Convertie le type véritable d'une methode membre en VoidPtr
 template<typename I>
-void* memberToVoid(I in)
+VoidPtr memberToVoid(I in)
 {
-	static_assert(sizeof(void*) >= sizeof(I), "Can't cast");
+	static_assert(sizeof(VoidPtr) >= sizeof(I), "Can't cast");
 	union
 	{
 		I input;
-		void* output;
+		VoidPtr output;
 	};
+	output = VoidPtr { 0, 0, 0 };
 	input = in;
 	return output;
 }
@@ -101,8 +113,15 @@ struct ObjAndMethode
 	//! ctor : extrai l'obj et la methode de la pile en position 1 et 2.
 	ObjAndMethode(lua_State* L):
 		object(userdata_fromstack<Obj>(L, lua_upvalueindex(1))),
-		methode(toMember<MPtr>(lua_touserdata(L, lua_upvalueindex(2))))
+		methode(nullptr)
 	{
+		VoidPtr ptr =
+		{
+			lua_touserdata(L, lua_upvalueindex(2)),
+			lua_touserdata(L, lua_upvalueindex(3)),
+			lua_touserdata(L, lua_upvalueindex(4))
+		};
+		methode = toMember<MPtr>(ptr);
 	}
 };
 
@@ -374,13 +393,15 @@ class Class
 			if(member->methode.caller)                          // Si c'est une methode
 			{
 				lua_pushvalue(L, 1);                            //   Remet l'objet sur le dessu de la pile
-				lua_pushlightuserdata(L, member->methode.func); //   Et la fonction par dessu
-				lua_pushcclosure(L, member->methode.caller, 2); //   Retourne l'appelant avec deux arguments prédefinit
+				lua_pushlightuserdata(L, member->methode.func.a); //   Et la fonction par dessu
+				lua_pushlightuserdata(L, member->methode.func.b); //   Et la fonction par dessu
+				lua_pushlightuserdata(L, member->methode.func.c); //   Et la fonction par dessu
+				lua_pushcclosure(L, member->methode.caller, 4); //   Retourne l'appelant avec deux arguments prédefinit
 				return 1;
 			}
 			else if(member->getter)
 				return member->getter(
-				         L, ClassHelpers::memberToVoid(member->attibPtr));
+				         L, member->attibPtr);
 			else
 			{
 				std::string name = Polua::fromstack<std::string>(L, 2);
@@ -416,7 +437,7 @@ class Class
 			lua_pop(L, 2);    // Pop metatable and member
 			if(member->setter)
 				return member->setter(
-				         L, ClassHelpers::memberToVoid(member->attibPtr));
+				         L, member->attibPtr);
 			else
 			{
 				std::string name = Polua::fromstack<std::string>(L, 2);
@@ -522,7 +543,7 @@ class Class
 
 	//! Permet de stoker un getter universel dans un Polua::Member, dans lua
 	template<typename A>
-	static int getter(lua_State* L, void* voidMemberPtr)
+	static int getter(lua_State* L, VoidPtr voidMemberPtr)
 	{
 		A T::*memberPtr = ClassHelpers::toMember<A T::*>(voidMemberPtr);
 		T* ptr = userdata_fromstack<T>(L, 1);
@@ -532,7 +553,7 @@ class Class
 
 	//! Permet de stoker un setter universel dans un Polua::Member, dans lua
 	template<typename A>
-	static int setter(lua_State* L, void* voidMemberPtr)
+	static int setter(lua_State* L, VoidPtr voidMemberPtr)
 	{
 		A T::*memberPtr = ClassHelpers::toMember<A T::*>(voidMemberPtr);
 		T* ptr = userdata_fromstack<T>(L, 1);
@@ -635,7 +656,7 @@ public:
 	//! Ajoute une methode au type T, a partir d'un lua_CFunction
 	Class& methode(std::string const& name, lua_CFunction methode)
 	{
-		Member mem(Methode(methode, nullptr));
+		Member mem(Methode(methode, VoidPtr()));
 		setInMetatable(L, name, mem);
 		return *this;
 	}

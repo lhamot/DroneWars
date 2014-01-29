@@ -10,6 +10,7 @@
 #include <iostream>
 #include <type_traits>
 #include <limits>
+#include <exception>
 
 extern "C"
 {
@@ -60,7 +61,7 @@ public:
 		if(lua_gettop(L) != startValue + expectedDiff)
 		{
 			std::cout << funcName + " Bad stack managment" << std::endl;
-			terminate();
+			std::terminate();
 		}
 	}
 };
@@ -150,7 +151,7 @@ public:
 	WrapperBase() {}
 
 	//! Destructeur virtuel
-	virtual ~WrapperBase() = 0 {};
+	virtual ~WrapperBase() {};
 
 	//! Recupere le pointeur sur l'objet stoqué
 	virtual T* getPtr() = 0;
@@ -221,10 +222,10 @@ static T* check(lua_State* L, int narg)
 //! @brief Extrait un objet primitif de la pile
 //! @remark Ne compile pas si T n'est pas primitif
 template<typename T>
-T fromstack(lua_State* L, int index)
-{
-	static_assert(false, "Can't compile with this type");
-}
+T fromstack(lua_State* L, int index);
+//{
+//	static_assert(false, "Can't compile with this type");
+//}
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 template<>
 inline bool fromstack<bool>(lua_State* L, int index)
@@ -284,6 +285,16 @@ U uint_fromstack(lua_State* L, int index)
 	{                                                                         \
 		return int_fromstack<I>(L, index);                                    \
 	}
+#ifdef BOOST_GCC
+POLUA_DECL_INT(char)
+POLUA_DECL_INT(unsigned char)
+POLUA_DECL_INT(short)
+POLUA_DECL_INT(unsigned short)
+POLUA_DECL_INT(int)
+POLUA_DECL_INT(unsigned int)
+POLUA_DECL_INT(long)
+POLUA_DECL_INT(unsigned long)
+#endif
 POLUA_DECL_INT(int8_t)
 POLUA_DECL_INT(int16_t)
 POLUA_DECL_INT(int32_t)

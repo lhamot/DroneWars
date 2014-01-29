@@ -84,4 +84,4 @@ bool canGather(Player const& player,
                Fleet const& fleet2);
 
 
-#endif __NDW_UNIV_MANIP__
+#endif //__NDW_UNIV_MANIP__
