@@ -1661,7 +1661,7 @@ void Simulation::removeOldSaves() const
 			continue;//Ce n'est pas une archive normal
 
 		std::string const timeStr = path.path().stem().string().substr(0, 10);
-		time_t const timeValue = boost::lexical_cast<time_t>(timeStr);
+		time_t const timeValue = LEXICAL_CAST(time_t, timeStr);
 		timeSet.insert(timeValue);
 	}
 

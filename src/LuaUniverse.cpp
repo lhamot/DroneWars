@@ -190,7 +190,7 @@ int luaCFunction_log(lua_State* L)
 	lua_getinfo(L, "nSl", &ar);
 	int const line = ar.currentline;
 	std::string const newText =
-	  oldText + "__LINE__ " + boost::lexical_cast<std::string>(line) +
+	  oldText + "__LINE__ " + LEXICAL_CAST(std::string, line) +
 	  " - " + newMessage + "\n";
 	Polua::push(L, newText);
 	lua_setglobal(L, "logger");

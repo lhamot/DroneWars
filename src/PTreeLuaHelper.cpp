@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "PTreeLuaHelper.h"
+#include "Tools.h"
 
 void push(lua_State* L, Any const& any)
 {
@@ -155,13 +156,13 @@ int ptree_tostring(lua_State* L)
 			lua_pushnil(L);
 			return 1;
 		case AnyTypeList::Boolean:
-			Polua::pushTemp(L, lexical_cast<std::string>(get<bool>(*value)));
+			Polua::pushTemp(L, LEXICAL_CAST(std::string, get<bool>(*value)));
 			return 1;
 		case AnyTypeList::Integer:
-			Polua::pushTemp(L, lexical_cast<std::string>(get<int64_t>(*value)));
+			Polua::pushTemp(L, LEXICAL_CAST(std::string, get<int64_t>(*value)));
 			return 1;
 		case AnyTypeList::Decimal:
-			Polua::pushTemp(L, lexical_cast<std::string>(get<double>(*value)));
+			Polua::pushTemp(L, LEXICAL_CAST(std::string, get<double>(*value)));
 			return 1;
 		case AnyTypeList::Text:
 			Polua::pushTemp(L, get<std::string>(*value));

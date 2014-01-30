@@ -437,7 +437,7 @@ Player playerFromTuple(PlayerTmp const& playerTup)
 		boost::split(strs, playerTup.get<10>(), boost::is_any_of(","));
 		if(strs.size() > player.skilltab.size())
 			BOOST_THROW_EXCEPTION(std::logic_error("Too mush skills in tab"));
-		auto toUInt16 = [](string const & str) {return lexical_cast<uint16_t>(str);};
+		auto toUInt16 = [](string const & str) {return LEXICAL_CAST(uint16_t, str); };
 		transform(
 		  strs, player.skilltab.begin(), toUInt16);
 	}

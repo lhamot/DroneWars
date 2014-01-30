@@ -131,5 +131,24 @@ void staticIf(F f)
 	StaticIf<B>::exec(f);
 }
 
+template<typename O, typename I>
+O lexicalCast(I in, char const* const filename, int line)
+{
+	try
+	{
+		return boost::lexical_cast<O>(in);
+	}
+	catch(boost::bad_lexical_cast& blc)
+	{
+		boost::throw_exception(
+		  boost::enable_error_info(blc) <<
+		  boost::throw_file(filename) <<
+		  boost::throw_line(line));
+	}
+}
+
+#define LEXICAL_CAST(O, in) \
+	lexicalCast<O>(in, __FILE__, __LINE__)
+
 
 #endif //__BTA_TOOLS__

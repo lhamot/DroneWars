@@ -1,5 +1,6 @@
 #include "TypedPtree.h"
 #include "Polua/Class.h"
+#include "Tools.h"
 
 extern "C"
 {
@@ -85,13 +86,13 @@ struct Indexer<TypedPtree>
 		case LUA_TNUMBER:
 		{
 			double const path = lua_tonumber(L, -1);
-			pushPers(L, ptree_get_child(*pt, lexical_cast<std::string>(path)));
+			pushPers(L, ptree_get_child(*pt, LEXICAL_CAST(std::string, path)));
 			return 1;
 		}
 		case LUA_TBOOLEAN:
 		{
 			int const path = lua_toboolean(L, -1);
-			pushPers(L, ptree_get_child(*pt, lexical_cast<std::string>(path)));
+			pushPers(L, ptree_get_child(*pt, LEXICAL_CAST(std::string, path)));
 			return 1;
 		}
 		case LUA_TSTRING:
@@ -113,12 +114,12 @@ struct Indexer<TypedPtree>
 		case LUA_TNUMBER:
 		{
 			double const path = lua_tonumber(L, -2);
-			return set(L, boost::lexical_cast<std::string>(path));
+			return set(L, LEXICAL_CAST(std::string, path));
 		}
 		case LUA_TBOOLEAN:
 		{
 			int const path = lua_toboolean(L, -2);
-			return set(L, boost::lexical_cast<std::string>(path));
+			return set(L, LEXICAL_CAST(std::string, path));
 		}
 		case LUA_TSTRING:
 			return set(L, lua_tostring(L, -2));
