@@ -80,14 +80,22 @@ add_executable(
 )
 
 
-target_link_libraries( DroneWars debug luad )
-target_link_libraries( DroneWars optimized lua )
+target_link_libraries( DroneWars debug luad5.2 )
+target_link_libraries( DroneWars optimized lua5.2 )
 
 target_link_libraries( DroneWars debug thriftd )
 target_link_libraries( DroneWars optimized thrift )
 
 target_link_libraries( DroneWars debug log4cplusd )
 target_link_libraries( DroneWars optimized log4cplus )
+
+target_link_libraries( DroneWars debug PocoDatad )
+target_link_libraries( DroneWars debug PocoFoundationd )
+target_link_libraries( DroneWars debug PocoMySQLd )
+
+target_link_libraries( DroneWars optimized PocoData )
+target_link_libraries( DroneWars optimized PocoFoundation )
+target_link_libraries( DroneWars optimized PocoMySQL )
 
 if(CMAKE_COMPILER_IS_GNUCXX)
     target_link_libraries( DroneWars debug boost_threadd )
