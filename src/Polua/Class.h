@@ -161,7 +161,7 @@ struct MemCallerR<R(T::*)(Args...)>
 
 static int call(lua_State* L)
 {
-	return call2(L, detail::ArgIdxListMaker<Args...>::Type());
+	return call2(L, typename detail::ArgIdxListMaker<Args...>::Type());
 }
 };
 
@@ -184,7 +184,7 @@ struct MemCallerR<R(T::*)(Args...) const>
 
 	static int call(lua_State* L)
 	{
-		return call2(L, detail::ArgIdxListMaker<Args...>::Type());
+		return call2(L, typename detail::ArgIdxListMaker<Args...>::Type());
 	}
 };
 
@@ -208,7 +208,7 @@ struct MemCallerR<R(*)(T, Args...)>
 }
 static int call(lua_State* L)
 {
-	return call2(L, detail::ArgIdxListMaker<Args...>::Type());
+	return call2(L, typename detail::ArgIdxListMaker<Args...>::Type());
 }
 };
 
@@ -235,7 +235,7 @@ struct MemCaller<void(T::*)(Args...)>
 }
 static int call(lua_State* L)
 {
-	return call2(L, detail::ArgIdxListMaker<Args...>::Type());
+	return call2(L, typename detail::ArgIdxListMaker<Args...>::Type());
 }
 };
 
@@ -254,7 +254,7 @@ struct MemCaller<void(T::*)(Args...) const>
 	}
 	static int call(lua_State* L)
 	{
-		return call2(L, detail::ArgIdxListMaker<Args...>::Type());
+		return call2(L, typename detail::ArgIdxListMaker<Args...>::Type());
 	}
 };
 
@@ -275,7 +275,7 @@ struct MemCaller<void(*)(T, Args...)>
 }
 static int call(lua_State* L)
 {
-	return call2(L, detail::ArgIdxListMaker<Args...>::Type());
+	return call2(L, typename detail::ArgIdxListMaker<Args...>::Type());
 }
 };
 
@@ -460,7 +460,7 @@ class Class
 		static int constructor(lua_State* L)
 		{
 			return constructor2(
-			         L, detail::ArgIdxListMaker<Args...>::Type());
+			         L, typename detail::ArgIdxListMaker<Args...>::Type());
 		};
 
 	private:
@@ -559,13 +559,6 @@ class Class
 		T* ptr = userdata_fromstack<T>(L, 1);
 		ptr->*memberPtr = Polua::fromstackAny<A>(L, -1);
 		return 0;
-	}
-
-	//! Ajoute un Polua::Methode au type T
-	Class& methode(std::string const& name, Methode const& methode)
-	{
-		setInMetatable(L, name, Member(methode, LuaCFunc(), LuaCFunc()));
-		return *this;
 	}
 
 public:

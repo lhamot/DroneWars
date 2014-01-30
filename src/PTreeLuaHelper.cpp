@@ -3,7 +3,7 @@
 
 void push(lua_State* L, Any const& any)
 {
-	switch(any.which())
+	switch((AnyTypeList)any.which())
 	{
 	case AnyTypeList::Nil:
 		lua_pushnil(L);
@@ -149,7 +149,7 @@ int ptree_tostring(lua_State* L)
 	optional<Any> const& value = pt.get_value_optional<Any>();
 	if(value)
 	{
-		switch(value->which())
+		switch((AnyTypeList)value->which())
 		{
 		case AnyTypeList::Nil:
 			lua_pushnil(L);

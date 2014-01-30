@@ -37,7 +37,8 @@ void regFunc(lua_State* L,             //!< Donnée de l'interpréteur lua
             )
 {
 	POLUA_CHECK_STACK(L, 0);
-	lua_pushlightuserdata(L, funcPtr); // Pousse la function c++ sur la pile
+	static_assert(sizeof(void*) >= sizeof(F), "Can't cast");
+	lua_pushlightuserdata(L, reinterpret_cast<void*>(funcPtr)); // Pousse la function c++ sur la pile
 	lua_pushcclosure(L, caller, 1);    // pop la function et pousse le closure
 	lua_setglobal(L, name.c_str());    // Le transfert dans la memoire global
 }
@@ -71,7 +72,7 @@ struct Caller<R(*)(Args...)>
 
 static int call(lua_State* L)
 {
-	return call2(L, detail::ArgIdxListMaker<Args...>::Type());
+	return call2(L, typename detail::ArgIdxListMaker<Args...>::Type());
 }
 };
 
@@ -93,7 +94,7 @@ struct Caller<void(*)(Args...)>
 
 static int call(lua_State* L)
 {
-	return call2(L, detail::ArgIdxListMaker<Args...>::Type());
+	return call2(L, typename detail::ArgIdxListMaker<Args...>::Type());
 }
 };
 

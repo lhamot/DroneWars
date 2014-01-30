@@ -1370,7 +1370,9 @@ try
 	{
 		if(ev.type == Event::FleetCodeError || ev.type == Event::PlanetCodeError)
 		{
-			DataBase::CodeError err = {ev.value, ev.comment};
+			//On sait que ev.value est positif car il est l'ID du CodeData
+			DataBase::CodeError err =
+			{boost::numeric_cast<size_t>(ev.value), ev.comment};
 			errorVect.push_back(err);
 		}
 	}
