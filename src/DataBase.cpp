@@ -1039,6 +1039,7 @@ std::string skillTabToString(Player::SkillTab const& skillTab)
 		if(!first)
 			ss << ",";
 		ss << val;
+		first = false;
 	}
 	return ss.str();
 }
