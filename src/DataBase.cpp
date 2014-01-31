@@ -50,11 +50,8 @@ std::string toString(BLOB const& blob)
 std::string hashPassword(std::string const& rawPassword)
 {
 	SHA1Engine sha1;
-	DigestOutputStream outstr(sha1);
-	outstr << rawPassword;
-	outstr.flush(); //to pass everything to the digest engine
-	const DigestEngine::Digest& digest = sha1.digest();
-	return DigestEngine::digestToHex(digest);
+	sha1.update(rawPassword.c_str(), (unsigned int)rawPassword.size());
+	return DigestEngine::digestToHex(sha1.digest());
 }
 
 //! Crée une transaction RAII (qui rollback à la destruction si pas de commit)
