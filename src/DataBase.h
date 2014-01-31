@@ -58,7 +58,7 @@ namespace Poco {namespace Data {class Session;}}
 class DataBase
 {
 	//! Handle de connection a la base de donnée
-	std::unique_ptr<Poco::Data::Session> session_;
+	mutable std::unique_ptr<Poco::Data::Session> session_;
 
 	//! Ajoute un script lua planète ou flotte, à un joueur, sans transaction
 	void addScriptImpl(Player::ID pid,

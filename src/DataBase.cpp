@@ -82,21 +82,36 @@ public:
 #define DB_CATCH \
 	catch(Poco::Data::DataException const& ex)                                \
 	{                                                                         \
+		std::cout << ex.code() << std::endl;                                  \
+		if (ex.code() == 2006 || ex.code() == 2013)                           \
+			session_.reset();                                                 \
 		LOG4CPLUS_ERROR(                                                      \
 		    log4cplus::Logger::getInstance("DataBase"), ex.displayText());    \
 		BOOST_THROW_EXCEPTION(DataBase::Exception(ex.displayText()));         \
 	}
 
+//! Reconnecte si la connecion est perdue
+void checkConnection(std::unique_ptr<Poco::Data::Session>& session)
+{
+	Poco::Data::DataException ex;
+	if(session == nullptr || session->isConnected() == false)
+	{
+		LOG4CPLUS_DEBUG(
+		  log4cplus::Logger::getInstance("DataBase"), "Connection!");
+		session.reset(new Session("MySQL",
+		                          "host=localhost;"
+		                          "port=3306;"
+		                          "db=dronewars;"
+		                          "user=Blaspheme;"
+		                          "password=pdcx3wady6nsMfUm"));
+	}
+}
+
 DataBase::DataBase()
 try
 {
 	Poco::Data::MySQL::Connector::registerConnector();
-	session_.reset(new Session("MySQL",
-	                           "host=localhost;"
-	                           "port=3306;"
-	                           "db=dronewars;"
-	                           "user=Blaspheme;"
-	                           "password=pdcx3wady6nsMfUm"));
+	checkConnection(session_);
 
 	(*session_) <<
 	            "CREATE TABLE "
@@ -325,6 +340,7 @@ void DataBase::addScriptImpl(Player::ID pid,
                              std::string const& code)
 try
 {
+	checkConnection(session_);
 	(*session_) <<
 	            "INSERT INTO Script "
 	            "(playerID, time, target, code) "
@@ -343,6 +359,7 @@ void DataBase::addBlocklyCodeImpl(Player::ID pid,
                                   std::string const& code)
 try
 {
+	checkConnection(session_);
 	(*session_) <<
 	            "INSERT INTO BlocklyCode "
 	            "(playerID, time, target, code) "
@@ -361,6 +378,7 @@ Player::ID DataBase::addPlayer(std::string const& login,
                                std::vector<std::string> const& codes)
 try
 {
+	checkConnection(session_);
 	Transaction trans(*session_);
 	std::cout << login << " " << password << std::endl;
 	(*session_) <<
@@ -400,6 +418,7 @@ DB_CATCH
 void DataBase::setPlayerMainPlanet(Player::ID pid, Coord mainPlanet)
 try
 {
+	checkConnection(session_);
 	(*session_) <<
 	            "UPDATE Player "
 	            "SET planetCoordX = ?, planetCoordY = ?, planetCoordZ = ? "
@@ -456,6 +475,7 @@ boost::optional<Player> DataBase::getPlayer(
   std::string const& password) const
 try
 {
+	checkConnection(session_);
 	std::vector<PlayerTmp> playerList;
 	(*session_) <<
 	            GetPlayerRequest <<
@@ -472,6 +492,7 @@ DB_CATCH
 std::vector<Player> DataBase::getPlayers() const
 try
 {
+	checkConnection(session_);
 	std::vector<PlayerTmp> playerList;
 	(*session_) << GetPlayerRequest, into(playerList), now;
 	std::vector<Player> outPlayerList;
@@ -485,6 +506,7 @@ DB_CATCH
 
 std::map<Player::ID, Player> DataBase::getPlayerMap() const
 {
+	checkConnection(session_);
 	std::vector<PlayerTmp> playerList;
 	(*session_) << GetPlayerRequest, into(playerList), now;
 	std::map<Player::ID, Player> outPlayerList;
@@ -499,6 +521,7 @@ std::map<Player::ID, Player> DataBase::getPlayerMap() const
 Player DataBase::getPlayer(Player::ID id) const
 try
 {
+	checkConnection(session_);
 	std::vector<PlayerTmp> playerList;
 	(*session_) << GetPlayerRequest << "WHERE Player.id = ?",
 	            into(playerList), use(id), now;
@@ -516,6 +539,7 @@ try
 {
 	if(events.empty())
 		return;
+	checkConnection(session_);
 	typedef Poco::Tuple < time_t, int, std::string const&, intptr_t, intptr_t,
 	        int, Player::ID, Fleet::ID, Coord::Value, Coord::Value,
 	        Coord::Value > DBEvent;
@@ -546,6 +570,7 @@ DB_CATCH
 void DataBase::removeOldEvents(std::map<Player::ID, size_t> const& maxEventCountPerPlayer)
 try
 {
+	checkConnection(session_);
 	Transaction trans(*session_);
 
 	for(auto maxEventCount : maxEventCountPerPlayer)
@@ -611,6 +636,7 @@ Event toEvent(DBEvent const& ev)
 std::vector<Event> DataBase::getPlayerEvents(Player::ID pid) const
 try
 {
+	checkConnection(session_);
 	std::vector<DBEvent> dbEvents;
 	(*session_) <<
 	            "SELECT * FROM Event "
@@ -639,6 +665,7 @@ std::vector<Event> DataBase::getPlanetEvents(Player::ID pid,
     Coord pcoord) const
 try
 {
+	checkConnection(session_);
 	std::vector<Event> out;
 
 	std::vector<DBEvent> dbEvents;
@@ -664,6 +691,7 @@ std::vector<Event> DataBase::getFleetEvents(
   Player::ID pid, Fleet::ID fid) const
 try
 {
+	checkConnection(session_);
 	std::vector<Event> out;
 	std::vector<DBEvent> dbEvents;
 	(*session_) <<
@@ -683,6 +711,7 @@ DB_CATCH
 void  DataBase::resetPlanetEvents(Coord pcoord)
 try
 {
+	checkConnection(session_);
 	(*session_) <<
 	            "DELETE FROM Event "
 	            "WHERE"
@@ -695,6 +724,7 @@ DB_CATCH
 size_t DataBase::addFightReport(FightReport const& report)
 try
 {
+	checkConnection(session_);
 	using namespace boost::archive;
 	Transaction trans(*session_);
 	std::string data;
@@ -715,6 +745,7 @@ DB_CATCH
 size_t DataBase::addFightReports(std::vector<FightReport> const& reports)
 try
 {
+	checkConnection(session_);
 	using namespace boost::archive;
 	Transaction trans(*session_);
 	std::string data;
@@ -743,6 +774,7 @@ DB_CATCH
 FightReport DataBase::getFightReport(size_t reportID)
 try
 {
+	checkConnection(session_);
 	FightReport report;
 	Poco::Data::BLOB data;
 	(*session_) << "SELECT data FROM FightReport WHERE id = ?",
@@ -765,6 +797,7 @@ size_t DataBase::addScript(Player::ID pid,
                            std::string const& code)
 try
 {
+	checkConnection(session_);
 	Transaction trans(*session_);
 	addScriptImpl(pid, target, code);
 	size_t id = 0;
@@ -780,6 +813,7 @@ size_t DataBase::addBlocklyCode(Player::ID pid,
                                 std::string const& code)
 try
 {
+	checkConnection(session_);
 	Transaction trans(*session_);
 	addBlocklyCodeImpl(pid, target, code);
 	size_t id = 0;
@@ -852,6 +886,7 @@ try
 {
 	if(errors.empty())
 		return;
+	checkConnection(session_);
 	Transaction trans(*session_);
 	(*session_) <<
 	            "UPDATE Script SET lastError = ? WHERE id = ? ",
@@ -865,6 +900,7 @@ DB_CATCH
 CodeData DataBase::getPlayerCode(Player::ID pid, CodeData::Target target) const
 try
 {
+	checkConnection(session_);
 	typedef Poco::Tuple < size_t, Player::ID, time_t, size_t,
 	        BLOB, BLOB > ScriptTuple;
 	ScriptTuple scrData;
@@ -901,6 +937,7 @@ DB_CATCH
 void DataBase::eraseAccount(Player::ID pid)
 try
 {
+	checkConnection(session_);
 	Transaction trans(*session_);
 	std::string const login = nameGen();
 	std::string const password = "gfd8fg451g51df8hgdf";
@@ -922,6 +959,7 @@ void DataBase::incrementTutoDisplayed(std::vector<Player::ID> const& pids,
                                       std::string const& tutoName)
 try
 {
+	checkConnection(session_);
 	std::stringstream ss;
 	ss << "UPDATE TutoDisplayed "
 	   "SET level = level + 1 "
@@ -938,6 +976,7 @@ void DataBase::incrementTutoDisplayed(Player::ID pid,
                                       std::string const& tutoName)
 try
 {
+	checkConnection(session_);
 	Transaction trans(*session_);
 	(*session_) <<
 	            "INSERT IGNORE INTO TutoDisplayed "
@@ -955,6 +994,7 @@ DB_CATCH
 DataBase::PlayerTutoMap DataBase::getTutoDisplayed(Player::ID pid) const
 try
 {
+	checkConnection(session_);
 	PlayerTutoMap result;
 	typedef Poco::Tuple<std::string, size_t> TutoTuple;
 	std::vector<TutoTuple> tutos;
@@ -973,6 +1013,7 @@ std::map<Player::ID, DataBase::PlayerTutoMap>
 DataBase::getAllTutoDisplayed() const
 try
 {
+	checkConnection(session_);
 	std::map<Player::ID, PlayerTutoMap> result;
 	typedef Poco::Tuple<Player::ID, std::string, size_t> TutoTuple;
 	std::vector<TutoTuple> tutos;
@@ -987,6 +1028,7 @@ DB_CATCH
 void DataBase::updateScore(std::map<Player::ID, uint64_t> const& scoreMap)
 try
 {
+	checkConnection(session_);
 	Transaction trans(*session_);
 	typedef Poco::Tuple<uint64_t, Player::ID> ScoreTuple;
 	std::vector<ScoreTuple> scoreVect;
@@ -1005,6 +1047,7 @@ try
 {
 	if(expMap.empty())
 		return;
+	checkConnection(session_);
 	Transaction trans(*session_);
 	typedef Poco::Tuple<uint32_t, Player::ID> expTuple;
 	std::vector<expTuple> scoreVect;
@@ -1050,6 +1093,7 @@ try
 	if(skillID >= Skill::Count || skillID < 0)
 		BOOST_THROW_EXCEPTION(std::logic_error("invalid skillID"));
 
+	checkConnection(session_);
 	Transaction trans(*session_);
 	Player pla = getPlayer(pid);
 	size_t const cost = Skill::List[skillID]->skillCost(pla.skilltab.at(skillID)) * 100;
@@ -1079,6 +1123,7 @@ DB_CATCH
 void DataBase::setPlayerSkills(Player::ID pid,
                                Player::SkillTab const& skillTab)
 {
+	checkConnection(session_);
 	Transaction trans(*session_);
 
 	string const skilltabstr = skillTabToString(skillTab);
@@ -1101,6 +1146,7 @@ void DataBase::addMessage(Player::ID sender,
                           std::string const& mes)
 try
 {
+	checkConnection(session_);
 	(*session_) <<
 	            "INSERT INTO Message "
 	            "(sender, recipient, time, suject, message) "
@@ -1113,6 +1159,7 @@ DB_CATCH
 std::vector<Message> DataBase::getMessages(Player::ID recipient)
 try
 {
+	checkConnection(session_);
 	typedef Tuple < Message::ID, Player::ID, Player::ID, time_t, std::string,
 	        BLOB, std::string > MessageTup;
 	std::vector<MessageTup> messages;
@@ -1144,6 +1191,7 @@ DB_CATCH
 void DataBase::eraseMesage(Message::ID mid)
 try
 {
+	checkConnection(session_);
 	(*session_) << "DELETE FROM Message WHERE id = ?", use(mid), now;
 }
 DB_CATCH
@@ -1165,6 +1213,7 @@ try
 	//! Si sender est recipient sont identique, on ne fait rien
 	if(sender == recipient)
 		return;
+	checkConnection(session_);
 	Transaction trans(*session_);
 	//! Y a t'il eu une requete dans l'autre sens?
 	size_t rowCount = 0;
@@ -1209,6 +1258,7 @@ try
 	//Si c'est le meme joueur(improbable) on supprime la demande
 	if(sender == recipient)
 		accept = false;
+	checkConnection(session_);
 	Transaction trans(*session_);
 	//! Si le joueur accepte
 	if(accept)
@@ -1244,6 +1294,7 @@ DB_CATCH
 void DataBase::closeFriendship(Player::ID playerA, Player::ID playerB)
 try
 {
+	checkConnection(session_);
 	order(playerA, playerB);
 	(*session_) <<
 	            "DELETE FROM Friendship "
@@ -1256,6 +1307,7 @@ DB_CATCH
 std::vector<Player> DataBase::getFriends(Player::ID player) const
 try
 {
+	checkConnection(session_);
 	std::vector<PlayerTmp> friends;
 	friends.reserve(100);
 	(*session_) <<
@@ -1279,6 +1331,7 @@ DB_CATCH
 FriendshipRequests DataBase::getFriendshipRequest(Player::ID player) const
 try
 {
+	checkConnection(session_);
 	FriendshipRequests result;
 	{
 		std::vector<PlayerTmp> received;
@@ -1316,6 +1369,7 @@ Alliance::ID DataBase::addAlliance(Player::ID pid,
                                    std::string const& description)
 try
 {
+	checkConnection(session_);
 	Transaction trans(*session_);
 	(*session_) <<
 	            "INSERT IGNORE INTO Alliance "
@@ -1341,6 +1395,7 @@ DB_CATCH
 Alliance DataBase::getAlliance(Alliance::ID aid) const
 try
 {
+	checkConnection(session_);
 	typedef Tuple < Alliance::ID, Player::ID,
 	        std::string, BLOB, std::string > AllianceTup;
 	AllianceTup allianceTup;
@@ -1362,6 +1417,7 @@ DB_CATCH
 std::vector<Alliance> DataBase::getAlliances() const
 try
 {
+	checkConnection(session_);
 	typedef Tuple < Alliance::ID, Player::ID,
 	        std::string, BLOB, std::string > AllianceTup;
 	std::vector<AllianceTup> allianceVect;
@@ -1391,6 +1447,7 @@ DB_CATCH
 void DataBase::updateAlliance(Alliance const& al)
 try
 {
+	checkConnection(session_);
 	(*session_) <<
 	            "UPDATE Alliance SET "
 	            "  name = ?, description = ? "
@@ -1403,6 +1460,7 @@ DB_CATCH
 void DataBase::transfertAlliance(Alliance::ID aid, Player::ID pid)
 try
 {
+	checkConnection(session_);
 	Transaction trans(*session_);
 	Player player = getPlayer(pid);
 	if(player.allianceID != aid)
@@ -1418,6 +1476,7 @@ DB_CATCH
 void DataBase::eraseAlliance(Alliance::ID aid)
 try
 {
+	checkConnection(session_);
 	(*session_) << "DELETE FROM Alliance WHERE id = ? ", use(aid), now;
 }
 DB_CATCH
@@ -1426,6 +1485,7 @@ DB_CATCH
 void DataBase::joinAlliance(Player::ID pid, Alliance::ID aid)
 try
 {
+	checkConnection(session_);
 	(*session_) <<
 	            "UPDATE Player SET allianceID = ? WHERE id = ?",
 	            use(aid), use(pid), now;
@@ -1436,6 +1496,7 @@ DB_CATCH
 void DataBase::quitAlliance(Player::ID pid)
 try
 {
+	checkConnection(session_);
 	Transaction trans(*session_);
 	Player player = getPlayer(pid);
 	Alliance alliance = getAlliance(player.allianceID);
