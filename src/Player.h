@@ -178,7 +178,6 @@ struct Player
 	static ID const NoId = 0; //!< Valeur indiquant l'absence de joueur
 	ID id;                    //!< Identifiant unique
 	std::string login;        //!< Login
-	std::string password;     //!< Mot de passe
 	Coord mainPlanet;         //!< Coordonées de la planète principale
 	uint64_t score;           //!< Scroe
 	Alliance::ID allianceID;  //!< ID de l'alliance, ou Alliance::NoID
@@ -191,8 +190,8 @@ struct Player
 	size_t fleetCount = 0;    //!< Pour les script lua uniquement
 
 	//! Constructeur
-	Player(ID i, std::string const& lg, std::string const& pass):
-		id(i), login(lg), password(pass), allianceID(0),
+	Player(ID i, std::string const& lg):
+		id(i), login(lg), allianceID(0),
 		experience(0), skillpoints(0)
 	{
 		skilltab.assign(0);

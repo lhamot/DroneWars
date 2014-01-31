@@ -237,7 +237,6 @@ ndw::Player playerToThrift(Player const& player)
 	ndw::Player outPlayer;
 	outPlayer.id          = NUMCAST(player.id);
 	outPlayer.login       = player.login;
-	outPlayer.password    = player.password;
 	outPlayer.mainPlanet = coordToThrift(player.mainPlanet);
 	outPlayer.score = NUMCAST(player.score);
 	outPlayer.allianceID = NUMCAST(player.allianceID);
@@ -702,7 +701,7 @@ bool EngineServerHandler::eraseAccount(const ndw::Player_ID pid,
 {
 	LOG4CPLUS_TRACE(logger, "password : " << password);
 	Player player = database_.getPlayer(pid);
-	if(player.password == password)
+	if(database_.getPlayer(player.login, password).is_initialized())
 	{
 		database_.eraseAccount(pid);
 		engine_.reloadPlayer(pid);

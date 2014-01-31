@@ -21,11 +21,13 @@
 #pragma warning(pop)
 
 #pragma warning(push)
-#pragma warning(disable: 4512 4244)
+#pragma warning(disable: 4512 4244 4100)
 #include <Poco/Data/Session.h>
 #include <Poco/Data/MySQL/Connector.h>
 #include <Poco/Data/BLOB.h>
 #include <Poco/Tuple.h>
+#include <Poco/SHA1Engine.h>
+#include <Poco/DigestStream.h>
 #pragma warning(pop)
 
 #include "NameGen.h"
@@ -45,6 +47,15 @@ std::string toString(BLOB const& blob)
 	return std::string(blob.begin(), blob.end());
 }
 
+std::string hashPassword(std::string const& rawPassword)
+{
+	SHA1Engine sha1;
+	DigestOutputStream outstr(sha1);
+	outstr << rawPassword;
+	outstr.flush(); //to pass everything to the digest engine
+	const DigestEngine::Digest& digest = sha1.digest();
+	return DigestEngine::digestToHex(digest);
+}
 
 //! Crée une transaction RAII (qui rollback à la destruction si pas de commit)
 class Transaction : private boost::noncopyable
@@ -127,7 +138,7 @@ try
 	            "Player ("
 	            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
 	            "  login VARCHAR(30) UNIQUE NOT NULL,"
-	            "  password VARCHAR(30) NOT NULL,"
+	            "  password VARCHAR(40) NOT NULL,"
 	            "  score INTEGER NOT NULL,"
 	            "  planetCoordX INTEGER NOT NULL,"
 	            "  planetCoordY INTEGER NOT NULL,"
@@ -374,13 +385,13 @@ DB_CATCH
 
 
 Player::ID DataBase::addPlayer(std::string const& login,
-                               std::string const& password,
+                               std::string const& rawPassword,
                                std::vector<std::string> const& codes)
 try
 {
 	checkConnection(session_);
 	Transaction trans(*session_);
-	std::cout << login << " " << password << std::endl;
+	std::string password = hashPassword(rawPassword);
 	(*session_) <<
 	            "INSERT IGNORE INTO Player "
 	            "(login, password, planetCoordX, planetCoordY, planetCoordZ, "
@@ -439,7 +450,7 @@ typedef Tuple < Player::ID, std::string, std::string, uint64_t,
 //! Convertie un PlayerTmp en Player
 Player playerFromTuple(PlayerTmp const& playerTup)
 {
-	Player player(playerTup.get<0>(), playerTup.get<1>(), playerTup.get<2>());
+	Player player(playerTup.get<0>(), playerTup.get<1>());
 	player.score = playerTup.get<3>();
 	player.mainPlanet.X = playerTup.get<4>();
 	player.mainPlanet.Y = playerTup.get<5>();
@@ -472,10 +483,11 @@ static char const* const GetPlayerRequest =
 
 boost::optional<Player> DataBase::getPlayer(
   std::string const& login,
-  std::string const& password) const
+  std::string const& rawPassword) const
 try
 {
 	checkConnection(session_);
+	std::string const password = hashPassword(rawPassword);
 	std::vector<PlayerTmp> playerList;
 	(*session_) <<
 	            GetPlayerRequest <<
