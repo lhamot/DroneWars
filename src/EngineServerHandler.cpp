@@ -298,7 +298,7 @@ ndw::FightReport fightReportToThrift(
 	for(Report<Fleet> const & fleetRep : report.fleetList)
 	{
 		Player const player =
-		  mapFind(playerMap, fleetRep.fightInfo.before.playerId)->second;
+		  MAP_FIND(playerMap, fleetRep.fightInfo.before.playerId)->second;
 		result.fleetList.push_back(fleetReportToThrift(fleetRep, player));
 	}
 	result.hasPlanet = report.hasPlanet;

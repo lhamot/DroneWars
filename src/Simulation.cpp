@@ -361,7 +361,7 @@ void applyPlanetAction(
 	}
 	case PlanetAction::Ship:
 	{
-		Player const& player = mapFind(playerMap, planet.playerId)->second;
+		Player const& player = MAP_FIND(playerMap, planet.playerId)->second;
 		if(canBuild(player, planet, action.ship, playerFleetCount))
 			addTask(planet, univ_.roundCount, action.ship, 1);
 	}
@@ -420,7 +420,7 @@ void gatherIfWant(
 	auto localFleetsKV = fleetMap.equal_range(fleet.coord);
 	if(checkLuaMethode(codeMap, "do_gather", events))
 	{
-		ScriptTools::Object do_gather = mapFind(codeMap.functions, "do_gather")->second;
+		ScriptTools::Object do_gather = MAP_FIND(codeMap.functions, "do_gather")->second;
 		auto fleetIter = localFleetsKV.first;
 		while(fleetIter != localFleetsKV.second)
 		{
@@ -479,7 +479,7 @@ try
 {
 	if(checkLuaMethode(codeMap, "action", events) == false)
 		return boost::none;
-	ScriptTools::Object actionFunc = mapFind(codeMap.functions, "action")->second;
+	ScriptTools::Object actionFunc = MAP_FIND(codeMap.functions, "action")->second;
 	auto planetIter = univ_.planetMap.find(fleet.coord);
 	Planet const* planet = nullptr;
 	if(planetIter != univ_.planetMap.end())
@@ -541,7 +541,7 @@ void applyFleetScript(Universe& univ_,
 		break;
 	case FleetAction::Colonize:
 	{
-		Player const& player = mapFind(playerMap, fleet.playerId)->second;
+		Player const& player = MAP_FIND(playerMap, fleet.playerId)->second;
 		if(planet &&
 		   canColonize(player, fleet, *planet, playersPlanetCount[player.id]))
 			addTaskColonize(fleet, univ_.roundCount, *planet);
@@ -670,7 +670,7 @@ void execPlanets(Universe& univ_,
 	for(ScriptInputs const sciptInputs : ownedPlanetList)
 	{
 		Planet planet = sciptInputs.planet;
-		Player const& player = mapFind(playerMap, planet.playerId)->second;
+		Player const& player = MAP_FIND(playerMap, planet.playerId)->second;
 		boost::optional<PlanetAction> action =
 		  execPlanetScript(univ_,
 		                   engine,
@@ -717,7 +717,7 @@ std::vector<Fleet*> removeEscapedFleet(
 	for(size_t i = 0; i < fleetVect.size(); ++i)
 	{
 		Fleet* fleet = fleetVect[i];
-		Player const& player = mapFind(playerMap, fleet->playerId)->second;
+		Player const& player = MAP_FIND(playerMap, fleet->playerId)->second;
 		auto fleetScripts = codesMap[player.id].fleetsCode;
 		ScriptTools::Object doEscape = fleetScripts.functions["do_escape"];
 		bool wantEscape = false;
@@ -905,8 +905,8 @@ void execFights(Universe& univ_,
 			{
 				for(auto iter2 = iter1 + 1; iter2 != playerVect.end(); ++iter2)
 				{
-					Player const& player1 = mapFind(playerMap, *iter1)->second;
-					Player const& player2 = mapFind(playerMap, *iter2)->second;
+					Player const& player1 = MAP_FIND(playerMap, *iter1)->second;
+					Player const& player2 = MAP_FIND(playerMap, *iter2)->second;
 					addIfTheyWantFight(univ_,
 					                   player1,
 					                   player2,
@@ -963,7 +963,7 @@ void execFights(Universe& univ_,
 					tempEvents.push_back(
 					  Event(fleet.playerId, time(0), Event::FleetLose));
 					if(playerCanSeeFightReport(
-					     mapFind(playerMap, fleet.playerId)->second))
+					     MAP_FIND(playerMap, fleet.playerId)->second))
 						tempEvents.back().setValue(tempReports.size());
 					informedPlayer.insert(fleet.playerId);
 				}
@@ -988,7 +988,7 @@ void execFights(Universe& univ_,
 					tempEvents.push_back(
 					  Event(planet.playerId, time(0), Event::PlanetLose));
 					if(playerCanSeeFightReport(
-					     mapFind(playerMap, planet.playerId)->second))
+					     MAP_FIND(playerMap, planet.playerId)->second))
 						tempEvents.back().setValue(tempReports.size());
 				}
 			}
@@ -1089,7 +1089,7 @@ try
 {
 	if(checkLuaMethode(codeMap, "emit", events) == false)
 		return TypedPtreePtr();
-	ScriptTools::Object emitFunc = mapFind(codeMap.functions, "emit")->second;
+	ScriptTools::Object emitFunc = MAP_FIND(codeMap.functions, "emit")->second;
 	auto planetIter = univ_.planetMap.find(fleet.coord);
 	Planet const* planet = nullptr;
 	if(planetIter != univ_.planetMap.end())
@@ -1145,7 +1145,7 @@ void execFleets(
 	{
 		Fleet& fleet = iter->second;
 		gatherIfWant(univ_,
-		             mapFind(playerMap, fleet.playerId)->second,
+		             MAP_FIND(playerMap, fleet.playerId)->second,
 		             engine,
 		             codesMap[fleet.playerId].fleetsCode,
 		             fleet,
@@ -1173,7 +1173,7 @@ void execFleets(
 	for(auto iter = fleetMap.begin(); iter != fleetMap.end(); ++iter)
 	{
 		Fleet fleet = iter->second;
-		Player const& player = mapFind(playerMap, fleet.playerId)->second;
+		Player const& player = MAP_FIND(playerMap, fleet.playerId)->second;
 		Coord const coord = fleet.coord;
 		TypedPtreePtr pt = getFleetEmission(univ_,
 		                                    engine,
@@ -1225,7 +1225,7 @@ void execFleets(
 	scriptInputsList.reserve(fleetMap.size());
 	for(auto iter = fleetMap.begin(); iter != fleetMap.end(); ++iter)
 	{
-		Player const& player = mapFind(playerMap, iter->second.playerId)->second;
+		Player const& player = MAP_FIND(playerMap, iter->second.playerId)->second;
 		Fleet scriptModifiedFleet = iter->second;
 		Coord coord = scriptModifiedFleet.coord;
 		PlayersData allMails = univMailBoxes[coord.X][coord.Y][coord.Z];
@@ -1316,19 +1316,19 @@ try
 
 	std::map<Player::ID, Player> playerMap = database_.getPlayerMap();
 	for(Fleet & fleet : univCopy.fleetMap | boost::adaptors::map_values)
-		fleet.player = &mapFind(playerMap, fleet.playerId)->second;
+		fleet.player = &MAP_FIND(playerMap, fleet.playerId)->second;
 
 	for(Planet & planet : univCopy.planetMap | boost::adaptors::map_values)
 		if(planet.playerId != Player::NoId)
-			planet.player = &mapFind(playerMap, planet.playerId)->second;
+			planet.player = &MAP_FIND(playerMap, planet.playerId)->second;
 
 	std::map<Alliance::ID, Alliance> allienceMap = getAllianceMap(database_);
 	for(Player & player : playerMap | boost::adaptors::map_values)
 		if(player.allianceID)
-			player.alliance = &mapFind(allienceMap, player.allianceID)->second;
+			player.alliance = &MAP_FIND(allienceMap, player.allianceID)->second;
 
 	for(Alliance & alliance : allienceMap | boost::adaptors::map_values)
-		alliance.master = &mapFind(playerMap, alliance.masterID)->second;
+		alliance.master = &MAP_FIND(playerMap, alliance.masterID)->second;
 
 	//! Calcule du nombre de flottes et planete de chaque joueur
 	for(Universe::PlanetMap::value_type const & kvp : univ_.planetMap)

@@ -18,7 +18,7 @@ void onPlanetLose(Coord planetCoord,
                   std::unordered_map<Coord, Coord>& newParentMap)
 {
 	Planet& planet = univ.planetMap[planetCoord];
-	if(mapFind(playerMap, planet.playerId)->second.mainPlanet != planetCoord)
+	if(MAP_FIND(playerMap, planet.playerId)->second.mainPlanet != planetCoord)
 	{
 		planet.playerId = Player::NoId;
 		planet.player = nullptr;
@@ -51,7 +51,7 @@ void checkTutos(Universe& univ_,
 		case 0: //! Cas 0 : Créer une mine de métal
 		{
 			Planet const& planet =
-			  mapFind(univ_.planetMap, player.mainPlanet)->second;
+			  MAP_FIND(univ_.planetMap, player.mainPlanet)->second;
 			if(planet.buildingList[Building::MetalMine] > 0)
 				wisePlayer.push_back(player.id);
 			break;
@@ -59,7 +59,7 @@ void checkTutos(Universe& univ_,
 		case 1: //! Cas 1 : Créer fabrique SI mine de métal a 4
 		{
 			Planet const& planet =
-			  mapFind(univ_.planetMap, player.mainPlanet)->second;
+			  MAP_FIND(univ_.planetMap, player.mainPlanet)->second;
 			if(planet.buildingList[Building::MetalMine] >= 4 &&
 			   planet.buildingList[Building::Factory] > 0)
 				wisePlayer.push_back(player.id);
@@ -194,8 +194,8 @@ bool fleetCanSeePlanet(Fleet const& fleet,
 	if(fleet.playerId == planet.playerId || planet.playerId == Player::NoId)
 		return true;
 
-	//uint64_t const score1 = mapFind(univ.playerMap, fleet.playerId)->second.score;
-	//uint64_t const score2 = mapFind(univ.playerMap, planet.playerId)->second.score;
+	//uint64_t const score1 = MAP_FIND(univ.playerMap, fleet.playerId)->second.score;
+	//uint64_t const score2 = MAP_FIND(univ.playerMap, planet.playerId)->second.score;
 	//Bloquage si trop d'équart de niveaux
 	//return (score1 * 5) > score2 && (score2 * 5) > score1;
 	//! @todo: Gerer la difference de score
@@ -263,8 +263,8 @@ uint32_t calcExp(PlayerMap const& playerMap,
 	if(isDead)
 		return 1;
 	double exp = (enemyIsDead ? 4. : 1.);
-	Player const& player = mapFind(playerMap, allyReport.fightInfo.before.playerId)->second;
-	Player const& enemy = mapFind(playerMap, enemyReport.fightInfo.before.playerId)->second;
+	Player const& player = MAP_FIND(playerMap, allyReport.fightInfo.before.playerId)->second;
+	Player const& enemy = MAP_FIND(playerMap, enemyReport.fightInfo.before.playerId)->second;
 	//std::cout << exp << std::endl;
 	exp *= log(double(enemy.experience + 2)) / log(double(player.experience + 2));
 	size_t const fleetPrice = armyPrice(allyReport.fightInfo.before) / 10;

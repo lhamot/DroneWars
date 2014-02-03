@@ -51,7 +51,7 @@ void simulOneFight()
 		//Avent:
 		for(int type = 0; type < Ship::Count; ++type)
 		{
-			std::string name = mapFind(ndw::_Ship_Enum_VALUES_TO_NAMES, type)->second;
+			std::string name = MAP_FIND(ndw::_Ship_Enum_VALUES_TO_NAMES, type)->second;
 			std::cout << name.substr(0, 4) << '\t';
 		}
 		std::cout << std::endl;

@@ -150,5 +150,19 @@ O lexicalCast(I in, char const* const filename, int line)
 #define LEXICAL_CAST(O, in) \
 	lexicalCast<O>(in, __FILE__, __LINE__)
 
+template<typename M>
+auto mapFind(M& map, typename M::key_type key, char const* const filename, int line) -> decltype(map.find(key))
+{
+	auto iter = map.find(key);
+	if(iter == map.end())
+		boost::throw_exception(
+		  boost::enable_error_info(std::logic_error("Can't find item")) <<
+		  boost::throw_file(filename) <<
+		  boost::throw_line(line));
+	return iter;
+}
+
+#define MAP_FIND(map, key) \
+	mapFind(map, key, __FILE__, __LINE__)
 
 #endif //__BTA_TOOLS__

@@ -461,8 +461,8 @@ void fight(std::vector<Fleet*> const& fleetList,
 			Player::ID const pla2 = (*iter2)->playerId;
 			if(pla1 != pla2 && pla1 != Player::NoId && pla2 != Player::NoId)
 			{
-				//uint64_t const score1 = mapFind(univ.playerMap, player1)->second.score;
-				//uint64_t const score2 = mapFind(univ.playerMap, player2)->second.score;
+				//uint64_t const score1 = MAP_FIND(univ.playerMap, player1)->second.score;
+				//uint64_t const score2 = MAP_FIND(univ.playerMap, player2)->second.score;
 				//if((score1 * 5) > score2 && (score2 * 5) > score1)
 				//! @todo: Remetre la limitation sur les score trop differents
 				fightingPair.push_back(FleetPair(iter1 - fleetList.begin(),
@@ -481,8 +481,8 @@ void fight(std::vector<Fleet*> const& fleetList,
 			Player::ID const pla2 = planet->playerId;
 			if(pla1 != pla2 && pla1 != Player::NoId && pla2 != Player::NoId)
 			{
-				//uint64_t const score1 = mapFind(univ.playerMap, player1)->second.score;
-				//uint64_t const score2 = mapFind(univ.playerMap, player2)->second.score;
+				//uint64_t const score1 = MAP_FIND(univ.playerMap, player1)->second.score;
+				//uint64_t const score2 = MAP_FIND(univ.playerMap, player2)->second.score;
 				//Bloquage si trop d'équart de niveaux
 				//if((score1 * 5) > score2 && (score2 * 5) > score1)
 				//! @todo: Remetre la limitation sur les score trop differents

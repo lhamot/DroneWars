@@ -601,7 +601,7 @@ void execTask(Universe& univ,
 			break;
 		case FleetTask::Harvest:
 		{
-			Planet& planet = mapFind(univ.planetMap, task.position)->second;
+			Planet& planet = MAP_FIND(univ.planetMap, task.position)->second;
 			if(planet.playerId == Player::NoId)
 			{
 				boost::geometry::add_point(fleet.ressourceSet.tab,
@@ -616,11 +616,11 @@ void execTask(Universe& univ,
 		case FleetTask::Colonize:
 		{
 			using namespace boost;
-			Planet& planet = mapFind(univ.planetMap, task.position)->second;
+			Planet& planet = MAP_FIND(univ.planetMap, task.position)->second;
 			if(planet.playerId == Player::NoId && fleet.shipList[Ship::Queen])
 			{
 				size_t const planetCount =
-				  mapFind(playersPlanetCount, fleet.playerId)->second;
+				  MAP_FIND(playersPlanetCount, fleet.playerId)->second;
 				if(planetCount < 1000)
 				{
 					Event ev = Event(
