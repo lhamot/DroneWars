@@ -492,8 +492,8 @@ def BlocklyPlanetsCodesView(request):
             logger = logging.getLogger(__name__)
             logger.error("javascript error when saving blockly code : " + message);
         elif "blocklyXML" in request.POST:
-            service.setPlayerPlanetBlocklyCode(pid, request.POST["blocklyXML"].encode("utf8"))
             service.setPlayerPlanetCode(pid, request.POST["scriptXML"].encode("utf8"))
+            service.setPlayerPlanetBlocklyCode(pid, request.POST["blocklyXML"].encode("utf8"))
             player = service.getPlayer(pid)
             message = _("Code successfully saved")
             firstSave = player.tutoDisplayed.get(FirstSaveTag, 0);
