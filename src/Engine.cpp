@@ -65,6 +65,13 @@ void Engine::load(string const& univName, size_t version)
 		loadFromStream_v2(loadFile, univ_);
 	else
 		BOOST_THROW_EXCEPTION(logic_error("Unexpected archive file version"));
+	DataBase database;
+	std::vector<Player> players = database.getPlayers();
+	for(Player const & player : players)
+	{
+		if(player.mainPlanet == Coord())
+			simulation_->createMainPlanet(player.id);
+	}
 }
 
 
