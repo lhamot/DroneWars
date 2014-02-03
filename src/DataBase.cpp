@@ -121,164 +121,170 @@ try
 	Poco::Data::MySQL::Connector::registerConnector();
 	checkConnection(session_);
 
+	std::vector<std::string> tableList;
 	(*session_) <<
-	            "CREATE TABLE "
-	            "if not exists "
-	            "Options ("
-	            "  name VARCHAR(30) NOT NULL,"
-	            "  value VARCHAR(30) NOT NULL"
-	            ")", now;
+	            "SHOW TABLES", into(tableList), now;
+	if(tableList.empty())
+	{
+		(*session_) <<
+		            "CREATE TABLE "
+		            "if not exists "
+		            "Options ("
+		            "  name VARCHAR(30) NOT NULL,"
+		            "  value VARCHAR(30) NOT NULL"
+		            ")", now;
 
-	(*session_) <<
-	            "CREATE TABLE "
-	            "if not exists "
-	            "Player ("
-	            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-	            "  login VARCHAR(30) UNIQUE NOT NULL,"
-	            "  password VARCHAR(40) NOT NULL,"
-	            "  score INTEGER NOT NULL,"
-	            "  planetCoordX INTEGER NOT NULL,"
-	            "  planetCoordY INTEGER NOT NULL,"
-	            "  planetCoordZ INTEGER NOT NULL,"
-	            "  allianceID INTEGER,"
-	            "  experience INTEGER NOT NULL,"
-	            "  skillpoints INTEGER NOT NULL,"
-	            "  skilltab VARCHAR(200) NOT NULL"
-	            //"  FOREIGN KEY (allianceID) REFERENCES Alliance(id) "
-	            ")", now;
+		(*session_) <<
+		            "CREATE TABLE "
+		            "if not exists "
+		            "Player ("
+		            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+		            "  login VARCHAR(30) UNIQUE NOT NULL,"
+		            "  password VARCHAR(40) NOT NULL,"
+		            "  score INTEGER NOT NULL,"
+		            "  planetCoordX INTEGER NOT NULL,"
+		            "  planetCoordY INTEGER NOT NULL,"
+		            "  planetCoordZ INTEGER NOT NULL,"
+		            "  allianceID INTEGER,"
+		            "  experience INTEGER NOT NULL,"
+		            "  skillpoints INTEGER NOT NULL,"
+		            "  skilltab VARCHAR(200) NOT NULL"
+		            //"  FOREIGN KEY (allianceID) REFERENCES Alliance(id) "
+		            ")", now;
 
-	(*session_) <<
-	            "CREATE TABLE "
-	            "if not exists "
-	            "Event ("
-	            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-	            "  time INTEGER NOT NULL,"
-	            "  type INTEGER NOT NULL,"
-	            "  comment VARCHAR(500) NOT NULL,"
-	            "  value INTEGER NOT NULL,"
-	            "  value2 INTEGER NOT NULL,"
-	            "  viewed INTEGER NOT NULL,"
-	            "  playerID INTEGER NOT NULL,"
-	            "  fleetID INTEGER NOT NULL,"
-	            "  planetCoordX INTEGER NOT NULL,"
-	            "  planetCoordY INTEGER NOT NULL,"
-	            "  planetCoordZ INTEGER NOT NULL,"
-	            "  FOREIGN KEY (playerID) REFERENCES Player(id) "
-	            "    ON DELETE CASCADE, "
-	            "  INDEX (playerID),"
-	            "  INDEX (fleetID),"
-	            "  INDEX Coord (planetCoordX, planetCoordY, planetCoordZ)"
-	            ")", now;
+		(*session_) <<
+		            "CREATE TABLE "
+		            "if not exists "
+		            "Event ("
+		            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+		            "  time INTEGER NOT NULL,"
+		            "  type INTEGER NOT NULL,"
+		            "  comment VARCHAR(500) NOT NULL,"
+		            "  value INTEGER NOT NULL,"
+		            "  value2 INTEGER NOT NULL,"
+		            "  viewed INTEGER NOT NULL,"
+		            "  playerID INTEGER NOT NULL,"
+		            "  fleetID INTEGER NOT NULL,"
+		            "  planetCoordX INTEGER NOT NULL,"
+		            "  planetCoordY INTEGER NOT NULL,"
+		            "  planetCoordZ INTEGER NOT NULL,"
+		            "  FOREIGN KEY (playerID) REFERENCES Player(id) "
+		            "    ON DELETE CASCADE, "
+		            "  INDEX (playerID),"
+		            "  INDEX (fleetID),"
+		            "  INDEX Coord (planetCoordX, planetCoordY, planetCoordZ)"
+		            ")", now;
 
-	(*session_) <<
-	            "CREATE TABLE "
-	            "if not exists "
-	            "Script ("
-	            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-	            "  playerID INTEGER NOT NULL,"
-	            "  time INTEGER NOT NULL,"
-	            "  target INTEGER NOT NULL,"
-	            "  code TEXT NOT NULL,"
-	            "  lastError TEXT,"
-	            "  FOREIGN KEY (playerID) REFERENCES Player(id) "
-	            "    ON DELETE CASCADE "
-	            ")", now;
+		(*session_) <<
+		            "CREATE TABLE "
+		            "if not exists "
+		            "Script ("
+		            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+		            "  playerID INTEGER NOT NULL,"
+		            "  time INTEGER NOT NULL,"
+		            "  target INTEGER NOT NULL,"
+		            "  code TEXT NOT NULL,"
+		            "  lastError TEXT,"
+		            "  FOREIGN KEY (playerID) REFERENCES Player(id) "
+		            "    ON DELETE CASCADE "
+		            ")", now;
 
-	(*session_) <<
-	            "CREATE TABLE "
-	            "if not exists "
-	            "BlocklyCode ("
-	            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-	            "  playerID INTEGER NOT NULL,"
-	            "  time INTEGER NOT NULL,"
-	            "  target INTEGER NOT NULL,"
-	            "  code TEXT NOT NULL,"
-	            "  FOREIGN KEY (playerID) REFERENCES Player(id) "
-	            "    ON DELETE CASCADE "
+		(*session_) <<
+		            "CREATE TABLE "
+		            "if not exists "
+		            "BlocklyCode ("
+		            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+		            "  playerID INTEGER NOT NULL,"
+		            "  time INTEGER NOT NULL,"
+		            "  target INTEGER NOT NULL,"
+		            "  code TEXT NOT NULL,"
+		            "  FOREIGN KEY (playerID) REFERENCES Player(id) "
+		            "    ON DELETE CASCADE "
 
-	            ")", now;
+		            ")", now;
 
-	(*session_) <<
-	            "CREATE TABLE "
-	            "if not exists "
-	            "FightReport ("
-	            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-	            "  time INTEGER NOT NULL,"
-	            "  data BLOB NOT NULL"
-	            ")", now;
+		(*session_) <<
+		            "CREATE TABLE "
+		            "if not exists "
+		            "FightReport ("
+		            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+		            "  time INTEGER NOT NULL,"
+		            "  data BLOB NOT NULL"
+		            ")", now;
 
-	(*session_) <<
-	            "CREATE TABLE "
-	            "if not exists "
-	            "TutoDisplayed ("
-	            "  playerID INTEGER,"
-	            "  tag varchar(30) NOT NULL,"
-	            "  level INTEGER NOT NULL,"
-	            "  FOREIGN KEY (playerID) REFERENCES Player(id) "
-	            "    ON DELETE CASCADE, "
-	            "  INDEX (playerID), "
-	            "  INDEX PlayerTag (playerID, tag)"
-	            ")", now;
+		(*session_) <<
+		            "CREATE TABLE "
+		            "if not exists "
+		            "TutoDisplayed ("
+		            "  playerID INTEGER,"
+		            "  tag varchar(30) NOT NULL,"
+		            "  level INTEGER NOT NULL,"
+		            "  FOREIGN KEY (playerID) REFERENCES Player(id) "
+		            "    ON DELETE CASCADE, "
+		            "  INDEX (playerID), "
+		            "  INDEX PlayerTag (playerID, tag)"
+		            ")", now;
 
-	(*session_) <<
-	            "CREATE TABLE "
-	            "if not exists "
-	            "Message ("
-	            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-	            "  sender INTEGER NOT NULL,"
-	            "  recipient INTEGER NOT NULL,"
-	            "  time INTEGER NOT NULL,"
-	            "  suject varchar(80) NOT NULL,"
-	            "  message TEXT NOT NULL,"
-	            "  FOREIGN KEY (sender) REFERENCES Player(id) "
-	            "    ON DELETE CASCADE, "
-	            "  FOREIGN KEY (recipient) REFERENCES Player(id) "
-	            "    ON DELETE CASCADE "
-	            ")", now;
+		(*session_) <<
+		            "CREATE TABLE "
+		            "if not exists "
+		            "Message ("
+		            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+		            "  sender INTEGER NOT NULL,"
+		            "  recipient INTEGER NOT NULL,"
+		            "  time INTEGER NOT NULL,"
+		            "  suject varchar(80) NOT NULL,"
+		            "  message TEXT NOT NULL,"
+		            "  FOREIGN KEY (sender) REFERENCES Player(id) "
+		            "    ON DELETE CASCADE, "
+		            "  FOREIGN KEY (recipient) REFERENCES Player(id) "
+		            "    ON DELETE CASCADE "
+		            ")", now;
 
-	(*session_) <<
-	            "CREATE TABLE "
-	            "if not exists "
-	            "FriendshipRequest ("
-	            "  sender INTEGER NOT NULL,"
-	            "  recipient INTEGER NOT NULL,"
-	            "  FOREIGN KEY (sender) REFERENCES Player(id) "
-	            "    ON DELETE CASCADE, "
-	            "  FOREIGN KEY (recipient) REFERENCES Player(id) "
-	            "    ON DELETE CASCADE, "
-	            "  UNIQUE (sender, recipient) "
-	            ")", now;
+		(*session_) <<
+		            "CREATE TABLE "
+		            "if not exists "
+		            "FriendshipRequest ("
+		            "  sender INTEGER NOT NULL,"
+		            "  recipient INTEGER NOT NULL,"
+		            "  FOREIGN KEY (sender) REFERENCES Player(id) "
+		            "    ON DELETE CASCADE, "
+		            "  FOREIGN KEY (recipient) REFERENCES Player(id) "
+		            "    ON DELETE CASCADE, "
+		            "  UNIQUE (sender, recipient) "
+		            ")", now;
 
-	(*session_) <<
-	            "CREATE TABLE "
-	            "if not exists "
-	            "Friendship ("
-	            "  friend_a INTEGER NOT NULL,"
-	            "  friend_b INTEGER NOT NULL,"
-	            "  FOREIGN KEY (friend_a) REFERENCES Player(id) "
-	            "    ON DELETE CASCADE, "
-	            "  FOREIGN KEY (friend_b) REFERENCES Player(id) "
-	            "    ON DELETE CASCADE, "
-	            "  UNIQUE (friend_a, friend_b) "
-	            ")", now;
+		(*session_) <<
+		            "CREATE TABLE "
+		            "if not exists "
+		            "Friendship ("
+		            "  friend_a INTEGER NOT NULL,"
+		            "  friend_b INTEGER NOT NULL,"
+		            "  FOREIGN KEY (friend_a) REFERENCES Player(id) "
+		            "    ON DELETE CASCADE, "
+		            "  FOREIGN KEY (friend_b) REFERENCES Player(id) "
+		            "    ON DELETE CASCADE, "
+		            "  UNIQUE (friend_a, friend_b) "
+		            ")", now;
 
-	(*session_) <<
-	            "CREATE TABLE "
-	            "if not exists "
-	            "Alliance ("
-	            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-	            "  masterID INTEGER UNIQUE NOT NULL,"
-	            "  name VARCHAR(30) UNIQUE NOT NULL,"
-	            "  description TEXT NOT NULL,"
-	            "  FOREIGN KEY (masterID) REFERENCES Player(id) "
-	            ")", now;
+		(*session_) <<
+		            "CREATE TABLE "
+		            "if not exists "
+		            "Alliance ("
+		            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+		            "  masterID INTEGER UNIQUE NOT NULL,"
+		            "  name VARCHAR(30) UNIQUE NOT NULL,"
+		            "  description TEXT NOT NULL,"
+		            "  FOREIGN KEY (masterID) REFERENCES Player(id) "
+		            ")", now;
 
-	(*session_) <<
-	            "ALTER TABLE Player "
-	            "ADD CONSTRAINT FOREIGN KEY (allianceID) "
-	            "  REFERENCES Alliance(id) "
-	            "ON DELETE SET NULL ",
-	            now;
+		(*session_) <<
+		            "ALTER TABLE Player "
+		            "ADD CONSTRAINT FOREIGN KEY (allianceID) "
+		            "  REFERENCES Alliance(id) "
+		            "ON DELETE SET NULL ",
+		            now;
+	}
 
 	/*for(size_t p1: boost::irange(1, 101))
 	{
