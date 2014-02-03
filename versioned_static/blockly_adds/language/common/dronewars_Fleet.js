@@ -41,7 +41,7 @@ Blockly.Lua['dronewars_ship_in_fleet'] = function(block)
 {
 	var object = Blockly.Lua.valueToCode(
 	               block, 'FLEET', Blockly.Lua.ORDER_NONE) || 'nil';
-	return [object + '.shipList[Ship.' + block.getTitleValue('SHIP') + ']',
+	return [object + '.shipList[Ship.' + block.getFieldValue('SHIP') + ']',
 	        Blockly.Lua.ORDER_HIGH
 	       ];
 };
@@ -67,7 +67,7 @@ Blockly.Blocks['dronewars_ressource_in_fleet'] =
 Blockly.Lua['dronewars_ressource_in_fleet'] = function (block) {
   var object = Blockly.Lua.valueToCode(
 	               block, 'FLEET', Blockly.Lua.ORDER_NONE) || 'nil';
-  return [object + '.ressourceSet:at(Ressource.' + block.getTitleValue('RESSOURCE') + ')',
+  return [object + '.ressourceSet:at(Ressource.' + block.getFieldValue('RESSOURCE') + ')',
 	        Blockly.Lua.ORDER_HIGH
   ];
 };
@@ -91,7 +91,7 @@ init:
 
 Blockly.Lua['dronewars_ship_price'] = function(block)
 {
-    return ['shipPrice(Ship.' + block.getTitleValue('SHIP') + ')',
+    return ['shipPrice(Ship.' + block.getFieldValue('SHIP') + ')',
             Blockly.Lua.ORDER_HIGH
            ];
 };

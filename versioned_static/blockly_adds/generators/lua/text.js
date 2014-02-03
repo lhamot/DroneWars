@@ -33,7 +33,7 @@ goog.require('Blockly.Lua');
 Blockly.Lua['text'] = function(block)
 {
 	// Text value.
-	var code = Blockly.Lua.quote_(block.getTitleValue('TEXT'));
+	var code = Blockly.Lua.quote_(block.getFieldValue('TEXT'));
 	return [code, Blockly.Lua.ORDER_ATOMIC];
 };
 
@@ -77,7 +77,7 @@ Blockly.Lua['text_endString'] = function(block)
 	// Return a leading or trailing substring.
 	// Do we need to prevent 'List index out of range' ERROR by checking
 	// if argument 0 > len(argument1)? Or will ALL error be handled systematically?
-	var first = block.getTitleValue('END') == 'FIRST';
+	var first = block.getFieldValue('END') == 'FIRST';
 	var argument0 = Blockly.Lua.valueToCode(block, 'NUM',
 	                                        Blockly.Lua.ORDER_NONE) || '1';
 	var argument1 = Blockly.Lua.valueToCode(block, 'TEXT',
@@ -94,7 +94,7 @@ Blockly.Lua['text_indexOf'] = function(block)
 {
 	// Search the text for a substring.
 	// Should we allow for non-case sensitive???
-	var first = block.getTitleValue('END') == 'FIRST';
+	var first = block.getFieldValue('END') == 'FIRST';
 	var argument0 = Blockly.Lua.valueToCode(block, 'FIND',
 	                                        Blockly.Lua.ORDER_NONE) || '\'\'';
 	var argument1 = Blockly.Lua.valueToCode(block, 'VALUE',
@@ -138,7 +138,7 @@ Blockly.Lua['text_changeCase'] = function(block)
 	// Change capitalization.
 	var argument0 = Blockly.Lua.valueToCode(block, 'TEXT',
 	                                        Blockly.Lua.ORDER_MEMBER) || '\'\'';
-	var mode = block.getTitleValue('CASE');
+	var mode = block.getFieldValue('CASE');
 	if(mode == 'TITLECASE')
 	{
 		var code =
@@ -170,7 +170,7 @@ LOWERCASE: ':lower()'
 Blockly.Lua['text_trim'] = function(block)
 {
 	// Trim spaces.
-	var mode = block.getTitleValue('MODE');
+	var mode = block.getFieldValue('MODE');
 	var lambda = Blockly.Lua.text_trim.OPERATORS[mode];
 	var argument0 = Blockly.Lua.valueToCode(block, 'TEXT',
 	                                        Blockly.Lua.ORDER_MEMBER) || '\'\'';
@@ -198,11 +198,11 @@ Blockly.Lua['text_print'] = function(block)
 Blockly.Lua['text_prompt'] = function(block)
 {
 	// Prompt function.
-	var msg = Blockly.Lua.quote_(block.getTitleValue('TEXT'));
+	var msg = Blockly.Lua.quote_(block.getFieldValue('TEXT'));
 	//var code = 'raw_input(' + msg + ')';
 	var code = 'function(msg) print(msg) value = io.stdin:read\'*l\' return value end';
 	code = '(' + code + ')(' + msg + ')';
-	var toNumber = block.getTitleValue('TYPE') == 'NUMBER';
+	var toNumber = block.getFieldValue('TYPE') == 'NUMBER';
 	if(toNumber)
 	{
 		code = 'tonumber(' + code + ')';

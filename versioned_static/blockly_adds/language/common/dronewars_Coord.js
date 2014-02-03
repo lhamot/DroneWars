@@ -22,9 +22,9 @@ init:
 
 Blockly.Lua['dronewars_coord'] = function(block)
 {
-	return ['Coord(' + block.getTitleValue('X') + ',' +
-	        block.getTitleValue('Y') + ',' +
-	        block.getTitleValue('Z') + ')',
+	return ['Coord(' + block.getFieldValue('X') + ',' +
+	        block.getFieldValue('Y') + ',' +
+	        block.getFieldValue('Z') + ')',
 	        Blockly.Lua.ORDER_HIGH
 	       ];
 };

@@ -25,7 +25,7 @@ Blockly.Lua['dronewars_fleetaction'] = function(block)
 {
 	var coord = Blockly.Lua.valueToCode(
 	              block, 'DIREC', Blockly.Lua.ORDER_NONE) || 'Direction()';
-	return ['FleetAction(FleetAction.' + block.getTitleValue('ACTION') + ',' +
+	return ['FleetAction(FleetAction.' + block.getFieldValue('ACTION') + ',' +
 	        coord + ')',
 	        Blockly.Lua.ORDER_HIGH
 	       ];

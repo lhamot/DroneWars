@@ -32,14 +32,14 @@ goog.require('Blockly.Lua');
 Blockly.Lua['math_number'] = function(block)
 {
 	// Numeric value.
-  var code = window.parseFloat(block.getTitleValue('NUM'));
+  var code = window.parseFloat(block.getFieldValue('NUM'));
 	return [code, Blockly.Lua.ORDER_UNARY_SIGN];
 };
 
 Blockly.Lua['math_arithmetic'] = function(block)
 {
 	// Basic arithmetic operators, and power.
-	var mode = block.getTitleValue('OP');
+	var mode = block.getFieldValue('OP');
 	var tuple = Blockly.Lua.math_arithmetic.OPERATORS[mode];
 	var operator = tuple[0];
 	var order = tuple[1];
@@ -68,14 +68,14 @@ Blockly.Lua['math_change'] = function(block)
 	// Add to a variable in place.
 	var argument0 = Blockly.Lua.valueToCode(block, 'DELTA',
 	                                        Blockly.Lua.ORDER_ADDITIVE) || '0';
-	var varName = Blockly.Lua.variableDB_.getName(block.getTitleValue('VAR'),
+	var varName = Blockly.Lua.variableDB_.getName(block.getFieldValue('VAR'),
 	              Blockly.Variables.NAME_TYPE);
 	return varName + ' = (type(' + varName + ') == \'number\' and ' + varName + ' or 0) + 5';
 };
 
 Blockly.Lua['math_single'] = function(block)
 {
-	var operator = block.getTitleValue('OP');
+	var operator = block.getFieldValue('OP');
 	// Math operators with single operand.
 	if(operator == 'NEG')
 	{
@@ -159,7 +159,7 @@ Blockly.Lua['math_trig'] = Blockly.Lua.math_single;
 Blockly.Lua['math_on_list'] = function(block)
 {
 	// Math functions for lists.
-	func = block.getTitleValue('OP');
+	func = block.getFieldValue('OP');
 	list = Blockly.Lua.valueToCode(block, 'LIST',
 	                               Blockly.Lua.ORDER_NONE) || '[]';
 	var code;

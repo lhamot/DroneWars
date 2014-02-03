@@ -94,7 +94,7 @@ Blockly.Lua['dronewars_building_in_planet'] = function(block)
 {
 	var object = Blockly.Lua.valueToCode(
 	               block, 'PLANET', Blockly.Lua.ORDER_NONE) || 'nil';
-	return [object + '.buildingList[Building.' + block.getTitleValue('BUILDING') + ']',
+	return [object + '.buildingList[Building.' + block.getFieldValue('BUILDING') + ']',
 	        Blockly.Lua.ORDER_HIGH
 	       ];
 };
@@ -122,7 +122,7 @@ Blockly.Lua['dronewars_cannon_in_planet'] = function(block)
 {
 	var object = Blockly.Lua.valueToCode(
 	               block, 'PLANET', Blockly.Lua.ORDER_NONE) || 'nil';
-	return [object + '.cannonTab[Cannon.' + block.getTitleValue('CANNON') + ']',
+	return [object + '.cannonTab[Cannon.' + block.getFieldValue('CANNON') + ']',
 	        Blockly.Lua.ORDER_HIGH
 	       ];
 };
@@ -150,7 +150,7 @@ Blockly.Blocks['dronewars_ressource_in_planet'] =
 Blockly.Lua['dronewars_ressource_in_planet'] = function (block) {
   var object = Blockly.Lua.valueToCode(
 	               block, 'PLANET', Blockly.Lua.ORDER_NONE) || 'nil';
-  return [object + '.ressourceSet:at(Ressource.' + block.getTitleValue('RESSOURCE') + ')',
+  return [object + '.ressourceSet:at(Ressource.' + block.getFieldValue('RESSOURCE') + ')',
 	        Blockly.Lua.ORDER_HIGH
   ];
 };
@@ -174,7 +174,7 @@ init:
 
 Blockly.Lua['dronewars_cannon_price'] = function(block)
 {
-    return ['cannonPrice(Cannon.' + block.getTitleValue('CANNON') + ')',
+    return ['cannonPrice(Cannon.' + block.getFieldValue('CANNON') + ')',
             Blockly.Lua.ORDER_HIGH
            ];
 };
@@ -203,7 +203,7 @@ Blockly.Lua['dronewars_building_price'] = function(block)
 {
   var level = Blockly.Lua.valueToCode(
                    block, 'LEVEL', Blockly.Lua.ORDER_NONE) || '1';    
-    return ['buildingPrice(Building.' + block.getTitleValue('BUILDING') + ', ' + level + ')',
+    return ['buildingPrice(Building.' + block.getFieldValue('BUILDING') + ', ' + level + ')',
             Blockly.Lua.ORDER_HIGH
            ];
 };

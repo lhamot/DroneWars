@@ -22,9 +22,9 @@ init:
 
 Blockly.Lua['dronewars_ressourceSet'] = function(block)
 {
-	return ['RessourceSet(' + block.getTitleValue('R1') + ',' +
-	        block.getTitleValue('R2') + ',' +
-	        block.getTitleValue('R3') + ')',
+	return ['RessourceSet(' + block.getFieldValue('R1') + ',' +
+	        block.getFieldValue('R2') + ',' +
+	        block.getFieldValue('R3') + ')',
 	        Blockly.Lua.ORDER_HIGH
 	       ];
 };
@@ -52,7 +52,7 @@ Blockly.Lua['dronewars_ressourceSet_at'] = function(block)
 {
 	var object = Blockly.Lua.valueToCode(
 	               block, 'RESSOURCESET', Blockly.Lua.ORDER_NONE) || 'nil';
-	return [object + ':at(Ressource.' + block.getTitleValue('RESSOURCE') + ')',
+	return [object + ':at(Ressource.' + block.getFieldValue('RESSOURCE') + ')',
 	        Blockly.Lua.ORDER_HIGH
 	       ];
 };

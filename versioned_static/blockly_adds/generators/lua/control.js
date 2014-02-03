@@ -56,12 +56,12 @@ Blockly.Lua['controls_if'] = function(block)
 Blockly.Lua['controls_whileUntil'] = function(block)
 {
 	// Do while/until loop.
-	var until = block.getTitleValue('MODE') == 'UNTIL';
+	var until = block.getFieldValue('MODE') == 'UNTIL';
 	var argument0 = Blockly.Lua.valueToCode(block, 'BOOL',
 	                                        until ? Blockly.Lua.ORDER_LOGICAL_NOT :
 	                                        Blockly.Lua.ORDER_NONE) || 'false';
 	var branch0 = Blockly.Lua.statementToCode(block, 'DO') || '';
-	if(block.getTitleValue('MODE') == 'UNTIL')
+	if(block.getFieldValue('MODE') == 'UNTIL')
 	{
 		if(!argument0.match( / ^ \w + $ /))
 		{
@@ -76,7 +76,7 @@ Blockly.Lua['controls_for'] = function(block)
 {
 	// For loop.
 	var variable0 = Blockly.Lua.variableDB_.getName(
-	                  block.getTitleValue('VAR'), Blockly.Variables.NAME_TYPE);
+	                  block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
 	var argument0 = Blockly.Lua.valueToCode(block, 'FROM',
 	                                        Blockly.Lua.ORDER_NONE) || '0';
 	// If starting index is 0, omit it.
@@ -102,7 +102,7 @@ Blockly.Lua['controls_forEach'] = function(block)
 {
 	// For each loop.
     var variable0 = Blockly.Lua.variableDB_.getName(
-                      block.getTitleValue('VAR'), Blockly.Variables.NAME_TYPE);	                  
+                      block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);	                  
 	var argument0 = Blockly.Lua.valueToCode(block, 'LIST',
 	                                        Blockly.Lua.ORDER_RELATIONAL) || '{}';
 	var branch0 = Blockly.Lua.statementToCode(block, 'DO') || '';
@@ -116,7 +116,7 @@ Blockly.Lua['controls_forEach'] = function(block)
 Blockly.Lua['controls_flow_statements'] = function(block)
 {
 	// Flow statements: continue, break.
-	switch(block.getTitleValue('FLOW'))
+	switch(block.getFieldValue('FLOW'))
 	{
 	case 'BREAK':
 		return 'break\n';

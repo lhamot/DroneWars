@@ -23,7 +23,7 @@ init:
 
 Blockly.Lua['dronewars_makeBuilding'] = function (block)
 {
-	return ['makeBuilding(Building.' + block.getTitleValue('BUILDING') + ')',
+	return ['makeBuilding(Building.' + block.getFieldValue('BUILDING') + ')',
 	        Blockly.Lua.ORDER_HIGH
 	       ];
 };
@@ -46,7 +46,7 @@ init:
 
 Blockly.Lua['dronewars_makeShip'] = function(block)
 {
-	return ['makeShip(Ship.' + block.getTitleValue('SHIP') + ')',
+	return ['makeShip(Ship.' + block.getFieldValue('SHIP') + ')',
 	        Blockly.Lua.ORDER_HIGH
 	       ];
 };
@@ -69,7 +69,7 @@ init:
 
 Blockly.Lua['dronewars_makeCannon'] = function(block)
 {
-	return ['makeCannon(Cannon.' + block.getTitleValue('CANNON') + ')',
+	return ['makeCannon(Cannon.' + block.getFieldValue('CANNON') + ')',
 	        Blockly.Lua.ORDER_HIGH
 	       ];
 };

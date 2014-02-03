@@ -89,7 +89,7 @@ Blockly.Lua['lists_indexOf'] = function(block)
 	var tableName = Blockly.Lua.valueToCode(block, 'VALUE',
 	                                        Blockly.Lua.ORDER_MEMBER) || '\'\'';
 	var code = '';
-	if(block.getTitleValue('END') == 'FIRST')
+	if(block.getFieldValue('END') == 'FIRST')
 	{
 		code =
 		  '(function() for k,v in ipairs(' + tableName + ') do if v == ' + value + ' then return k end end end)()';
@@ -99,7 +99,7 @@ Blockly.Lua['lists_indexOf'] = function(block)
 		code =
 		  '(function() for i = #' + tableName + ',1,-1 do if ' + tableName + '[i] == ' + value + ' then return i end end end)()';
 	}
-	//var operator = block.getTitleValue('END') == 'FIRST' ? 'find' : 'rfind';
+	//var operator = block.getFieldValue('END') == 'FIRST' ? 'find' : 'rfind';
 	//var code = argument1 + '.' + operator + '(' + argument0 + ') + 1';
 	return [code, Blockly.Lua.ORDER_MEMBER];
 }
