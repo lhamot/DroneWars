@@ -40,7 +40,7 @@ init:
         this.appendValueInput('PLANET')
             .setCheck('Planet')
             .appendField(Blockly.LANG_DRONEWARS_PLANET_AGE);
-        this.setOutput(true, Number);
+        this.setOutput(true, 'Number');
     }
 };
 
@@ -55,7 +55,7 @@ Blockly.Lua['dronewars_planet_age'] = function(block)
 addProperty('Planet', 'coord', 'Coord',
             Blockly.LANG_DRONEWARS_PLANET_COORD,
             Blockly.LANG_CATEGORY_DRONEWARS_PLANET);
-addProperty('Planet', 'playerId', Number,
+addProperty('Planet', 'playerId', 'Number',
             Blockly.LANG_DRONEWARS_PLANET_PLAYERID,
             Blockly.LANG_CATEGORY_DRONEWARS_PLANET);
 addProperty('Planet', 'buildingList', Array,
@@ -86,7 +86,7 @@ init:
 	  this.appendValueInput('PLANET')
       .setCheck('Planet')
       .appendField(Blockly.LANG_DRONEWARS_BUILDING_IN_PLANET);
-		this.setOutput(true, Number);
+		this.setOutput(true, 'Number');
 	}
 };
 
@@ -114,7 +114,7 @@ init:
 	  this.appendValueInput('PLANET')
       .setCheck('Planet')
       .appendField(Blockly.LANG_DRONEWARS_CANNON_IN_PLANET);
-		this.setOutput(true, Number);
+		this.setOutput(true, 'Number');
 	}
 };
 
@@ -143,7 +143,7 @@ Blockly.Blocks['dronewars_ressource_in_planet'] =
       this.appendValueInput('PLANET')
         .setCheck('Planet')
         .appendField(Blockly.LANG_DRONEWARS_RESSOURCE_IN_PLANET);
-      this.setOutput(true, Number);
+      this.setOutput(true, 'Number');
     }
 };
 
@@ -193,7 +193,7 @@ init:
       .appendField(getBuildingDropdown(), 'BUILDING');
       this.appendValueInput("LEVEL")
       .appendField(Blockly.LANG_DRONEWARS_BUILDING_PRICE2)
-      .setCheck(Number);
+      .setCheck('Number');
       this.setOutput(true, 'RessourceSet');
       this.setInputsInline(true);
     }

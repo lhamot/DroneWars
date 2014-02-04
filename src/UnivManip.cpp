@@ -156,14 +156,14 @@ void getNewPlayerCode(std::vector<std::string>& codes)
 		   BL::gettext("myself_player") %
 		   BL::gettext("other_player")).str();
 		std::string const code =
-		  "function AI:do_gather(myFleet, otherFleet)\n"
+		  "function AI_do_gather(myFleet, otherFleet)\n"
 		  "  return true\n"
 		  "end\n"
-		  "function AI:do_fight(myFleet, fighter)\n"
+		  "function AI_do_fight(myFleet, fighter)\n"
 		  "  return true\n"
 		  "end\n"
-		  "function AI:action(myFleet, planet)\n"
-		  "  order = FleetAction(FleetAction.Nothing,Direction())\n"
+		  "function AI_action(myFleet, planet)\n"
+		  "  order = FleetAction(FleetAction.Nothing, Direction())\n"
 		  "  return order\n"
 		  "end";
 		result.push_back(code);

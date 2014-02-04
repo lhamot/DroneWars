@@ -44,7 +44,7 @@ init:
 	  this.appendValueInput('RESSOURCESET')
       .setCheck('RessourceSet')
       .appendField(Blockly.LANG_DRONEWARS_RESSOURCESET_AT);
-		this.setOutput(true, Number);
+		this.setOutput(true, 'Number');
 	}
 };
 

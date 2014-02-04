@@ -480,9 +480,11 @@ class Class
 		{
 			CopyWrapper<T>* ptr =
 			  (CopyWrapper<T>*)lua_newuserdata(L, sizeof(CopyWrapper<T>));
-			luaL_setmetatable(L, typeid(T).name());
 			new(ptr) CopyWrapper<T>(
 			  ctorFromStack<ArgIdxList>(L)...);
+			// luaL_setmetatable doit etre appelé aprés le new
+			// Ainsi, si le new echoue, le déstructeur ne sera pas appelé.
+			luaL_setmetatable(L, typeid(T).name());
 			return 1;
 		}
 	};

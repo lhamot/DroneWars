@@ -3,9 +3,9 @@
 goog.provide('Blockly.Lua');
 
 //******************   Fleet    **********************************************
-addProperty('Fleet', 'id', Number, Blockly.LANG_DRONEWARS_FLEET_ID,
+addProperty('Fleet', 'id', 'Number', Blockly.LANG_DRONEWARS_FLEET_ID,
   Blockly.LANG_CATEGORY_DRONEWARS_FLEET);
-addProperty('Fleet', 'playerId', Number, Blockly.LANG_DRONEWARS_FLEET_PLAYER_ID,
+addProperty('Fleet', 'playerId', 'Number', Blockly.LANG_DRONEWARS_FLEET_PLAYER_ID,
   Blockly.LANG_CATEGORY_DRONEWARS_FLEET);
 addProperty('Fleet', 'coord', 'Coord', Blockly.LANG_DRONEWARS_FLEET_COORD,
   Blockly.LANG_CATEGORY_DRONEWARS_FLEET);
@@ -29,11 +29,11 @@ init:
 		this.setColour(230);
 		this.setInputsInline(true);
 		this.appendDummyInput()
-      .appendField(getShipDropDown(), 'SHIP');
-	  this.appendValueInput('FLEET')
-      .setCheck('Fleet')
-      .appendField(Blockly.LANG_DRONEWARS_SHIP_IN_FLEET);
-		this.setOutput(true, Number);
+            .appendField(getShipDropDown(), 'SHIP');
+        this.appendValueInput('FLEET')
+            .setCheck('Fleet')
+            .appendField(Blockly.LANG_DRONEWARS_SHIP_IN_FLEET);
+		this.setOutput(true, 'Number');
 	}
 };
 
@@ -49,18 +49,18 @@ Blockly.Lua['dronewars_ship_in_fleet'] = function(block)
 //ShipList
 Blockly.Blocks['dronewars_ressource_in_fleet'] =
 {
-  category:
+category:
     Blockly.LANG_CATEGORY_DRONEWARS_FLEET,
-  init:
+init:
     function () {
-      this.setColour(230);
-      this.setInputsInline(true);
-      this.appendDummyInput()
-        .appendField(getRessourceDropDown(), 'RESSOURCE');
-      this.appendValueInput('FLEET')
-        .setCheck('Fleet')
-        .appendField(Blockly.LANG_DRONEWARS_RESSOURCE_IN_FLEET);
-      this.setOutput(true, Number);
+        this.setColour(230);
+        this.setInputsInline(true);
+        this.appendDummyInput()
+            .appendField(getRessourceDropDown(), 'RESSOURCE');
+        this.appendValueInput('FLEET')
+            .setCheck('Fleet')
+            .appendField(Blockly.LANG_DRONEWARS_RESSOURCE_IN_FLEET);
+        this.setOutput(true, 'Number');
     }
 };
 
@@ -108,7 +108,7 @@ init:
         this.appendValueInput('FLEET')
             .setCheck('Fleet')
             .appendField(Blockly.LANG_DRONEWARS_FLEET_AGE);
-        this.setOutput(true, Number);
+        this.setOutput(true, 'Number');
     }
 };
 

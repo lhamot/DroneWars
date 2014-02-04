@@ -49,7 +49,7 @@ init:
 
 Blockly.Lua['dronewars_fleetDoNothing'] = function(block)
 {
-    return ['FleetAction(FleetAction.Nothing, Coord())',
+    return ['FleetAction(FleetAction.Nothing, Direction())',
             Blockly.Lua.ORDER_HIGH
            ];
 };

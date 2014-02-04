@@ -4,7 +4,7 @@
       <arg name="%1%"></arg>
       <arg name="%2%"></arg>
     </mutation>
-    <title name="NAME">AI:do_gather</title>
+    <title name="NAME">AI_do_gather</title>
     <comment pinned="false" h="200" w="400">%5%</comment>
     <value name="RETURN">
       <block type="logic_boolean">
@@ -17,7 +17,7 @@
       <arg name="%8%"></arg>
       <arg name="%9%"></arg>
     </mutation>
-    <title name="NAME">AI:do_fight</title>
+    <title name="NAME">AI_do_fight</title>
     <comment pinned="false" h="200" w="400">%6%</comment>
     <value name="RETURN">
       <block type="logic_boolean">
@@ -30,7 +30,7 @@
       <arg name="%1%"></arg>
       <arg name="%3%"></arg>
     </mutation>
-    <title name="NAME">AI:action</title>
+    <title name="NAME">AI_action</title>
     <comment pinned="false" h="200" w="400">%7%</comment>
     <value name="RETURN">
       <block type="dronewars_fleetDoNothing">
