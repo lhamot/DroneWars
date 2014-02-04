@@ -51,7 +51,7 @@
 </script>
 <div class="container">
 	<div class="row">
-		<div class="span6">
+		<div class="col-md-6">
 			<input class="btn btn-primary" type="submit" value="{% trans "Import" %}" name="import_button" 
 				onclick="
 					var xml_text = prompt('Load', '');
@@ -87,26 +87,26 @@
 					"/>
 		</div>
 		{%if codeData.lastError %}
-		<div class="alert alert-error span10">
+		<div class="alert alert-danger col-md-10">
 			<button type="button" class="close" data-dismiss="alert">&times;</button>
 			<strong>{{codeData.lastError|safe|linebreaksbr}}</strong>
 		</div>
 		{% endif %}
 		{%if errorMessage %}
-		<div class="alert alert-error span10">
+		<div class="alert alert-danger col-md-10">
 			<button type="button" class="close" data-dismiss="alert">&times;</button>
 			<h4>{% trans "Error!" %}</h4>{{errorMessage|safe}}
 		</div>
 		{% endif %}
 		{%if codeData.blocklyCodeDate < codeData.codeDate %}
-		<div class="alert alert-block span10">
+		<div class="alert alert-block col-md-10">
 			<button type="button" class="close" data-dismiss="alert">&times;</button>
 			<h4>{% trans "Warning!" %}</h4>
 			{% trans "Your visual script is obsolete. If you save, it will reset your textual script." %}
 		</div>
 		{% endif %}
 		{%if message %}
-		<div class="alert alert-success span10">
+		<div class="alert alert-success col-md-10">
 			<button type="button" class="close" data-dismiss="alert">&times;</button>
 			<strong>{{message|safe}}</strong>
 		</div>

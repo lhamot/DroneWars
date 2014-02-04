@@ -11,7 +11,7 @@
 {% block content %}
 <div class="container">
 	<div class="row">
-		<div class="span3">
+		<div class="col-md-3">
 			<h1>{{planet.name}}</h1>
 			{% if player.id == planet.playerId %}
 			<a href="planet.html?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}">
@@ -38,7 +38,7 @@
 			</table>
 		</div>
 		{% if player.id == planet.playerId %}
-		<div class="span4">
+		<div class="col-md-4">
 			<table class="table table-condensed">
 				<caption>{% trans "Tasks" %}</caption>
 				<tr><th>{% trans "Type" %}</th><th>{% trans "Time left" %}</th><th>{% trans "What" %}</th></tr>
@@ -71,7 +71,7 @@
 				{% endfor %}
 			</table>
 		</div>
-		<div class="span5">
+		<div class="col-md-5">
 			<table class="table table-condensed">
 				<caption>{% trans "Reports" %}</caption>
 				<tr>
@@ -95,7 +95,7 @@
 	</div>
 	<div class="row">
 		{% if target_event %}
-		<div class="span10 offset2">
+		<div class="col-md-10 col-md-offset-2">
 			{% include "report_func.html" %}
 		</div>
 		{% endif %}

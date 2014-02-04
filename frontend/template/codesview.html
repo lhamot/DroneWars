@@ -5,10 +5,9 @@
 {% block codes_class %}active{% endblock %}
 
 {% block content %}
-<div class="navbar navbar-inverse navbar-static-top">
-	<div class="navbar-inner">
+<nav class="navbar navbar-inverse" role="navigation">
 		<div class="container">
-			<ul class="nav">
+			<ul class="nav navbar-nav">
 				<li
 				{% if name == "Planet" and mode == "blockly" %}
 					class="active"
@@ -34,8 +33,7 @@
 				{% endif %}
 			</ul>
 		</div>
-	</div>
-</div>
+</nav>
 {% if helpMessage %}
 <div class "alert text-info">
 	{{helpMessage}}
@@ -59,8 +57,8 @@
 <div class="container">
 	<div class="row">
 		{% if tutosText %}
-		<div class="span4 tutorial">{{tutosText|safe}}</div>
-		<div class="span4">
+		<div class="col-md-4 tutorial">{{tutosText|safe}}</div>
+		<div class="col-md-4">
 			<script>
 				 $(function() {
 					$( "#help_opener" ).click(function() {

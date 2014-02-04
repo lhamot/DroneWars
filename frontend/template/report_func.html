@@ -46,7 +46,7 @@
 			{% if target_event.type == Event_Type.FleetCodeError or target_event.type == Event_Type.FleetCodeExecError or target_event.type == Event_Type.PlanetCodeError or target_event.type == Event_Type.PlanetCodeExecError %}
 			<h1>{{target_event.type|eventname}}</h1>
 			<br>
-			<div class="alert alert-error">
+			<div class="alert alert-danger">
 				<!--<h4>{{target_event.type|eventname}}</h4>-->
     			{{target_event.comment}}
     		</div>			

@@ -9,7 +9,7 @@
 {% block content %}
 <div class="container">
 	<div class="row">
-		<div class="span6">
+		<div class="col-md-6">
 			<table class="table">
 			<tr>
 				<th>Time</th><th>Type</th><th>Message</th>
@@ -22,7 +22,7 @@
 			</table>
 		</div>
 		{% if target_event %}
-		<div class="span6">
+		<div class="col-md-6">
 			{% include "report_func.html" %}
 		</div>
 		{% endif %}

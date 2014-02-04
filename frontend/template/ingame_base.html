@@ -9,10 +9,9 @@
 {% block body %}
 			<header>
 			</header>
-			<div class="navbar navbar-inverse navbar-static-top">
-				<div class="navbar-inner">
+			<nav class="navbar navbar-inverse" role="navigation">
 					<div class="container">
-						<ul class="nav">
+						<ul class="nav navbar-nav">
 							<li class="{% block codes_class %}tab{% endblock %}"><a href="/ingame/codes.html">{% trans "Command" %}</a></li>
 							<li class="{% block planets_class %}tab{% endblock %}"><a href="/ingame/planetlist.html">{% trans "Planets" %}</a></li>
 							<li class="{% block fleets_class %}tab{% endblock %}"><a href="/ingame/fleetlist.html">{% trans "Fleets" %}</a></li>
@@ -38,8 +37,8 @@
 								</ul>
 							</li>
 							<li class="divider-vertical"></li>
-							<li><a href="/ingame/account.html" class="tab"><i class="icon-user"></i></a></li>
-							<li><a href="/" class="tab"><i class="icon-off"></i></a></li>
+							<li><a href="/ingame/account.html" class="tab"><i class="glyphicon glyphicon-user"></i></a></li>
+							<li><a href="/" class="tab"><i class="glyphicon glyphicon-off"></i></a></li>
 							<li class="divider-vertical"></li>
 							{% if timeInfo %}
 							<li><p class="navbar-text">{% trans "Next round :" %} 
@@ -49,12 +48,11 @@
 							{% endif %}
 						</ul>
 					</div>
-				</div>
-			</div>
+			</nav>
 			<div class="container">
 				<div class="row">
 					{% if helpMessage %}
-					<div class="span4 offset1 tutorial">{{helpMessage|safe}}</div>
+					<div class="col-md-4 col-md-offset-1 tutorial">{{helpMessage|safe}}</div>
 					{% endif %}
 				</div>
 			</div>
