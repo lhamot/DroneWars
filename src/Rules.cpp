@@ -103,16 +103,22 @@ void checkTutos(Universe& univ_,
 				if(sig.playerID == player.id &&
 				   sig.type == Event::FleetsGather)
 				{
-					auto mosqu5 = [&](Fleet const & fleet)
+					static size_t const FleetRequested = 3;
+					static size_t const ShipRequested = 5;
+					size_t equal5 = 0;
+					size_t biggerThan5 = 0;
+					for(Fleet const & fleet : univ_.fleetMap | boost::adaptors::map_values)
 					{
-						return fleet.playerId == player.id &&
-						       fleet.shipList[Ship::Mosquito] == 5;
-					};
-					size_t const count =
-					  range::count_if(
-					    univ_.fleetMap | boost::adaptors::map_values,
-					    mosqu5);
-					if(count >= 3)
+						if(fleet.playerId == player.id)
+						{
+							if(fleet.shipList[Ship::Mosquito] == ShipRequested)
+								++equal5;
+							else if(fleet.shipList[Ship::Mosquito] > ShipRequested)
+								++biggerThan5;
+						}
+					}
+					if(equal5 >= FleetRequested ||
+					   biggerThan5 > getMaxFleetCount(player) - FleetRequested)
 						wisePlayer.push_back(player.id);
 					break;
 				}
@@ -317,17 +323,17 @@ void calcExperience(PlayerMap const& playerMap,
 
 size_t getMaxPlanetCount(Player const& player)
 {
-	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::Conquest] + 2.));
+	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::Conquest] + 3));
 }
 
 size_t getMaxFleetCount(Player const& player)
 {
-	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::Strategy] + 2.));
+	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::Strategy] + 3));
 }
 
 size_t getMaxFleetSize(Player const& player)
 {
-	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::Cohesion] + 2.));
+	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::Cohesion] + 3));
 }
 
 size_t getMaxEventCount(Player const& player)
