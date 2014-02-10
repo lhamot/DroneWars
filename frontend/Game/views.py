@@ -18,6 +18,7 @@ import thrift.transport.TSocket
 import thrift.protocol.TBinaryProtocol
 import gen_py.thrift.EngineServer
 from django.http import Http404
+import DroneWars_frontend
 
 
 Building_Enum = gen_py.thrift.ttypes.Building_Enum
@@ -52,7 +53,9 @@ class LoginForm(forms.Form):
 
 def createEngineClient():
     # Talk to a server via TCP sockets, using a binary protocol
-    transport = thrift.transport.TSocket.TSocket("localhost", 9090)
+    transport = thrift.transport.TSocket.TSocket(
+        DroneWars_frontend.settings.SIMULATION['host'], 
+        DroneWars_frontend.settings.SIMULATION['port'])
     transport.open()
     protocol = thrift.protocol.TBinaryProtocol.TBinaryProtocol(transport)
 

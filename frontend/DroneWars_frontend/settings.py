@@ -179,3 +179,9 @@ LOGGING = {
         },
     }
 }
+
+SIMULATION = {
+    'host':'localhost',
+    'port':9090
+}
+
