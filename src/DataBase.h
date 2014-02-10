@@ -57,20 +57,15 @@ namespace Poco {namespace Data {class Session;}}
 //! de type Exception
 class DataBase
 {
-	//! Handle de connection a la base de donnée
-	mutable std::unique_ptr<Poco::Data::Session> session_;
-
-	//! Ajoute un script lua planète ou flotte, à un joueur, sans transaction
-	void addScriptImpl(Player::ID pid,
-	                   CodeData::Target target,
-	                   std::string const& code);
-
-	//! Ajoute un code blockly planète ou flotte, à un joueur, sans transaction
-	void addBlocklyCodeImpl(Player::ID pid,
-	                        CodeData::Target target,
-	                        std::string const& code);
-
 public:
+	struct ConnectionInfo
+	{
+		std::string host_;
+		uint16_t port_;
+		std::string database_;
+		std::string user_;
+		std::string password_;
+	};
 
 	//! Signal une erreur au niveau du SGBD
 	class Exception : public std::runtime_error
@@ -80,7 +75,7 @@ public:
 		Exception(std::string const& message): std::runtime_error(message) {}
 	};
 
-	DataBase();
+	DataBase(ConnectionInfo const& connection);
 	~DataBase();
 
 	//***************************  Player  ************************************
@@ -289,6 +284,23 @@ public:
 	//! Si il était le propriétaire, l'alliance est dissoute (eraseAlliance)
 	//! @throw Exception si pid invalide
 	void quitAlliance(Player::ID pid);
+private:
+	ConnectionInfo connectionInfo_;
+
+	//! Handle de connection a la base de donnée
+	mutable std::unique_ptr<Poco::Data::Session> session_;
+
+	//! Ajoute un script lua planète ou flotte, à un joueur, sans transaction
+	void addScriptImpl(Player::ID pid,
+	                   CodeData::Target target,
+	                   std::string const& code);
+
+	//! Ajoute un code blockly planète ou flotte, à un joueur, sans transaction
+	void addBlocklyCodeImpl(Player::ID pid,
+	                        CodeData::Target target,
+	                        std::string const& code);
+	void checkConnection(std::unique_ptr<Poco::Data::Session>& session) const;
+
 };
 
 #endif //__DRONEWARS_DATABASE__

@@ -23,7 +23,7 @@ public:
 	};
 
 	//! Constructeur
-	EngineServerHandler();
+	EngineServerHandler(DataBase::ConnectionInfo const& connInfo);
 
 	//! Lance le serveur (commence l'écoute)
 	void start();

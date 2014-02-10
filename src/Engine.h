@@ -25,7 +25,7 @@ class Engine
 {
 public:
 	//! Constructeur
-	Engine();
+	Engine(DataBase::ConnectionInfo const& connInfo);
 
 	~Engine();
 

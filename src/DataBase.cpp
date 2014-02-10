@@ -99,24 +99,30 @@ public:
 	}
 
 //! Reconnecte si la connecion est perdue
-void checkConnection(std::unique_ptr<Poco::Data::Session>& session)
+void DataBase::checkConnection(
+  std::unique_ptr<Poco::Data::Session>& session) const
 {
 	Poco::Data::DataException ex;
 	if(session == nullptr || session->isConnected() == false)
 	{
 		LOG4CPLUS_DEBUG(
 		  log4cplus::Logger::getInstance("DataBase"), "Connection!");
-		session.reset(new Session("MySQL",
-		                          "host=localhost;"
-		                          "port=3306;"
-		                          "db=dronewars;"
-		                          "user=Blaspheme;"
-		                          "password=pdcx3wady6nsMfUm"));
+		ConnectionInfo const& con = connectionInfo_;
+		char buffer[6];
+		itoa(con.port_, buffer, 10);
+		session.reset(
+		  new Session("MySQL",
+		              "host=" + con.host_ +
+		              ";port=" + std::string(buffer) +
+		              ";db=" + con.database_ +
+		              ";user=" + con.user_ +
+		              ";password=" + con.password_//pdcx3wady6nsMfUm
+		             ));
 	}
 }
 
-DataBase::DataBase()
-try
+DataBase::DataBase(ConnectionInfo const& connectionInfo)
+try : connectionInfo_(connectionInfo)
 {
 	Poco::Data::MySQL::Connector::registerConnector();
 	checkConnection(session_);

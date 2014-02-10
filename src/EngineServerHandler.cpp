@@ -318,7 +318,10 @@ ndw::FightReport fightReportToThrift(
 } //Namespace anonyme
 
 
-EngineServerHandler::EngineServerHandler()
+EngineServerHandler::EngineServerHandler(
+  DataBase::ConnectionInfo const& connInfo):
+	engine_(connInfo),
+	database_(connInfo)
 {
 }
 

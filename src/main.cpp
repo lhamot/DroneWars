@@ -32,6 +32,7 @@
 #include <thrift/server/TSimpleServer.h>
 #include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TBufferTransports.h>
+#include <boost/program_options.hpp>
 #pragma warning(pop)
 #include <boost/make_shared.hpp>
 
@@ -44,7 +45,7 @@ using namespace std;
 using namespace log4cplus;
 
 //! Fonction main
-int main()//(int argc, char** argv)
+int main(int argc, char** argv)
 {
 	static Logger logger = Logger::getInstance(LOG4CPLUS_TEXT("main"));
 
@@ -68,15 +69,45 @@ int main()//(int argc, char** argv)
 	}
 #endif
 
-	using namespace ::apache::thrift;
-	using namespace ::apache::thrift::protocol;
-	using namespace ::apache::thrift::transport;
-	using namespace ::apache::thrift::server;
-
 	try
 	{
+		DataBase::ConnectionInfo connInfo;
+
+		namespace po = boost::program_options;
+		std::string config_file;
+		// Declare the supported options.
+		po::options_description desc("Allowed options");
+		desc.add_options()
+		("help,h", "produce help message")
+		("host,a", po::value<std::string>(&connInfo.host_)->default_value("localhost"), "MySQL host")
+		("port,p", po::value<uint16_t>(&connInfo.port_)->default_value(3306), "MySQL port")
+		("database,d", po::value<std::string>(&connInfo.database_)->required(), "MySQL database name")
+		("user,u", po::value<std::string>(&connInfo.user_)->required(), "MySQL user name")
+		("password,w", po::value<std::string>(&connInfo.password_)->required(), "MySQL user password")
+		;
+
+		po::variables_map vm;
+		po::store(po::parse_command_line(argc, argv, desc), vm);
+
+		ifstream ifs("dronewars.ini");
+		if (ifs.is_open())
+			store(parse_config_file(ifs, desc), vm);
+
+		if (vm.count("help"))
+		{
+			cout << desc << "\n";
+			return EXIT_SUCCESS;
+		}
+
+		notify(vm);
+
+		using namespace ::apache::thrift;
+		using namespace ::apache::thrift::protocol;
+		using namespace ::apache::thrift::transport;
+		using namespace ::apache::thrift::server;
+
 		int port = 9090;
-		auto handler = boost::make_shared<EngineServerHandler>();
+		auto handler = boost::make_shared<EngineServerHandler>(connInfo);
 		auto proc = boost::make_shared<ndw::EngineServerProcessor>(handler);
 		auto serverTransport = boost::make_shared<TServerSocket>(port);
 		auto transpFactory = boost::make_shared<TBufferedTransportFactory>();

@@ -230,8 +230,10 @@ static size_t const RoundSecond = 10; //!< Nombre de secondes min par round
 static size_t const SaveSecond = 60;  //!< Nombre de secondes min entre 2 save
 
 
-Simulation::Simulation(Universe& univ):
-	univ_(univ)
+Simulation::Simulation(Universe& univ,
+                       DataBase::ConnectionInfo const& connInfo):
+	univ_(univ),
+	database_(connInfo)
 {
 }
 

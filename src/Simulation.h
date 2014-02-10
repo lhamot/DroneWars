@@ -19,7 +19,8 @@ class Simulation
 	Simulation& operator = (Simulation const&); //!< operator = non implémenté
 public:
 	//! Constructeur
-	Simulation(Universe& univ);
+	Simulation(Universe& univ,
+	           DataBase::ConnectionInfo const& connInfo);
 
 	//! Informe qu'un joueur à été modifié(généralement les scripts)
 	void reloadPlayer(Player::ID pid);

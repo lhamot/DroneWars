@@ -14,8 +14,8 @@ using namespace boost;
 typedef boost::unique_lock<boost::shared_mutex> UniqueLock; //!< Verou en écriture
 typedef boost::shared_lock<boost::shared_mutex> SharedLock; //!< Verou en lecture
 
-Engine::Engine():
-	simulation_(new Simulation(univ_))
+Engine::Engine(DataBase::ConnectionInfo const& connInfo) :
+	simulation_(new Simulation(univ_, connInfo))
 {
 	filesystem::directory_iterator dir("save/"), end;
 
@@ -43,11 +43,18 @@ Engine::Engine():
 		if(version == 2)
 			ss << "2";
 		load(ss.str(), version);
+		DataBase database(connInfo);
+		std::vector<Player> players = database.getPlayers();
+		for(Player const & player : players)
+		{
+			if(player.mainPlanet == Coord())
+				simulation_->createMainPlanet(player.id);
+		}
 	}
 	else
 	{
 		//! Sinon on construit un Univers par defaut
-		DataBase database;
+		DataBase database(connInfo);
 		construct(univ_, database);
 	}
 	//! On lance le simulateur (Start)
@@ -65,13 +72,6 @@ void Engine::load(string const& univName, size_t version)
 		loadFromStream_v2(loadFile, univ_);
 	else
 		BOOST_THROW_EXCEPTION(logic_error("Unexpected archive file version"));
-	DataBase database;
-	std::vector<Player> players = database.getPlayers();
-	for(Player const & player : players)
-	{
-		if(player.mainPlanet == Coord())
-			simulation_->createMainPlanet(player.id);
-	}
 }
 
 
