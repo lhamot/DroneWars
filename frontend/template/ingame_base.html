@@ -67,9 +67,13 @@
 			-->
 <script type="text/javascript">
 start = new Date();
-function countdown(eltname, format)
+function countdown(eltname)
 {
-	window.setTimeout("countdown(\"" + eltname + "\", \"" + format + "\");", 1000);
+	function zeroPad(num, places) {
+		var zero = places - num.toString().length + 1;
+		return Array(+(zero > 0 && zero)).join("0") + num;
+	}
+	window.setTimeout("countdown(\"" + eltname + "\");", 1000);
 	now = new Date();
 	element = document.getElementById(eltname);
 	secLeft = element.title;
@@ -86,9 +90,9 @@ function countdown(eltname, format)
   		  m: m,
   		  s: s,
 		};
-		element.innerHTML = sprintf(format, dict);
+		element.innerHTML = zeroPad(s, 2);//sprintf(format, dict);
 	}
 }
-countdown("roundleft", "%(s)02u");
+countdown("roundleft");
 </script>			
 {% endblock %}

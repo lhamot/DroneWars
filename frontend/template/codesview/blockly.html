@@ -99,7 +99,7 @@
 		</div>
 		{% endif %}
 		{%if codeData.blocklyCodeDate < codeData.codeDate %}
-		<div class="alert alert-block col-md-10">
+		<div class="alert alert-warning col-md-10">
 			<button type="button" class="close" data-dismiss="alert">&times;</button>
 			<h4>{% trans "Warning!" %}</h4>
 			{% trans "Your visual script is obsolete. If you save, it will reset your textual script." %}

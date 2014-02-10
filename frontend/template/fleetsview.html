@@ -11,29 +11,27 @@
 	<div class="row">
 		{% if pagecount > 1 %}
 		<div class="col-md-12">
-			<div class="pagination">
-				<ul>
-					{% if prevpage < 0 %}
-					<li class="disabled"><a class="btn-inverse">Prev</a></li>
-					{% else %}
-					<li><a class="btn-inverse" href="?page={{prevpage}}&sort={{sort}}&asc={{asc}}">Prev</a></li>
-					{% endif %}
-					
-					{% for i in pageList %}
-					{% if i == currentpage %}
-					<li class="disabled"><a class="btn-inverse">{{i}}</a></li>
-					{% else %}
-					<li><a class="btn-inverse" href="?page={{i}}&sort={{sort}}&asc={{asc}}">{{i}}</a></li>
-					{% endif %}
-					{% endfor %}
-					
-					{% if nextpage >= pagecount %}
-					<li class="disabled"><a class="btn-inverse">Next</a></li>
-					{% else %}
-					<li><a class="btn-inverse" href="?page={{nextpage}}&sort={{sort}}&asc={{asc}}">Next</a></li>
-					{% endif %}
-				</ul>
-			</div>
+			<ul class="pagination">
+				{% if prevpage < 0 %}
+				<li class="disabled"><a class="btn-inverse">Prev</a></li>
+				{% else %}
+				<li><a class="btn-inverse" href="?page={{prevpage}}&sort={{sort}}&asc={{asc}}">Prev</a></li>
+				{% endif %}
+				
+				{% for i in pageList %}
+				{% if i == currentpage %}
+				<li class="disabled"><a class="btn-inverse">{{i}}</a></li>
+				{% else %}
+				<li><a class="btn-inverse" href="?page={{i}}&sort={{sort}}&asc={{asc}}">{{i}}</a></li>
+				{% endif %}
+				{% endfor %}
+				
+				{% if nextpage >= pagecount %}
+				<li class="disabled"><a class="btn-inverse">Next</a></li>
+				{% else %}
+				<li><a class="btn-inverse" href="?page={{nextpage}}&sort={{sort}}&asc={{asc}}">Next</a></li>
+				{% endif %}
+			</ul>
 		</div>
 		{% endif %}
 		<div class="col-md-10 col-md-offset-1">

@@ -90,10 +90,10 @@ int main(int argc, char** argv)
 		po::store(po::parse_command_line(argc, argv, desc), vm);
 
 		ifstream ifs("dronewars.ini");
-		if (ifs.is_open())
+		if(ifs.is_open())
 			store(parse_config_file(ifs, desc), vm);
 
-		if (vm.count("help"))
+		if(vm.count("help"))
 		{
 			cout << desc << "\n";
 			return EXIT_SUCCESS;
