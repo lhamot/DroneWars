@@ -246,7 +246,7 @@ uint32_t calcExp(PlayerMap const& playerMap,
 	struct ArmyPrice
 	{
 		// Donne la valeur de la flotte pour le calcul d'XP
-		size_t operator()(Fleet const& army)
+		size_t operator()(Fleet const& army) const
 		{
 			size_t res = 0;
 			for(size_t i = 0; i < Ship::Count; ++i)
@@ -255,7 +255,7 @@ uint32_t calcExp(PlayerMap const& playerMap,
 		}
 
 		// Donne la valeur de la planète pour le calcul d'XP
-		size_t operator()(Planet const& army)
+		size_t operator()(Planet const& army) const
 		{
 			size_t res = 0;
 			for(size_t i = 0; i < Cannon::Count; ++i)
@@ -266,18 +266,19 @@ uint32_t calcExp(PlayerMap const& playerMap,
 
 	bool const isDead = allyReport.isDead;
 	bool const enemyIsDead = enemyReport.isDead;
+	double exp = (enemyIsDead ? 4. : 2.);
 	if(isDead)
-		return 1;
-	double exp = (enemyIsDead ? 4. : 1.);
+		exp /= 2;
 	Player const& player = MAP_FIND(playerMap, allyReport.fightInfo.before.playerId)->second;
 	Player const& enemy = MAP_FIND(playerMap, enemyReport.fightInfo.before.playerId)->second;
-	//std::cout << exp << std::endl;
 	exp *= log(double(enemy.experience + 2)) / log(double(player.experience + 2));
-	size_t const fleetPrice = armyPrice(allyReport.fightInfo.before) / 10;
-	size_t const enemyFleetPrice = armyPrice(enemyReport.fightInfo.before) / 10;
-	//std::cout << exp << std::endl;
-	exp *= (enemyFleetPrice + 2) / log(fleetPrice + 2);
-	//std::cout << exp << std::endl;
+	size_t const fleetPrice = armyPrice(allyReport.fightInfo.before);
+	size_t const fleetPrice2 = armyPrice(allyReport.fightInfo.after);
+	size_t const enemyFleetPrice = armyPrice(enemyReport.fightInfo.before);
+	size_t const enemyFleetPrice2 = armyPrice(enemyReport.fightInfo.after);
+	size_t const allyLost = fleetPrice - fleetPrice2;
+	size_t const enemyLost = enemyFleetPrice - enemyFleetPrice2;
+	exp *= log(allyLost + 1) + log(enemyLost + 1) * 3;
 	if(boost::math::isnormal(exp) == false)
 		BOOST_THROW_EXCEPTION(std::logic_error("isnormal(exp) == false"));
 	return boost::numeric::converter<uint32_t, double>::convert(exp);

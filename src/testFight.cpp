@@ -7,10 +7,12 @@
 #include "fighting.h"
 #include "Model.h"
 #include "Tools.h"
+#include "Rules.h"
 
 void simulOneFight()
 {
 	size_t const fleetCount = 2; //rand() % 40;
+	std::map<Player::ID, Player> playerMap;
 	//size_t const playerCount = (rand() % 4) + 1;
 	std::vector<Fleet> fleetVect;
 	for(size_t fleetIdx = 0; fleetIdx < fleetCount; ++fleetIdx)
@@ -23,6 +25,8 @@ void simulOneFight()
 			uint32_t const count = rand() % (10000 / Ship::List[type].life);
 			fleetVect.back().shipList[type] = count;
 		}
+		Player::ID pid = boost::numeric_cast<Player::ID>(fleetIdx) + 1;
+		playerMap.emplace(pid, Player(pid, ""));
 	}
 	/*fleetVect.push_back(Fleet(1, 1, Coord(0, 0, 0), 0));
 	Fleet::ShipTab shipTab1 = { 0, 0, 0, 0, 0, 0, 7792, 0, 0};
@@ -43,10 +47,7 @@ void simulOneFight()
 	PlayerCodeMap playerCodeMap;
 	FightReport fightReport;
 	fight(fleetPtrVect, playersFightingMap, planetPtr, playerCodeMap, fightReport);
-	if((fightReport.fleetList[0].fightInfo.before.shipList ==
-	    fightReport.fleetList[0].fightInfo.after.shipList) ||
-	   (fightReport.fleetList[1].fightInfo.before.shipList ==
-	    fightReport.fleetList[1].fightInfo.after.shipList))
+	calcExperience(playerMap, fightReport);
 	{
 		//Avent:
 		for(int type = 0; type < Ship::Count; ++type)
@@ -54,7 +55,7 @@ void simulOneFight()
 			std::string name = MAP_FIND(ndw::_Ship_Enum_VALUES_TO_NAMES, type)->second;
 			std::cout << name.substr(0, 4) << '\t';
 		}
-		std::cout << std::endl;
+		std::cout << "Exp" << std::endl;
 		for(Report<Fleet> fleetReport : fightReport.fleetList)
 		{
 			for(uint32_t count : fleetReport.fightInfo.before.shipList)
@@ -66,7 +67,7 @@ void simulOneFight()
 		{
 			for(uint32_t count : fleetReport.fightInfo.after.shipList)
 				std::cout << count << "\t";
-			std::cout << std::endl;
+			std::cout << fleetReport.experience << std::endl;
 		}
 		std::cout << std::endl;
 	}
@@ -74,7 +75,7 @@ void simulOneFight()
 
 void simulFight()
 {
-	for(size_t test = 0; test < 100; ++test)
+	for(size_t test = 0; test < 10; ++test)
 	{
 		//std::cout << std::endl;
 		simulOneFight();

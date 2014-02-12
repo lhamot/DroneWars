@@ -8,6 +8,8 @@
 #include <boost/range/adaptor/map.hpp>
 #include "DataBase.h"
 
+static size_t const XPPerSkillPoints = 1000;
+
 //! Reset la planète + MaJ des liens de parentés en cas de perte de planète.
 void onPlanetLose(Coord planetCoord,
                   Universe& univ,

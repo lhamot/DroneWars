@@ -32,6 +32,7 @@
 
 #include "NameGen.h"
 #include "Skills.h"
+#include "Rules.h"
 
 
 using namespace Poco::Data;
@@ -574,7 +575,7 @@ try
 		          event.planetCoord.X, event.planetCoord.Y,
 		          event.planetCoord.Z));
 		if(event.playerID == Player::NoId)
-			BOOST_THROW_EXCEPTION(std::logic_error("event.playerID > 100"));
+			BOOST_THROW_EXCEPTION(std::logic_error("event.playerID == Player::NoId"));
 	}
 
 	Transaction trans(*session_);
@@ -1117,7 +1118,9 @@ try
 	checkConnection(session_);
 	Transaction trans(*session_);
 	Player pla = getPlayer(pid);
-	size_t const cost = Skill::List[skillID]->skillCost(pla.skilltab.at(skillID)) * 100;
+	size_t const cost =
+	  Skill::List[skillID]->skillCost(pla.skilltab.at(skillID)) *
+	  XPPerSkillPoints;
 	if(pla.skillpoints < static_cast<uint32_t>(cost))
 		return false;
 	if(Skill::List[skillID]->canUpgrade(pla) == false)

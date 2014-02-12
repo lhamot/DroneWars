@@ -617,19 +617,20 @@ def AccountView(request):
         "message": message,
     })
     
+XPPerSkillPoints = 1000
 
 @updateLastRequest
 def Skillsview(request):
     service = createEngineClient()
     pid = request.session["PlayerID"]
     player = service.getPlayer(pid)
-    player.skillpoints /= 100
+    player.skillpoints /= XPPerSkillPoints
     
     if "buySkill" in request.GET:
         skillID = int(request.GET["buySkill"])
         if service.buySkill(pid, skillID):
             player = service.getPlayer(pid)
-            player.skillpoints /= 100
+            player.skillpoints /= XPPerSkillPoints
 
     return render(request, 'skillsview.html', {
         "player": player,

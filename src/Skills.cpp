@@ -7,13 +7,19 @@
 
 #include <boost/locale.hpp>
 
+size_t powInt(size_t val, size_t power)
+{
+	return size_t(pow(val, power) + 0.5);
+}
+
+
 //! Skill non abstrait de rempacement, pour ceux qui ne sont pas encore codés
 class DummySkill : public ISkill
 {
 	virtual bool canUpgradeImpl(Player const&) const {return true;};
 	virtual size_t skillCostImpl(size_t skillCurrentLevel) const
 	{
-		return skillCurrentLevel + 1;
+		return powInt(2, skillCurrentLevel);
 	}
 	virtual std::string effectMessageImpl(Player const&) const
 	{
@@ -31,7 +37,7 @@ class ConquestSkill : public ISkill
 	virtual bool canUpgradeImpl(Player const&) const {return true;};
 	virtual size_t skillCostImpl(size_t skillCurrentLevel) const
 	{
-		return skillCurrentLevel + 1;
+		return powInt(2, skillCurrentLevel);
 	}
 	virtual std::string effectMessageImpl(Player const& player) const
 	{
@@ -49,7 +55,7 @@ class StrategySkill : public ISkill
 	virtual bool canUpgradeImpl(Player const&) const {return true;};
 	virtual size_t skillCostImpl(size_t skillCurrentLevel) const
 	{
-		return skillCurrentLevel + 1;
+		return powInt(2, skillCurrentLevel);
 	}
 	virtual std::string effectMessageImpl(Player const& player) const
 	{
@@ -67,7 +73,7 @@ class CohesionSkill : public ISkill
 	virtual bool canUpgradeImpl(Player const&) const {return true;};
 	virtual size_t skillCostImpl(size_t skillCurrentLevel) const
 	{
-		return skillCurrentLevel + 1;
+		return powInt(2, skillCurrentLevel);
 	}
 	virtual std::string effectMessageImpl(Player const& player) const
 	{
@@ -87,10 +93,9 @@ class InfoServiceSkill : public ISkill
 	{
 		return player.skilltab[Skill::InformationService] < 1;
 	}
-	virtual size_t skillCostImpl(size_t //skillCurrentLevel
-	                            ) const
+	virtual size_t skillCostImpl(size_t skillCurrentLevel) const
 	{
-		return 1000;
+		return powInt(2, skillCurrentLevel);
 	}
 	virtual std::string effectMessageImpl(Player const& //player
 	                                     ) const
@@ -108,7 +113,7 @@ class ServerFarmSkill : public ISkill
 	virtual bool canUpgradeImpl(Player const&) const {return true;};
 	virtual size_t skillCostImpl(size_t skillCurrentLevel) const
 	{
-		return skillCurrentLevel + 1;
+		return powInt(2, skillCurrentLevel);
 	}
 	virtual std::string effectMessageImpl(Player const& player) const
 	{
@@ -127,10 +132,10 @@ class ChronosSkill : public ISkill
 	{
 		return player.skilltab[Skill::Chronos] < 1;
 	}
-	virtual size_t skillCostImpl(size_t //skillCurrentLevel
+	virtual size_t skillCostImpl(size_t skillCurrentLevel
 	                            ) const
 	{
-		return 1000;
+		return powInt(2, skillCurrentLevel);
 	}
 	virtual std::string effectMessageImpl(Player const& //player
 	                                     ) const
@@ -153,7 +158,7 @@ class MemorySkill : public ISkill
 	}
 	virtual size_t skillCostImpl(size_t skillCurrentLevel) const
 	{
-		return size_t(pow(2., (int(skillCurrentLevel) - 1) * 0.6) * 4.);
+		return powInt(2, skillCurrentLevel + 1);
 	}
 	virtual std::string effectMessageImpl(Player const& player) const
 	{
@@ -177,7 +182,7 @@ class EmissionRangeSkill : public ISkill
 	}
 	virtual size_t skillCostImpl(size_t skillCurrentLevel) const
 	{
-		return size_t(pow(skillCurrentLevel + 3, 4));
+		return powInt(4, skillCurrentLevel + 1);
 	}
 	virtual std::string effectMessageImpl(Player const& player) const
 	{
@@ -200,7 +205,7 @@ class EvasionSkill : public ISkill
 	}
 	virtual size_t skillCostImpl(size_t skillCurrentLevel) const
 	{
-		return size_t(pow(skillCurrentLevel + 1, 5));
+		return powInt(2, skillCurrentLevel);
 	}
 	virtual std::string effectMessageImpl(Player const&) const
 	{
@@ -219,10 +224,9 @@ class LogSkill : public ISkill
 	{
 		return player.skilltab[Skill::Log] < 1;
 	}
-	virtual size_t skillCostImpl(size_t //skillCurrentLevel
-	                            ) const
+	virtual size_t skillCostImpl(size_t skillCurrentLevel) const
 	{
-		return 1000;
+		return powInt(2, skillCurrentLevel);
 	}
 	virtual std::string effectMessageImpl(Player const& player) const
 	{
@@ -250,7 +254,7 @@ class SimulationSkill : public ISkill
 	}
 	virtual size_t skillCostImpl(size_t skillCurrentLevel) const
 	{
-		return size_t(pow(skillCurrentLevel + 1, 2));
+		return powInt(2, skillCurrentLevel + 1);
 	}
 	virtual std::string effectMessageImpl(Player const& player) const
 	{
@@ -274,10 +278,9 @@ class BlackBoxSkill : public ISkill
 	{
 		return player.skilltab[Skill::BlackBox] < 1;
 	}
-	virtual size_t skillCostImpl(size_t //skillCurrentLevel
-	                            ) const
+	virtual size_t skillCostImpl(size_t skillCurrentLevel) const
 	{
-		return 10;
+		return powInt(2, skillCurrentLevel + 1);
 	}
 	virtual std::string effectMessageImpl(Player const& player) const
 	{
@@ -302,7 +305,7 @@ class EmissionRateSkill : public ISkill
 	}
 	virtual size_t skillCostImpl(size_t skillCurrentLevel) const
 	{
-		return size_t(pow(2., (int(skillCurrentLevel) - 1) * 0.6) * 4.);
+		return powInt(2, skillCurrentLevel + 2);
 	}
 	virtual std::string effectMessageImpl(Player const& player) const
 	{
