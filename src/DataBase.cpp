@@ -7,6 +7,7 @@
 #include <iostream>
 #include <sstream>
 #include <iterator>
+#include <cstdio>
 
 #pragma warning(push)
 #pragma warning(disable: 4310 4100)
@@ -109,12 +110,12 @@ void DataBase::checkConnection(
 		LOG4CPLUS_DEBUG(
 		  log4cplus::Logger::getInstance("DataBase"), "Connection!");
 		ConnectionInfo const& con = connectionInfo_;
-		char buffer[6];
-		itoa(con.port_, buffer, 10);
+		std::array<char, 10> buffer;
+		std::sprintf(buffer.data(), "%d", con.port_);
 		session.reset(
 		  new Session("MySQL",
 		              "host=" + con.host_ +
-		              ";port=" + std::string(buffer) +
+		              ";port=" + std::string(buffer.data()) +
 		              ";db=" + con.database_ +
 		              ";user=" + con.user_ +
 		              ";password=" + con.password_//pdcx3wady6nsMfUm
