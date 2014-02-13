@@ -85,12 +85,12 @@ function countdown(eltname)
 	{
 		if(s > 59) {m = Math.floor(s / 60); s = s - (m * 60);}
 		if(m > 59) {h = Math.floor(m / 60); m = m - h * 60;}
-		var dict = {
-  		  h: h,
-  		  m: m,
-  		  s: s,
-		};
-		element.innerHTML = zeroPad(s, 2);//sprintf(format, dict);
+		if(h > 0)
+			element.innerHTML = zeroPad(h, 2) + ":" + zeroPad(m, 2) + ":" + zeroPad(s, 2);
+		else if(m > 0)
+			element.innerHTML = zeroPad(m, 2) + ":" + zeroPad(s, 2);//sprintf(format, dict);
+		else
+			element.innerHTML = zeroPad(s, 2);//sprintf(format, dict);
 	}
 }
 countdown("roundleft");
