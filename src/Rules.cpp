@@ -279,7 +279,7 @@ uint32_t calcExp(PlayerMap const& playerMap,
 	size_t const allyLost = fleetPrice - fleetPrice2;
 	size_t const enemyLost = enemyFleetPrice - enemyFleetPrice2;
 	exp *= log(allyLost + 1) + log(enemyLost + 1) * 3;
-	if(boost::math::isnormal(exp) == false)
+	if(boost::math::isfinite(exp) == false)
 		BOOST_THROW_EXCEPTION(std::logic_error("isnormal(exp) == false"));
 	return boost::numeric::converter<uint32_t, double>::convert(exp);
 }
