@@ -226,14 +226,15 @@ void prepareLuaCall(Universe const& univ, Polua::object const& stript, Player co
 
 
 
-static size_t const RoundSecond = 10; //!< Nombre de secondes min par round
 static size_t const SaveSecond = 60;  //!< Nombre de secondes min entre 2 save
 
 
 Simulation::Simulation(Universe& univ,
-                       DataBase::ConnectionInfo const& connInfo):
+                       DataBase::ConnectionInfo const& connInfo,
+                       size_t minimumRoundDuration) :
 	univ_(univ),
-	database_(connInfo)
+	database_(connInfo),
+	minimumRoundDuration_(minimumRoundDuration)
 {
 }
 
@@ -1526,7 +1527,7 @@ try
 
 	time_t newUpdate = time(0);
 	time_t newSave = newUpdate;
-	newUpdate += RoundSecond;
+	newUpdate += minimumRoundDuration_;
 	newSave += SaveSecond;
 
 	size_t gcCounter = 0;
@@ -1545,8 +1546,7 @@ try
 			std::cout << "OK" << std::endl;
 			newSave += SaveSecond;
 		}
-		bool noWait = true;
-		if(noWait || newUpdate <= now)
+		if(newUpdate <= now)
 			try
 			{
 				boost::chrono::system_clock::time_point roundEnd = system_clock::now();
@@ -1560,7 +1560,7 @@ try
 				//std::cout << newUpdate << " " << now << std::endl;
 				round(scriptEngine, codesMap, events);
 				events.clear();
-				newUpdate += RoundSecond;
+				newUpdate += minimumRoundDuration_;
 				gcCounter += 1;
 				if((gcCounter % 1) == 0)
 				{
@@ -1570,7 +1570,7 @@ try
 				}
 			}
 		CATCH_LOG_RETHROW(logger)
-		else if(noWait == false)
+		else
 			boost::this_thread::sleep(boost::posix_time::milliseconds(100));
 	}
 }

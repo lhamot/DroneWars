@@ -20,7 +20,8 @@ class Simulation
 public:
 	//! Constructeur
 	Simulation(Universe& univ,
-	           DataBase::ConnectionInfo const& connInfo);
+	           DataBase::ConnectionInfo const& connInfo,
+	           size_t minimumRoundDuration);
 
 	//! Informe qu'un joueur à été modifié(généralement les scripts)
 	void reloadPlayer(Player::ID pid);
@@ -68,6 +69,8 @@ private:
 	//! Queue de planètes a préparer pour des nouveaux joueurs
 	std::queue<Player::ID> planetToCreate_;
 	mutable boost::thread savingThread_; //!< thread de sauvegarde
+	//! Durrée minimum d'un round (en secondes)
+	size_t minimumRoundDuration_;
 };
 
 

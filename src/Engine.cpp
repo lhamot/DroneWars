@@ -14,8 +14,9 @@ using namespace boost;
 typedef boost::unique_lock<boost::shared_mutex> UniqueLock; //!< Verou en écriture
 typedef boost::shared_lock<boost::shared_mutex> SharedLock; //!< Verou en lecture
 
-Engine::Engine(DataBase::ConnectionInfo const& connInfo) :
-	simulation_(new Simulation(univ_, connInfo))
+Engine::Engine(DataBase::ConnectionInfo const& connInfo,
+               size_t minRoundDuration) :
+	simulation_(new Simulation(univ_, connInfo, minRoundDuration))
 {
 	filesystem::directory_iterator dir("save/"), end;
 

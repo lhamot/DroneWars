@@ -319,8 +319,9 @@ ndw::FightReport fightReportToThrift(
 
 
 EngineServerHandler::EngineServerHandler(
-  DataBase::ConnectionInfo const& connInfo):
-	engine_(connInfo),
+  DataBase::ConnectionInfo const& connInfo,
+  size_t minRoundDuration) :
+	engine_(connInfo, minRoundDuration),
 	database_(connInfo)
 {
 }

@@ -25,7 +25,7 @@ class Engine
 {
 public:
 	//! Constructeur
-	Engine(DataBase::ConnectionInfo const& connInfo);
+	Engine(DataBase::ConnectionInfo const& connInfo, size_t minRoundDuration);
 
 	~Engine();
 

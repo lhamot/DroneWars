@@ -39,6 +39,7 @@
 #include <log4cplus/configurator.h>
 
 #include "Engine.h"
+#include "Rules.h"
 
 
 using namespace std;
@@ -74,6 +75,7 @@ int main(int argc, char** argv)
 		DataBase::ConnectionInfo connInfo;
 
 		namespace po = boost::program_options;
+		size_t minRoundDuration = 10;
 		std::string config_file;
 		// Declare the supported options.
 		po::options_description desc("Allowed options");
@@ -84,6 +86,8 @@ int main(int argc, char** argv)
 		("database,d", po::value<std::string>(&connInfo.database_)->required(), "MySQL database name")
 		("user,u", po::value<std::string>(&connInfo.user_)->required(), "MySQL user name")
 		("password,w", po::value<std::string>(&connInfo.password_)->required(), "MySQL user password")
+		("xp_coef,x", po::value<double>(&coefXP)->default_value(0.1), "XP multiplier")
+		("min_round, r", po::value<size_t>(&minRoundDuration)->default_value(10), "Minimum round duration (second)")
 		;
 
 		po::variables_map vm;
@@ -107,7 +111,7 @@ int main(int argc, char** argv)
 		using namespace ::apache::thrift::server;
 
 		int port = 9090;
-		auto handler = boost::make_shared<EngineServerHandler>(connInfo);
+		auto handler = boost::make_shared<EngineServerHandler>(connInfo, minRoundDuration);
 		auto proc = boost::make_shared<ndw::EngineServerProcessor>(handler);
 		auto serverTransport = boost::make_shared<TServerSocket>(port);
 		auto transpFactory = boost::make_shared<TBufferedTransportFactory>();

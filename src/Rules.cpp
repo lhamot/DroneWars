@@ -236,6 +236,7 @@ void updateScore(Universe const& univ, DataBase& database)
 	database.updateScore(playerScore);
 }
 
+double coefXP = 10.;
 
 //! Calcule l'XP qu'un combat entre deux armés va rapporter
 template<typename A, typename E>
@@ -279,6 +280,7 @@ uint32_t calcExp(PlayerMap const& playerMap,
 	size_t const allyLost = fleetPrice - fleetPrice2;
 	size_t const enemyLost = enemyFleetPrice - enemyFleetPrice2;
 	exp *= log(allyLost + 1) + log(enemyLost + 1) * 3;
+	exp *= coefXP;
 	if(boost::math::isfinite(exp) == false)
 		BOOST_THROW_EXCEPTION(std::logic_error("isnormal(exp) == false"));
 	return boost::numeric::converter<uint32_t, double>::convert(exp);
