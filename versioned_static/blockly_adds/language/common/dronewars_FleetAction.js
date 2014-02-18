@@ -49,7 +49,7 @@ init:
 
 Blockly.Lua['dronewars_fleetDoNothing'] = function(block)
 {
-    return ['FleetAction(FleetAction.Nothing, Direction())',
+    return ['FleetAction(FleetAction.Nothing)',
             Blockly.Lua.ORDER_HIGH
            ];
 };
@@ -99,7 +99,7 @@ init:
 
 Blockly.Lua['dronewars_fleetHarvest'] = function(block)
 {
-    return ['FleetAction(FleetAction.Harvest, Coord())',
+    return ['FleetAction(FleetAction.Harvest)',
             Blockly.Lua.ORDER_HIGH
            ];
 };
@@ -122,7 +122,7 @@ init:
 
 Blockly.Lua['dronewars_fleetColonize'] = function(block)
 {
-    return ['FleetAction(FleetAction.Colonize, Coord())',
+    return ['FleetAction(FleetAction.Colonize)',
             Blockly.Lua.ORDER_HIGH
            ];
 };
@@ -145,7 +145,7 @@ init:
 
 Blockly.Lua['dronewars_fleetDrop'] = function(block)
 {
-    return ['FleetAction(FleetAction.Drop, Coord())',
+    return ['FleetAction(FleetAction.Drop)',
             Blockly.Lua.ORDER_HIGH
            ];
 };
