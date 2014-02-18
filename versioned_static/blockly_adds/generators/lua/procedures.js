@@ -19,7 +19,7 @@
 
 /**
  * @fileoverview Generating Lua for procedures blocks.
- * @author Loïc HAMOT
+ * @author LoÃ¯c HAMOT
  */
 'use strict';
 
@@ -121,7 +121,7 @@ Blockly.Lua['procedures_ifreturn'] = function(block) {
     return code;
 };
 
-Blockly.Lua['procedures_return'] = function () {
+Blockly.Lua['procedures_return'] = function(block) {
     var code = '';
     if (block.hasReturnValue_) {
         var value = Blockly.Lua.valueToCode(block, 'VALUE',
