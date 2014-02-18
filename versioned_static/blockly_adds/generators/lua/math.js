@@ -19,7 +19,7 @@
 
 /**
  * @fileoverview Generating Lua for math blocks.
- * @author Loïc HAMOT
+ * @author LoÃ¯c HAMOT
  * Due to the frequency of long strings, the 80-column wrap rule need not apply
  * to language files.
  */
@@ -301,7 +301,7 @@ Blockly.Lua['math_constrain'] = function(block)
 	                                        Blockly.Lua.ORDER_NONE) || '0';
 	var argument2 = Blockly.Lua.valueToCode(block, 'HIGH',
 	                                        Blockly.Lua.ORDER_NONE) || '0';
-	code = 'math.min(math.max(' + argument0 + ', ' + argument1 + '), ' + argument2 + ')';
+	var code = 'math.min(math.max(' + argument0 + ', ' + argument1 + '), ' + argument2 + ')';
 	return [code, Blockly.Lua.ORDER_FUNCTION_CALL];
 };
 
@@ -324,7 +324,7 @@ Blockly.Lua['math_random_int'] = function(block)
 	                                        Blockly.Lua.ORDER_NONE) || '0';
 	var argument1 = Blockly.Lua.valueToCode(block, 'TO',
 	                                        Blockly.Lua.ORDER_NONE) || '0';
-	code = 'math.random(' + argument0 + ', ' + argument1 + ')';
+	var code = 'math.random(' + argument0 + ', ' + argument1 + ')';
 	return [code, Blockly.Lua.ORDER_FUNCTION_CALL];
 };
 

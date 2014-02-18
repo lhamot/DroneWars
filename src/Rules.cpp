@@ -457,6 +457,6 @@ bool canGather(Player const& player,
 	size_t const fleetSize =
 	  boost::accumulate(fleet1.shipList, 0) +
 	  boost::accumulate(fleet2.shipList, 0);
-	return fleetSize < maxShipCount;
+	return fleetSize <= maxShipCount;
 }
 }
