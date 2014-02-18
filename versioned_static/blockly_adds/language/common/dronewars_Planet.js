@@ -10,14 +10,14 @@ category:
 init:
 	function()
 	{
-		this.setColour(230);
-		this.setInputsInline(true);
-	  this.appendValueInput('PLANET')
-      .setCheck('Planet')
-      .appendField(Blockly.LANG_DRONEWARS_IS_PLANET_FREE_1);
-	  this.appendDummyInput()
-      .appendField(Blockly.LANG_DRONEWARS_IS_PLANET_FREE_2);
-		this.setOutput(true, Boolean);
+	   this.setColour(230);
+	   this.setInputsInline(true);
+	   this.appendValueInput('PLANET')
+	       .setCheck('Planet')
+	       .appendField(Blockly.LANG_DRONEWARS_IS_PLANET_FREE_1);
+	   this.appendDummyInput()
+	       .appendField(Blockly.LANG_DRONEWARS_IS_PLANET_FREE_2);
+	   this.setOutput(true, 'Boolean');
 	}
 };
 
