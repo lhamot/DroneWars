@@ -30,22 +30,22 @@ Blockly.Lua.addReservedWords(
 
 /**
  * Order of operation ENUMs.
- * http://docs.python.org/reference/expressions.html#summary
+ * http://www.lua.org/manual/5.1/manual.html#2.5.6
  */
 Blockly.Lua.ORDER_ATOMIC = 0;         // 0 "" ...
 Blockly.Lua.ORDER_MEMBER = 1;         // . []
-Blockly.Lua.ORDER_HIGH = 2
-Blockly.Lua.ORDER_FUNCTION_CALL = 2; 
-Blockly.Lua.ORDER_LOGICAL_OR = 3;       // or
-Blockly.Lua.ORDER_LOGICAL_AND = 4;      // and
-Blockly.Lua.ORDER_RELATIONAL = 5;       // <     >     <=    >=    ~=    ==
-Blockly.Lua.ORDER_CONCATENATION = 6;    // ..
-Blockly.Lua.ORDER_UNARY_SIGN = 7;       // + -
+Blockly.Lua.ORDER_HIGH = 2             
+Blockly.Lua.ORDER_FUNCTION_CALL = 3;  // Function calls, tables[]
+Blockly.Lua.ORDER_EXPONENTIATION = 4; // ^
+Blockly.Lua.ORDER_LOGICAL_NOT = 5;    // not # -
+Blockly.Lua.ORDER_MULTIPLICATIVE = 6; // * / %
+Blockly.Lua.ORDER_UNARY_SIGN = 7;     // + -
 Blockly.Lua.ORDER_ADDITIVE = 8;       // + -
-Blockly.Lua.ORDER_MULTIPLICATIVE = 9;   // * / %
-Blockly.Lua.ORDER_LOGICAL_NOT = 10;      // not # -
-Blockly.Lua.ORDER_EXPONENTIATION = 11;   // ^
-Blockly.Lua.ORDER_NONE = 99;            // (...)
+Blockly.Lua.ORDER_CONCATENATION = 9;  // ..
+Blockly.Lua.ORDER_RELATIONAL = 10;    // <     >     <=    >=    ~=    ==
+Blockly.Lua.ORDER_LOGICAL_AND = 11;   // and
+Blockly.Lua.ORDER_LOGICAL_OR = 12;    // or
+Blockly.Lua.ORDER_NONE = 99;          // (...)
 
 /**
  * Arbitrary code to inject into locations that risk causing infinite loops.
