@@ -76,6 +76,8 @@ function countdown(eltname)
 	window.setTimeout("countdown(\"" + eltname + "\");", 1000);
 	now = new Date();
 	element = document.getElementById(eltname);
+	if(!element)
+		return;
 	secLeft = element.title;
 	s = Math.round(secLeft - ((now.getTime() - start.getTime()) / 1000.));
 	m=0; h=0;

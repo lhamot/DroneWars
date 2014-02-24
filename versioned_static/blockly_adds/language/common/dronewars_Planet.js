@@ -67,6 +67,12 @@ addProperty('Planet', 'cannonTab', Array,
 addProperty('Planet', 'ressourceSet', 'RessourceSet',
             Blockly.LANG_DRONEWARS_PLANET_RESSOURCESET,
             Blockly.LANG_CATEGORY_DRONEWARS_PLANET);
+addProperty('Planet', 'memory', 'UserData',
+            Blockly.LANG_DRONEWARS_PLANET_MEMORY,
+            Blockly.LANG_CATEGORY_DRONEWARS_PLANET);
+addProperty('Planet', 'player', 'Player',
+            Blockly.LANG_DRONEWARS_PLANET_PLAYER,
+            Blockly.LANG_CATEGORY_DRONEWARS_PLANET);
 //addProperty('Planet', 'isFree', Boolean,
 //            Blockly.LANG_DRONEWARS_PLANET_IS_FREE);
 
@@ -210,7 +216,7 @@ Blockly.Lua['dronewars_building_price'] = function(block)
 
 
 //Planet can pay
-Blockly.Blocks['dronewars_planet_can_play'] =
+Blockly.Blocks['dronewars_planet_can_pay'] =
 {
 category:
     Blockly.LANG_CATEGORY_DRONEWARS_PLANET,
@@ -229,7 +235,7 @@ init:
     }
 };
 
-Blockly.Lua['dronewars_planet_can_play'] = function(block)
+Blockly.Lua['dronewars_planet_can_pay'] = function(block)
 {
     var planet = Blockly.Lua.valueToCode(
                    block, 'PLANET', Blockly.Lua.ORDER_NONE) || 'nil';

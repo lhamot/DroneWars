@@ -80,6 +80,20 @@
 </xml>
 {% else %}
 <xml id="toolbox" style="display: none">
+	<category name="{% trans "DroneWars : Player" %}">
+		<block type="dronewars_Player_getMaxFleetCount"></block>
+		<block type="dronewars_Player_getMaxPlanetCount"></block>
+		<block type="dronewars_Player_getMaxFleetSize"></block>
+		<block type="dronewars_Player_id"></block>
+		<block type="dronewars_Player_login"></block>
+		<block type="dronewars_Player_mainPlanet"></block>
+		<block type="dronewars_Player_score"></block>
+		<block type="dronewars_Player_alliance"></block>
+		<block type="dronewars_Player_planetCount"></block>
+		<block type="dronewars_Player_fleetCount"></block>
+		<block type="dronewars_currentPlayer"></block>
+		{% if player.skilltab.10.level > 0  %}<block type="dronewars_log"></block>{% endif %}
+	</category>
 	<category name="{% trans "DroneWars: Order" %}">
 		<block type="dronewars_makeBuilding"></block>
 		<block type="dronewars_makeShip"></block>
@@ -95,11 +109,14 @@
 		<block type="dronewars_Planet_playerId"></block>
 		<block type="dronewars_Planet_buildingList"></block>
 		<block type="dronewars_Planet_cannonTab"></block>
+		<block type="dronewars_Planet_ressourceSet"></block>
+		<block type="dronewars_Planet_player"></block>
+		{% if player.skilltab.6.level > 0  %}<block type="dronewars_Planet_memory"></block>{% endif %}
 		<block type="dronewars_building_price"></block>
 		<block type="dronewars_cannon_price"></block>
-		<block type="dronewars_planet_can_play"></block>
-		{% if level < 9  %}<block type="dronewars_Planet_ressourceSet"></block>{% endif %}
-		{% if player.skilltab.5.level > 0  %}<block type="dronewars_planet_age"></block>{% endif %}
+		<block type="dronewars_planet_can_pay"></block>
+		{% if player.skilltab.5.level > 0 %}<block type="dronewars_planet_age"></block>{% endif %}
+		{% if player.skilltab.8.level > 0  %}<block type="dronewars_simulates"></block>{% endif %}
 	</category>
 	<category name="{% trans "DroneWars: Fleet" %}">
 		<block type="dronewars_Fleet_id"></block>
@@ -108,11 +125,13 @@
 		<block type="dronewars_Fleet_origin"></block>
 		<block type="dronewars_Fleet_name"></block>
 		<block type="dronewars_Fleet_shipList"></block>
-		{% if level < 9  %}<block type="dronewars_Fleet_ressourceSet"></block>{% endif %}
+		<block type="dronewars_Fleet_player"></block>
+		{% if player.skilltab.6.level > 0  %}<block type="dronewars_Fleet_memory"></block>{% endif %}
+		<block type="dronewars_Fleet_ressourceSet"></block>
 		<block type="dronewars_ship_in_fleet"></block>
 		<block type="dronewars_ressource_in_fleet"></block>
 		<block type="dronewars_ship_price"></block>
-		{% if player.skilltab.5.level > 0  %}<block type="dronewars_fleet_age"></block>{% endif %}
+		{% if player.skilltab.5.level > 0 %}<block type="dronewars_fleet_age"></block>{% endif %}
 	</category>
 	<category name="{% trans "DroneWars: Resources" %}">
 		<block type="dronewars_ressourceSet"></block>

@@ -5,6 +5,20 @@ Blockly.LANG_CATEGORY_DRONEWARS_FLEET = 'DroneWars: Flotte';
 Blockly.LANG_CATEGORY_DRONEWARS_FLEETACTION = 'DroneWars: Ordre';
 Blockly.LANG_CATEGORY_DRONEWARS_PLANETACTION = 'DroneWars: Ordre';
 Blockly.LANG_CATEGORY_DRONEWARS_RESSOURCESET = 'DroneWars: Ressources';
+Blockly.LANG_CATEGORY_DRONEWARS_PLAYER = 'DroneWars: Joueur'
+
+Blockly.LANG_DRONEWARS_PLAYER_ID = "id du joueur";
+Blockly.LANG_DRONEWARS_PLAYER_LOGIN = "login du joueur";
+Blockly.LANG_DRONEWARS_PLAYER_MAINPLANET = "coordonées de la planète principale de";
+Blockly.LANG_DRONEWARS_PLAYER_SCORE = "score du joueur";
+Blockly.LANG_DRONEWARS_PLAYER_ALLIANCE = "alliance du joueur";
+Blockly.LANG_DRONEWARS_PLAYER_PLANETCOUNT = "nombre de planète du joueur";
+Blockly.LANG_DRONEWARS_PLAYER_FLEETCOUNT = "nombre de flotte du joueur";
+Blockly.LANG_DRONEWARS_PLAYER_MAXFLEETCOUNT = "nombre de flotte maximum du joueur";
+Blockly.LANG_DRONEWARS_PLAYER_MAXPLANETCOUNT = "nombre de planète maximum du joueur";
+Blockly.LANG_DRONEWARS_PLAYER_MAXFLEETSIZE = "taille maximum du flotte du joueur";
+Blockly.LANG_DRONEWARS_LOG = "créer evenement";
+Blockly.LANG_DRONEWARS_CURRENTPLAYER = "info joueur";
 
 Blockly.LANG_DRONEWARS_COORD = 'coordonées';
 Blockly.LANG_DRONEWARS_RANDDIR = 'direction aléatoire';
@@ -25,6 +39,8 @@ Blockly.LANG_DRONEWARS_PLANET_CAN_PAY_1 = 'la planète';
 Blockly.LANG_DRONEWARS_PLANET_CAN_PAY_2 = 'peut payer';
 Blockly.LANG_DRONEWARS_PLANET_AGE = 'age de la planète';
 Blockly.LANG_DRONEWARS_PLANET_AGE_2 = '';
+Blockly.LANG_DRONEWARS_PLANET_MEMORY = 'memoire de la planète';
+Blockly.LANG_DRONEWARS_PLANET_PLAYER = 'propriétaire de la planète';
  
 Blockly.LANG_DRONEWARS_RESSOURCESET = 'resources';
 Blockly.LANG_DRONEWARS_RESSOURCESET_AT = ' présent dans les ressources';
@@ -45,6 +61,11 @@ Blockly.LANG_DRONEWARS_FLEET_SHIPLIST = 'vaisseaux de la flotte';
 Blockly.LANG_DRONEWARS_FLEET_RESSOURCESET = 'resources de la flotte';
 Blockly.LANG_DRONEWARS_FLEET_AGE = 'age de la flotte';
 Blockly.LANG_DRONEWARS_FLEET_AGE_2 = '';
+Blockly.LANG_DRONEWARS_FLEET_MEMORY = 'memoire de la flotte';
+Blockly.LANG_DRONEWARS_FLEET_PLAYER = 'propriétaire de la flotte';
+Blockly.LANG_DRONEWARS_SIMULATE = 'simuler le combat de la flotte';
+Blockly.LANG_DRONEWARS_SIMULATE_ARG2 = 'contre la planète';
+Blockly.LANG_DRONEWARS_SIMULATE_ARG3 = 'et les flottes';
 
 Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_1 = '[NE PLUS UTILISER] ordre de';
 Blockly.LANG_DRONEWARS_FLEETACTION_CTOR_2 = ' dans la direction';

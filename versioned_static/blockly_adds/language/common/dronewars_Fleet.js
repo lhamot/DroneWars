@@ -17,6 +17,10 @@ addProperty('Fleet', 'shipList', Array, Blockly.LANG_DRONEWARS_FLEET_SHIPLIST,
   Blockly.LANG_CATEGORY_DRONEWARS_FLEET);
 addProperty('Fleet', 'ressourceSet', 'RessourceSet', Blockly.LANG_DRONEWARS_FLEET_RESSOURCESET,
   Blockly.LANG_CATEGORY_DRONEWARS_FLEET);
+addProperty('Fleet', 'memory', 'UserData', Blockly.LANG_DRONEWARS_FLEET_MEMORY,
+  Blockly.LANG_CATEGORY_DRONEWARS_FLEET);
+addProperty('Fleet', 'player', 'Player', Blockly.LANG_DRONEWARS_FLEET_PLAYER,
+  Blockly.LANG_CATEGORY_DRONEWARS_FLEET);
 
 //ShipList
 Blockly.Blocks['dronewars_ship_in_fleet'] =
@@ -81,11 +85,11 @@ category:
 init:
     function()
     {
-      this.setColour(230);
-      this.appendDummyInput()
-      .appendField(Blockly.LANG_DRONEWARS_SHIP_PRICE)
-      .appendField(getShipDropDown(), 'SHIP');
-      this.setOutput(true, 'RessourceSet');
+        this.setColour(230);
+        this.appendDummyInput()
+            .appendField(Blockly.LANG_DRONEWARS_SHIP_PRICE)
+            .appendField(getShipDropDown(), 'SHIP');
+        this.setOutput(true, 'RessourceSet');
     }
 };
 
@@ -97,6 +101,7 @@ Blockly.Lua['dronewars_ship_price'] = function(block)
 };
 
 
+//Age
 Blockly.Blocks['dronewars_fleet_age'] =
 {
 category:
@@ -117,4 +122,36 @@ Blockly.Lua['dronewars_fleet_age'] = function(block)
     var fleet = 
         Blockly.Lua.valueToCode(block, 'FLEET', Blockly.Lua.ORDER_NONE) || 'nil';
     return [fleet + ':age()', Blockly.Lua.ORDER_HIGH];
+};
+
+//simulates
+Blockly.Blocks['dronewars_simulates'] =
+{
+category:
+    Blockly.LANG_CATEGORY_DRONEWARS_FLEET,
+init:
+    function()
+    {
+        this.setColour(230);
+        this.appendValueInput('FLEET')
+            .setCheck('Fleet')
+            .appendField(Blockly.LANG_DRONEWARS_SIMULATE);
+        this.appendValueInput('PLANET')
+            .setCheck('Planet')
+            .appendField(Blockly.LANG_DRONEWARS_SIMULATE_ARG2);
+        this.appendValueInput('OTHER_FLEETS')
+            .setCheck('Array')
+            .appendField(Blockly.LANG_DRONEWARS_SIMULATE_ARG3);
+        this.setOutput(true, 'Number');
+    }
+};
+
+Blockly.Lua['dronewars_simulates'] = function(block)
+{
+    var fleet = Blockly.Lua.valueToCode(block, 'FLEET', Blockly.Lua.ORDER_NONE) || 'nil';
+    var planet = Blockly.Lua.valueToCode(block, 'PLANET', Blockly.Lua.ORDER_NONE) || 'nil';
+    var fleets = Blockly.Lua.valueToCode(block, 'OTHER_FLEETS', Blockly.Lua.ORDER_NONE) || 'nil';
+    return ['simulates(' + fleet + ',' + planet + ',' + fleets + ')',
+            Blockly.Lua.ORDER_HIGH
+           ];
 };
