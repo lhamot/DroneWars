@@ -98,6 +98,7 @@ struct Player
 	120: i32 skillpoints = 0
 	130: Player_SkillTab skilltab
 	160: string allianceName
+	170: i32 unreadMessagesCount
 }
 
 

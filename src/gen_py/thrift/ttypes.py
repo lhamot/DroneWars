@@ -1077,6 +1077,7 @@ class Player:
    - skillpoints
    - skilltab
    - allianceName
+   - unreadMessagesCount
   """
 
   thrift_spec = (
@@ -1241,9 +1242,19 @@ class Player:
     None, # 158
     None, # 159
     (160, TType.STRING, 'allianceName', None, None, ), # 160
+    None, # 161
+    None, # 162
+    None, # 163
+    None, # 164
+    None, # 165
+    None, # 166
+    None, # 167
+    None, # 168
+    None, # 169
+    (170, TType.I32, 'unreadMessagesCount', None, None, ), # 170
   )
 
-  def __init__(self, id=None, login=None, password=None, fleetsCode=None, planetsCode=None, tutoDisplayed=None, mainPlanet=None, score=thrift_spec[90][4], allianceID=None, experience=thrift_spec[110][4], skillpoints=thrift_spec[120][4], skilltab=None, allianceName=None,):
+  def __init__(self, id=None, login=None, password=None, fleetsCode=None, planetsCode=None, tutoDisplayed=None, mainPlanet=None, score=thrift_spec[90][4], allianceID=None, experience=thrift_spec[110][4], skillpoints=thrift_spec[120][4], skilltab=None, allianceName=None, unreadMessagesCount=None,):
     self.id = id
     self.login = login
     self.password = password
@@ -1257,6 +1268,7 @@ class Player:
     self.skillpoints = skillpoints
     self.skilltab = skilltab
     self.allianceName = allianceName
+    self.unreadMessagesCount = unreadMessagesCount
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -1347,6 +1359,11 @@ class Player:
           self.allianceName = iprot.readString();
         else:
           iprot.skip(ftype)
+      elif fid == 170:
+        if ftype == TType.I32:
+          self.unreadMessagesCount = iprot.readI32();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -1415,6 +1432,10 @@ class Player:
     if self.allianceName is not None:
       oprot.writeFieldBegin('allianceName', TType.STRING, 160)
       oprot.writeString(self.allianceName)
+      oprot.writeFieldEnd()
+    if self.unreadMessagesCount is not None:
+      oprot.writeFieldBegin('unreadMessagesCount', TType.I32, 170)
+      oprot.writeI32(self.unreadMessagesCount)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

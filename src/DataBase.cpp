@@ -243,6 +243,7 @@ try : connectionInfo_(connectionInfo)
 		            "  time INTEGER NOT NULL,"
 		            "  suject varchar(80) NOT NULL,"
 		            "  message TEXT NOT NULL,"
+		            "  viewed INTEGER NOT NULL,"
 		            "  FOREIGN KEY (sender) REFERENCES Player(id) "
 		            "    ON DELETE CASCADE, "
 		            "  FOREIGN KEY (recipient) REFERENCES Player(id) "
@@ -457,7 +458,7 @@ DB_CATCH
 //! Tuple pour stoker le données d'un Player quand elle sorte du SGBD
 typedef Tuple < Player::ID, std::string, std::string, uint64_t,
         Coord::Value, Coord::Value, Coord::Value,
-        Alliance::ID, uint32_t, uint32_t, std::string, std::string > PlayerTmp;
+        Alliance::ID, uint32_t, uint32_t, std::string, std::string, uint32_t > PlayerTmp;
 //! Convertie un PlayerTmp en Player
 Player playerFromTuple(PlayerTmp const& playerTup)
 {
@@ -470,6 +471,7 @@ Player playerFromTuple(PlayerTmp const& playerTup)
 	player.experience = playerTup.get<8>();
 	player.skillpoints = playerTup.get<9>();
 	player.allianceName = playerTup.get<11>();
+	player.unreadMessageCount = playerTup.get<12>();
 
 	//La skill tab doit etre déserialisée
 	if(playerTup.get<10>().size())
@@ -488,9 +490,14 @@ Player playerFromTuple(PlayerTmp const& playerTup)
 
 //! Requete SQL générique pour extraire un PlayerTmp
 static char const* const GetPlayerRequest =
-  "SELECT Player.*, Alliance.name FROM Player "
+  "SELECT Player.*, Alliance.name, COUNT(Message.id) FROM Player "
   "LEFT OUTER JOIN Alliance "
-  "ON Player.allianceID = Alliance.id ";
+  "ON Player.allianceID = Alliance.id "
+  "LEFT OUTER JOIN Message "
+  "ON ((Player.id = Message.recipient) AND (Message.viewed = 0))"
+  "%1% "
+  "GROUP BY Player.id "
+  ;
 
 boost::optional<Player> DataBase::getPlayer(
   std::string const& login,
@@ -501,7 +508,7 @@ try
 	std::string const password = hashPassword(rawPassword);
 	std::vector<PlayerTmp> playerList;
 	(*session_) <<
-	            GetPlayerRequest <<
+	            boost::format(GetPlayerRequest) %
 	            "WHERE login = ? AND password = ?",
 	            into(playerList), use(login), use(password), now;
 	if(playerList.size() != 1)
@@ -517,7 +524,7 @@ try
 {
 	checkConnection(session_);
 	std::vector<PlayerTmp> playerList;
-	(*session_) << GetPlayerRequest, into(playerList), now;
+	(*session_) << boost::format(GetPlayerRequest) % "", into(playerList), now;
 	std::vector<Player> outPlayerList;
 	outPlayerList.reserve(playerList.size());
 	boost::transform(
@@ -531,7 +538,7 @@ std::map<Player::ID, Player> DataBase::getPlayerMap() const
 {
 	checkConnection(session_);
 	std::vector<PlayerTmp> playerList;
-	(*session_) << GetPlayerRequest, into(playerList), now;
+	(*session_) << boost::format(GetPlayerRequest) % "", into(playerList), now;
 	std::map<Player::ID, Player> outPlayerList;
 	for(PlayerTmp const & player : playerList)
 		outPlayerList.insert(std::make_pair(player.get<0>(),
@@ -546,7 +553,7 @@ try
 {
 	checkConnection(session_);
 	std::vector<PlayerTmp> playerList;
-	(*session_) << GetPlayerRequest << "WHERE Player.id = ?",
+	(*session_) << boost::format(GetPlayerRequest) % "WHERE Player.id = ?",
 	            into(playerList), use(id), now;
 	if(playerList.size() != 1)
 		BOOST_THROW_EXCEPTION(
@@ -1174,8 +1181,8 @@ try
 	checkConnection(session_);
 	(*session_) <<
 	            "INSERT INTO Message "
-	            "(sender, recipient, time, suject, message) "
-	            "VALUES(?, ?, ?, ?, ?)",
+	            "(sender, recipient, time, suject, message, viewed) "
+	            "VALUES(?, ?, ?, ?, ?, 0)",
 	            use(sender), use(recip), use(time(0)), use(obj), use(mes), now;
 }
 DB_CATCH
@@ -1185,8 +1192,9 @@ std::vector<Message> DataBase::getMessages(Player::ID recipient)
 try
 {
 	checkConnection(session_);
+	Transaction trans(*session_);
 	typedef Tuple < Message::ID, Player::ID, Player::ID, time_t, std::string,
-	        BLOB, std::string > MessageTup;
+	        BLOB, int, std::string > MessageTup;
 	std::vector<MessageTup> messages;
 	messages.reserve(100);
 	(*session_) <<
@@ -1205,9 +1213,14 @@ try
 		                messTup.get<3>(),
 		                messTup.get<4>(),
 		                toString(messTup.get<5>()),
-		                messTup.get<6>());
+		                messTup.get<7>());
 		result.push_back(message);
 	}
+	(*session_) <<
+	            "UPDATE Message SET viewed = 1 "
+	            "WHERE recipient = ? ",
+	            use(recipient), now;
+	trans.commit();
 	return result;
 }
 DB_CATCH
@@ -1336,7 +1349,7 @@ try
 	std::vector<PlayerTmp> friends;
 	friends.reserve(100);
 	(*session_) <<
-	            GetPlayerRequest <<
+	            boost::format(GetPlayerRequest) %
 	            "JOIN Friendship "
 	            "ON (friend_a = Player.id AND friend_b = ?) "
 	            "  OR (friend_b = Player.id AND friend_a = ?)",
@@ -1362,7 +1375,7 @@ try
 		std::vector<PlayerTmp> received;
 		received.reserve(100);
 		(*session_) <<
-		            GetPlayerRequest <<
+		            boost::format(GetPlayerRequest) %
 		            "JOIN FriendshipRequest "
 		            "ON sender = Player.id AND recipient = ? ",
 		            into(received), use(player), now;
@@ -1374,7 +1387,7 @@ try
 		std::vector<PlayerTmp> sent;
 		sent.reserve(100);
 		(*session_) <<
-		            GetPlayerRequest <<
+		            boost::format(GetPlayerRequest) %
 		            "JOIN FriendshipRequest "
 		            "ON sender = ? AND recipient = Player.id ",
 		            into(sent), use(player), now;

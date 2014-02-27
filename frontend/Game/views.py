@@ -171,6 +171,7 @@ def PlanetListView(request):
     titleOrder[sort] = titleOrder[sort] == False
         
     return render(request, 'planetsview.html', {
+        'player': player, 
         'planetList': playerPlanets.planetList,
         'helpMessage': helpMessage,
         'timeInfo': timeInfo,
@@ -300,6 +301,7 @@ def FleetListView(request):
     titleOrder[sort] = titleOrder[sort] == False
         
     return render(request, 'fleetsview.html', {
+        'player': player,
         'planetFleetPairs': planetFleetPairs,
         'timeInfo': timeInfo,
         'prevpage': page - 1,
@@ -363,6 +365,7 @@ def CodesView(request):
     if plLvl >= 3:
         timeInfo = service.getTimeInfo();
         return render(request, 'codesview.html', {
+            'player': player,
             'level': plLvl,
             'timeInfo': timeInfo, 
             })
@@ -587,9 +590,12 @@ def ScoreView(request):
                 id_set.add(session_data["PlayerID"])
     
     for player in players:
-        player.logged = player.id in id_set 
+        player.logged = player.id in id_set
+        
+    player = service.getPlayer(request.session["PlayerID"])
     
     return render(request, 'scoreview.html', {
+        "player": player,
         "players": players,
         "asc": asc,
         "timeInfo": timeInfo,

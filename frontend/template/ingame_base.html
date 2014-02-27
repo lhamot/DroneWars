@@ -28,10 +28,16 @@
 								</ul>
 							</li>
 							<li class="dropdown">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Community" %}<b class="caret"></b></a>
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Community" %}
+									{% if player.unreadMessagesCount > 0 %} ({{player.unreadMessagesCount}}){%endif%}
+									<b class="caret"></b>
+								</a>
 								<ul class="dropdown-menu">
 									<li><a href="http://www.nogane.net/projects/dronewars">nogane.net</a></li>
-									<li><a href="/ingame/messages.html">{% trans "Messages" %}</a></li>
+									<li><a href="/ingame/messages.html">{% trans "Messages" %}
+										{% if player.unreadMessagesCount > 0 %} ({{player.unreadMessagesCount}}){%endif%}
+										</a>
+									</li>
 									<li><a href="/ingame/friends.html">{% trans "Friends" %}</a></li>
 									<li><a href="/ingame/alliance.html">{% trans "Alliance" %}</a></li>
 								</ul>

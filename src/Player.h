@@ -185,6 +185,7 @@ struct Player
 	uint32_t experience;      //!< Experience
 	uint32_t skillpoints;     //!< Points de competances
 	SkillTab skilltab;        //!< Niveau du joueur dans chaque competance
+	size_t unreadMessageCount = 0; //!< Nombre de message en attente de lecture
 	Alliance* alliance = nullptr; //!< Pour les script lua uniquement
 	size_t planetCount = 0;   //!< Pour les script lua uniquement
 	size_t fleetCount = 0;    //!< Pour les script lua uniquement

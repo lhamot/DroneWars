@@ -243,6 +243,7 @@ ndw::Player playerToThrift(Player const& player)
 	outPlayer.experience = player.experience;
 	outPlayer.skillpoints = player.skillpoints;
 	outPlayer.skilltab.reserve(Skill::Count);
+	outPlayer.unreadMessagesCount = NUMCAST(player.unreadMessageCount);
 	for(size_t skillID = 0; skillID < Skill::Count; ++skillID)
 		outPlayer.skilltab.push_back(skillToThrift(skillID, player));
 	outPlayer.allianceName = player.allianceName;

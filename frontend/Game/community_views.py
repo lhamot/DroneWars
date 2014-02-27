@@ -25,7 +25,9 @@ def MessagesView(request):
     service = createEngineClient()
     pid = request.session["PlayerID"]
     messages = service.getMessages(pid)
+    player = service.getPlayer(pid)
     return render(request, 'message_list.html', {
+        'player': player,
         'messages': messages,
     })
 
@@ -60,6 +62,7 @@ def CreateMessageView(request):
                                    messInfo["message"].encode('utf-8'))
                 messages = service.getMessages(pid)
                 return render(request, 'message_list.html', {
+                    'player': player,
                     'messages': messages,
                     'alert': _("Message successfully sent"),
                 })
@@ -105,7 +108,9 @@ def FriendsView(request):
     
     requests = service.getFriendshipRequest(pid)
     frienships = service.getFriends(pid)
+    player = service.getPlayer(pid)
     return render(request, 'friendships.html', {
+        'player': player,
         'requests': requests, 
         'frienships': frienships,
         'alert': alert, 
