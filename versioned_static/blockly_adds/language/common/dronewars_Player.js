@@ -41,7 +41,7 @@ init:
     }
 };
 
-Blockly.Lua['dronewars_Fleet_getMaxFleetCount'] = function(block)
+Blockly.Lua['dronewars_Player_getMaxFleetCount'] = function(block)
 {
     var player = 
         Blockly.Lua.valueToCode(block, 'PLAYER', Blockly.Lua.ORDER_NONE) || 'nil';
