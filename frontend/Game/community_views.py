@@ -24,8 +24,14 @@ from views import updateLastRequest, createEngineClient
 def MessagesView(request):
     service = createEngineClient()
     pid = request.session["PlayerID"]
-    messages = service.getMessages(pid)
     player = service.getPlayer(pid)
+    
+    if request.method == 'GET':
+        if "delete" in request.GET:
+            service.eraseMesage(int(request.GET["delete"]))
+
+    messages = service.getMessages(pid)
+    
     return render(request, 'message_list.html', {
         'player': player,
         'messages': messages,

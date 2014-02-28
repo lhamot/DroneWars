@@ -14,14 +14,16 @@
 	{% for message in messages %}
 	<tr>
 		<th>{% trans "Send by"%}</th>
-		<td>{{message.sender|playerlink:message.senderLogin|safe}}</td>
-	</tr>
-	<tr>
 		<th>{% trans "Subject"%}</th>
-		<td>{{message.subject}}</td>
+		<th>{% trans "Options"%}</th>
 	</tr>
 	<tr>
-		<td colspan="2">{{message.message}}</td>
+		<td>{{message.sender|playerlink:message.senderLogin|safe}}</td>
+		<td>{{message.subject}}</td>
+		<td><a href="/ingame/messages.html?delete={{message.id}}" class="btn btn-danger">{% trans "Delete" %}</a></td>		
+	</tr>
+	<tr>
+		<td colspan="3">{{message.message}}</td>
 	</tr>
 	{% endfor %}
 </table>
