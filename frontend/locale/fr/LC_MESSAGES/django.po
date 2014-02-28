@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-28 22:13+0100\n"
-"PO-Revision-Date: 2014-02-28 22:18+0100\n"
+"POT-Creation-Date: 2014-02-28 23:01+0100\n"
+"PO-Revision-Date: 2014-02-28 23:02+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "MIME-Version: 1.0\n"
@@ -400,7 +400,7 @@ msgstr "Demande envoyée"
 #: .\template\fleetview.html.py:34 .\template\planetsview.html.py:49
 #: .\template\planetview.html.py:61 .\template\planetview.html.py:68
 #: .\template\scoreview.html.py:17 .\template\shipsview.html.py:16
-#: .\template\skillsview.html.py:16
+#: .\template\skillsview.html.py:29
 msgid "Name"
 msgstr "Nom"
 
@@ -590,7 +590,7 @@ msgid "Create"
 msgstr "Créer"
 
 #: .\template\buildingsview.html.py:23 .\template\planetview.html.py:61
-#: .\template\skillsview.html.py:17
+#: .\template\skillsview.html.py:30
 msgid "Level"
 msgstr "Niveau"
 
@@ -1091,23 +1091,27 @@ msgstr "Etat"
 msgid "Logged"
 msgstr "Connecté"
 
-#: .\template\skillsview.html.py:13
+#: .\template\skillsview.html.py:19
+msgid "Current experience"
+msgstr "Experience actuel"
+
+#: .\template\skillsview.html.py:26
 msgid "Skill points"
 msgstr "Points de Compétences"
 
-#: .\template\skillsview.html.py:18
+#: .\template\skillsview.html.py:31
 msgid "Up"
 msgstr "Monter"
 
-#: .\template\skillsview.html.py:19
+#: .\template\skillsview.html.py:32
 msgid "Current level"
 msgstr "Niveau actuel"
 
-#: .\template\skillsview.html.py:20
+#: .\template\skillsview.html.py:33
 msgid "Next level"
 msgstr "Niveau suivant"
 
-#: .\template\skillsview.html.py:28
+#: .\template\skillsview.html.py:41
 msgid "Cost : "
 msgstr "Coût :"
 
@@ -1247,6 +1251,12 @@ msgstr "Texte"
 #: .\template\codesview\blockly_planet.html.py:199
 msgid "Lists"
 msgstr "Listes"
+
+#~ msgid "Last skill point"
+#~ msgstr "Dernier point de competance"
+
+#~ msgid "Next skill point"
+#~ msgstr "Prochain points de compétence"
 
 #~ msgid "Effect"
 #~ msgstr "Effet"

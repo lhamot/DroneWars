@@ -630,6 +630,7 @@ def Skillsview(request):
     service = createEngineClient()
     pid = request.session["PlayerID"]
     player = service.getPlayer(pid)
+    timeInfo = service.getTimeInfo()
     player.skillpoints /= XPPerSkillPoints
     
     if "buySkill" in request.GET:
@@ -640,7 +641,11 @@ def Skillsview(request):
 
     return render(request, 'skillsview.html', {
         "player": player,
+        "timeInfo": timeInfo,
         "skill_list": player.skilltab,
+        "prev_skill_point" : (player.experience / XPPerSkillPoints) * XPPerSkillPoints,
+        "next_skill_point" : (player.experience / XPPerSkillPoints + 1) * XPPerSkillPoints,
+        "skill_point_progress" : ((player.experience * 100) / XPPerSkillPoints) % 100,
     })
     
     
