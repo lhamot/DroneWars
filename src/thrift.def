@@ -79,6 +79,7 @@ struct Skill
 	30: i32 cost
 	40: bool canUpdate
 	50: string effectMessage
+	60: string nextLevelMessage
 }
 
 typedef list<Skill> Player_SkillTab

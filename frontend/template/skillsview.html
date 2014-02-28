@@ -9,14 +9,15 @@
 {% block content %}
 <div class="container">
 	<div class="row">
-		<div class="col-md-6">
+		<div class="col-md-10">
 			<h2>{% trans "Skill points" %} : {{player.skillpoints}}</h2>
 			<table class="table">
 			<tr>
 				<th>{% trans "Name" %}</th>
 				<th>{% trans "Level" %}</th>
 				<th>{% trans "Up" %}</th>
-				<th>{% trans "Effect" %}</th>
+				<th>{% trans "Current level" %}</th>
+				<th>{% trans "Next level" %}</th>
 			</tr>
 			{% for skill in skill_list %}
 			<tr>
@@ -28,6 +29,7 @@
 				{% endif %}
 				</td>
 				<td>{{skill.effectMessage}}</td>
+				<td>{{skill.nextLevelMessage}}</td>
 			</tr>
 			{% endfor %}
 			</table>

@@ -916,6 +916,7 @@ class Skill:
    - cost
    - canUpdate
    - effectMessage
+   - nextLevelMessage
   """
 
   thrift_spec = (
@@ -970,14 +971,25 @@ class Skill:
     None, # 48
     None, # 49
     (50, TType.STRING, 'effectMessage', None, None, ), # 50
+    None, # 51
+    None, # 52
+    None, # 53
+    None, # 54
+    None, # 55
+    None, # 56
+    None, # 57
+    None, # 58
+    None, # 59
+    (60, TType.STRING, 'nextLevelMessage', None, None, ), # 60
   )
 
-  def __init__(self, name=None, level=None, cost=None, canUpdate=None, effectMessage=None,):
+  def __init__(self, name=None, level=None, cost=None, canUpdate=None, effectMessage=None, nextLevelMessage=None,):
     self.name = name
     self.level = level
     self.cost = cost
     self.canUpdate = canUpdate
     self.effectMessage = effectMessage
+    self.nextLevelMessage = nextLevelMessage
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -1013,6 +1025,11 @@ class Skill:
           self.effectMessage = iprot.readString();
         else:
           iprot.skip(ftype)
+      elif fid == 60:
+        if ftype == TType.STRING:
+          self.nextLevelMessage = iprot.readString();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -1042,6 +1059,10 @@ class Skill:
     if self.effectMessage is not None:
       oprot.writeFieldBegin('effectMessage', TType.STRING, 50)
       oprot.writeString(self.effectMessage)
+      oprot.writeFieldEnd()
+    if self.nextLevelMessage is not None:
+      oprot.writeFieldBegin('nextLevelMessage', TType.STRING, 60)
+      oprot.writeString(self.nextLevelMessage)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

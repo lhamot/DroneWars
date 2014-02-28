@@ -227,6 +227,9 @@ ndw::Skill skillToThrift(size_t skillID, Player const& player)
 	outSkill.canUpdate = skill.canUpgrade(player);
 	outSkill.cost = NUMCAST(skill.skillCost(player.skilltab[skillID]));
 	outSkill.effectMessage = skill.effectMessage(player);
+	Player copy = player;
+	copy.skilltab[skillID] += 1;
+	outSkill.nextLevelMessage = skill.effectMessage(copy);
 	return outSkill;
 }
 

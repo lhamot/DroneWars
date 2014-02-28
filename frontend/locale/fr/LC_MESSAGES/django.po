@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DroneWars\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-24 22:49+0100\n"
-"PO-Revision-Date: 2014-02-24 22:51+0100\n"
+"POT-Creation-Date: 2014-02-28 22:13+0100\n"
+"PO-Revision-Date: 2014-02-28 22:18+0100\n"
 "Last-Translator: \n"
 "Language-Team: DroneWars <loic.hamot@yahoo.fr>\n"
 "MIME-Version: 1.0\n"
@@ -379,23 +379,23 @@ msgstr ""
 msgid "BLOCKLY_TUTO_8"
 msgstr "Votre prochain objectif est de coloniser d'autres planètes."
 
-#: .\Game\community_views.py:34 .\template\message_list.html.py:20
+#: .\Game\community_views.py:42 .\template\message_list.html.py:17
 msgid "Subject"
 msgstr "Sujet"
 
-#: .\Game\community_views.py:35 .\template\create_message.html.py:15
+#: .\Game\community_views.py:43 .\template\create_message.html.py:15
 msgid "Message"
 msgstr "Message"
 
-#: .\Game\community_views.py:64
+#: .\Game\community_views.py:73
 msgid "Message successfully sent"
 msgstr "Message envoyé"
 
-#: .\Game\community_views.py:71
+#: .\Game\community_views.py:80
 msgid "Request sent"
 msgstr "Demande envoyée"
 
-#: .\Game\community_views.py:116 .\template\alliance.html.py:15
+#: .\Game\community_views.py:127 .\template\alliance.html.py:15
 #: .\template\buildingsview.html.py:47 .\template\cannonsview.html.py:16
 #: .\template\fleetview.html.py:34 .\template\planetsview.html.py:49
 #: .\template\planetview.html.py:61 .\template\planetview.html.py:68
@@ -404,11 +404,11 @@ msgstr "Demande envoyée"
 msgid "Name"
 msgstr "Nom"
 
-#: .\Game\community_views.py:117 .\Game\models.py:29
+#: .\Game\community_views.py:128 .\Game\models.py:29
 msgid "Description"
 msgstr "Description"
 
-#: .\Game\community_views.py:147
+#: .\Game\community_views.py:158
 msgid "Alliance name still exists or you still own an alliance"
 msgstr "Le nom de l'allicance éxiste déja, ou vous possédez déja une alliance."
 
@@ -476,7 +476,7 @@ msgstr "Mot de passe"
 msgid "Password2"
 msgstr "Mot de passe (vérif)"
 
-#: .\Game\views.py:79 .\Game\views.py:609
+#: .\Game\views.py:79 .\Game\views.py:615
 msgid "Passwords don't match!"
 msgstr "Les mots de passes ne correspondent pas!"
 
@@ -499,31 +499,31 @@ msgstr ""
 "savoir plus. \n"
 "Cliquez sur \"Commandement pour commencer le tutoriel\""
 
-#: .\Game\views.py:286
+#: .\Game\views.py:287
 msgid "FLEET_TUTOS"
 msgstr ""
 "Ici, vous verrez la liste de vos flottes. Si il n'y en a pas, demandez à vos "
 "planètes d'en fabriquer."
 
-#: .\Game\views.py:387
+#: .\Game\views.py:390
 msgid "REPORT_TUTOS"
 msgstr ""
 "Ici vous verrez les 10 derniers événements importants qui se sont produits "
 "dans votre empire."
 
-#: .\Game\views.py:430 .\Game\views.py:464 .\Game\views.py:501
-#: .\Game\views.py:542
+#: .\Game\views.py:433 .\Game\views.py:467 .\Game\views.py:504
+#: .\Game\views.py:545
 msgid "Code successfully saved"
 msgstr "Code sauvegardé avec succès."
 
-#: .\Game\views.py:505
+#: .\Game\views.py:508
 msgid "See in planets tab if the building is in progress"
 msgstr ""
 "Code sauvegardé avec succès.<br/>\n"
 "Allez voir dans l'onglet \"Planètes\" si votre nouveau bâtiment est en cours "
 "de création. (Cela peut prendre quelque minutes)"
 
-#: .\Game\views.py:513
+#: .\Game\views.py:516
 msgid "CODE_TUTOS"
 msgstr ""
 "Ici, vous pourrez définir la ligne de conduite de vos amiraux(flottes) et "
@@ -997,25 +997,33 @@ msgstr "Canons"
 msgid "Community"
 msgstr "Communauté"
 
-#: .\template\ingame_base.html.py:34
+#: .\template\ingame_base.html.py:37
 msgid "Messages"
 msgstr "Messages"
 
-#: .\template\ingame_base.html.py:35
+#: .\template\ingame_base.html.py:41
 msgid "Friends"
 msgstr "Ami(e)s"
 
-#: .\template\ingame_base.html.py:36 .\template\scoreview.html.py:18
+#: .\template\ingame_base.html.py:42 .\template\scoreview.html.py:18
 msgid "Alliance"
 msgstr "Alliance"
 
-#: .\template\ingame_base.html.py:44
+#: .\template\ingame_base.html.py:50
 msgid "Next round :"
 msgstr "Tour suivant :"
 
 #: .\template\message_list.html.py:16
 msgid "Send by"
 msgstr "Envoyer par"
+
+#: .\template\message_list.html.py:18
+msgid "Options"
+msgstr "Options"
+
+#: .\template\message_list.html.py:23
+msgid "Delete"
+msgstr "Effacer"
 
 #: .\template\planetview.html.py:44
 msgid "What"
@@ -1092,10 +1100,14 @@ msgid "Up"
 msgstr "Monter"
 
 #: .\template\skillsview.html.py:19
-msgid "Effect"
-msgstr "Effet"
+msgid "Current level"
+msgstr "Niveau actuel"
 
-#: .\template\skillsview.html.py:27
+#: .\template\skillsview.html.py:20
+msgid "Next level"
+msgstr "Niveau suivant"
+
+#: .\template\skillsview.html.py:28
 msgid "Cost : "
 msgstr "Coût :"
 
@@ -1104,7 +1116,7 @@ msgid "Import"
 msgstr "Import"
 
 #: .\template\codesview\blockly.html.py:61
-#: .\template\codesview\blockly.html.py:114
+#: .\template\codesview\blockly.html.py:123
 msgid "Export"
 msgstr "Export"
 
@@ -1116,15 +1128,15 @@ msgstr "Recharger"
 msgid "Save"
 msgstr "Enregistrer"
 
-#: .\template\codesview\blockly.html.py:90
+#: .\template\codesview\blockly.html.py:99
 msgid "Error!"
 msgstr "Erreur!"
 
-#: .\template\codesview\blockly.html.py:96
+#: .\template\codesview\blockly.html.py:105
 msgid "Warning!"
 msgstr "Attention!"
 
-#: .\template\codesview\blockly.html.py:97
+#: .\template\codesview\blockly.html.py:106
 msgid ""
 "Your visual script is obsolete. If you save, it will reset your textual "
 "script."
@@ -1235,6 +1247,9 @@ msgstr "Texte"
 #: .\template\codesview\blockly_planet.html.py:199
 msgid "Lists"
 msgstr "Listes"
+
+#~ msgid "Effect"
+#~ msgstr "Effet"
 
 #~ msgid "LogFailed"
 #~ msgstr "Enregistrement échoué"

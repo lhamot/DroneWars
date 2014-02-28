@@ -531,22 +531,23 @@ void swap(Alliance& a, Alliance& b);
 
 typedef struct _Skill__isset
 {
-	_Skill__isset() : name(false), level(false), cost(false), canUpdate(false), effectMessage(false) {}
+	_Skill__isset() : name(false), level(false), cost(false), canUpdate(false), effectMessage(false), nextLevelMessage(false) {}
 	bool name;
 	bool level;
 	bool cost;
 	bool canUpdate;
 	bool effectMessage;
+	bool nextLevelMessage;
 } _Skill__isset;
 
 class Skill
 {
 public:
 
-	static const char* ascii_fingerprint; // = "E6E1339DC43ED2385C6C627788C7C3D4";
-	static const uint8_t binary_fingerprint[16]; // = {0xE6,0xE1,0x33,0x9D,0xC4,0x3E,0xD2,0x38,0x5C,0x6C,0x62,0x77,0x88,0xC7,0xC3,0xD4};
+	static const char* ascii_fingerprint; // = "AD2770DBF5B05009C3E548C832BE37C4";
+	static const uint8_t binary_fingerprint[16]; // = {0xAD,0x27,0x70,0xDB,0xF5,0xB0,0x50,0x09,0xC3,0xE5,0x48,0xC8,0x32,0xBE,0x37,0xC4};
 
-	Skill() : name(), level(0), cost(0), canUpdate(0), effectMessage()
+	Skill() : name(), level(0), cost(0), canUpdate(0), effectMessage(), nextLevelMessage()
 	{
 	}
 
@@ -557,6 +558,7 @@ public:
 	int32_t cost;
 	bool canUpdate;
 	std::string effectMessage;
+	std::string nextLevelMessage;
 
 	_Skill__isset __isset;
 
@@ -585,6 +587,11 @@ public:
 		effectMessage = val;
 	}
 
+	void __set_nextLevelMessage(const std::string& val)
+	{
+		nextLevelMessage = val;
+	}
+
 	bool operator == (const Skill& rhs) const
 	{
 		if(!(name == rhs.name))
@@ -596,6 +603,8 @@ public:
 		if(!(canUpdate == rhs.canUpdate))
 			return false;
 		if(!(effectMessage == rhs.effectMessage))
+			return false;
+		if(!(nextLevelMessage == rhs.nextLevelMessage))
 			return false;
 		return true;
 	}
@@ -636,8 +645,8 @@ class Player
 {
 public:
 
-	static const char* ascii_fingerprint; // = "3C05CADEB91701CD549055B509001A99";
-	static const uint8_t binary_fingerprint[16]; // = {0x3C,0x05,0xCA,0xDE,0xB9,0x17,0x01,0xCD,0x54,0x90,0x55,0xB5,0x09,0x00,0x1A,0x99};
+	static const char* ascii_fingerprint; // = "64B471615BF906C4C2CA8F68889EB964";
+	static const uint8_t binary_fingerprint[16]; // = {0x64,0xB4,0x71,0x61,0x5B,0xF9,0x06,0xC4,0xC2,0xCA,0x8F,0x68,0x88,0x9E,0xB9,0x64};
 
 	Player() : id(0), login(), password(), score(0LL), allianceID(0), experience(0), skillpoints(0), allianceName(), unreadMessagesCount(0)
 	{
@@ -1921,8 +1930,8 @@ class Universe
 {
 public:
 
-	static const char* ascii_fingerprint; // = "481176DA36E3B5DCC45F4E644B585FC3";
-	static const uint8_t binary_fingerprint[16]; // = {0x48,0x11,0x76,0xDA,0x36,0xE3,0xB5,0xDC,0xC4,0x5F,0x4E,0x64,0x4B,0x58,0x5F,0xC3};
+	static const char* ascii_fingerprint; // = "294DDC39747D723CE7C532D1F72A8749";
+	static const uint8_t binary_fingerprint[16]; // = {0x29,0x4D,0xDC,0x39,0x74,0x7D,0x72,0x3C,0xE7,0xC5,0x32,0xD1,0xF7,0x2A,0x87,0x49};
 
 	Universe() : nextPlayerID(0), nextFleetID(0), time(0)
 	{
@@ -2017,8 +2026,8 @@ class OptionalPlayer
 {
 public:
 
-	static const char* ascii_fingerprint; // = "ECC0B269941488993E1D3BA94D74B234";
-	static const uint8_t binary_fingerprint[16]; // = {0xEC,0xC0,0xB2,0x69,0x94,0x14,0x88,0x99,0x3E,0x1D,0x3B,0xA9,0x4D,0x74,0xB2,0x34};
+	static const char* ascii_fingerprint; // = "17C2EF8A9D4865175686C2BFD9C552DF";
+	static const uint8_t binary_fingerprint[16]; // = {0x17,0xC2,0xEF,0x8A,0x9D,0x48,0x65,0x17,0x56,0x86,0xC2,0xBF,0xD9,0xC5,0x52,0xDF};
 
 	OptionalPlayer()
 	{
@@ -2351,8 +2360,8 @@ class FriendshipRequests
 {
 public:
 
-	static const char* ascii_fingerprint; // = "D6DAFF8AADF6C08857BE6D98D6754168";
-	static const uint8_t binary_fingerprint[16]; // = {0xD6,0xDA,0xFF,0x8A,0xAD,0xF6,0xC0,0x88,0x57,0xBE,0x6D,0x98,0xD6,0x75,0x41,0x68};
+	static const char* ascii_fingerprint; // = "06E54E4443103AB6A2070D2977E57329";
+	static const uint8_t binary_fingerprint[16]; // = {0x06,0xE5,0x4E,0x44,0x43,0x10,0x3A,0xB6,0xA2,0x07,0x0D,0x29,0x77,0xE5,0x73,0x29};
 
 	FriendshipRequests()
 	{
