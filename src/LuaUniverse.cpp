@@ -271,6 +271,34 @@ int luaCFunction_simul_fight(lua_State* L)
 	return 1;
 }
 
+int coord_tostring(lua_State* L)
+{
+	Coord const& coord = Polua::fromstackAny<Coord>(L, 1);
+	std::string const& path =
+	  str(boost::format("Coord(X=%1%, Y=%2%, Z=%3%)") % coord.X % coord.Y % coord.Z);
+	lua_pushstring(L, path.data());
+	return 1;
+}
+
+int planetAction_tostring(lua_State* L)
+{
+	PlanetAction const& action = Polua::fromstackAny<PlanetAction>(L, 1);
+	std::string const& path =
+	  str(boost::format(
+	        "PlanetAction(action=%1%, building=%2%, ship=%3%, cannon=%4%)") %
+	      action.action % action.building % action.ship % action.cannon);
+	lua_pushstring(L, path.data());
+	return 1;
+}
+
+int fleetAction_tostring(lua_State* L)
+{
+	FleetAction const& action = Polua::fromstackAny<FleetAction>(L, 1);
+	std::string const& path =
+	  str(boost::format("FleetAction(action=%1%)") % action.action);
+	lua_pushstring(L, path.data());
+	return 1;
+}
 
 int initDroneWars(LuaTools::Engine& engine)
 {
@@ -314,6 +342,7 @@ int initDroneWars(LuaTools::Engine& engine)
 	.property("X", &Coord::X)
 	.property("Y", &Coord::Y)
 	.property("Z", &Coord::Z)
+	.toString(&coord_tostring)
 	;
 	Class<Direction>(L, "Direction")
 	.ctor()
@@ -383,8 +412,10 @@ int initDroneWars(LuaTools::Engine& engine)
 	;
 	Class<PlanetAction>(L, "PlanetAction")
 	.enumValue("Building", PlanetAction::Building)
-	.enumValue("Ship",     PlanetAction::Ship)
-	.enumValue("Cannon",   PlanetAction::Cannon)
+	.enumValue("Ship", PlanetAction::Ship)
+	.enumValue("Cannon", PlanetAction::Cannon)
+	.read_only("action", &PlanetAction::action)
+	.toString(&planetAction_tostring)
 	;
 	Class<FleetAction>(L, "FleetAction")
 	.enumValue("Nothing",   FleetAction::Nothing)
@@ -396,6 +427,7 @@ int initDroneWars(LuaTools::Engine& engine)
 	.ctor<FleetAction::Type>()
 	.read_only("action", &FleetAction::action)
 	.read_only("target", &FleetAction::target)
+	.toString(&fleetAction_tostring)
 	;
 	Class<Player>(L, "Player")
 	.methode("getMaxFleetCount", getMaxFleetCount)
