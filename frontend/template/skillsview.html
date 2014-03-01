@@ -33,6 +33,7 @@
 				<th>{% trans "Next level" %}</th>
 			</tr>
 			{% for skill in skill_list %}
+			{% if forloop.counter0 != 3 %}
 			<tr>
 				<td onclick="document.location.href='?skill_id={{forloop.counter0}}'">{{skill.name}}</td>
 				<td>{{skill.level}}</td>
@@ -44,6 +45,7 @@
 				<td>{{skill.effectMessage}}</td>
 				<td>{{skill.nextLevelMessage}}</td>
 			</tr>
+			{% endif %}
 			{% endfor %}
 			</table>
 		</div>
