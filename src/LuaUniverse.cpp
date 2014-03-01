@@ -321,6 +321,7 @@ int initDroneWars(LuaTools::Engine& engine)
 	regFunc(L, "makeCannon", makeCannon);
 	regFunc(L, "noPlanetAction", noPlanetAction);
 	regFunc(L, "log", luaCFunction_log);
+	regFunc(L, "print", luaCFunction_log);
 	regFunc(L, "simulates", luaCFunction_simul_fight);
 	Class<Ressource>(L, "Ressource")
 	.enumValue("Metal", Ressource::Metal)
