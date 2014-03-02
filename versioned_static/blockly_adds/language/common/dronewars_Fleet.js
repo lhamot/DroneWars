@@ -11,9 +11,9 @@ addProperty('Fleet', 'coord', 'Coord', Blockly.LANG_DRONEWARS_FLEET_COORD,
   Blockly.LANG_CATEGORY_DRONEWARS_FLEET);
 addProperty('Fleet', 'origin', 'Coord', Blockly.LANG_DRONEWARS_FLEET_ORIGIN,
   Blockly.LANG_CATEGORY_DRONEWARS_FLEET);
-addProperty('Fleet', 'name', String, Blockly.LANG_DRONEWARS_FLEET_NAME,
+addProperty('Fleet', 'name', 'String', Blockly.LANG_DRONEWARS_FLEET_NAME,
   Blockly.LANG_CATEGORY_DRONEWARS_FLEET);
-addProperty('Fleet', 'shipList', Array, Blockly.LANG_DRONEWARS_FLEET_SHIPLIST,
+addProperty('Fleet', 'shipList', 'Array', Blockly.LANG_DRONEWARS_FLEET_SHIPLIST,
   Blockly.LANG_CATEGORY_DRONEWARS_FLEET);
 addProperty('Fleet', 'ressourceSet', 'RessourceSet', Blockly.LANG_DRONEWARS_FLEET_RESSOURCESET,
   Blockly.LANG_CATEGORY_DRONEWARS_FLEET);

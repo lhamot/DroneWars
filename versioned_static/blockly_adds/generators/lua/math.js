@@ -159,8 +159,8 @@ Blockly.Lua['math_trig'] = Blockly.Lua.math_single;
 Blockly.Lua['math_on_list'] = function(block)
 {
 	// Math functions for lists.
-	func = block.getFieldValue('OP');
-	list = Blockly.Lua.valueToCode(block, 'LIST',
+	var func = block.getFieldValue('OP');
+	var list = Blockly.Lua.valueToCode(block, 'LIST',
 	                               Blockly.Lua.ORDER_NONE) || '[]';
 	var code;
 	switch(func)
