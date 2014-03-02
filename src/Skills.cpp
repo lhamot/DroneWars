@@ -182,7 +182,7 @@ class EmissionRangeSkill : public ISkill
 	}
 	virtual size_t skillCostImpl(size_t skillCurrentLevel) const
 	{
-		return powInt(4, skillCurrentLevel + 1);
+		return powInt(3, skillCurrentLevel + 1);
 	}
 	virtual std::string effectMessageImpl(Player const& player) const
 	{
@@ -207,10 +207,13 @@ class EvasionSkill : public ISkill
 	{
 		return powInt(2, skillCurrentLevel);
 	}
-	virtual std::string effectMessageImpl(Player const&) const
+	virtual std::string effectMessageImpl(Player const& player) const
 	{
-		return boost::locale::translate(
-		         "More you upgrade, better is your chance of evasion");
+		using namespace boost::locale;
+		size_t const level = player.skilltab[Skill::Escape];
+		return (format(translate( //xgettext:no-c-format
+		                 "A fleet with {1} ships has 50% of probability to escape.")) %
+		        level * level).str();
 	}
 public:
 	EvasionSkill(): ISkill("Evasion") {}

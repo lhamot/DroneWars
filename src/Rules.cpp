@@ -331,25 +331,22 @@ size_t getMaxPlanetCount(Player const& player)
 
 size_t getMaxFleetCount(Player const& player)
 {
-	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::Strategy] + 3));
+	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::Strategy] + 4));
 }
 
 size_t getMaxFleetSize(Player const& player)
 {
-	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::Cohesion] + 3));
+	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::Cohesion] + 4));
 }
 
 size_t getMaxEventCount(Player const& player)
 {
-	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::ServerFarm] + 4.));
+	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::ServerFarm] + 7));
 }
 
 size_t memoryPtreeSize(Player const& player)
 {
-	size_t const memLevel = player.skilltab[Skill::Memory];
-	return memLevel ?
-	       size_t(pow(2., (int(memLevel) - 2) * 0.6) * 4.) :
-	       0;
+	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::Memory] + 3));
 }
 
 bool acceptMemoryPtree(Player const& player, TypedPtree const& pt)
@@ -362,8 +359,7 @@ bool acceptMemoryPtree(Player const& player, TypedPtree const& pt)
 
 size_t emitionPTreeSize(Player const& player)
 {
-	int const memLevel = player.skilltab[Skill::EmissionRate] + 1;
-	return size_t(pow(2., (int(memLevel) - 2) * 0.6) * 4.);
+	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::EmissionRate] + 3));
 }
 
 
@@ -386,13 +382,9 @@ double calcEscapeProba(Player const& player,
                        std::vector<Fleet const*> const& //otherFleets
                       )
 {
-	static size_t const fraction = 1000000;
 	size_t const shipCount = boost::accumulate(fighter.shipList, 0);
-	size_t const lvl = player.skilltab[Skill::Escape];
-	size_t failRate = (shipCount * fraction) / ((lvl * lvl * lvl) + 1);
-	if(failRate > fraction)
-		failRate = fraction;
-	return double(fraction - failRate) / double(fraction);
+	double coef = player.skilltab[Skill::Escape] / pow(shipCount, 0.5);
+	return coef / (coef + 1.);
 }
 
 

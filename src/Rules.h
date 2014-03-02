@@ -72,6 +72,7 @@ size_t playerEmissionRange(Player const& player);
 bool isEscapeSuccess(double escapeProba);
 
 //! Calcule la probabilité de fuite d'une flotte face a plusieurs flotte
+//! @return probabilité de fuite entre 0 et 1
 double calcEscapeProba(Player const& player,
                        Fleet const& fighter,
                        Planet const* planet,
