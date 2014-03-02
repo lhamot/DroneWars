@@ -242,9 +242,9 @@ void construct(Universe& univ, DataBase& database)
 		{
 			Player::SkillTab skillTab;
 			skillTab.fill(0);
-			skillTab[Skill::Cohesion] = 10;
-			skillTab[Skill::Strategy] = 10;
-			skillTab[Skill::Conquest] = 10;
+			skillTab[Skill::Cohesion] = rand() % 10;
+			skillTab[Skill::Strategy] = rand() % 10;
+			skillTab[Skill::Conquest] = rand() % 10;
 			database.setPlayerSkills(pid, skillTab);
 		}
 		if(pid != Player::NoId)
