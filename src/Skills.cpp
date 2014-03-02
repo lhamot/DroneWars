@@ -213,7 +213,7 @@ class EvasionSkill : public ISkill
 		size_t const level = player.skilltab[Skill::Escape];
 		return (format(translate( //xgettext:no-c-format
 		                 "A fleet with {1} ships has 50% of probability to escape.")) %
-		        level * level).str();
+		        (level * level)).str();
 	}
 public:
 	EvasionSkill(): ISkill("Evasion") {}
