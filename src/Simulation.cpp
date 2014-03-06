@@ -597,7 +597,7 @@ std::map<Alliance::ID, Alliance> getAllianceMap(DataBase const& database)
 {
 	std::vector<Alliance> alliances = database.getAlliances();
 	std::map<Alliance::ID, Alliance> allianceMap;
-	for(Alliance const & alli : alliances)
+	for(Alliance const& alli : alliances)
 		allianceMap.insert(make_pair(alli.id, alli));
 	return allianceMap;
 }
@@ -614,7 +614,7 @@ void execPlanets(Universe& univ_,
 	std::map<Player::ID, size_t> playerFleetCounts;
 
 	FleetCoordMap fleetMap;
-	for(Fleet const & fleet : univ_.fleetMap | boost::adaptors::map_values)
+	for(Fleet const& fleet : univ_.fleetMap | boost::adaptors::map_values)
 	{
 		fleetMap.insert(make_pair(fleet.coord, fleet));
 		playerFleetCounts[fleet.playerId] += 1;
@@ -622,7 +622,7 @@ void execPlanets(Universe& univ_,
 
 	//Les planètes
 	{
-		for(Planet & planet : univ_.planetMap | boost::adaptors::map_values)
+		for(Planet& planet : univ_.planetMap | boost::adaptors::map_values)
 			planetRound(univ_, planet, events);
 	}
 
@@ -633,7 +633,7 @@ void execPlanets(Universe& univ_,
 	};
 	std::vector<ScriptInputs> ownedPlanetList;
 	ownedPlanetList.reserve(univ_.planetMap.size());
-	for(Universe::PlanetMap::value_type const & planetNVP : univ_.planetMap)
+	for(Universe::PlanetMap::value_type const& planetNVP : univ_.planetMap)
 	{
 		Planet const& planet = planetNVP.second;
 		if(planet.playerId != Player::NoId)
@@ -687,7 +687,7 @@ void execPlanets(Universe& univ_,
 	}
 
 	{
-		for(ExtPlanetAction & extAction : planetActionList)
+		for(ExtPlanetAction& extAction : planetActionList)
 		{
 			Planet& planet = univ_.planetMap[extAction.planetCoord];
 			if(extAction.optAction)
@@ -830,14 +830,14 @@ void execFights(Universe& univ_,
 	typedef std::multimap<Coord, FighterPtr, CompCoord> FleetCoordMultimap;
 	FleetCoordMultimap fleetMultimap;
 
-	for(Planet & planet : univ_.planetMap | boost::adaptors::map_values)
+	for(Planet& planet : univ_.planetMap | boost::adaptors::map_values)
 	{
 		if(planet.playerId != Player::NoId)
 			fleetMultimap.insert(make_pair(planet.coord, FighterPtr(&planet)));
 	}
 
 	//! Remplissage de la multimap de flote Coord=>flote
-	for(Fleet & fleet : univ_.fleetMap | boost::adaptors::map_values)
+	for(Fleet& fleet : univ_.fleetMap | boost::adaptors::map_values)
 		fleetMultimap.insert(make_pair(fleet.coord, FighterPtr(&fleet)));
 
 	std::vector<Fleet*> fleetVect;
@@ -867,7 +867,7 @@ void execFights(Universe& univ_,
 		fleetVect.clear();
 		Planet* planetPtr = nullptr;
 		std::set<Player::ID> playerSet;
-		for(FighterPtr const & fighterPtr : fleetRange | boost::adaptors::map_values)
+		for(FighterPtr const& fighterPtr : fleetRange | boost::adaptors::map_values)
 		{
 			if(fighterPtr.isPlanet())
 			{
@@ -1006,7 +1006,7 @@ void execFights(Universe& univ_,
 				  .setPlanetCoord(planet.coord));
 			}
 		}
-		for(Fleet * fleet : escapedFleets)
+		for(Fleet* fleet : escapedFleets)
 		{
 			double escaProba = escapeProbaMap[fleet->id];
 			tempEvents.push_back(
@@ -1017,7 +1017,7 @@ void execFights(Universe& univ_,
 		}
 
 		//! - On cumul l'experience gagné par les joueurs
-		for(Report<Fleet> const & fleetReport : fightReport.fleetList)
+		for(Report<Fleet> const& fleetReport : fightReport.fleetList)
 			experienceMap[fleetReport.fightInfo.before.playerId] +=
 			  fleetReport.experience;
 		if(fightReport.planet)
@@ -1032,7 +1032,7 @@ void execFights(Universe& univ_,
 	}
 
 	size_t const firstReportID = 1 + database.addFightReports(tempReports) - tempReports.size();
-	for(Event & event : tempEvents)
+	for(Event& event : tempEvents)
 		if(event.value != -1)
 			event.value += firstReportID;
 	events.insert(events.end(), tempEvents.begin(), tempEvents.end());
@@ -1047,7 +1047,7 @@ void execFights(Universe& univ_,
 
 	//! Les planètes et flottes orpheline sont réasigné a leurs grand-parents
 	auto newParentMapEnd = newParentMap.end();
-	for(Fleet & fleet : univ_.fleetMap | boost::adaptors::map_values)
+	for(Fleet& fleet : univ_.fleetMap | boost::adaptors::map_values)
 	{
 		while(true)
 		{
@@ -1058,7 +1058,7 @@ void execFights(Universe& univ_,
 				break;
 		}
 	}
-	for(Planet & planet : univ_.planetMap | boost::adaptors::map_values)
+	for(Planet& planet : univ_.planetMap | boost::adaptors::map_values)
 	{
 		if(planet.playerId == Player::NoId)
 			continue;
@@ -1137,11 +1137,11 @@ void execFleets(
 	LOG4CPLUS_TRACE(logger, "enter");
 
 	FleetCoordMap fleetMap;
-	for(Fleet & fleet : univ_.fleetMap | boost::adaptors::map_values)
+	for(Fleet& fleet : univ_.fleetMap | boost::adaptors::map_values)
 		fleetMap.insert(make_pair(fleet.coord, fleet));
 
 	std::map<Player::ID, size_t> playersPlanetCount;
-	for(Planet const & planet : univ_.planetMap | boost::adaptors::map_values)
+	for(Planet const& planet : univ_.planetMap | boost::adaptors::map_values)
 		++playersPlanetCount[planet.playerId];
 
 	for(auto iter = fleetMap.begin(); iter != fleetMap.end(); ++iter)
@@ -1212,7 +1212,7 @@ void execFleets(
 		{
 			for(auto line : slice)
 			{
-				for(PlayersData & playersData : line)
+				for(PlayersData& playersData : line)
 					playersData.push_back(playerData);
 			}
 		}
@@ -1253,7 +1253,7 @@ void execFleets(
 		scriptInputsList.push_back(fleetAndAction);
 	}
 
-	for(FleetAndAction & fleetAndAction : scriptInputsList)
+	for(FleetAndAction& fleetAndAction : scriptInputsList)
 	{
 		if(fleetAndAction.action)
 			applyFleetScript(univ_,
@@ -1266,7 +1266,7 @@ void execFleets(
 	}
 
 	std::map<Fleet::ID, Fleet> newFleetMap;
-	for(Fleet & fleet : fleetMap | boost::adaptors::map_values)
+	for(Fleet& fleet : fleetMap | boost::adaptors::map_values)
 	{
 		if(fleet.empty() == false) //Si flotte vide, on garde pas
 			newFleetMap.insert(make_pair(fleet.id, fleet));
@@ -1277,7 +1277,7 @@ void execFleets(
 	{
 		for(auto line : slice)
 		{
-			for(PlayersData & playersData : line)
+			for(PlayersData& playersData : line)
 				playersData.clear();
 		}
 	}
@@ -1318,26 +1318,26 @@ try
 	createNewPlayersPlanets(univCopy);
 
 	std::map<Player::ID, Player> playerMap = database_.getPlayerMap();
-	for(Fleet & fleet : univCopy.fleetMap | boost::adaptors::map_values)
+	for(Fleet& fleet : univCopy.fleetMap | boost::adaptors::map_values)
 		fleet.player = &MAP_FIND(playerMap, fleet.playerId)->second;
 
-	for(Planet & planet : univCopy.planetMap | boost::adaptors::map_values)
+	for(Planet& planet : univCopy.planetMap | boost::adaptors::map_values)
 		if(planet.playerId != Player::NoId)
 			planet.player = &MAP_FIND(playerMap, planet.playerId)->second;
 
 	std::map<Alliance::ID, Alliance> allienceMap = getAllianceMap(database_);
-	for(Player & player : playerMap | boost::adaptors::map_values)
+	for(Player& player : playerMap | boost::adaptors::map_values)
 		if(player.allianceID)
 			player.alliance = &MAP_FIND(allienceMap, player.allianceID)->second;
 
-	for(Alliance & alliance : allienceMap | boost::adaptors::map_values)
+	for(Alliance& alliance : allienceMap | boost::adaptors::map_values)
 		alliance.master = &MAP_FIND(playerMap, alliance.masterID)->second;
 
 	//! Calcule du nombre de flottes et planete de chaque joueur
-	for(Universe::PlanetMap::value_type const & kvp : univ_.planetMap)
+	for(Universe::PlanetMap::value_type const& kvp : univ_.planetMap)
 		if(kvp.second.playerId != Player::NoId)
 			++playerMap.at(kvp.second.playerId).planetCount;
-	for(Universe::FleetMap::value_type const & kvp : univ_.fleetMap)
+	for(Universe::FleetMap::value_type const& kvp : univ_.fleetMap)
 		++playerMap.at(kvp.second.playerId).fleetCount;
 
 	//! Désactivation de tout les codes qui echoue
@@ -1358,7 +1358,7 @@ try
 	//! Supprime evenement trop vieux dans les Player et les Rapport plus utile
 	{
 		std::map<Player::ID, size_t> maxEventPerPlayer;
-		for(Player const & player : database_.getPlayers())
+		for(Player const& player : database_.getPlayers())
 			maxEventPerPlayer[player.id] = getMaxEventCount(player);
 		database_.removeOldEvents(maxEventPerPlayer);
 	}
@@ -1369,7 +1369,7 @@ try
 	//! Ajout des erreur de code dans la base
 	std::vector<DataBase::CodeError> errorVect;
 	errorVect.reserve(events.size());
-	for(Event const & ev : events)
+	for(Event const& ev : events)
 	{
 		if(ev.type == Event::FleetCodeError || ev.type == Event::PlanetCodeError)
 		{
@@ -1390,7 +1390,7 @@ try
 	checkTutos(univCopy, database_, events);
 	LOG4CPLUS_TRACE(logger, "checkTutos end");
 
-	for(Fleet & fleet : univCopy.fleetMap | boost::adaptors::map_values)
+	for(Fleet& fleet : univCopy.fleetMap | boost::adaptors::map_values)
 		fleet.player = nullptr;
 
 	{
@@ -1511,7 +1511,7 @@ try
 	{
 		//Chargement de tout les code flote/planet de tout les joueur(chargement dans python)
 		std::vector<Player> const players = database_.getPlayers();
-		for(Player const & player : players)
+		for(Player const& player : players)
 		{
 			CodeData const fleetsCode = database_.getPlayerCode(player.id, CodeData::Fleet);
 			CodeData const planetsCode = database_.getPlayerCode(player.id, CodeData::Planet);

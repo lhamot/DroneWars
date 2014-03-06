@@ -21,25 +21,25 @@ struct Event_Type
 {
 	enum type
 	{
-	  FleetCodeError = 0,
-	  FleetCodeExecError = 1,
-	  PlanetCodeError = 2,
-	  PlanetCodeExecError = 3,
-	  Upgraded = 4,
-	  ShipMade = 5,
-	  PlanetHarvested = 6,
-	  FleetWin = 7,
-	  FleetDraw = 8,
-	  FleetsGather = 9,
-	  PlanetColonized = 10,
-	  FleetLose = 11,
-	  FleetDrop = 12,
-	  PlanetLose = 13,
-	  PlanetWin = 14,
-	  CannonMade = 15,
-	  FightAvoided = 16,
-	  PlayerLog = 17,
-	  Count = 18
+		FleetCodeError = 0,
+		FleetCodeExecError = 1,
+		PlanetCodeError = 2,
+		PlanetCodeExecError = 3,
+		Upgraded = 4,
+		ShipMade = 5,
+		PlanetHarvested = 6,
+		FleetWin = 7,
+		FleetDraw = 8,
+		FleetsGather = 9,
+		PlanetColonized = 10,
+		FleetLose = 11,
+		FleetDrop = 12,
+		PlanetLose = 13,
+		PlanetWin = 14,
+		CannonMade = 15,
+		FightAvoided = 16,
+		PlayerLog = 17,
+		Count = 18
 	};
 };
 
@@ -49,10 +49,10 @@ struct Ressource
 {
 	enum type
 	{
-	  Metal = 0,
-	  Carbon = 1,
-	  Loicium = 2,
-	  Count = 3
+		Metal = 0,
+		Carbon = 1,
+		Loicium = 2,
+		Count = 3
 	};
 };
 
@@ -62,10 +62,10 @@ struct PlanetTask_Enum
 {
 	enum type
 	{
-	  UpgradeBuilding = 0,
-	  MakeShip = 1,
-	  MakeCannon = 2,
-	  Count = 3
+		UpgradeBuilding = 0,
+		MakeShip = 1,
+		MakeCannon = 2,
+		Count = 3
 	};
 };
 
@@ -75,16 +75,16 @@ struct Building_Enum
 {
 	enum type
 	{
-	  CommandCenter = 0,
-	  MetalMine = 1,
-	  CarbonMine = 2,
-	  LoiciumFilter = 3,
-	  Factory = 4,
-	  Laboratory = 5,
-	  CarbonicCentral = 6,
-	  SolarCentral = 7,
-	  GeothermicCentral = 8,
-	  Count = 9
+		CommandCenter = 0,
+		MetalMine = 1,
+		CarbonMine = 2,
+		LoiciumFilter = 3,
+		Factory = 4,
+		Laboratory = 5,
+		CarbonicCentral = 6,
+		SolarCentral = 7,
+		GeothermicCentral = 8,
+		Count = 9
 	};
 };
 
@@ -94,16 +94,16 @@ struct Ship_Enum
 {
 	enum type
 	{
-	  Mosquito = 0,
-	  Hornet = 1,
-	  Vulture = 2,
-	  Dragon = 3,
-	  Behemoth = 4,
-	  Azathoth = 5,
-	  Queen = 6,
-	  Cargo = 7,
-	  LargeCargo = 8,
-	  Count = 9
+		Mosquito = 0,
+		Hornet = 1,
+		Vulture = 2,
+		Dragon = 3,
+		Behemoth = 4,
+		Azathoth = 5,
+		Queen = 6,
+		Cargo = 7,
+		LargeCargo = 8,
+		Count = 9
 	};
 };
 
@@ -113,13 +113,13 @@ struct Cannon_Enum
 {
 	enum type
 	{
-	  Cannon1 = 0,
-	  Cannon2 = 1,
-	  Cannon3 = 2,
-	  Cannon4 = 3,
-	  Cannon5 = 4,
-	  Cannon6 = 5,
-	  Count = 6
+		Cannon1 = 0,
+		Cannon2 = 1,
+		Cannon3 = 2,
+		Cannon4 = 3,
+		Cannon5 = 4,
+		Cannon6 = 5,
+		Count = 6
 	};
 };
 
@@ -129,10 +129,10 @@ struct FleetTask_Enum
 {
 	enum type
 	{
-	  Move = 0,
-	  Harvest = 1,
-	  Colonize = 2,
-	  Count = 3
+		Move = 0,
+		Harvest = 1,
+		Colonize = 2,
+		Count = 3
 	};
 };
 
@@ -142,10 +142,10 @@ struct FleetAction_Type
 {
 	enum type
 	{
-	  Nothing = 0,
-	  Move = 1,
-	  Harvest = 2,
-	  Colonize = 3
+		Nothing = 0,
+		Move = 1,
+		Harvest = 2,
+		Colonize = 3
 	};
 };
 
@@ -155,13 +155,13 @@ struct Sort_Type
 {
 	enum type
 	{
-	  Name = 0,
-	  X = 1,
-	  Y = 2,
-	  Z = 3,
-	  M = 4,
-	  C = 5,
-	  L = 6
+		Name = 0,
+		X = 1,
+		Y = 2,
+		Z = 3,
+		M = 4,
+		C = 5,
+		L = 6
 	};
 };
 

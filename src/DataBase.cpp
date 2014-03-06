@@ -540,7 +540,7 @@ std::map<Player::ID, Player> DataBase::getPlayerMap() const
 	std::vector<PlayerTmp> playerList;
 	(*session_) << boost::format(GetPlayerRequest) % "", into(playerList), now;
 	std::map<Player::ID, Player> outPlayerList;
-	for(PlayerTmp const & player : playerList)
+	for(PlayerTmp const& player : playerList)
 		outPlayerList.insert(std::make_pair(player.get<0>(),
 		                                    playerFromTuple(player)));
 	return outPlayerList;
@@ -575,7 +575,7 @@ try
 	        Coord::Value > DBEvent;
 	std::vector<DBEvent> dbEvents;
 	dbEvents.reserve(events.size());
-	for(Event const & event : events)
+	for(Event const& event : events)
 	{
 		dbEvents.push_back(
 		  DBEvent(event.time, event.type, event.comment, event.value,
@@ -784,7 +784,7 @@ try
 	  ((*session_) << "INSERT INTO FightReport (time, data) VALUES(?, ?)",
 	   use(date), use(data));
 
-	for(FightReport const & report : reports)
+	for(FightReport const& report : reports)
 	{
 		stringstream ss(ios::binary | ios::in | ios::out);
 		boost::archive::text_oarchive oa(ss);
@@ -1032,7 +1032,7 @@ try
 	            "SELECT tag, level FROM TutoDisplayed "
 	            "WHERE playerID = ? ",
 	            use(pid), into(tutos), now;
-	for(TutoTuple const & tuto : tutos)
+	for(TutoTuple const& tuto : tutos)
 		result.insert(make_pair(tuto.get<0>(), tuto.get<1>()));
 	return result;
 }
@@ -1048,7 +1048,7 @@ try
 	typedef Poco::Tuple<Player::ID, std::string, size_t> TutoTuple;
 	std::vector<TutoTuple> tutos;
 	(*session_) << "SELECT * FROM TutoDisplayed", into(tutos), now;
-	for(TutoTuple const & tuto : tutos)
+	for(TutoTuple const& tuto : tutos)
 		result[tuto.get<0>()].insert(make_pair(tuto.get<1>(), tuto.get<2>()));
 	return result;
 }
@@ -1205,7 +1205,7 @@ try
 	            into(messages), use(recipient), now;
 	std::vector<Message> result;
 	result.reserve(messages.size());
-	for(MessageTup const & messTup : messages)
+	for(MessageTup const& messTup : messages)
 	{
 		Message message(messTup.get<0>(),
 		                messTup.get<1>(),
@@ -1356,7 +1356,7 @@ try
 	            into(friends), use(player), use(player), now;
 	std::vector<Player> result;
 	result.reserve(friends.size());
-	for(PlayerTmp const & fr : friends)
+	for(PlayerTmp const& fr : friends)
 	{
 		if(fr.get<0>() != player)
 			result.push_back(playerFromTuple(fr));
@@ -1380,7 +1380,7 @@ try
 		            "ON sender = Player.id AND recipient = ? ",
 		            into(received), use(player), now;
 		result.received.reserve(received.size());
-		for(PlayerTmp const & fr : received)
+		for(PlayerTmp const& fr : received)
 			result.received.push_back(playerFromTuple(fr));
 	}
 	{
@@ -1392,7 +1392,7 @@ try
 		            "ON sender = ? AND recipient = Player.id ",
 		            into(sent), use(player), now;
 		result.sent.reserve(sent.size());
-		for(PlayerTmp const & fr : sent)
+		for(PlayerTmp const& fr : sent)
 			result.sent.push_back(playerFromTuple(fr));
 	}
 	return result;
@@ -1467,7 +1467,7 @@ try
 	            now;
 	std::vector<Alliance> result;
 	result.reserve(allianceVect.size());
-	for(AllianceTup const & alliTup : allianceVect)
+	for(AllianceTup const& alliTup : allianceVect)
 	{
 		result.push_back(
 		  Alliance(alliTup.get<0>(),

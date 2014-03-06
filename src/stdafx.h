@@ -34,7 +34,7 @@
 #include <boost/logic/tribool.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/optional.hpp>
-#include <boost/range/adaptor/map.hpp>
+#include <boost/range/adaptors.hpp>
 #include <boost/range/iterator_range.hpp>
 #include <boost/range/algorithm_ext/erase.hpp>
 #include <boost/range/algorithm.hpp>

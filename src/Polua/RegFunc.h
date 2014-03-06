@@ -74,7 +74,7 @@ static int call(lua_State* L)
 {
 	return call2(L, typename detail::ArgIdxListMaker<Args...>::Type());
 }
-};
+          };
 
 //! @brief Wrapper servant à créer une lua_CFunction appelant
 //! une fonction C++ donnée sans valeur de retour
@@ -96,7 +96,7 @@ static int call(lua_State* L)
 {
 	return call2(L, typename detail::ArgIdxListMaker<Args...>::Type());
 }
-};
+          };
 
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 

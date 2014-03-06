@@ -60,10 +60,10 @@ struct Ressource
 	//! Les types de Ressource
 	enum Enum : uint8_t
 	{
-	  Metal,
-	  Carbon,
-	  Loicium,
-	  Count
+		Metal,
+		Carbon,
+		Loicium,
+		Count
 	};
 };
 
@@ -118,10 +118,10 @@ struct PlanetTask
 	//! Types possibles de la tache
 	enum Enum : uint8_t
 	{
-	  UpgradeBuilding,
-	  MakeShip,
-	  MakeCannon,
-	  Count
+		UpgradeBuilding,
+		MakeShip,
+		MakeCannon,
+		Count
 	};
 
 	uint32_t value;         //!< Valeur utilisée en fonction du type Enum
@@ -156,10 +156,10 @@ struct FleetTask
 	//! Types possibles de la flotte
 	enum Enum : uint8_t
 	{
-	  Move,
-	  Harvest,
-	  Colonize,
-	  Count
+		Move,
+		Harvest,
+		Colonize,
+		Count
 	};
 
 	uint32_t lauchTime; //!< Round de lancement
@@ -184,17 +184,17 @@ struct Building
 	//! Types de batiment
 	enum Enum : int8_t
 	{
-	  Undefined = -1,
-	  CommandCenter,
-	  MetalMine,
-	  CarbonMine,
-	  LoiciumFilter,
-	  Factory,
-	  Laboratory,
-	  CarbonicCentral,
-	  SolarCentral,
-	  GeothermicCentral,
-	  Count
+		Undefined = -1,
+		CommandCenter,
+		MetalMine,
+		CarbonMine,
+		LoiciumFilter,
+		Factory,
+		Laboratory,
+		CarbonicCentral,
+		SolarCentral,
+		GeothermicCentral,
+		Count
 	};
 
 	RessourceSet price; //!< Prix du batiment
@@ -211,17 +211,17 @@ struct Ship
 	//! Les types de vaisseau
 	enum Enum : int8_t
 	{
-	  Undefined = -1,
-	  Mosquito,
-	  Hornet,
-	  Vulture,
-	  Dragon,
-	  Behemoth,
-	  Azathoth,
-	  Queen,
-	  Cargo,
-	  LargeCargo,
-	  Count
+		Undefined = -1,
+		Mosquito,
+		Hornet,
+		Vulture,
+		Dragon,
+		Behemoth,
+		Azathoth,
+		Queen,
+		Cargo,
+		LargeCargo,
+		Count
 	};
 
 	RessourceSet price; //!< Prix du vaisseau
@@ -240,14 +240,14 @@ struct Cannon
 	//! Les types de cannon
 	enum Enum : int8_t
 	{
-	  Undefined = -1,
-	  Cannon1,
-	  Cannon2,
-	  Cannon3,
-	  Cannon4,
-	  Cannon5,
-	  Cannon6,
-	  Count
+		Undefined = -1,
+		Cannon1,
+		Cannon2,
+		Cannon3,
+		Cannon4,
+		Cannon5,
+		Cannon6,
+		Count
 	};
 
 	RessourceSet price; //!< Prix du vaisseau
@@ -354,12 +354,12 @@ struct PlanetAction
 	//! Types d'ordre possibles
 	enum Type : int8_t
 	{
-	  Undefined = -1,
-	  Building,
-	  StopBuilding,
-	  Ship,
-	  Cannon,
-	  Count
+		Undefined = -1,
+		Building,
+		StopBuilding,
+		Ship,
+		Cannon,
+		Count
 	};
 
 	uint32_t number;         //!< Quantité de Building, Ship ou autre
@@ -503,11 +503,11 @@ struct FleetAction
 	//! Types d'ordres possibles
 	enum Type : uint8_t
 	{
-	  Nothing,
-	  Move,
-	  Harvest,
-	  Colonize,
-	  Drop
+		Nothing,
+		Move,
+		Harvest,
+		Colonize,
+		Drop
 	};
 
 	Type action;      //!< Type de l'ordre
@@ -621,7 +621,7 @@ struct FightReport
 	size_t heap_size() const
 	{
 		size_t res = fleetList.capacity() * sizeof(Report<Fleet>);
-		for(Report<Fleet> const & report : fleetList)
+		for(Report<Fleet> const& report : fleetList)
 			res += report.heap_size();
 		if(planet)
 			res += planet->heap_size();
@@ -636,25 +636,25 @@ struct Event
 	//! Les types d'évenements
 	enum Type : uint8_t
 	{
-	  FleetCodeError,
-	  FleetCodeExecError,
-	  PlanetCodeError,
-	  PlanetCodeExecError,
-	  Upgraded,
-	  ShipMade,
-	  PlanetHarvested,
-	  FleetWin,
-	  FleetDraw,
-	  FleetsGather,
-	  PlanetColonized,
-	  FleetLose,
-	  FleetDrop,
-	  PlanetLose,
-	  PlanetWin,
-	  CannonMade,
-	  FightAvoided,
-	  PlayerLog,
-	  Count
+		FleetCodeError,
+		FleetCodeExecError,
+		PlanetCodeError,
+		PlanetCodeExecError,
+		Upgraded,
+		ShipMade,
+		PlanetHarvested,
+		FleetWin,
+		FleetDraw,
+		FleetsGather,
+		PlanetColonized,
+		FleetLose,
+		FleetDrop,
+		PlanetLose,
+		PlanetWin,
+		CannonMade,
+		FightAvoided,
+		PlayerLog,
+		Count
 	};
 
 	typedef size_t ID;       //!< Type d'indentifiant d'évenement
@@ -733,11 +733,11 @@ struct Universe
 	{
 		static size_t const SizeTypeSize = sizeof(size_t);
 		size_t res = 0;
-		for(auto const & planetKV : planetMap)
+		for(auto const& planetKV : planetMap)
 			res += sizeof(planetKV) +
 			       planetKV.second.heap_size() +
 			       2 * SizeTypeSize;
-		for(auto const & fleetKV : fleetMap)
+		for(auto const& fleetKV : fleetMap)
 			res += sizeof(fleetKV) +
 			       fleetKV.second.heap_size() +
 			       2 * SizeTypeSize;

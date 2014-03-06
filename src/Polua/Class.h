@@ -163,7 +163,7 @@ static int call(lua_State* L)
 {
 	return call2(L, typename detail::ArgIdxListMaker<Args...>::Type());
 }
-};
+          };
 
 
 template<typename R, typename T, typename... Args>
@@ -210,7 +210,7 @@ static int call(lua_State* L)
 {
 	return call2(L, typename detail::ArgIdxListMaker<Args...>::Type());
 }
-};
+          };
 
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
@@ -237,7 +237,7 @@ static int call(lua_State* L)
 {
 	return call2(L, typename detail::ArgIdxListMaker<Args...>::Type());
 }
-};
+          };
 
 template<typename T, typename... Args>
 struct MemCaller<void(T::*)(Args...) const>
@@ -277,7 +277,7 @@ static int call(lua_State* L)
 {
 	return call2(L, typename detail::ArgIdxListMaker<Args...>::Type());
 }
-};
+          };
 
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 }

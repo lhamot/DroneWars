@@ -39,7 +39,7 @@ class portable_binary_oarchive_exception :
 public:
 	typedef enum
 	{
-	  invalid_flags
+		invalid_flags
 	} exception_code;
 	portable_binary_oarchive_exception(exception_code = invalid_flags)
 	{}
@@ -68,7 +68,7 @@ class portable_binary_oarchive :
 	std::ostream::char_type,
 	std::ostream::traits_type
 	> ,
-public boost::archive::detail::common_oarchive <
+	public boost::archive::detail::common_oarchive <
 	portable_binary_oarchive
 	>
 {
@@ -87,7 +87,7 @@ public:
 	friend primitive_base_t; // since with override save below
 	friend class boost::archive::detail::interface_oarchive <
 		portable_binary_oarchive
-			>;
+		>;
 	friend class boost::archive::save_access;
 protected:
 #endif

@@ -44,6 +44,8 @@ void simulOneFight()
 	  &planet :
 	  nullptr;
 	PlayersFightingMap playersFightingMap;
+	playersFightingMap.emplace(std::make_pair(1, 2), true);
+	playersFightingMap.emplace(std::make_pair(2, 1), true);
 	PlayerCodeMap playerCodeMap;
 	FightReport fightReport;
 	fight(fleetPtrVect, playersFightingMap, planetPtr, playerCodeMap, fightReport);
@@ -75,7 +77,7 @@ void simulOneFight()
 
 void simulFight()
 {
-	for(size_t test = 0; test < 10; ++test)
+	for(size_t test = 0; test < 1000; ++test)
 	{
 		//std::cout << std::endl;
 		simulOneFight();

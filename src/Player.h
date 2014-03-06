@@ -107,9 +107,9 @@ struct CodeData
 	//! Planète ou Flotte
 	enum Target : uint8_t
 	{
-	  Planet,
-	  Fleet,
-	  Undefined
+		Planet,
+		Fleet,
+		Undefined
 	};
 
 	size_t   id = 0;         //!< ID de la version du code source lua

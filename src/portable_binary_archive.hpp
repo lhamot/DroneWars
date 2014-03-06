@@ -26,8 +26,8 @@
 
 enum portable_binary_archive_flags
 {
-  endian_big        = 0x4000,
-  endian_little     = 0x8000
+	endian_big        = 0x4000,
+	endian_little     = 0x8000
 };
 
 //#if ( endian_big <= boost::archive::flags_last )

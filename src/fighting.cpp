@@ -9,6 +9,12 @@
 #pragma warning(disable: 4724 6385 6294 6201)
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
+#include <boost/range/combine.hpp>
+#include <boost/range/irange.hpp>
+#include <boost/range/numeric.hpp>
+#include <boost/random/taus88.hpp>
+#include <numeric>
+#include <unordered_set>
 #pragma warning(pop)
 
 //! C'est une experience
@@ -16,6 +22,8 @@
 
 
 using namespace std;
+using namespace boost::adaptors;
+using namespace boost;
 
 
 //! Données d'un vaisseau ou d'une flotte pendant un combat
@@ -28,10 +36,20 @@ struct Unit
 	uint16_t type;
 	uint16_t life;   //!< Point de vie de l'unité
 	uint16_t shield; //!< Point de bouclier de l'unité
+	int16_t armyIndex = -1;
+	Player::ID playerID = Player::NoId;
 
 	//! Constructeur
-	Unit(uint16_t type, uint16_t life, uint16_t shield):
-		type(type), life(life), shield(shield)
+	Unit(uint16_t type,
+	     uint16_t life,
+	     uint16_t shield,
+	     int16_t armyIndex,
+	     Player::ID pid) :
+		type(type),
+		life(life),
+		shield(shield),
+		armyIndex(armyIndex),
+		playerID(pid)
 	{
 	}
 };
@@ -39,7 +57,8 @@ struct Unit
 typedef std::vector<Unit> UnitTab; //!< Liste d'unité (cannons ou vaisseaux)
 
 //! Remplit un UnitTab a partir d'une flotte (Fleet)
-void fillShipList(Fleet const& fleet, UnitTab& shipTab)
+void fillShipList(
+  Fleet const& fleet, int16_t armyIndex, Player::ID pid, UnitTab& shipTab)
 {
 	//Contage
 	size_t shipNumber = 0;
@@ -52,13 +71,15 @@ void fillShipList(Fleet const& fleet, UnitTab& shipTab)
 		Ship const& def = Ship::List[type];
 		size_t const count = fleet.shipList[type];
 		for(size_t i = 0; i < count; ++i)
-			shipTab.push_back(Unit(type, def.life, def.shield));
+			shipTab.push_back(
+			  Unit(type, def.life, def.shield, armyIndex, pid));
 	}
 }
 
 
 //! Remplit un UnitTab a partir d'une planète (Planet)
-void fillShipList(Planet const& planet, UnitTab& shipTab)
+void fillShipList(
+  Planet const& planet, int16_t armyIndex, Player::ID pid, UnitTab& shipTab)
 {
 	//Contage
 	size_t shipNumber = 0;
@@ -70,78 +91,20 @@ void fillShipList(Planet const& planet, UnitTab& shipTab)
 	{
 		Cannon const& def = Cannon::List[type];
 		size_t const count = planet.cannonTab[type];
+		uint16_t const unitType = type + Ship::Count;
 		for(size_t i = 0; i < count; ++i)
-			shipTab.push_back(Unit(type + Ship::Count, def.life, def.shield));
+			shipTab.push_back(
+			  Unit(unitType, def.life, def.shield, armyIndex, pid));
 	}
 }
 
 //! Générateur de nombre pseudo-aléatoire
 boost::random::mt19937 gen(static_cast<uint32_t>(time(0)));
 
-//! Effectue l'attaque de la flotte unitTab1 contre unitTab2
-void applyRound(UnitTab& unitTab1, UnitTab& unitTab2)
-{
-	//! Pour chaque vaisseau de la flotte unitTab1
-	for(Unit & ship : unitTab1)
-	{
-		//! - On calcule sa puissance
-		uint16_t power =
-		  (ship.type < Ship::Count) ?
-		  Ship::List[ship.type].power :
-		  Cannon::List[ship.type - Ship::Count].power;
-
-		//! - Si il est moin puissant que bouclier enemi: On diminu le bouclier
-		boost::random::uniform_int_distribution<> dist(
-		  0, boost::numeric_cast<int>(unitTab2.size() - 1));
-		size_t const pos = dist(gen);
-		Unit& unity = unitTab2[pos];
-		uint16_t& shield = unity.shield;
-		if(power < shield)
-			shield -= power;
-		else
-		{
-			//! - Sinon:
-			//!     On mais le bouclier a zero et on diminue la puissance
-			//!     Si l'attaquant est moin puissant que les PV de l'attaqué
-			//!         On diminue juste les PV
-			//!     Sinon l'attaqué est mort
-			power -= shield;
-			shield = 0;
-			uint16_t& life = unity.life;
-			if(power < life)
-				life -= power;
-			else
-				life = 0;
-		}
-	}
-}
-
-
-//! @warning Cette fonction modifie la flotte
-void fillFinalFleet(UnitTab const& shipTab, Fleet& fleet) throw()
-{
-	Fleet::ShipTab& outTab = fleet.shipList;
-	outTab.assign(0);
-	for(Unit const & ship : shipTab)
-		++outTab[ship.type];
-}
-
-
-//! @warning Cette fonction modifie la planet
-void fillFinalFleet(UnitTab const& shipTab, Planet& planet) throw()
-{
-	Planet::CannonTab& outTab = planet.cannonTab;
-	//outTab.assign(Cannon::Count, 0);
-	outTab.assign(0);
-	for(Unit const & ship : shipTab)
-		++outTab[ship.type - Ship::Count];
-}
-
-
 //! Recharge les boucliers des unités
 void loadShield(UnitTab& unitTab)  throw()
 {
-	for(Unit & unit : unitTab)
+	for(Unit& unit : unitTab)
 	{
 		uint16_t const shieldMax =
 		  (unit.type < Ship::Count) ?
@@ -150,7 +113,6 @@ void loadShield(UnitTab& unitTab)  throw()
 		unit.shield = shieldMax;
 	}
 }
-
 
 //! Interface de toute les competances de combats
 class SkillInterface
@@ -226,7 +188,7 @@ ArmyStats calcArmyStat(UnitTab const& unitTab)
 		}
 	};
 
-	for(Unit const & unit : unitTab)
+	for(Unit const& unit : unitTab)
 	{
 		//! Si c'est un vaisseau
 		if(unit.type < Ship::Count)
@@ -254,295 +216,262 @@ ArmyStats calcArmyStat(UnitTab const& unitTab)
 }
 
 
-//! Resultat d'un combat
-enum FightStatus : uint8_t
+namespace std
 {
-  Fighter1Win,
-  Fighter2Win,
-  NobodyWin,
-  NothingRemains
+//! Traits de calcul de valeur de hachage d'une coordonée Coord
+template<>
+struct hash<std::pair<Player::ID, Player::ID> >
+{
+	//! Calcul la valeur de hachage d'une coordonée Coord
+	size_t operator()(std::pair<Player::ID, Player::ID> const& p) const
+	{
+		std::size_t seed = 0;
+		boost::hash_combine(seed, p.first);
+		boost::hash_combine(seed, p.second);
+		return seed;
+	}
+};
+}
+
+typedef std::map<Player::ID, std::set<Player::ID> > PlayersFightingSet;
+
+bool fightAgain(UnitTab const& allUnits,
+                PlayersFightingSet const& playerFightPlayer
+               )
+{
+	std::vector<Player::ID> playerSet;
+	for(Unit const& unit : allUnits)
+	{
+		if(boost::range::find(playerSet, unit.playerID) == playerSet.end())
+			playerSet.push_back(unit.playerID);
+	}
+
+	for(auto iter = playerSet.begin(), end = playerSet.end();
+	    iter != end;
+	    ++iter)
+	{
+		Player::ID const playerID1 = *iter;
+		for(auto iter2 = boost::next(iter); iter2 != end; ++iter2)
+		{
+			Player::ID const playerID2 = *iter2;
+			auto playerIter = playerFightPlayer.find(playerID1);
+			if(playerIter != playerFightPlayer.end())
+			{
+				if(playerIter->second.count(playerID2))
+					return true;
+			}
+		}
+	}
+	return false;
+}
+
+template<typename S, typename O>
+void putEnemyFleetInReport(PlayersFightingSet const& playerFightingSet,
+                           Report<S>& report,
+                           O const* otherArmy,
+                           int16_t otherIndex)
+{
+	Player::ID const otherPlayer = otherArmy->playerId;
+	Player::ID const reportPlayer = report.fightInfo.before.playerId;
+	auto iter1 = playerFightingSet.find(reportPlayer);
+	if(iter1 != playerFightingSet.end())
+	{
+		if(iter1->second.count(otherPlayer))
+		{
+			report.enemySet.insert(otherIndex);
+			report.hasFight = true;
+		}
+	}
 };
 
-
-//! Simule un combat entre deux combatant
-template<typename F1, typename F2>
-FightStatus fight(F1& fighter1,               //!< flotte ou planète
-                  ScriptTools::Object const&, //!< @todo: supprimer les ScriptTools::Object
-                  F2& fighter2,               //!< flotte ou planète
-                  ScriptTools::Object const&  //!< @todo: supprimer les ScriptTools::Object
-                 )
+size_t countUnit(Planet const& planet)
 {
-	//! Construction des deux listes de vaisseaux (fillShipList)
-	UnitTab shipTab1;
-	fillShipList(fighter1, shipTab1);
-	boost::random_shuffle(shipTab1);
-	UnitTab shipTab2;
-	fillShipList(fighter2, shipTab2);
-	boost::random_shuffle(shipTab2);
+	return boost::accumulate(planet.cannonTab, 0);
+}
 
-	//! Jusqu'as ce qu'une des 2 flotte soit annéantie, on repète:
-	size_t round = 0;
-	ArmyStats armyStat1 = calcArmyStat(shipTab1);
-	ArmyStats armyStat2 = calcArmyStat(shipTab2);
-	UNTIL(shipTab1.empty() || shipTab2.empty() || round == 5)
+size_t countUnit(Fleet const& fleet)
+{
+	return boost::accumulate(fleet.shipList, 0);
+}
+
+template<typename S>
+void fillReport(PlayersFightingSet const& playerFightingSet,
+                std::vector<Fleet*> const& fleetList,
+                Planet* planet,
+                Report<S>& report,
+                S const& army)
+{
+	int16_t otherIndex = 0;
+	for(Fleet* otherFleet : fleetList)
 	{
-		//! Excecution des scripts de round
-		/*
-		unique_ptr<SkillInterface> skill1(roundFunc1.is_valid() ?
-		                                  (SkillInterface*)luabind::call_function<SkillInterface*>(roundFunc1, boost::cref(armyStat1), boost::cref(armyStat2)) :
-		                                  new NoSkill());
-		unique_ptr<SkillInterface> skill2(roundFunc2.is_valid() ?
-		                                  (SkillInterface*)luabind::call_function<SkillInterface*>(roundFunc2, boost::cref(armyStat2), boost::cref(armyStat1)) :
-		                                  new NoSkill());
-		*/
-		unique_ptr<SkillInterface> skill1(new NoSkill());
-		unique_ptr<SkillInterface> skill2(new NoSkill());
-
-		//! Action script pré-attaque
-		skill1->beforeAttack(shipTab1, shipTab2);
-		skill2->beforeAttack(shipTab2, shipTab1);
-		//! - Flotte 1 attaque flotte 2 (applyRound)
-		applyRound(shipTab1, shipTab2);
-		//! - Flotte 2 attaque flotte 1 (applyRound)
-		applyRound(shipTab2, shipTab1);
-
-		//! Action script pré-nétoyage des morts
-		skill1->beforeCleaning(shipTab1, shipTab2);
-		skill2->beforeCleaning(shipTab2, shipTab1);
-
-		armyStat1 = calcArmyStat(shipTab1);
-		armyStat2 = calcArmyStat(shipTab2);
-
-		//! - On supprime les vaisseaux qui n'on plus de point de vie
-		remove_erase_if(shipTab1, boost::bind(&Unit::life, _1) <= 0);
-		remove_erase_if(shipTab2, boost::bind(&Unit::life, _1) <= 0);
-
-		//! Action script pré-rechargement boucliers
-		skill1->beforeReload(shipTab1, shipTab2);
-		skill2->beforeReload(shipTab2, shipTab1);
-		//! - On recharge les boucliers
-		loadShield(shipTab1);
-		loadShield(shipTab2);
-
-		round += 1;
+		putEnemyFleetInReport(
+		  playerFightingSet, report, otherFleet, otherIndex);
+		++otherIndex;
 	}
-
-	//! On modidife le nombre d'unité de chaque combatant
-	//! en fonction de ce qu'il reste de ca flotte. (fillFinalFleet)
-	fillFinalFleet(shipTab1, fighter1);
-	fillFinalFleet(shipTab2, fighter2);
-
-	//! On retourne un FightStatus en fonction du contenue restant des flottes
-	if(shipTab1.empty())
-	{
-		if(shipTab2.empty())
-			return NothingRemains;
-		else
-			return Fighter2Win;
-	}
-	else
-	{
-		if(shipTab2.empty())
-			return Fighter1Win;
-		else
-			return NobodyWin;
-	}
+	if(planet)
+		putEnemyFleetInReport(playerFightingSet, report, planet, -1);
+	size_t const shipCount = countUnit(army);
+	report.isDead = shipCount == 0;
+	report.fightInfo.after = army;
 }
 
 
-//! Index de deux armés flotte ou planète
-struct FleetPair
+void fire(UnitTab const& allUnits,
+          std::map<Player::ID, std::vector<Unit*> >& enemyVects)
 {
-	size_t index1; //!< Index le plus petit
-	size_t index2; //!< Index le plus grans
-
-	//! Constructeur prenant les deux index et les triant
-	FleetPair(size_t f1, size_t f2)
+	//! - Pour chaque vaisseau
+	for(Unit const& ship : allUnits)
 	{
-		//Exceptionellement, je vais laisser de coté la liste d'initialization
-		if(f1 < f2)
-		{
-			index1 = f1;
-			index2 = f2;
-		}
+		//! - On calcule sa puissance
+		uint16_t power =
+		  (ship.type < Ship::Count) ?
+		  Ship::List[ship.type].power :
+		  Cannon::List[ship.type - Ship::Count].power;
+
+		//! - On trouve un vaisseau énemie
+		std::vector<Unit*> const& enemyVect = enemyVects[ship.playerID];
+		size_t const enemyCount = enemyVect.size();
+		boost::random::uniform_int_distribution<> dist(
+		  0, boost::numeric_cast<int>(enemyCount - 1));
+
+		size_t const pos = dist(gen);
+
+		Unit& unity = *enemyVect[pos];
+		//! - Si il est moin puissant que bouclier enemi: On diminu le bouclier
+		uint16_t& shield = unity.shield;
+		if(power < shield)
+			shield -= power;
 		else
 		{
-			index1 = f2;
-			index2 = f1;
+			//! - Sinon:
+			//!     On mais le bouclier a zero et on diminue la puissance
+			//!     Si l'attaquant est moin puissant que les PV de l'attaqué
+			//!         On diminue juste les PV
+			//!     Sinon l'attaqué est mort
+			power -= shield;
+			shield = 0;
+			uint16_t& life = unity.life;
+			if(power < life)
+				life -= power;
+			else
+				life = 0;
 		}
 	}
-};
-
-
-//! Excecute un combat entre deux armés (armé = Fleet ou Planet)
-template<typename F1, typename F2>
-void handleFighterPair(
-  PlayersFightingMap const& playerFightPlayer,
-  FleetPair const& fleetPair,
-  Report<F1>& report1, F1& fighter1, PlayerCodes::ObjectMap& funcMap1,
-  Report<F2>& report2, F2& fighter2, PlayerCodes::ObjectMap& funcMap2
-)
-{
-	auto doFight = [&](Player::ID player1, Player::ID player2)
-	{
-		auto iter = playerFightPlayer.find(std::make_pair(player1, player2));
-		if(iter == playerFightPlayer.end())
-			return true;
-		else
-			return iter->second;
-	};
-	bool const player1fight = doFight(fighter1.playerId, fighter2.playerId);
-	bool const player2fight = doFight(fighter2.playerId, fighter1.playerId);
-
-	if(!player1fight && !player2fight)
-		return;
-
-	report1.enemySet.insert(fleetPair.index2);
-	report2.enemySet.insert(fleetPair.index1);
-
-	report1.hasFight = true;
-	report2.hasFight = true;
-	FightStatus const status = fight(
-	                             fighter1, funcMap1.functions["fight_round"],
-	                             fighter2, funcMap2.functions["fight_round"]);
-	switch(status)
-	{
-	case Fighter1Win:
-		report2.isDead = true;
-		break;
-	case Fighter2Win:
-		report1.isDead = true;
-		break;
-	case NobodyWin:
-		break;
-	case NothingRemains:
-		report1.isDead = true;
-		report2.isDead = true;
-		break;
-	}
-	report1.fightInfo.after = fighter1;
-	report2.fightInfo.after = fighter2;
 }
 
 void fight(std::vector<Fleet*> const& fleetList,
            PlayersFightingMap const& playerFightPlayer,
            Planet* planet,
-           PlayerCodeMap& codesMap,
+           PlayerCodeMap&, //codesMap
            FightReport& reportList)
 {
-	static size_t const PlanetIndex = size_t(-1);
+	static int16_t const PlanetIndex = -1;
 
 	if(fleetList.empty())
 		return;
 
+	//! Remplissage de la liste des flottes et planete dans reportList
 	reportList.fleetList.clear();
-	boost::transform(fleetList, back_inserter(reportList.fleetList), []
-	                 (Fleet const * fleetPtr)
-	{
-		return Report<Fleet>(*fleetPtr);
-	});
+	boost::transform(
+	  fleetList,
+	  back_inserter(reportList.fleetList),
+	[](Fleet const * fleetPtr) {return Report<Fleet>(*fleetPtr);});
+
 	if(planet)
 	{
 		reportList.hasPlanet = true;
 		reportList.planet = Report<Planet>(*planet);
 	}
 
-
-	//! On liste les paires combatantes
-	std::vector<FleetPair> fightingPair;
-	//! - Flotte/Flotte
-	for(auto iter1 = fleetList.begin(),
-	    end = fleetList.end();
-	    iter1 != end; ++iter1)
+	//! Qui vase batre contre qui?
+	//! (Si un seul des deux veux se batre, les deux se batrons)
+	PlayersFightingSet playerFightingSet;
+	// Pour chaque paires de joueurs qui veullent se batre (valeur à true)
+	// On l'ajoute dans le playerFightingSet
+	for(auto const& playerPair :
+	    playerFightPlayer
+	    | filtered(bind(&PlayersFightingMap::value_type::second, _1) == true)
+	    | map_keys)
 	{
-		for(auto iter2 = iter1 + 1; iter2 != end; ++iter2)
-		{
-			Player::ID const pla1 = (*iter1)->playerId;
-			Player::ID const pla2 = (*iter2)->playerId;
-			if(pla1 != pla2 && pla1 != Player::NoId && pla2 != Player::NoId)
-			{
-				//uint64_t const score1 = MAP_FIND(univ.playerMap, player1)->second.score;
-				//uint64_t const score2 = MAP_FIND(univ.playerMap, player2)->second.score;
-				//if((score1 * 5) > score2 && (score2 * 5) > score1)
-				//! @todo: Remetre la limitation sur les score trop differents
-				fightingPair.push_back(FleetPair(iter1 - fleetList.begin(),
-				                                 iter2 - fleetList.begin()));
-			}
-		}
+		playerFightingSet[playerPair.first].insert(playerPair.second);
+		playerFightingSet[playerPair.second].insert(playerPair.first);
 	}
-	//! - Planete/Flotte
+
+	//! On remplit la liste des unités (flottes et planete)
+	UnitTab allUnits;
+	for(auto indexFleet :
+	    combine(irange(int16_t(0), int16_t(fleetList.size())), fleetList))
+	{
+		int16_t const index = indexFleet.get<0>();
+		Fleet const* fleet = indexFleet.get<1>();
+		fillShipList(*fleet, index, fleet->playerId, allUnits);
+	}
 	if(planet)
+		fillShipList(*planet, PlanetIndex, planet->playerId, allUnits);
+
+	//! Pour 5 round maximum
+	for(size_t roundCount = 0; roundCount < 5; ++roundCount)
 	{
-		for(auto iter1 = fleetList.begin(),
-		    end = fleetList.end();
-		    iter1 != end; ++iter1)
+		//! - On recharge les bouclier
+		loadShield(allUnits);
+		//! - Si il ne reste pas au moins 2 joueurs énemis, on arrete.
+		if(fightAgain(allUnits, playerFightingSet) == false)
+			break;
+		//! - Pour chaque joueur on établis une liste des unités énemis
+		std::map<Player::ID, std::vector<Unit*> > enemyVects;
+		for(Unit& ship : allUnits)
 		{
-			Player::ID const pla1 = (*iter1)->playerId;
-			Player::ID const pla2 = planet->playerId;
-			if(pla1 != pla2 && pla1 != Player::NoId && pla2 != Player::NoId)
-			{
-				//uint64_t const score1 = MAP_FIND(univ.playerMap, player1)->second.score;
-				//uint64_t const score2 = MAP_FIND(univ.playerMap, player2)->second.score;
-				//Bloquage si trop d'équart de niveaux
-				//if((score1 * 5) > score2 && (score2 * 5) > score1)
-				//! @todo: Remetre la limitation sur les score trop differents
-				fightingPair.push_back(
-				  FleetPair(iter1 - fleetList.begin(), PlanetIndex));
-			}
+			for(Player::ID pid : playerFightingSet[ship.playerID])
+				enemyVects[pid].push_back(&ship);
 		}
+		//! - Chaque vaisseau tire (fonction fire)
+		fire(allUnits, enemyVects);
+		//! - On supprime les vaisseaux detruit
+		remove_erase_if(allUnits, bind(&Unit::life, _1) <= 0);
 	}
 
-	//! Pour extraire le script du joueur pour les round de combat
-	auto getRoundScript = [&]
-	                      (Player::ID pid) -> PlayerCodes::ObjectMap&
+	//! On vide les flottes et planete données en entré
+	for(Fleet* fleet : fleetList)
+		fleet->shipList.assign(0);
+	if(planet)
+		planet->cannonTab.assign(0);
+	//! On les remplis avec se qui reste des unités aprés le combat
+	for(Unit const& unit : allUnits)
 	{
-		return codesMap[pid].fleetsCode;
-	};
-
-	//! Pour toute les combinaisons de 2 combatant - Combat:
-	for(FleetPair const & fleetPair : fightingPair)
-	{
-		//! - planet vs flotte
-		if(fleetPair.index1 == PlanetIndex)
+		if(unit.armyIndex == PlanetIndex)
 		{
-			Report<Planet>& report1 = reportList.planet.get();
-			Report<Fleet>& report2 = reportList.fleetList[fleetPair.index2];
-			Fleet& fleet = *fleetList[fleetPair.index2];
-			handleFighterPair<Planet, Fleet>(
-			  playerFightPlayer,
-			  fleetPair,
-			  report1, *planet, getRoundScript(planet->playerId),
-			  report2, fleet, getRoundScript(fleet.playerId));
+			if(!planet)
+				BOOST_THROW_EXCEPTION(std::logic_error("!planet"));
+			++planet->cannonTab[unit.type - Ship::Count];
 		}
-		//! - flotte vs planet
-		else if(fleetPair.index2 == PlanetIndex)
-		{
-			Report<Fleet>& report1 = reportList.fleetList[fleetPair.index1];
-			Report<Planet>& report2 = reportList.planet.get();
-			Fleet& fleet = *fleetList[fleetPair.index1];
-			handleFighterPair<Fleet, Planet>(
-			  playerFightPlayer,
-			  fleetPair,
-			  report1, fleet, getRoundScript(fleet.playerId),
-			  report2, *planet, getRoundScript(planet->playerId));
-		}
-		//! - flotte vs flotte
 		else
-		{
-			Report<Fleet>& report1 = reportList.fleetList[fleetPair.index1];
-			Fleet* fighterPtr1 = fleetList[fleetPair.index1];
-			Report<Fleet>& report2 = reportList.fleetList[fleetPair.index2];
-			Fleet* fighterPtr2 = fleetList[fleetPair.index2];
-			handleFighterPair<Fleet, Fleet>(
-			  playerFightPlayer,
-			  fleetPair,
-			  report1, *fighterPtr1, getRoundScript(fighterPtr1->playerId),
-			  report2, *fighterPtr2, getRoundScript(fighterPtr2->playerId));
-		}
+			++fleetList[unit.armyIndex]->shipList[unit.type];
 	}
+	//! On les copie aussi dans les rapport
+	for(auto reportAndFleet : boost::combine(reportList.fleetList, fleetList))
+		fillReport(playerFightingSet,
+		           fleetList,
+		           planet,
+		           reportAndFleet.get<0>(),
+		           *reportAndFleet.get<1>());
+	if(planet)
+		fillReport(playerFightingSet,
+		           fleetList,
+		           planet,
+		           *reportList.planet,
+		           *planet);
+	//! Si une flotte a protégé la planete jusque au bout,
+	//!  la planète est conservé.
+	std::set<Player::ID> winingPlayers;
+	for(Report<Fleet> const& fleetReport : reportList.fleetList)
+		if(fleetReport.isDead == false)
+			winingPlayers.insert(fleetReport.fightInfo.before.playerId);
+	if(planet && winingPlayers.count(planet->playerId))
+		reportList.planet->isDead = false;
 
 	if(reportList.fleetList.size() != fleetList.size())
 		BOOST_THROW_EXCEPTION(std::logic_error("Bad reports count!!"));
 }
+
 
 

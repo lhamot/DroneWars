@@ -41,7 +41,7 @@ class portable_binary_iarchive_exception :
 public:
 	typedef enum
 	{
-	  incompatible_integer_size
+		incompatible_integer_size
 	} exception_code;
 	portable_binary_iarchive_exception(exception_code = incompatible_integer_size) :
 		boost::archive::archive_exception(boost::archive::archive_exception::other_exception)
@@ -73,11 +73,11 @@ class portable_binary_iarchive :
 	std::istream::char_type,
 	std::istream::traits_type
 	> ,
-public boost::archive::detail::common_iarchive <
+	public boost::archive::detail::common_iarchive <
 	portable_binary_iarchive
 	>
 	,
-public boost::archive::detail::shared_ptr_helper
+	public boost::archive::detail::shared_ptr_helper
 {
 	typedef boost::archive::basic_binary_iprimitive <
 	portable_binary_iarchive,
@@ -94,7 +94,7 @@ public:
 	friend primitive_base_t; // since with override load below
 	friend class boost::archive::detail::interface_iarchive <
 		portable_binary_iarchive
-			>;
+		>;
 	friend class boost::archive::load_access;
 protected:
 #endif

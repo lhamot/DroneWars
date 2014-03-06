@@ -58,19 +58,19 @@ struct Skill
 	//! Identifiants numerique des competances
 	enum Type
 	{
-	  Conquest,
-	  Strategy,
-	  Cohesion,
-	  InformationService,
-	  ServerFarm,
-	  Chronos,
-	  Memory,
-	  EmissionRange,
-	  Simulation,
-	  BlackBox,
-	  Log,
-	  Escape,
-	  EmissionRate
+		Conquest,
+		Strategy,
+		Cohesion,
+		InformationService,
+		ServerFarm,
+		Chronos,
+		Memory,
+		EmissionRange,
+		Simulation,
+		BlackBox,
+		Log,
+		Escape,
+		EmissionRate
 	};
 
 	static size_t const Count = SkillCount; //!< Nombre total de skill

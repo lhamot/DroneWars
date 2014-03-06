@@ -222,14 +222,14 @@ int luaCFunction_simul_fight(lua_State* L)
 	playerSet.insert(*playerFleet->player);
 	if(planetOri)
 		playerSet.insert(*planetOri->player);
-	for(Fleet const * fleet : fleetVectOri)
+	for(Fleet const* fleet : fleetVectOri)
 		playerSet.insert(*fleet->player);
 
 	//Création de la PlayersFightingMap
 	PlayersFightingMap playerFighting;
-	for(Player const & player : playerSet)
+	for(Player const& player : playerSet)
 	{
-		for(Player const & player2 : playerSet)
+		for(Player const& player2 : playerSet)
 		{
 			if(player.id != player2.id)
 				playerFighting[std::make_pair(player.id, player2.id)] =
@@ -248,7 +248,7 @@ int luaCFunction_simul_fight(lua_State* L)
 		std::vector<Fleet> fleetVectCpy;
 		std::vector<Fleet*> fleetPtrVect;
 		fleetVectCpy.reserve(fleetVectOri.size() + 1);
-		for(Fleet const * fleetPtr : fleetVectOri)
+		for(Fleet const* fleetPtr : fleetVectOri)
 		{
 			fleetVectCpy.push_back(*fleetPtr);
 			fleetPtrVect.push_back(&fleetVectCpy.back());

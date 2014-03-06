@@ -23,7 +23,7 @@ Engine::Engine(DataBase::ConnectionInfo const& connInfo,
 	time_t maxtime = 0;
 	size_t version = 1;
 	//! Recherche la dernière sauvegarde
-	for(const filesystem::path & p : make_iterator_range(dir, end))
+	for(const filesystem::path& p : make_iterator_range(dir, end))
 	{
 		string const fileStr = p.filename().string();
 		if((fileStr.find("_save.bta") == 10) &&
@@ -46,7 +46,7 @@ Engine::Engine(DataBase::ConnectionInfo const& connInfo,
 		load(ss.str(), version);
 		DataBase database(connInfo);
 		std::vector<Player> players = database.getPlayers();
-		for(Player const & player : players)
+		for(Player const& player : players)
 		{
 			if(player.mainPlanet == Coord())
 				simulation_->createMainPlanet(player.id);
@@ -105,7 +105,7 @@ vector<Fleet> Engine::getPlayerFleets(Player::ID pid) const
 {
 	SharedLock lock(univ_.mutex);
 	vector<Fleet> fleetList;
-	for(Fleet const & fleet : univ_.fleetMap | adaptors::map_values)
+	for(Fleet const& fleet : univ_.fleetMap | adaptors::map_values)
 	{
 		if(fleet.playerId == pid)
 			fleetList.push_back(fleet);
@@ -118,7 +118,7 @@ vector<Planet> Engine::getPlayerPlanets(Player::ID pid) const
 {
 	SharedLock lock(univ_.mutex);
 	vector<Planet> planetList;
-	for(Universe::PlanetMap::value_type const & planetNVP : univ_.planetMap)
+	for(Universe::PlanetMap::value_type const& planetNVP : univ_.planetMap)
 	{
 		if(planetNVP.second.playerId == pid)
 			planetList.push_back(planetNVP.second);
@@ -141,7 +141,7 @@ vector<Planet> Engine::getPlanets(vector<Coord> const& coordVect) const
 	SharedLock lock(univ_.mutex);
 	vector<Planet> result;
 	result.reserve(coordVect.size());
-	for(Coord const & coord : coordVect)
+	for(Coord const& coord : coordVect)
 	{
 		auto iter = univ_.planetMap.find(coord);
 		if(iter != univ_.planetMap.end())

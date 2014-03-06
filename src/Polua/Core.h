@@ -383,7 +383,7 @@ struct Push<T*, true, false>
 };
 //! Traits pour pousser dans la pile lua un ptr sur un primitif temporaire
 template<typename T> struct Push<T*, true, true> :
-	public Push<T*, true, false> {};
+		public Push<T*, true, false> {};
 //! Traits pour pousser dans la pile lua une réf sur un primitif persistant
 template<typename T>
 struct Push<T&, true, false>
@@ -395,7 +395,7 @@ struct Push<T&, true, false>
 };
 //! Traits pour pousser dans la pile lua une réf sur un primitif temporaire
 template<typename T> struct Push<T&, true, true> :
-	public Push<T&, true, false> {};
+		public Push<T&, true, false> {};
 //! Traits pour pousser dans la pile lua un primitif persistant
 template<typename T>
 struct Push<T, true, false>
@@ -407,7 +407,7 @@ struct Push<T, true, false>
 };
 //! Traits pour pousser dans la pile lua un primitif temporaire
 template<typename T> struct Push<T, true, true> :
-	public Push<T, true, false> {};
+		public Push<T, true, false> {};
 
 // ********** Le userdata pointeur et ref sont stoké par pointeur *************
 
@@ -447,7 +447,7 @@ struct Push<T*, false, false>
 };
 //! Traits pour pousser dans pile lua un ptr sur objet(non primitif) temporaire
 template<typename T> struct Push<T*, false, true> :
-	public Push<T*, false, false> {};
+		public Push<T*, false, false> {};
 //!Traits pour pousser dans pile lua une ref sur objet(non primitif) persistant
 template<typename T>
 struct Push<T&, false, false>
@@ -604,15 +604,15 @@ fromstackAny(lua_State* L, int index, typename BaseIsPrim<T>::Is* = 0)
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 template <
-typename T,
-         class = typename std::enable_if<std::is_enum<T>::value>::type >
+  typename T,
+  class = typename std::enable_if<std::is_enum<T>::value>::type >
 T fromstackEnum(lua_State* L, int index)
 {
 	return static_cast<T>(Fromstack<std::intmax_t, true>::fromstack(L, index));
 }
 template <
-typename T,
-         class = typename std::enable_if < !std::is_enum<T>::value >::type >
+  typename T,
+  class = typename std::enable_if < !std::is_enum<T>::value >::type >
 typename Fromstack<T, false>::result_type
 fromstackEnum(lua_State* L, int index)
 {

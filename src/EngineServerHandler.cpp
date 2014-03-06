@@ -173,7 +173,7 @@ ndw::Fleet fleetToThrift(Fleet const& fleet, Player const& player)
 	result.ressourceSet = ressourceToThrift(fleet.ressourceSet);
 
 	result.taskQueue.reserve(fleet.taskQueue.size());
-	for(FleetTask const & task : fleet.taskQueue)
+	for(FleetTask const& task : fleet.taskQueue)
 		result.taskQueue.push_back(fleetTaskToThrift(task));
 
 	return result;
@@ -299,7 +299,7 @@ ndw::FightReport fightReportToThrift(
 {
 	ndw::FightReport result;
 	result.fleetList.reserve(report.fleetList.size());
-	for(Report<Fleet> const & fleetRep : report.fleetList)
+	for(Report<Fleet> const& fleetRep : report.fleetList)
 	{
 		Player const player =
 		  MAP_FIND(playerMap, fleetRep.fightInfo.before.playerId)->second;
@@ -451,14 +451,14 @@ void EngineServerHandler::getPlayerFleets(
 	                                     fleetList.begin() + endIndex);
 	Player const player = database_.getPlayer(pid);
 	set<Coord, CompCoord> fleetCoordSet;
-	for(Fleet const & fleet : pageRange)
+	for(Fleet const& fleet : pageRange)
 	{
 		_return.fleetList.push_back(fleetToThrift(fleet, player));
 		fleetCoordSet.insert(fleet.coord);
 	}
 	vector<Coord> fleetCoordVect(fleetCoordSet.begin(), fleetCoordSet.end());
 	auto planetList = engine_.getPlanets(fleetCoordVect);
-	for(Planet const & planet : planetList)
+	for(Planet const& planet : planetList)
 		_return.planetList.push_back(planetToThrift(planet, &player));
 
 	_return.fleetCount = NUMCAST(fleetList.size());
@@ -500,7 +500,7 @@ void EngineServerHandler::getPlayerPlanets(
 	auto pageRange = make_iterator_range(planetList.begin() + beginIndex,
 	                                     planetList.begin() + endIndex);
 	Player const player = database_.getPlayer(pid);
-	for(Planet const & planet : pageRange)
+	for(Planet const& planet : pageRange)
 		_return.planetList.push_back(planetToThrift(planet, &player));
 	_return.planetCount = NUMCAST(planetList.size());
 	LOG4CPLUS_TRACE(logger, "exit");
@@ -625,7 +625,7 @@ void EngineServerHandler::getPlanet(vector<ndw::Planet>& _return,
 		vector<Event> events =
 		  database_.getPlanetEvents(planet->playerId, coord);
 		_return.front().eventList.reserve(events.size());
-		for(Event const & ev : events)
+		for(Event const& ev : events)
 			_return.front().eventList.push_back(eventToThrift(ev));
 	}
 	LOG4CPLUS_TRACE(logger, "exit");
@@ -645,7 +645,7 @@ void EngineServerHandler::getFleet(ndw::Fleet& _return,
 
 	vector<Event> events = database_.getFleetEvents(_return.playerId, fid);
 	_return.eventList.reserve(events.size());
-	for(Event const & ev : events)
+	for(Event const& ev : events)
 		_return.eventList.push_back(eventToThrift(ev));
 
 	LOG4CPLUS_TRACE(logger, "exit");
@@ -753,7 +753,7 @@ void EngineServerHandler::getBuildingsInfo(vector<ndw::Building>& _return)
 	LOG4CPLUS_TRACE(logger, "enter");
 	_return.reserve(Building::Count);
 	int32_t index = 0;
-	for(Building const & b : Building::List)
+	for(Building const& b : Building::List)
 	{
 		ndw::Building newBu;
 		newBu.index = index++;
@@ -770,7 +770,7 @@ void EngineServerHandler::getCannonsInfo(vector<ndw::Cannon>& _return)
 	LOG4CPLUS_TRACE(logger, "enter");
 	_return.reserve(Cannon::Count);
 	int32_t index = 0;
-	for(Cannon const & c : Cannon::List)
+	for(Cannon const& c : Cannon::List)
 	{
 		ndw::Cannon newCa;
 		newCa.index = index++;
@@ -787,7 +787,7 @@ void EngineServerHandler::getShipsInfo(vector<ndw::Ship>& _return)
 {
 	LOG4CPLUS_TRACE(logger, "enter");
 	_return.reserve(Ship::Count);
-	for(Ship const & s : Ship::List)
+	for(Ship const& s : Ship::List)
 	{
 		ndw::Ship newSh;
 		newSh.index = NUMCAST(_return.size());
@@ -824,7 +824,7 @@ void EngineServerHandler::getMessages(
 	LOG4CPLUS_TRACE(logger, "recipient:" << recipient);
 	std::vector<Message> messages = database_.getMessages(recipient);
 	_return.reserve(messages.size());
-	for(Message const & message : messages)
+	for(Message const& message : messages)
 	{
 		ndw::Message newMess;
 		newMess.id = message.id;
