@@ -1147,14 +1147,15 @@ void execFleets(
 	for(auto iter = fleetMap.begin(); iter != fleetMap.end(); ++iter)
 	{
 		Fleet& fleet = iter->second;
+		Player const& player = MAP_FIND(playerMap, fleet.playerId)->second;
 		gatherIfWant(univ_,
-		             MAP_FIND(playerMap, fleet.playerId)->second,
+		             player,
 		             engine,
 		             codesMap[fleet.playerId].fleetsCode,
 		             fleet,
 		             fleetMap,
 		             events);
-		fleetRound(univ_, fleet, events, playersPlanetCount);
+		fleetRound(univ_, player, fleet, events, playersPlanetCount);
 	}
 
 	map_remove_erase_if(univ_.fleetMap, []

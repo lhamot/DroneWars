@@ -52,6 +52,7 @@ void planetRound(Universe& univ,
 //! Gere l'écoulement du temps sur la flotte.
 //! Peut modifier la liste des flottes et des planètes
 void fleetRound(Universe& univ,
+                Player const& player,
                 Fleet& fleet,
                 std::vector<Event>& events,
                 std::map<Player::ID, size_t> const& playersPlanetCount);

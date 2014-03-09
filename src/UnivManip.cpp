@@ -587,6 +587,7 @@ void execTask(Universe& univ,
 
 //! Excecute une tache sur une flotte
 void execTask(Universe& univ,
+              Player const& player,
               Fleet& fleet,
               FleetTask& task,
               std::vector<Event>& events,
@@ -621,7 +622,7 @@ void execTask(Universe& univ,
 			{
 				size_t const planetCount =
 				  MAP_FIND(playersPlanetCount, fleet.playerId)->second;
-				if(planetCount < 1000)
+				if(planetCount < getMaxPlanetCount(player))
 				{
 					Event ev = Event(
 					             fleet.playerId,
@@ -720,12 +721,13 @@ void planetRound(Universe& univ,
 
 //! Simule la vie de la flotte durant un round
 void fleetRound(Universe& univ,
+                Player const& player,
                 Fleet& fleet,
                 std::vector<Event>& events,
                 std::map<Player::ID, size_t> const& playersPlanetCount)
 {
 	for(FleetTask& task : fleet.taskQueue)
-		execTask(univ, fleet, task, events, playersPlanetCount);
+		execTask(univ, player, fleet, task, events, playersPlanetCount);
 
 	remove_erase_if(fleet.taskQueue, boost::bind(&FleetTask::expired, _1));
 
