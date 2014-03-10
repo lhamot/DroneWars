@@ -55,7 +55,7 @@ void simulOneFight()
 		for(int type = 0; type < Ship::Count; ++type)
 		{
 			std::string name = MAP_FIND(ndw::_Ship_Enum_VALUES_TO_NAMES, type)->second;
-			std::cout << name.substr(0, 4) << '\t';
+			std::cout << name.substr(0, 4) << '\t'; //-V112
 		}
 		std::cout << "Exp" << std::endl;
 		for(Report<Fleet> fleetReport : fightReport.fleetList)

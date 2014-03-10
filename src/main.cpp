@@ -76,7 +76,6 @@ int main(int argc, char** argv)
 
 		namespace po = boost::program_options;
 		size_t minRoundDuration = 10;
-		std::string config_file;
 		// Declare the supported options.
 		po::options_description desc("Allowed options");
 		desc.add_options()

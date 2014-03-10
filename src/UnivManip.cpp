@@ -654,7 +654,7 @@ void execTask(Universe& univ,
 //! @todo: Remplacer par une liste de building polymorphic?
 void execBuilding(Planet& planet, Building::Enum type, size_t level)
 {
-	size_t const speedMult = 4;
+	static size_t const speedMult = 4; //-V112
 	if(level == 0)
 		return;
 	switch(type)

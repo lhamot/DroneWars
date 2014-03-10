@@ -119,7 +119,7 @@ struct ObjAndMethode
 		{
 			lua_touserdata(L, lua_upvalueindex(2)),
 			lua_touserdata(L, lua_upvalueindex(3)),
-			lua_touserdata(L, lua_upvalueindex(4))
+			lua_touserdata(L, lua_upvalueindex(4))  //-V112
 		};
 		methode = toMember<MPtr>(ptr);
 	}
@@ -392,11 +392,11 @@ class Class
 			lua_pop(L, 2);                                      // Pop metatable and Xetter/methode
 			if(member->methode.caller)                          // Si c'est une methode
 			{
-				lua_pushvalue(L, 1);                            //   Remet l'objet sur le dessu de la pile
-				lua_pushlightuserdata(L, member->methode.func.a); //   Et la fonction par dessu
-				lua_pushlightuserdata(L, member->methode.func.b); //   Et la fonction par dessu
-				lua_pushlightuserdata(L, member->methode.func.c); //   Et la fonction par dessu
-				lua_pushcclosure(L, member->methode.caller, 4); //   Retourne l'appelant avec deux arguments prédefinit
+				lua_pushvalue(L, 1);                              // Remet l'objet sur le dessu de la pile
+				lua_pushlightuserdata(L, member->methode.func.a); // Et la fonction par dessu
+				lua_pushlightuserdata(L, member->methode.func.b); // Et la fonction par dessu
+				lua_pushlightuserdata(L, member->methode.func.c); // Et la fonction par dessu
+				lua_pushcclosure(L, member->methode.caller, 4);   // Retourne l'appelant avec deux arguments prédefinit //-V112
 				return 1;
 			}
 			else if(member->getter)

@@ -63,7 +63,7 @@ void checkTutos(Universe& univ_,
 		{
 			Planet const& planet =
 			  MAP_FIND(univ_.planetMap, player.mainPlanet)->second;
-			if(planet.buildingList[Building::MetalMine] >= 4 &&
+			if(planet.buildingList[Building::MetalMine] >= 4 && //-V112
 			   planet.buildingList[Building::Factory] > 0)
 				wisePlayer.push_back(player.id);
 			break;
@@ -334,12 +334,12 @@ size_t getMaxPlanetCount(Player const& player)
 
 size_t getMaxFleetCount(Player const& player)
 {
-	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::Strategy] + 4));
+	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::Strategy] + 4)); //-V112
 }
 
 size_t getMaxFleetSize(Player const& player)
 {
-	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::Cohesion] + 4));
+	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::Cohesion] + 4)); //-V112
 }
 
 size_t getMaxEventCount(Player const& player)
