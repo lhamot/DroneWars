@@ -464,33 +464,38 @@ void gatherIfWant(
 			}
 			++fleetIter;
 		}
-		if(planet && canGather(player, fleet, *planet))
+		if(planet)
 		{
-			bool wantGather1 = false;
-			try
+			Fleet otherFleet(0, planet->playerId, planet->coord, planet->firstRound);
+			otherFleet.shipList = planet->hangar;
+			if(boost::accumulate(planet->hangar, 0) && canGather(player, fleet, otherFleet))
 			{
-				prepareLuaCall(univ, do_gather, player);
-				DWObject do_gather2(do_gather);
-				wantGather1 = do_gather2.call<bool>(
-				                scriptEngine, player, codeMap, events,
-				                fleet, *planet);
-			}
-			catch(Polua::Exception const& ex)
-			{
-				addErrorMessage(codeMap, ex.what(), events);
-			}
+				bool wantGather1 = false;
+				try
+				{
+					prepareLuaCall(univ, do_gather, player);
+					DWObject do_gather2(do_gather);
+					wantGather1 = do_gather2.call<bool>(
+					                scriptEngine, player, codeMap, events,
+					                fleet, otherFleet);
+				}
+				catch(Polua::Exception const& ex)
+				{
+					addErrorMessage(codeMap, ex.what(), events);
+				}
 
-			//! @todo: Décoreler script et traitement
-			if(wantGather1)
-			{
-				boost::transform(fleet.shipList,
-				                 planet->hangar,
-				                 fleet.shipList.begin(),
-				                 std::plus<uint32_t>());
-				planet->hangar.fill(0);
-				Event event(fleet.playerId, time(0), Event::FleetsGather);
-				event.setFleetID(fleet.id);
-				events.push_back(event);
+				//! @todo: Décoreler script et traitement
+				if(wantGather1)
+				{
+					boost::transform(fleet.shipList,
+					                 planet->hangar,
+					                 fleet.shipList.begin(),
+					                 std::plus<uint32_t>());
+					planet->hangar.fill(0);
+					Event event(fleet.playerId, time(0), Event::FleetsGather);
+					event.setFleetID(fleet.id);
+					events.push_back(event);
+				}
 			}
 		}
 	}

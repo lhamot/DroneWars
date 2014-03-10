@@ -83,8 +83,4 @@ bool canGather(Player const& player,
                Fleet const& fleet1,
                Fleet const& fleet2);
 
-bool canGather(Player const& player,
-               Fleet const& fleet1,
-               Planet const& planet);
-
 #endif //__NDW_UNIV_MANIP__

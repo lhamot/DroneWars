@@ -853,10 +853,3 @@ bool canGather(Player const& player,
 	return InternalRules::canGather(player, fleet1, fleet2);
 }
 
-
-bool canGather(Player const& player,
-               Fleet const& fleet1,
-               Planet const& planet)
-{
-	return InternalRules::canGather(player, fleet1, planet);
-}
