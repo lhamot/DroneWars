@@ -255,6 +255,8 @@ def PlanetView(request):
         'target_event': target_event,
         'fight_report': fight_report,
         'Event_Type': Event_Type,
+        'cannonCount': sum(target.cannonTab),
+        'shipCount': sum(target.hangar),
     })
 
 

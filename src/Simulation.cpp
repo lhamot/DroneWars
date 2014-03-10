@@ -340,11 +340,9 @@ catch(Polua::Exception const& ex)
 //! C-à-d ajoute ou arrete une tache de la planète
 void applyPlanetAction(
   Universe const& univ_,
-  std::map<Player::ID, Player> const& playerMap,
   Planet& sciptModifiedPlanet,
   Planet& planet,
-  PlanetAction const& action,
-  size_t const playerFleetCount)
+  PlanetAction const& action)
 {
 	planet.memory.swap(sciptModifiedPlanet.memory);
 	switch(action.action)
@@ -364,8 +362,7 @@ void applyPlanetAction(
 	}
 	case PlanetAction::Ship:
 	{
-		Player const& player = MAP_FIND(playerMap, planet.playerId)->second;
-		if(canBuild(player, planet, action.ship, playerFleetCount))
+		if(canBuild(planet, action.ship))
 			addTask(planet, univ_.roundCount, action.ship, 1);
 	}
 	break;
@@ -417,13 +414,14 @@ void gatherIfWant(
   ScriptTools::Engine& scriptEngine,
   PlayerCodes::ObjectMap& codeMap,
   Fleet& fleet,
+  Planet* planet,
   FleetCoordMap& fleetMap,
   std::vector<Event>& events)
 {
-	auto localFleetsKV = fleetMap.equal_range(fleet.coord);
 	if(checkLuaMethode(codeMap, "do_gather", events))
 	{
 		ScriptTools::Object do_gather = MAP_FIND(codeMap.functions, "do_gather")->second;
+		auto localFleetsKV = fleetMap.equal_range(fleet.coord);
 		auto fleetIter = localFleetsKV.first;
 		while(fleetIter != localFleetsKV.second)
 		{
@@ -433,6 +431,7 @@ void gatherIfWant(
 			   canGather(player, fleet, otherFleet))
 			{
 				bool wantGather1 = false, wantGather2 = false;
+				try
 				{
 					prepareLuaCall(univ, do_gather, player);
 					DWObject do_gather2(do_gather);
@@ -443,6 +442,10 @@ void gatherIfWant(
 					wantGather2 = do_gather2.call<bool>(
 					                scriptEngine, player, codeMap, events,
 					                otherFleet, fleet);
+				}
+				catch(Polua::Exception const& ex)
+				{
+					addErrorMessage(codeMap, ex.what(), events);
 				}
 
 				//! @todo: Décoreler script et traitement
@@ -460,6 +463,35 @@ void gatherIfWant(
 				}
 			}
 			++fleetIter;
+		}
+		if(planet && canGather(player, fleet, *planet))
+		{
+			bool wantGather1 = false;
+			try
+			{
+				prepareLuaCall(univ, do_gather, player);
+				DWObject do_gather2(do_gather);
+				wantGather1 = do_gather2.call<bool>(
+				                scriptEngine, player, codeMap, events,
+				                fleet, *planet);
+			}
+			catch(Polua::Exception const& ex)
+			{
+				addErrorMessage(codeMap, ex.what(), events);
+			}
+
+			//! @todo: Décoreler script et traitement
+			if(wantGather1)
+			{
+				boost::transform(fleet.shipList,
+				                 planet->hangar,
+				                 fleet.shipList.begin(),
+				                 std::plus<uint32_t>());
+				planet->hangar.fill(0);
+				Event event(fleet.playerId, time(0), Event::FleetsGather);
+				event.setFleetID(fleet.id);
+				events.push_back(event);
+			}
 		}
 	}
 }
@@ -623,7 +655,12 @@ void execPlanets(Universe& univ_,
 	//Les planètes
 	{
 		for(Planet& planet : univ_.planetMap | boost::adaptors::map_values)
-			planetRound(univ_, planet, events);
+			if(planet.playerId != Player::NoId)
+				planetRound(playerMap.at(planet.playerId),
+				            playerFleetCounts[planet.playerId],
+				            univ_,
+				            planet,
+				            events);
 	}
 
 	struct ScriptInputs
@@ -686,18 +723,14 @@ void execPlanets(Universe& univ_,
 		  ExtPlanetAction(planet.coord, planet, action));
 	}
 
+	for(ExtPlanetAction& extAction : planetActionList)
 	{
-		for(ExtPlanetAction& extAction : planetActionList)
-		{
-			Planet& planet = univ_.planetMap[extAction.planetCoord];
-			if(extAction.optAction)
-				applyPlanetAction(univ_,
-				                  playerMap,
-				                  extAction.planet,
-				                  planet,
-				                  *extAction.optAction,
-				                  playerFleetCounts[planet.playerId]);
-		}
+		Planet& planet = univ_.planetMap[extAction.planetCoord];
+		if(extAction.optAction)
+			applyPlanetAction(univ_,
+			                  extAction.planet,
+			                  planet,
+			                  *extAction.optAction);
 	}
 	LOG4CPLUS_TRACE(logger, "exit");
 }
@@ -930,7 +963,7 @@ void execFights(Universe& univ_,
 		fight(fleetVect, playerFightPlayer, planetPtr, codesMap, fightReport);
 		calcExperience(playerMap, fightReport);
 		bool hasFight = false;
-		auto range = make_zip_range(fleetVect, fightReport.fleetList);
+		auto range = boost::combine(fleetVect, fightReport.fleetList);
 		for(auto fleetReportPair : range)
 		{
 			Report<Fleet> const& report = fleetReportPair.get<1>();
@@ -1148,11 +1181,19 @@ void execFleets(
 	{
 		Fleet& fleet = iter->second;
 		Player const& player = MAP_FIND(playerMap, fleet.playerId)->second;
+		auto planetIter = univ_.planetMap.find(fleet.coord);
+		Planet* planet = planetIter != univ_.planetMap.end() ?
+		                 &planetIter->second :
+		                 nullptr;
+		if(planet && planet->playerId != fleet.playerId)
+			planet = nullptr;
+
 		gatherIfWant(univ_,
 		             player,
 		             engine,
 		             codesMap[fleet.playerId].fleetsCode,
 		             fleet,
+		             planet,
 		             fleetMap,
 		             events);
 		fleetRound(univ_, player, fleet, events, playersPlanetCount);

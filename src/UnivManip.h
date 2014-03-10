@@ -16,10 +16,7 @@ Coord createMainPlanet(Universe& univ, Player::ID pid);
 void saveToStream(Universe const& univ, std::ostream& out);
 void loadFromStream_v2(std::istream& in, Universe& univ);
 
-bool canBuild(Player const& player,
-              Planet const& planet,
-              Ship::Enum type,
-              size_t const playerFleetCount);
+bool canBuild(Planet const& planet, Ship::Enum type);
 
 bool canBuild(Planet const& planet, Building::Enum type);
 
@@ -45,7 +42,9 @@ void stopTask(Planet& planet,
 
 //! Gere l'écoulement du temps sur la planète.
 //! Peut modifier la liste dse flotte et des planètes
-void planetRound(Universe& univ,
+void planetRound(Player const& player,
+                 size_t const playerFleetCount,
+                 Universe& univ,
                  Planet& planet,
                  std::vector<Event>& events);
 
@@ -84,5 +83,8 @@ bool canGather(Player const& player,
                Fleet const& fleet1,
                Fleet const& fleet2);
 
+bool canGather(Player const& player,
+               Fleet const& fleet1,
+               Planet const& planet);
 
 #endif //__NDW_UNIV_MANIP__

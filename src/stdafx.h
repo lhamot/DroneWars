@@ -39,6 +39,7 @@
 #include <boost/range/algorithm_ext/erase.hpp>
 #include <boost/range/algorithm.hpp>
 #include <boost/range/numeric.hpp>
+#include <boost/range/combine.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/map.hpp>

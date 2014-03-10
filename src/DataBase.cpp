@@ -408,8 +408,13 @@ try
 	            "INSERT IGNORE INTO Player "
 	            "(login, password, planetCoordX, planetCoordY, planetCoordZ, "
 	            " experience, skillpoints) "
-	            "VALUES(?, ?, -1, -1, -1, 0, 0)",
-	            use(login), use(password), now;
+	            "VALUES(?, ?, ?, ?, ?, 0, 0)",
+	            use(login),
+	            use(password),
+	            use(UndefinedCoord.X),
+	            use(UndefinedCoord.Y),
+	            use(UndefinedCoord.Z),
+	            now;
 	size_t rowCount;
 	(*session_) << "SELECT ROW_COUNT() ", into(rowCount), now;
 	if(rowCount == 0)

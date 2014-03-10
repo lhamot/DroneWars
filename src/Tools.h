@@ -40,29 +40,6 @@ nextNot(T& map, I const& iter)
 }
 
 
-//! Crée un zip_iterator à partir de deux iterateurs
-template<typename I1, typename I2>
-auto make_zip_iterator(I1 const& iter1, I2 const& iter2)
--> decltype(boost::make_zip_iterator(boost::make_tuple(iter1, iter2)))
-{
-	return boost::make_zip_iterator(boost::make_tuple(iter1, iter2));
-}
-
-
-//! Crée un range pour parcourir deux conteneurs à la fois (voir zip en python)
-template<typename C1, typename C2>
-auto make_zip_range(C1& c1, C2& c2)
--> decltype(boost::make_iterator_range(
-              make_zip_iterator(boost::begin(c1), boost::begin(c2)),
-              make_zip_iterator(boost::end(c1), boost::end(c2))))
-{
-	auto begin = make_zip_iterator(boost::begin(c1), boost::begin(c2));
-	auto end = make_zip_iterator(boost::end(c1), boost::end(c2));
-	return boost::make_iterator_range(begin, end);
-}
-
-
-
 //! @brief Supprime de la map tout les éléments correspondants a une condition
 template<typename M, typename F>
 void map_remove_erase_if(M& map, F const& func)
@@ -79,19 +56,6 @@ void map_remove_erase_if(M& map, F const& func)
 		else
 			++iter;
 	}
-}
-
-
-//! Crée un range pour transformer un conteneur
-template<typename F, typename C>
-auto make_transform_range(C const& c)
--> decltype(boost::make_iterator_range(
-              boost::make_transform_iterator<F>(boost::begin(c)),
-              boost::make_transform_iterator<F>(boost::end(c))))
-{
-	auto begin = boost::make_transform_iterator<F>(boost::begin(c));
-	auto end = boost::make_transform_iterator<F>(boost::end(c));
-	return boost::make_iterator_range(begin, end);
 }
 
 

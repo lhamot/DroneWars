@@ -309,7 +309,7 @@ int initDroneWars(LuaTools::Engine& engine)
 	Class<std::vector<Fleet const*> >(L, "FleetVector");
 	Class<Planet::BuildingTab>(L, "");
 	Class<Planet::CannonTab>(L, "");
-	Class<Fleet::ShipTab>(L, "");
+	Class<ShipTab>(L, "");
 
 	regFunc(L, "shipPrice", shipPrice);
 	regFunc(L, "cannonPrice", cannonPrice);

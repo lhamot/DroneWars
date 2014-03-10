@@ -26,6 +26,7 @@ void onPlanetLose(Coord planetCoord,
 		planet.taskQueue.clear();
 		newParentMap[planet.coord] = planet.parentCoord;
 		planet.parentCoord = planet.coord;
+		planet.hangar.assign(0);
 	}
 }
 
@@ -44,6 +45,8 @@ void checkTutos(Universe& univ_,
 	std::vector<Player> players = database.getPlayers();
 	for(Player& player : players)
 	{
+		if(player.mainPlanet == UndefinedCoord)
+			continue;
 		DataBase::PlayerTutoMap& tutoMap = allTutoMap[player.id];
 		size_t const plLvl = tutoMap[CoddingLevelTag];
 		switch(plLvl)
@@ -426,21 +429,6 @@ bool canColonize(Player const& player,
 }
 
 
-//! Test si une planète peut fabriquer un vaisseau dans la quantité demandée
-bool canBuild(Player const& player,
-              Planet const&, //planet,
-              Ship::Enum, //type
-              size_t const playerFleetCount
-             )
-{
-	size_t const maxFleetCount = getMaxFleetCount(player);
-	//size_t const fleetCount =
-	//	count_if(univ.fleetMap | adaptors::map_values,
-	//			 bind(&Fleet::playerId, _1) == player.id);
-	return playerFleetCount < maxFleetCount;
-}
-
-
 bool canGather(Player const& player,
                Fleet const& fleet1,
                Fleet const& fleet2)
@@ -449,6 +437,17 @@ bool canGather(Player const& player,
 	size_t const fleetSize =
 	  boost::accumulate(fleet1.shipList, 0) +
 	  boost::accumulate(fleet2.shipList, 0);
+	return fleetSize <= maxShipCount;
+}
+
+bool canGather(Player const& player,
+               Fleet const& fleet1,
+               Planet const& planet)
+{
+	size_t const maxShipCount = getMaxFleetSize(player);
+	size_t const fleetSize =
+	  boost::accumulate(fleet1.shipList, 0) +
+	  boost::accumulate(planet.hangar, 0);
 	return fleetSize <= maxShipCount;
 }
 }

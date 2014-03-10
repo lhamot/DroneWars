@@ -364,10 +364,8 @@ void pay(Fleet& fleet, RessourceSet const& price)
 
 
 //! Test si une planète peut fabriquer un vaisseau dans la quantité demandée
-bool canBuild(Player const& player,
-              Planet const& planet,
-              Ship::Enum type,
-              size_t const playerFleetCount)
+bool canBuild(Planet const& planet,
+              Ship::Enum type)
 {
 	if(type >= Ship::Count)
 		return false;
@@ -380,7 +378,8 @@ bool canBuild(Player const& player,
 	boost::geometry::multiply_value(price.tab, 1);
 	if(canPay(planet, price) == false)
 		return false;
-	return InternalRules::canBuild(player, planet, type, playerFleetCount);
+
+	return boost::accumulate(planet.hangar, 0) == 0;
 }
 
 
@@ -554,13 +553,7 @@ void execTask(Universe& univ,
 			break;
 		case PlanetTask::MakeShip:
 		{
-			Fleet newFleet(univ.nextFleetID++,
-			               planet.playerId,
-			               planet.coord,
-			               univ.roundCount);
-			newFleet.shipList[static_cast<size_t>(task.value)] += task.value2;
-			newFleet.player = planet.player;
-			univ.fleetMap.insert(make_pair(newFleet.id, newFleet));
+			planet.hangar[static_cast<size_t>(task.value)] += task.value2;
 			Event event(planet.playerId, time(0), Event::ShipMade);
 			event.setValue(intptr_t(task.value)).setPlanetCoord(planet.coord);
 			events.push_back(event);
@@ -693,12 +686,27 @@ void execBuilding(Planet& planet, Building::Enum type, size_t level)
 
 
 //! Simule la vie de la planète durant un round
-void planetRound(Universe& univ,
+void planetRound(Player const& player,
+                 size_t const playerFleetCount,
+                 Universe& univ,
                  Planet& planet,
                  std::vector<Event>& events)
 {
 	for(PlanetTask& task : planet.taskQueue)
 		execTask(univ, planet, task, events);
+
+	size_t const maxFleetCount = getMaxFleetCount(player);
+	if(playerFleetCount < maxFleetCount && boost::accumulate(planet.hangar, 0))
+	{
+		Fleet newFleet(univ.nextFleetID++,
+		               planet.playerId,
+		               planet.coord,
+		               univ.roundCount);
+		newFleet.shipList.swap(planet.hangar);
+		newFleet.player = planet.player;
+		univ.fleetMap.insert(make_pair(newFleet.id, newFleet));
+	}
+
 
 	remove_erase_if(planet.taskQueue, boost::bind(&PlanetTask::expired, _1));
 
@@ -843,4 +851,12 @@ bool canGather(Player const& player,
                Fleet const& fleet2)
 {
 	return InternalRules::canGather(player, fleet1, fleet2);
+}
+
+
+bool canGather(Player const& player,
+               Fleet const& fleet1,
+               Planet const& planet)
+{
+	return InternalRules::canGather(player, fleet1, planet);
 }

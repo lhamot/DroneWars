@@ -95,16 +95,14 @@ bool canColonize(Player const& player,
                  Planet const& planet,
                  size_t planetCount);
 
-//! Test si la planète de ce joueur peut fabriquer ce batiment
-bool canBuild(Player const& player,
-              Planet const& planet,
-              Ship::Enum type,
-              size_t const playerFleetCount);
-
 //! Test si les deux flottes peuvent ce réunir
 bool canGather(Player const& player,
                Fleet const& fleet1,
                Fleet const& fleet2);
+
+bool canGather(Player const& player,
+               Fleet const& fleet1,
+               Planet const& planet);
 }
 
 

@@ -258,6 +258,7 @@ struct Cannon
 	static Cannon const List[Count]; //!< Liste des canons (un par type)
 };
 
+typedef boost::array<uint32_t, Ship::Count> ShipTab;
 
 //! Données d'une planètes
 struct Planet
@@ -301,6 +302,8 @@ struct Planet
 		else
 			firstRound = 0;
 		ar& memory;
+		if(version >= 2)
+			ar& hangar;
 	}
 
 	//! Tableau contenant un uint16_t pour chaque type de Building
@@ -319,6 +322,7 @@ struct Planet
 	time_t time;                       //!< Date de création
 	size_t firstRound;                 //!< Round de création
 	TypedPtree memory;                 //!< Données utilisateur
+	ShipTab hangar;                    //!< Vaisseaux au hangard
 	Player* player = nullptr;          //!< Pour les script lua
 
 	//! Taille ocupée dans le tas (pour profiling)
@@ -329,13 +333,19 @@ struct Planet
 		return name.capacity() + buildingSize + taskSize;
 	}
 	//! Constructeur par defaut
-	Planet(): playerId(55555), time(0), firstRound(0) {}
+	Planet() : playerId(55555), time(0), firstRound(0)
+	{
+		buildingList.fill(0);
+		cannonTab.fill(0);
+		hangar.fill(0);
+	}
 	//! Constructeur
 	Planet(Coord c, size_t round):
 		coord(c), playerId(Player::NoId), time(::time(0)), firstRound(round)
 	{
 		buildingList.fill(0);
 		cannonTab.fill(0);
+		hangar.fill(0);
 		if(playerId >= 100000 && playerId != Player::NoId)
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 	}
@@ -345,7 +355,7 @@ struct Planet
 		return playerId == Player::NoId;
 	}
 };
-BOOST_CLASS_VERSION(Planet, 1);
+BOOST_CLASS_VERSION(Planet, 2);
 
 
 //! Ordre donné par le script lua a une planète
@@ -443,7 +453,6 @@ struct Fleet
 	}
 
 	//! Un uint32_t par type de Ship
-	typedef boost::array<uint32_t, Ship::Count> ShipTab;
 	typedef uint64_t ID;      //!< Type ID
 	static const ID NoId = 0; //!< Valeur d'ID signifiant "Pas de flotte"
 

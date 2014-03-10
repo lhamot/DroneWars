@@ -36,6 +36,7 @@ struct Coord
 	}
 };
 
+static Coord const UndefinedCoord(-1, -1, -1);
 
 //! Test d'égalité de deux Coord
 inline bool operator == (Coord const& a, Coord const& b)

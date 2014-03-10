@@ -48,7 +48,7 @@ Engine::Engine(DataBase::ConnectionInfo const& connInfo,
 		std::vector<Player> players = database.getPlayers();
 		for(Player const& player : players)
 		{
-			if(player.mainPlanet == Coord())
+			if(player.mainPlanet == UndefinedCoord)
 				simulation_->createMainPlanet(player.id);
 		}
 	}

@@ -179,9 +179,9 @@ typedef std::vector<class Skill>  Player_SkillTab;
 
 typedef std::vector<int32_t>  BuildingTab;
 
-typedef int64_t Fleet_ID;
-
 typedef std::vector<int32_t>  Fleet_ShipTab;
+
+typedef int64_t Fleet_ID;
 
 typedef std::vector<class FleetAction>  FleetActionList;
 
@@ -1241,7 +1241,7 @@ void swap(FleetTask& a, FleetTask& b);
 
 typedef struct _Planet__isset
 {
-	_Planet__isset() : name(false), coord(false), playerId(false), buildingList(false), taskQueue(false), ressourceSet(false), eventList(false), cannonTab(false), playerLogin(false) {}
+	_Planet__isset() : name(false), coord(false), playerId(false), buildingList(false), taskQueue(false), ressourceSet(false), eventList(false), cannonTab(false), playerLogin(false), hangar(false) {}
 	bool name;
 	bool coord;
 	bool playerId;
@@ -1251,14 +1251,15 @@ typedef struct _Planet__isset
 	bool eventList;
 	bool cannonTab;
 	bool playerLogin;
+	bool hangar;
 } _Planet__isset;
 
 class Planet
 {
 public:
 
-	static const char* ascii_fingerprint; // = "065BDA970AC969149E8A8AE3D35500F1";
-	static const uint8_t binary_fingerprint[16]; // = {0x06,0x5B,0xDA,0x97,0x0A,0xC9,0x69,0x14,0x9E,0x8A,0x8A,0xE3,0xD3,0x55,0x00,0xF1};
+	static const char* ascii_fingerprint; // = "32FA7270F0A7BA82C2B216B25693BBD7";
+	static const uint8_t binary_fingerprint[16]; // = {0x32,0xFA,0x72,0x70,0xF0,0xA7,0xBA,0x82,0xC2,0xB2,0x16,0xB2,0x56,0x93,0xBB,0xD7};
 
 	Planet() : name(), playerId(0), playerLogin()
 	{
@@ -1275,6 +1276,7 @@ public:
 	std::vector<Event>  eventList;
 	std::vector<int32_t>  cannonTab;
 	std::string playerLogin;
+	Fleet_ShipTab hangar;
 
 	_Planet__isset __isset;
 
@@ -1323,6 +1325,11 @@ public:
 		playerLogin = val;
 	}
 
+	void __set_hangar(const Fleet_ShipTab& val)
+	{
+		hangar = val;
+	}
+
 	bool operator == (const Planet& rhs) const
 	{
 		if(!(name == rhs.name))
@@ -1342,6 +1349,8 @@ public:
 		if(!(cannonTab == rhs.cannonTab))
 			return false;
 		if(!(playerLogin == rhs.playerLogin))
+			return false;
+		if(!(hangar == rhs.hangar))
 			return false;
 		return true;
 	}
@@ -1715,8 +1724,8 @@ class PlanetFightInfo
 {
 public:
 
-	static const char* ascii_fingerprint; // = "A88EE54D7D180C028842959C68928C23";
-	static const uint8_t binary_fingerprint[16]; // = {0xA8,0x8E,0xE5,0x4D,0x7D,0x18,0x0C,0x02,0x88,0x42,0x95,0x9C,0x68,0x92,0x8C,0x23};
+	static const char* ascii_fingerprint; // = "C1B0C1E5F64283502A090FDC31266A81";
+	static const uint8_t binary_fingerprint[16]; // = {0xC1,0xB0,0xC1,0xE5,0xF6,0x42,0x83,0x50,0x2A,0x09,0x0F,0xDC,0x31,0x26,0x6A,0x81};
 
 	PlanetFightInfo()
 	{
@@ -1775,8 +1784,8 @@ class PlanetReport
 {
 public:
 
-	static const char* ascii_fingerprint; // = "D3243C9062D13C7C883D437262DFE44A";
-	static const uint8_t binary_fingerprint[16]; // = {0xD3,0x24,0x3C,0x90,0x62,0xD1,0x3C,0x7C,0x88,0x3D,0x43,0x72,0x62,0xDF,0xE4,0x4A};
+	static const char* ascii_fingerprint; // = "101D5FF08087A1DF1E2CCC97EFCC8ECD";
+	static const uint8_t binary_fingerprint[16]; // = {0x10,0x1D,0x5F,0xF0,0x80,0x87,0xA1,0xDF,0x1E,0x2C,0xCC,0x97,0xEF,0xCC,0x8E,0xCD};
 
 	PlanetReport() : isDead(0), hasFight(0), experience(0)
 	{
@@ -1857,8 +1866,8 @@ class FightReport
 {
 public:
 
-	static const char* ascii_fingerprint; // = "6CC3115D23EBD16EC4F779A70C187B1A";
-	static const uint8_t binary_fingerprint[16]; // = {0x6C,0xC3,0x11,0x5D,0x23,0xEB,0xD1,0x6E,0xC4,0xF7,0x79,0xA7,0x0C,0x18,0x7B,0x1A};
+	static const char* ascii_fingerprint; // = "9B78C8507CBD6DE1C8284804C212E4AA";
+	static const uint8_t binary_fingerprint[16]; // = {0x9B,0x78,0xC8,0x50,0x7C,0xBD,0x6D,0xE1,0xC8,0x28,0x48,0x04,0xC2,0x12,0xE4,0xAA};
 
 	FightReport() : hasPlanet(0)
 	{
@@ -1930,8 +1939,8 @@ class Universe
 {
 public:
 
-	static const char* ascii_fingerprint; // = "294DDC39747D723CE7C532D1F72A8749";
-	static const uint8_t binary_fingerprint[16]; // = {0x29,0x4D,0xDC,0x39,0x74,0x7D,0x72,0x3C,0xE7,0xC5,0x32,0xD1,0xF7,0x2A,0x87,0x49};
+	static const char* ascii_fingerprint; // = "FAD1D5ECCDB303A801254988B4C491F5";
+	static const uint8_t binary_fingerprint[16]; // = {0xFA,0xD1,0xD5,0xEC,0xCD,0xB3,0x03,0xA8,0x01,0x25,0x49,0x88,0xB4,0xC4,0x91,0xF5};
 
 	Universe() : nextPlayerID(0), nextFleetID(0), time(0)
 	{
@@ -2136,8 +2145,8 @@ class FleetList
 {
 public:
 
-	static const char* ascii_fingerprint; // = "932809E387CE7B6A4739BF32C67C8AE0";
-	static const uint8_t binary_fingerprint[16]; // = {0x93,0x28,0x09,0xE3,0x87,0xCE,0x7B,0x6A,0x47,0x39,0xBF,0x32,0xC6,0x7C,0x8A,0xE0};
+	static const char* ascii_fingerprint; // = "297F30A7F38DD613BC9D8C41994AB59F";
+	static const uint8_t binary_fingerprint[16]; // = {0x29,0x7F,0x30,0xA7,0xF3,0x8D,0xD6,0x13,0xBC,0x9D,0x8C,0x41,0x99,0x4A,0xB5,0x9F};
 
 	FleetList() : fleetCount(0)
 	{
@@ -2201,8 +2210,8 @@ class PlanetList
 {
 public:
 
-	static const char* ascii_fingerprint; // = "7E51F8D743CCE1B56A428727F953D9CE";
-	static const uint8_t binary_fingerprint[16]; // = {0x7E,0x51,0xF8,0xD7,0x43,0xCC,0xE1,0xB5,0x6A,0x42,0x87,0x27,0xF9,0x53,0xD9,0xCE};
+	static const char* ascii_fingerprint; // = "DC2737107C062005AF652E92B6DEB14F";
+	static const uint8_t binary_fingerprint[16]; // = {0xDC,0x27,0x37,0x10,0x7C,0x06,0x20,0x05,0xAF,0x65,0x2E,0x92,0xB6,0xDE,0xB1,0x4F};
 
 	PlanetList() : planetCount(0)
 	{

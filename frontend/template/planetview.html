@@ -60,16 +60,33 @@
 				<caption>{% trans "Buildings" %}</caption>
 				<tr><th>{% trans "Name" %}</th><th>{% trans "Level" %}</th></tr>
 				{% for level in planet.buildingList %}
+				{% if level %}
 				<tr><td>{{forloop.counter0|buildingname}}</td><td>{{level}}</td></tr>
+				{% endif %}
 				{% endfor %}
 			</table>
+			{% if cannonCount %}
 			<table class="table table-condensed">
 				<caption>{% trans "Cannons" %}</caption>
 				<tr><th>{% trans "Name" %}</th><th>{% trans "Count" %}</th></tr>
 				{% for level in planet.cannonTab %}
+				{% if level %}
 				<tr><td>{{forloop.counter0|cannonname}}</td><td>{{level}}</td></tr>
+				{% endif %}
 				{% endfor %}
 			</table>
+			{% endif %}
+			{% if shipCount %}
+			<table class="table table-condensed">
+				<caption>{% trans "Hangar" %}</caption>
+				<tr><th>{% trans "Name" %}</th><th>{% trans "Count" %}</th></tr>
+				{% for level in planet.hangar %}
+				{% if level %}
+				<tr><td>{{forloop.counter0|shipname}}</td><td>{{level}}</td></tr>
+				{% endif %}
+				{% endfor %}
+			</table>
+			{% endif %}
 		</div>
 		<div class="col-md-5">
 			<table class="table table-condensed">

@@ -218,6 +218,7 @@ struct FleetTask
 }
 
 typedef list<i32> BuildingTab
+typedef list<i32> Fleet_ShipTab
 
 struct Planet
 {
@@ -230,12 +231,11 @@ struct Planet
 	70: list<Event> eventList
 	80: list<i32> cannonTab
 	90: string playerLogin
+	100: Fleet_ShipTab hangar
 }
 
 
 typedef i64 Fleet_ID
-
-typedef list<i32> Fleet_ShipTab
 
 struct Fleet
 {

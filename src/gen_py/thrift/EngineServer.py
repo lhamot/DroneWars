@@ -3593,11 +3593,11 @@ class getPlayers_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype167, _size164) = iprot.readListBegin()
-          for _i168 in xrange(_size164):
-            _elem169 = Player()
-            _elem169.read(iprot)
-            self.success.append(_elem169)
+          (_etype174, _size171) = iprot.readListBegin()
+          for _i175 in xrange(_size171):
+            _elem176 = Player()
+            _elem176.read(iprot)
+            self.success.append(_elem176)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -3614,8 +3614,8 @@ class getPlayers_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter170 in self.success:
-        iter170.write(oprot)
+      for iter177 in self.success:
+        iter177.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -3860,11 +3860,11 @@ class getPlanet_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype174, _size171) = iprot.readListBegin()
-          for _i175 in xrange(_size171):
-            _elem176 = Planet()
-            _elem176.read(iprot)
-            self.success.append(_elem176)
+          (_etype181, _size178) = iprot.readListBegin()
+          for _i182 in xrange(_size178):
+            _elem183 = Planet()
+            _elem183.read(iprot)
+            self.success.append(_elem183)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -3881,8 +3881,8 @@ class getPlanet_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter177 in self.success:
-        iter177.write(oprot)
+      for iter184 in self.success:
+        iter184.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -4788,11 +4788,11 @@ class getPlayerEvents_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype181, _size178) = iprot.readListBegin()
-          for _i182 in xrange(_size178):
-            _elem183 = Event()
-            _elem183.read(iprot)
-            self.success.append(_elem183)
+          (_etype188, _size185) = iprot.readListBegin()
+          for _i189 in xrange(_size185):
+            _elem190 = Event()
+            _elem190.read(iprot)
+            self.success.append(_elem190)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -4809,8 +4809,8 @@ class getPlayerEvents_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter184 in self.success:
-        iter184.write(oprot)
+      for iter191 in self.success:
+        iter191.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -5047,11 +5047,11 @@ class getBuildingsInfo_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype188, _size185) = iprot.readListBegin()
-          for _i189 in xrange(_size185):
-            _elem190 = Building()
-            _elem190.read(iprot)
-            self.success.append(_elem190)
+          (_etype195, _size192) = iprot.readListBegin()
+          for _i196 in xrange(_size192):
+            _elem197 = Building()
+            _elem197.read(iprot)
+            self.success.append(_elem197)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -5068,8 +5068,8 @@ class getBuildingsInfo_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter191 in self.success:
-        iter191.write(oprot)
+      for iter198 in self.success:
+        iter198.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -5157,11 +5157,11 @@ class getCannonsInfo_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype195, _size192) = iprot.readListBegin()
-          for _i196 in xrange(_size192):
-            _elem197 = Cannon()
-            _elem197.read(iprot)
-            self.success.append(_elem197)
+          (_etype202, _size199) = iprot.readListBegin()
+          for _i203 in xrange(_size199):
+            _elem204 = Cannon()
+            _elem204.read(iprot)
+            self.success.append(_elem204)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -5178,8 +5178,8 @@ class getCannonsInfo_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter198 in self.success:
-        iter198.write(oprot)
+      for iter205 in self.success:
+        iter205.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -5267,11 +5267,11 @@ class getShipsInfo_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype202, _size199) = iprot.readListBegin()
-          for _i203 in xrange(_size199):
-            _elem204 = Ship()
-            _elem204.read(iprot)
-            self.success.append(_elem204)
+          (_etype209, _size206) = iprot.readListBegin()
+          for _i210 in xrange(_size206):
+            _elem211 = Ship()
+            _elem211.read(iprot)
+            self.success.append(_elem211)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -5288,8 +5288,8 @@ class getShipsInfo_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter205 in self.success:
-        iter205.write(oprot)
+      for iter212 in self.success:
+        iter212.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -5578,11 +5578,11 @@ class getMessages_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype209, _size206) = iprot.readListBegin()
-          for _i210 in xrange(_size206):
-            _elem211 = Message()
-            _elem211.read(iprot)
-            self.success.append(_elem211)
+          (_etype216, _size213) = iprot.readListBegin()
+          for _i217 in xrange(_size213):
+            _elem218 = Message()
+            _elem218.read(iprot)
+            self.success.append(_elem218)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -5599,8 +5599,8 @@ class getMessages_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter212 in self.success:
-        iter212.write(oprot)
+      for iter219 in self.success:
+        iter219.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -6243,11 +6243,11 @@ class getFriends_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype216, _size213) = iprot.readListBegin()
-          for _i217 in xrange(_size213):
-            _elem218 = Player()
-            _elem218.read(iprot)
-            self.success.append(_elem218)
+          (_etype223, _size220) = iprot.readListBegin()
+          for _i224 in xrange(_size220):
+            _elem225 = Player()
+            _elem225.read(iprot)
+            self.success.append(_elem225)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -6264,8 +6264,8 @@ class getFriends_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter219 in self.success:
-        iter219.write(oprot)
+      for iter226 in self.success:
+        iter226.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()

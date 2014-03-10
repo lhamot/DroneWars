@@ -201,6 +201,9 @@ ndw::Planet planetToThrift(Planet const& planet, Player const* player)
 	res.cannonTab.reserve(planet.cannonTab.size());
 	for(size_t value : planet.cannonTab)
 		res.cannonTab.push_back(NUMCAST(value));
+	res.hangar.reserve(planet.hangar.size());
+	for(size_t value : planet.hangar)
+		res.hangar.push_back(NUMCAST(value));
 
 	return res;
 }
