@@ -306,7 +306,8 @@ int initDroneWars(LuaTools::Engine& engine)
 	lua_State* L = engine.state();
 
 	//! @todo: ne plus avoir besoin de ca
-	Class<std::vector<Fleet const*> >(L, "FleetVector");
+	Class<std::vector<Fleet const*> >(L, "CPFleetVector");
+	Class<std::vector<Fleet> >(L, "FleetVector");
 	Class<Planet::BuildingTab>(L, "");
 	Class<Planet::CannonTab>(L, "");
 	Class<ShipTab>(L, "");

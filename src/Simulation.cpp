@@ -513,6 +513,7 @@ boost::optional<FleetAction> execFleetScript(
   PlayerCodes::ObjectMap& codeMap,
   Player const& player,
   Fleet& fleet,
+  std::vector<Fleet> const& otherFleets,
   MailBox const& mails,
   std::vector<Event>& events)
 try
@@ -532,11 +533,11 @@ try
 	if(planet)
 		action = actionFunc2.call<FleetAction>(
 		           engine, player, codeMap, events,
-		           fleet, *planet, mails);
+		           fleet, *planet, otherFleets, mails);
 	else
 		action = actionFunc2.call<FleetAction>(
 		           engine, player, codeMap, events,
-		           fleet, false, mails);
+		           fleet, false, otherFleets, mails);
 	return action;
 }
 catch(Polua::Exception const& ex)
@@ -1125,6 +1126,7 @@ TypedPtreePtr getFleetEmission(
   PlayerCodes::ObjectMap& codeMap,
   Player const& player,
   Fleet& fleet,
+  std::vector<Fleet> const& otherFleets,
   std::vector<Event>& events)
 try
 {
@@ -1142,10 +1144,10 @@ try
 	DWObject emitFunc2(emitFunc);
 	if(planet)
 		*pt = emitFunc2.call<TypedPtree>(engine, player, codeMap, events,
-		                                 fleet, *planet);
+		                                 fleet, *planet, otherFleets);
 	else
 		*pt = emitFunc2.call<TypedPtree>(engine, player, codeMap, events,
-		                                 fleet, false);
+		                                 fleet, false, otherFleets);
 	if(acceptEmitionPtree(player, *pt) == false)
 	{
 		using namespace boost::locale;
@@ -1162,6 +1164,65 @@ catch(Polua::Exception const& ex)
 {
 	addErrorMessage(codeMap, ex.what(), events);
 	return TypedPtreePtr();
+}
+
+typedef std::pair<Player::ID, TypedPtree*> PlayerData;
+typedef std::vector<PlayerData> PlayersData;
+typedef boost::multi_array<PlayersData, 3> UniverseMailBoxes;
+
+void saveFleetEmition(
+  Universe& univ_,
+  std::map<Player::ID, Player> const& playerMap,
+  ScriptTools::Engine& engine,
+  Fleet& fleet,
+  std::vector<Fleet> const& otherFleets,
+  PlayerCodeMap& codesMap,
+  std::vector<std::shared_ptr<TypedPtree> >& mailOwner,
+  UniverseMailBoxes& univMailBoxes,
+  std::vector<Event>& events
+)
+{
+	Player const& player = MAP_FIND(playerMap, fleet.playerId)->second;
+	Coord const coord = fleet.coord;
+	TypedPtreePtr pt = getFleetEmission(
+	                     univ_,
+	                     engine,
+	                     codesMap[player.id].fleetsCode,
+	                     player,
+	                     fleet,
+	                     otherFleets,
+	                     events);
+	if(!pt)
+		return;
+	int const dist = boost::numeric_cast<int>(playerEmissionRange(player));
+	if(dist == 0)
+		return;
+	mailOwner.push_back(pt);
+	auto bornedRange = [](int first, int pastLast, int bornSup)
+	{
+		typedef boost::multi_array_types::index_range range;
+		return
+		  range(std::max<int>(std::min<int>(first, pastLast), 0),
+		        std::min<int>(pastLast, bornSup));
+	};
+	auto xrange = bornedRange(
+	                coord.X - (dist - 1), coord.X + dist, Universe::MapSizeX);
+	auto yrange = bornedRange(
+	                coord.Y - (dist - 1), coord.Y + dist, Universe::MapSizeY);
+	auto zrange = bornedRange(
+	                coord.Z - (dist - 1), coord.Z + dist, Universe::MapSizeZ);
+
+	UniverseMailBoxes::index_gen indices;
+	auto myview = univMailBoxes[indices[xrange][yrange][zrange]];
+	PlayerData const playerData(player.id, pt.get());
+	for(auto slice : myview)
+	{
+		for(auto line : slice)
+		{
+			for(PlayersData& playersData : line)
+				playersData.push_back(playerData);
+		}
+	}
 }
 
 //! Excecutes les code des flottes
@@ -1213,54 +1274,38 @@ void execFleets(
 	//Excecution et stockage des émissions
 	using namespace boost;
 	std::vector<std::shared_ptr<TypedPtree> > mailOwner;
-	typedef std::pair<Player::ID, TypedPtree*> PlayerData;
-	typedef std::vector<PlayerData> PlayersData;
-	typedef boost::multi_array<PlayersData, 3> UniverseMailBoxes;
 	static UniverseMailBoxes univMailBoxes(
 	  boost::extents[Universe::MapSizeZ][Universe::MapSizeY][Universe::MapSizeX]);
 
 	size_t emitedCount = 0;
-	for(auto iter = fleetMap.begin(); iter != fleetMap.end(); ++iter)
+	std::vector<Fleet> otherFleets;
+	for(FleetCoordMap::iterator iter1 = fleetMap.begin(), iter2 = nextNot(fleetMap, iter1), end = fleetMap.end();
+	    iter1 != end;
+	    iter1 = iter2, iter2 = nextNot(fleetMap, iter1))
 	{
-		Fleet fleet = iter->second;
-		Player const& player = MAP_FIND(playerMap, fleet.playerId)->second;
-		Coord const coord = fleet.coord;
-		TypedPtreePtr pt = getFleetEmission(univ_,
-		                                    engine,
-		                                    codesMap[player.id].fleetsCode,
-		                                    player,
-		                                    fleet,
-		                                    events);
-		if(!pt)
-			continue;
-		++emitedCount;
-		int const dist = numeric_cast<int>(playerEmissionRange(player));
-		if(dist == 0)
-			continue;
-		mailOwner.push_back(pt);
-		auto bornedRange = [](int first, int pastLast, int bornSup)
+		otherFleets.clear();
+		boost::copy(
+		  make_pair(boost::next(iter1), iter2) | boost::adaptors::map_values,
+		  back_inserter(otherFleets));
+		std::vector<Fleet>::iterator otherFleetIter = otherFleets.begin();
+		auto iterPair = std::make_pair(iter1, iter2);
+		for(Fleet& fleet : iterPair | boost::adaptors::map_values)
 		{
-			typedef boost::multi_array_types::index_range range;
-			return
-			  range(std::max<int>(std::min<int>(first, pastLast), 0),
-			        std::min<int>(pastLast, bornSup));
-		};
-		auto xrange = bornedRange(
-		                coord.X - (dist - 1), coord.X + dist, Universe::MapSizeX);
-		auto yrange = bornedRange(
-		                coord.Y - (dist - 1), coord.Y + dist, Universe::MapSizeY);
-		auto zrange = bornedRange(
-		                coord.Z - (dist - 1), coord.Z + dist, Universe::MapSizeZ);
-
-		UniverseMailBoxes::index_gen indices;
-		auto myview = univMailBoxes[indices[xrange][yrange][zrange]];
-		PlayerData const playerData(player.id, pt.get());
-		for(auto slice : myview)
-		{
-			for(auto line : slice)
+			saveFleetEmition(
+			  univ_,
+			  playerMap,
+			  engine,
+			  fleet,
+			  otherFleets,
+			  codesMap,
+			  mailOwner,
+			  univMailBoxes,
+			  events);
+			++emitedCount;
+			if(otherFleetIter != otherFleets.end())
 			{
-				for(PlayersData& playersData : line)
-					playersData.push_back(playerData);
+				*otherFleetIter = fleet;
+				++otherFleetIter;
 			}
 		}
 	}
@@ -1273,31 +1318,43 @@ void execFleets(
 	};
 	std::vector<FleetAndAction> scriptInputsList;
 	scriptInputsList.reserve(fleetMap.size());
-	for(auto iter = fleetMap.begin(); iter != fleetMap.end(); ++iter)
+	for(FleetCoordMap::iterator iter1 = fleetMap.begin(), iter2 = nextNot(fleetMap, iter1), end = fleetMap.end();
+	    iter1 != end;
+	    iter1 = iter2, iter2 = nextNot(fleetMap, iter1))
 	{
-		Player const& player = MAP_FIND(playerMap, iter->second.playerId)->second;
-		Fleet scriptModifiedFleet = iter->second;
-		Coord coord = scriptModifiedFleet.coord;
-		PlayersData allMails = univMailBoxes[coord.X][coord.Y][coord.Z];
-		MailBox playerMails;
-		boost::range::copy(
-		  allMails
-		  | boost::adaptors::filtered(bind(&PlayerData::first, _1) == player.id)
-		  | boost::adaptors::transformed(bind(&PlayerData::second, _1)),
-		  std::back_inserter(playerMails));
-		boost::optional<FleetAction> action =
-		  execFleetScript(univ_,
-		                  engine,
-		                  codesMap[iter->second.playerId].fleetsCode,
-		                  player,
-		                  scriptModifiedFleet,
-		                  playerMails,
-		                  events);
-		FleetAndAction fleetAndAction =
+		otherFleets.clear();
+		boost::copy(
+		  make_pair(boost::next(iter1), iter2) | boost::adaptors::map_values,
+		  back_inserter(otherFleets));
+		std::vector<Fleet>::iterator otherFleetIter = otherFleets.begin();
+		auto iterPair = std::make_pair(iter1, iter2);
+		for(Fleet& fleet : iterPair | boost::adaptors::map_values)
 		{
-			&iter->second, scriptModifiedFleet, action
-		};
-		scriptInputsList.push_back(fleetAndAction);
+			Player const& player = MAP_FIND(playerMap, fleet.playerId)->second;
+			Fleet scriptModifiedFleet = fleet;
+			Coord coord = scriptModifiedFleet.coord;
+			PlayersData allMails = univMailBoxes[coord.X][coord.Y][coord.Z];
+			MailBox playerMails;
+			boost::range::copy(
+			  allMails
+			  | boost::adaptors::filtered(bind(&PlayerData::first, _1) == player.id)
+			  | boost::adaptors::transformed(bind(&PlayerData::second, _1)),
+			  std::back_inserter(playerMails));
+			boost::optional<FleetAction> action =
+			  execFleetScript(univ_,
+			                  engine,
+			                  codesMap[fleet.playerId].fleetsCode,
+			                  player,
+			                  scriptModifiedFleet,
+			                  otherFleets,
+			                  playerMails,
+			                  events);
+			FleetAndAction fleetAndAction =
+			{
+				&fleet, scriptModifiedFleet, action
+			};
+			scriptInputsList.push_back(fleetAndAction);
+		}
 	}
 
 	for(FleetAndAction& fleetAndAction : scriptInputsList)

@@ -32,7 +32,7 @@ struct PlayerCodes
 //! Tableau associatif [Player::ID] => PlayerCodes
 typedef std::unordered_map<Player::ID, PlayerCodes> PlayerCodeMap;
 //! Tab asso [Coord] => Fleets, authaurisant plusieur flotte pour la mème coord
-typedef std::unordered_multimap<Coord, Fleet> FleetCoordMap;
+typedef std::multimap<Coord, Fleet, CompCoord> FleetCoordMap;
 
 
 #endif //__NDW_PLAYERCODES__

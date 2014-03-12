@@ -180,7 +180,7 @@ struct Player
 	ID id;                    //!< Identifiant unique
 	std::string login;        //!< Login
 	Coord mainPlanet;         //!< Coordonées de la planète principale
-	uint64_t score;           //!< Scroe
+	uint64_t score;           //!< Score
 	Alliance::ID allianceID;  //!< ID de l'alliance, ou Alliance::NoID
 	std::string allianceName; //!< Nom de l'alliance (Pas stoké dans le SGBD)
 	uint32_t experience;      //!< Experience
