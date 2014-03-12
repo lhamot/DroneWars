@@ -154,8 +154,8 @@ try : connectionInfo_(connectionInfo)
 		            "  planetCoordY INTEGER NOT NULL,"
 		            "  planetCoordZ INTEGER NOT NULL,"
 		            "  allianceID INTEGER,"
-		            "  experience INTEGER NOT NULL,"
-		            "  skillpoints INTEGER NOT NULL,"
+		            "  experience BIGINT NOT NULL,"
+		            "  skillpoints BIGINT NOT NULL,"
 		            "  skilltab VARCHAR(200) NOT NULL"
 		            //"  FOREIGN KEY (allianceID) REFERENCES Alliance(id) "
 		            ")", now;

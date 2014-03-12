@@ -904,8 +904,8 @@ void swap(Skill& a, Skill& b)
 	swap(a.__isset, b.__isset);
 }
 
-const char* Player::ascii_fingerprint = "64B471615BF906C4C2CA8F68889EB964";
-const uint8_t Player::binary_fingerprint[16] = {0x64, 0xB4, 0x71, 0x61, 0x5B, 0xF9, 0x06, 0xC4, 0xC2, 0xCA, 0x8F, 0x68, 0x88, 0x9E, 0xB9, 0x64};
+const char* Player::ascii_fingerprint = "626A10876AEA8D693715A58F96837EBA";
+const uint8_t Player::binary_fingerprint[16] = {0x62, 0x6A, 0x10, 0x87, 0x6A, 0xEA, 0x8D, 0x69, 0x37, 0x15, 0xA5, 0x8F, 0x96, 0x83, 0x7E, 0xBA};
 
 uint32_t Player::read(::apache::thrift::protocol::TProtocol* iprot)
 {
@@ -1044,9 +1044,9 @@ uint32_t Player::read(::apache::thrift::protocol::TProtocol* iprot)
 			}
 			break;
 		case 110:
-			if(ftype == ::apache::thrift::protocol::T_I32)
+			if(ftype == ::apache::thrift::protocol::T_I64)
 			{
-				xfer += iprot->readI32(this->experience);
+				xfer += iprot->readI64(this->experience);
 				this->__isset.experience = true;
 			}
 			else
@@ -1055,9 +1055,9 @@ uint32_t Player::read(::apache::thrift::protocol::TProtocol* iprot)
 			}
 			break;
 		case 120:
-			if(ftype == ::apache::thrift::protocol::T_I32)
+			if(ftype == ::apache::thrift::protocol::T_I64)
 			{
-				xfer += iprot->readI32(this->skillpoints);
+				xfer += iprot->readI64(this->skillpoints);
 				this->__isset.skillpoints = true;
 			}
 			else
@@ -1172,12 +1172,12 @@ uint32_t Player::write(::apache::thrift::protocol::TProtocol* oprot) const
 	xfer += oprot->writeI32(this->allianceID);
 	xfer += oprot->writeFieldEnd();
 
-	xfer += oprot->writeFieldBegin("experience", ::apache::thrift::protocol::T_I32, 110);
-	xfer += oprot->writeI32(this->experience);
+	xfer += oprot->writeFieldBegin("experience", ::apache::thrift::protocol::T_I64, 110);
+	xfer += oprot->writeI64(this->experience);
 	xfer += oprot->writeFieldEnd();
 
-	xfer += oprot->writeFieldBegin("skillpoints", ::apache::thrift::protocol::T_I32, 120);
-	xfer += oprot->writeI32(this->skillpoints);
+	xfer += oprot->writeFieldBegin("skillpoints", ::apache::thrift::protocol::T_I64, 120);
+	xfer += oprot->writeI64(this->skillpoints);
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldBegin("skilltab", ::apache::thrift::protocol::T_LIST, 130);
@@ -3257,8 +3257,8 @@ void swap(FightReport& a, FightReport& b)
 	swap(a.__isset, b.__isset);
 }
 
-const char* Universe::ascii_fingerprint = "FAD1D5ECCDB303A801254988B4C491F5";
-const uint8_t Universe::binary_fingerprint[16] = {0xFA, 0xD1, 0xD5, 0xEC, 0xCD, 0xB3, 0x03, 0xA8, 0x01, 0x25, 0x49, 0x88, 0xB4, 0xC4, 0x91, 0xF5};
+const char* Universe::ascii_fingerprint = "3A85F16C28E3EE08D7F6D2CB095CEE68";
+const uint8_t Universe::binary_fingerprint[16] = {0x3A, 0x85, 0xF1, 0x6C, 0x28, 0xE3, 0xEE, 0x08, 0xD7, 0xF6, 0xD2, 0xCB, 0x09, 0x5C, 0xEE, 0x68};
 
 uint32_t Universe::read(::apache::thrift::protocol::TProtocol* iprot)
 {
@@ -3518,8 +3518,8 @@ void swap(Universe& a, Universe& b)
 	swap(a.__isset, b.__isset);
 }
 
-const char* OptionalPlayer::ascii_fingerprint = "17C2EF8A9D4865175686C2BFD9C552DF";
-const uint8_t OptionalPlayer::binary_fingerprint[16] = {0x17, 0xC2, 0xEF, 0x8A, 0x9D, 0x48, 0x65, 0x17, 0x56, 0x86, 0xC2, 0xBF, 0xD9, 0xC5, 0x52, 0xDF};
+const char* OptionalPlayer::ascii_fingerprint = "301875F38C300BE8859F93153862C87A";
+const uint8_t OptionalPlayer::binary_fingerprint[16] = {0x30, 0x18, 0x75, 0xF3, 0x8C, 0x30, 0x0B, 0xE8, 0x85, 0x9F, 0x93, 0x15, 0x38, 0x62, 0xC8, 0x7A};
 
 uint32_t OptionalPlayer::read(::apache::thrift::protocol::TProtocol* iprot)
 {
@@ -4085,8 +4085,8 @@ void swap(Message& a, Message& b)
 	swap(a.__isset, b.__isset);
 }
 
-const char* FriendshipRequests::ascii_fingerprint = "06E54E4443103AB6A2070D2977E57329";
-const uint8_t FriendshipRequests::binary_fingerprint[16] = {0x06, 0xE5, 0x4E, 0x44, 0x43, 0x10, 0x3A, 0xB6, 0xA2, 0x07, 0x0D, 0x29, 0x77, 0xE5, 0x73, 0x29};
+const char* FriendshipRequests::ascii_fingerprint = "6FEEBE81F97BC79B5C1335C39ABB11B8";
+const uint8_t FriendshipRequests::binary_fingerprint[16] = {0x6F, 0xEE, 0xBE, 0x81, 0xF9, 0x7B, 0xC7, 0x9B, 0x5C, 0x13, 0x35, 0xC3, 0x9A, 0xBB, 0x11, 0xB8};
 
 uint32_t FriendshipRequests::read(::apache::thrift::protocol::TProtocol* iprot)
 {

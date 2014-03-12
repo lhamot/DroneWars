@@ -645,10 +645,10 @@ class Player
 {
 public:
 
-	static const char* ascii_fingerprint; // = "64B471615BF906C4C2CA8F68889EB964";
-	static const uint8_t binary_fingerprint[16]; // = {0x64,0xB4,0x71,0x61,0x5B,0xF9,0x06,0xC4,0xC2,0xCA,0x8F,0x68,0x88,0x9E,0xB9,0x64};
+	static const char* ascii_fingerprint; // = "626A10876AEA8D693715A58F96837EBA";
+	static const uint8_t binary_fingerprint[16]; // = {0x62,0x6A,0x10,0x87,0x6A,0xEA,0x8D,0x69,0x37,0x15,0xA5,0x8F,0x96,0x83,0x7E,0xBA};
 
-	Player() : id(0), login(), password(), score(0LL), allianceID(0), experience(0), skillpoints(0), allianceName(), unreadMessagesCount(0)
+	Player() : id(0), login(), password(), score(0LL), allianceID(0), experience(0LL), skillpoints(0LL), allianceName(), unreadMessagesCount(0)
 	{
 	}
 
@@ -663,8 +663,8 @@ public:
 	Coord mainPlanet;
 	int64_t score;
 	Alliance_ID allianceID;
-	int32_t experience;
-	int32_t skillpoints;
+	int64_t experience;
+	int64_t skillpoints;
 	Player_SkillTab skilltab;
 	std::string allianceName;
 	int32_t unreadMessagesCount;
@@ -716,12 +716,12 @@ public:
 		allianceID = val;
 	}
 
-	void __set_experience(const int32_t val)
+	void __set_experience(const int64_t val)
 	{
 		experience = val;
 	}
 
-	void __set_skillpoints(const int32_t val)
+	void __set_skillpoints(const int64_t val)
 	{
 		skillpoints = val;
 	}
@@ -1939,8 +1939,8 @@ class Universe
 {
 public:
 
-	static const char* ascii_fingerprint; // = "FAD1D5ECCDB303A801254988B4C491F5";
-	static const uint8_t binary_fingerprint[16]; // = {0xFA,0xD1,0xD5,0xEC,0xCD,0xB3,0x03,0xA8,0x01,0x25,0x49,0x88,0xB4,0xC4,0x91,0xF5};
+	static const char* ascii_fingerprint; // = "3A85F16C28E3EE08D7F6D2CB095CEE68";
+	static const uint8_t binary_fingerprint[16]; // = {0x3A,0x85,0xF1,0x6C,0x28,0xE3,0xEE,0x08,0xD7,0xF6,0xD2,0xCB,0x09,0x5C,0xEE,0x68};
 
 	Universe() : nextPlayerID(0), nextFleetID(0), time(0)
 	{
@@ -2035,8 +2035,8 @@ class OptionalPlayer
 {
 public:
 
-	static const char* ascii_fingerprint; // = "17C2EF8A9D4865175686C2BFD9C552DF";
-	static const uint8_t binary_fingerprint[16]; // = {0x17,0xC2,0xEF,0x8A,0x9D,0x48,0x65,0x17,0x56,0x86,0xC2,0xBF,0xD9,0xC5,0x52,0xDF};
+	static const char* ascii_fingerprint; // = "301875F38C300BE8859F93153862C87A";
+	static const uint8_t binary_fingerprint[16]; // = {0x30,0x18,0x75,0xF3,0x8C,0x30,0x0B,0xE8,0x85,0x9F,0x93,0x15,0x38,0x62,0xC8,0x7A};
 
 	OptionalPlayer()
 	{
@@ -2369,8 +2369,8 @@ class FriendshipRequests
 {
 public:
 
-	static const char* ascii_fingerprint; // = "06E54E4443103AB6A2070D2977E57329";
-	static const uint8_t binary_fingerprint[16]; // = {0x06,0xE5,0x4E,0x44,0x43,0x10,0x3A,0xB6,0xA2,0x07,0x0D,0x29,0x77,0xE5,0x73,0x29};
+	static const char* ascii_fingerprint; // = "6FEEBE81F97BC79B5C1335C39ABB11B8";
+	static const uint8_t binary_fingerprint[16]; // = {0x6F,0xEE,0xBE,0x81,0xF9,0x7B,0xC7,0x9B,0x5C,0x13,0x35,0xC3,0x9A,0xBB,0x11,0xB8};
 
 	FriendshipRequests()
 	{

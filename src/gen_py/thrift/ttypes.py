@@ -1212,7 +1212,7 @@ class Player:
     None, # 107
     None, # 108
     None, # 109
-    (110, TType.I32, 'experience', None, 0, ), # 110
+    (110, TType.I64, 'experience', None, 0, ), # 110
     None, # 111
     None, # 112
     None, # 113
@@ -1222,7 +1222,7 @@ class Player:
     None, # 117
     None, # 118
     None, # 119
-    (120, TType.I32, 'skillpoints', None, 0, ), # 120
+    (120, TType.I64, 'skillpoints', None, 0, ), # 120
     None, # 121
     None, # 122
     None, # 123
@@ -1355,13 +1355,13 @@ class Player:
         else:
           iprot.skip(ftype)
       elif fid == 110:
-        if ftype == TType.I32:
-          self.experience = iprot.readI32();
+        if ftype == TType.I64:
+          self.experience = iprot.readI64();
         else:
           iprot.skip(ftype)
       elif fid == 120:
-        if ftype == TType.I32:
-          self.skillpoints = iprot.readI32();
+        if ftype == TType.I64:
+          self.skillpoints = iprot.readI64();
         else:
           iprot.skip(ftype)
       elif fid == 130:
@@ -1436,12 +1436,12 @@ class Player:
       oprot.writeI32(self.allianceID)
       oprot.writeFieldEnd()
     if self.experience is not None:
-      oprot.writeFieldBegin('experience', TType.I32, 110)
-      oprot.writeI32(self.experience)
+      oprot.writeFieldBegin('experience', TType.I64, 110)
+      oprot.writeI64(self.experience)
       oprot.writeFieldEnd()
     if self.skillpoints is not None:
-      oprot.writeFieldBegin('skillpoints', TType.I32, 120)
-      oprot.writeI32(self.skillpoints)
+      oprot.writeFieldBegin('skillpoints', TType.I64, 120)
+      oprot.writeI64(self.skillpoints)
       oprot.writeFieldEnd()
     if self.skilltab is not None:
       oprot.writeFieldBegin('skilltab', TType.LIST, 130)
