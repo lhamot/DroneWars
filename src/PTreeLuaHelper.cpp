@@ -100,6 +100,23 @@ int ptree_add(lua_State* L)
 	});
 }
 
+int ptree_add_child(lua_State* L)
+{
+	TypedPtree& memory = Polua::fromstackAny<TypedPtree>(L, 1);
+	int const nbarg = lua_gettop(L) - 1;
+	if(nbarg != 2)
+		return luaL_error(
+		         L, "memory.add_child() expect two argument but got %d", nbarg);
+	int const keytype = lua_type(L, -2);
+	if(keytype != LUA_TSTRING)
+		return luaL_error(L,
+		                  "memory.add_child() expect a string but got a %s",
+		                  lua_typename(L, keytype));
+	std::string const path = lua_tostring(L, -2);
+	TypedPtree const& child = Polua::fromstackAny<TypedPtree>(L, -1);
+	Polua::pushPers(L, memory.add_child(path, child));
+	return 1;
+}
 
 int ptree_put_value(lua_State* L)
 {

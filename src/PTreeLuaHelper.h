@@ -24,6 +24,10 @@ int ptree_put(lua_State* L);
 //! @return 0
 int ptree_add(lua_State* L);
 
+//! @brief lua_CFunction pour la function TypePtree::add
+//! @return 1
+int ptree_add_child(lua_State* L);
+
 //! @brief lua_CFunction pour la function TypePtree::put_value
 //! @return 0
 int ptree_put_value(lua_State* L);
