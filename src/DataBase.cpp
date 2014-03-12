@@ -149,7 +149,7 @@ try : connectionInfo_(connectionInfo)
 		            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
 		            "  login VARCHAR(30) UNIQUE NOT NULL,"
 		            "  password VARCHAR(40) NOT NULL,"
-		            "  score INTEGER NOT NULL,"
+		            "  score BIGINT NOT NULL,"
 		            "  planetCoordX INTEGER NOT NULL,"
 		            "  planetCoordY INTEGER NOT NULL,"
 		            "  planetCoordZ INTEGER NOT NULL,"
