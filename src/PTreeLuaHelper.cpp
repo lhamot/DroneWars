@@ -80,6 +80,23 @@ int ptree_get_child(lua_State* L)
 	return 1;
 }
 
+int ptree_erase(lua_State* L)
+{
+	TypedPtree& memory = Polua::fromstackAny<TypedPtree>(L, 1);
+	int const nbarg = lua_gettop(L) - 1;
+	if(nbarg != 1)
+		return luaL_error(L,
+		                  "memory.get_child() expect one argument but got %d", nbarg);
+	int const keytype = lua_type(L, -1);
+	if(keytype != LUA_TSTRING)
+		return luaL_error(L,
+		                  "memory.get_child() expect a string but got a %s",
+		                  lua_typename(L, keytype));
+	std::string const name = lua_tostring(L, -1);
+	Polua::pushTemp(L, memory.erase(name));
+	return 1;
+}
+
 
 template<typename Putter>
 int ptree_putadd(lua_State* L, Putter putter)

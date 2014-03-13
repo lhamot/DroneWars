@@ -457,6 +457,7 @@ int initDroneWars(LuaTools::Engine& engine)
 	.methode("get", &ptree_get)
 	.methode("get_value", &ptree_get_value)
 	.methode("put_value", &ptree_put_value)
+	.methode("erase", &ptree_erase)
 	.methode("full_count", &countPtreeItem)
 	.toString(&ptree_tostring)
 	;

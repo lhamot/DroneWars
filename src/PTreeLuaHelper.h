@@ -44,6 +44,11 @@ TypedPtree& ptree_get_child_(TypedPtree& pt, std::string const& name);
 //! @return 1
 int ptree_get_child(lua_State* L);
 
+//! lua_CFunction qui Supprime tout les enfants direct qui ont la clef donné,
+//!   et retourne le nombre
+//! @return 1
+int ptree_erase(lua_State* L);
+
 
 //! Ajoute une valeur dans un TypedPtree en utilisant le Putter donné
 //! @remark Un lua_CFunction peut utiliser cette fonction
