@@ -32,11 +32,14 @@ int ptree_add_child(lua_State* L);
 //! @return 0
 int ptree_put_value(lua_State* L);
 
+TypedPtree& ptree_get_child_(TypedPtree& pt, std::string const& name);
+
 //! @brief lua_CFunction pour la function TypePtree::get_child_optional
 //! @remark Contrairement a TypePtree::get_child_optional,
 //!         Quand le child n'existe pas, il est crée.
 //! @return 1
-TypedPtree& ptree_get_child(TypedPtree& pt, std::string const& name);
+int ptree_get_child(lua_State* L);
+
 
 //! Ajoute une valeur dans un TypedPtree en utilisant le Putter donné
 //! @remark Un lua_CFunction peut utiliser cette fonction
@@ -90,17 +93,17 @@ struct Indexer<TypedPtree>
 		case LUA_TNUMBER:
 		{
 			double const path = lua_tonumber(L, -1);
-			pushPers(L, ptree_get_child(*pt, LEXICAL_CAST(std::string, path)));
+			pushPers(L, ptree_get_child_(*pt, LEXICAL_CAST(std::string, path)));
 			return 1;
 		}
 		case LUA_TBOOLEAN:
 		{
 			int const path = lua_toboolean(L, -1);
-			pushPers(L, ptree_get_child(*pt, LEXICAL_CAST(std::string, path)));
+			pushPers(L, ptree_get_child_(*pt, LEXICAL_CAST(std::string, path)));
 			return 1;
 		}
 		case LUA_TSTRING:
-			pushPers(L, ptree_get_child(*pt, lua_tostring(L, -1)));
+			pushPers(L, ptree_get_child_(*pt, lua_tostring(L, -1)));
 			return 1;
 		default:
 			return luaL_error(L,
