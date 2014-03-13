@@ -1138,12 +1138,8 @@ try
 	prepareLuaCall(univ_, emitFunc, player);
 	TypedPtreePtr pt = make_shared<TypedPtree>();
 	DWObject emitFunc2(emitFunc);
-	if(planet)
-		*pt = emitFunc2.call<TypedPtree>(engine, player, codeMap, events,
-		                                 fleet, *planet, otherFleets);
-	else
-		*pt = emitFunc2.call<TypedPtree>(engine, player, codeMap, events,
-		                                 fleet, false, otherFleets);
+	*pt = emitFunc2.call<TypedPtree>(engine, player, codeMap, events,
+	                                 fleet, planet, otherFleets);
 	if(acceptEmitionPtree(player, *pt) == false)
 	{
 		using namespace boost::locale;
