@@ -275,7 +275,8 @@ int coord_tostring(lua_State* L)
 {
 	Coord const& coord = Polua::fromstackAny<Coord>(L, 1);
 	std::string const& path =
-	  str(boost::format("Coord(X=%1%, Y=%2%, Z=%3%)") % coord.X % coord.Y % coord.Z);
+	  str(boost::format("Coord(X=%1%, Y=%2%, Z=%3%)") %
+	      int(coord.X) % int(coord.Y) % int(coord.Z));
 	lua_pushstring(L, path.data());
 	return 1;
 }
