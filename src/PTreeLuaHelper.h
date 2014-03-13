@@ -17,16 +17,20 @@ int ptree_get(lua_State* L);
 int ptree_get_value(lua_State* L);
 
 //! @brief lua_CFunction pour la function TypePtree::put
-//! @return 0
+//! @return 1
 int ptree_put(lua_State* L);
 
 //! @brief lua_CFunction pour la function TypePtree::add
-//! @return 0
+//! @return 1
 int ptree_add(lua_State* L);
 
-//! @brief lua_CFunction pour la function TypePtree::add
+//! @brief lua_CFunction pour la function TypePtree::add_child
 //! @return 1
 int ptree_add_child(lua_State* L);
+
+//! @brief lua_CFunction pour la function TypePtree::put_child
+//! @return 1
+int ptree_put_child(lua_State* L);
 
 //! @brief lua_CFunction pour la function TypePtree::put_value
 //! @return 0
@@ -52,16 +56,16 @@ int addValToPtree(lua_State* L, TypedPtree& memory, Putter putter)
 	switch(valuetype)
 	{
 	case LUA_TNIL:
-		putter(memory, Any());
+		return putter(memory, Any());
 		break;
 	case LUA_TNUMBER:
-		putter(memory, Any(lua_tonumber(L, -1)));
+		return putter(memory, Any(lua_tonumber(L, -1)));
 		break;
 	case LUA_TBOOLEAN:
-		putter(memory, Any(lua_toboolean(L, -1) != 0));
+		return putter(memory, Any(lua_toboolean(L, -1) != 0));
 		break;
 	case LUA_TSTRING:
-		putter(memory, Any(std::string(lua_tostring(L, -1))));
+		return putter(memory, Any(std::string(lua_tostring(L, -1))));
 		break;
 	case LUA_TTABLE:
 	case LUA_TFUNCTION:
@@ -73,7 +77,7 @@ int addValToPtree(lua_State* L, TypedPtree& memory, Putter putter)
 		                  lua_typename(L, valuetype));
 		break;
 	}
-	return 0;
+	BOOST_THROW_EXCEPTION(std::logic_error("Bad lua_type"));
 }
 
 namespace Polua
@@ -144,7 +148,8 @@ private:
 		TypedPtree* pt = userdata_fromstack<TypedPtree>(L, 1);
 		return addValToPtree(L, *pt, [&](TypedPtree & pt, Any const & value)
 		{
-			pt.put(key, value);
+			Polua::pushPers(L, pt.put(key, value));
+			return 1;
 		});
 	}
 };

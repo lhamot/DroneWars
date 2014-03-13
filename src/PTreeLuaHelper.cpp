@@ -74,7 +74,7 @@ int ptree_get_child(lua_State* L)
 	std::string const name = lua_tostring(L, -1);
 	boost::optional<TypedPtree&> childOpt = memory.get_child_optional(name);
 	if(childOpt == boost::none)
-		Polua::pushPers(L, memory.add_child(name, TypedPtree()));
+		lua_pushnil(L);
 	else
 		Polua::pushPers(L, *childOpt);
 	return 1;
@@ -99,25 +99,26 @@ int ptree_putadd(lua_State* L, Putter putter)
 	                     (TypedPtree & memory, Any const & value)
 	{
 		putter(memory, path, value);
+		return 1;
 	});
 }
 
 
 int ptree_put(lua_State* L)
 {
-	return ptree_putadd(L, []
+	return ptree_putadd(L, [&]
 	                    (TypedPtree & pt, std::string const & name, Any const & val)
 	{
-		pt.put(name, val);
+		Polua::pushPers(L, pt.put(name, val));
 	});
 }
 
 int ptree_add(lua_State* L)
 {
-	return ptree_putadd(L, []
+	return ptree_putadd(L, [&]
 	                    (TypedPtree & pt, std::string const & name, Any const & val)
 	{
-		pt.add(name, val);
+		Polua::pushPers(L, pt.add(name, val));
 	});
 }
 
@@ -139,6 +140,24 @@ int ptree_add_child(lua_State* L)
 	return 1;
 }
 
+int ptree_put_child(lua_State* L)
+{
+	TypedPtree& memory = Polua::fromstackAny<TypedPtree>(L, 1);
+	int const nbarg = lua_gettop(L) - 1;
+	if(nbarg != 2)
+		return luaL_error(
+		         L, "memory.put_child() expect two argument but got %d", nbarg);
+	int const keytype = lua_type(L, -2);
+	if(keytype != LUA_TSTRING)
+		return luaL_error(L,
+		                  "memory.put_child() expect a string but got a %s",
+		                  lua_typename(L, keytype));
+	std::string const path = lua_tostring(L, -2);
+	TypedPtree const& child = Polua::fromstackAny<TypedPtree>(L, -1);
+	Polua::pushPers(L, memory.put_child(path, child));
+	return 1;
+}
+
 int ptree_put_value(lua_State* L)
 {
 	TypedPtree& memory = Polua::fromstackAny<TypedPtree>(L, 1);
@@ -150,6 +169,7 @@ int ptree_put_value(lua_State* L)
 	                     (TypedPtree & pt, Any const & value)
 	{
 		pt.put_value(value);
+		return 0;
 	});
 }
 
