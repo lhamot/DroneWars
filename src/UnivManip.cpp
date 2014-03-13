@@ -583,8 +583,7 @@ void execTask(Universe& univ,
               Player const& player,
               Fleet& fleet,
               FleetTask& task,
-              std::vector<Event>& events,
-              std::map<Player::ID, size_t> const& playersPlanetCount)
+              std::vector<Event>& events)
 {
 	if((task.lauchTime + task.duration) <= univ.roundCount)
 	{
@@ -613,9 +612,7 @@ void execTask(Universe& univ,
 			Planet& planet = MAP_FIND(univ.planetMap, task.position)->second;
 			if(planet.playerId == Player::NoId && fleet.shipList[Ship::Queen])
 			{
-				size_t const planetCount =
-				  MAP_FIND(playersPlanetCount, fleet.playerId)->second;
-				if(planetCount < getMaxPlanetCount(player))
+				if(player.planetCount < getMaxPlanetCount(player))
 				{
 					Event ev = Event(
 					             fleet.playerId,
@@ -687,7 +684,6 @@ void execBuilding(Planet& planet, Building::Enum type, size_t level)
 
 //! Simule la vie de la planète durant un round
 void planetRound(Player const& player,
-                 size_t const playerFleetCount,
                  Universe& univ,
                  Planet& planet,
                  std::vector<Event>& events)
@@ -696,7 +692,7 @@ void planetRound(Player const& player,
 		execTask(univ, planet, task, events);
 
 	size_t const maxFleetCount = getMaxFleetCount(player);
-	if(playerFleetCount < maxFleetCount && boost::accumulate(planet.hangar, 0))
+	if(player.fleetCount < maxFleetCount && boost::accumulate(planet.hangar, 0))
 	{
 		Fleet newFleet(univ.nextFleetID++,
 		               planet.playerId,
@@ -731,11 +727,10 @@ void planetRound(Player const& player,
 void fleetRound(Universe& univ,
                 Player const& player,
                 Fleet& fleet,
-                std::vector<Event>& events,
-                std::map<Player::ID, size_t> const& playersPlanetCount)
+                std::vector<Event>& events)
 {
 	for(FleetTask& task : fleet.taskQueue)
-		execTask(univ, player, fleet, task, events, playersPlanetCount);
+		execTask(univ, player, fleet, task, events);
 
 	remove_erase_if(fleet.taskQueue, boost::bind(&FleetTask::expired, _1));
 

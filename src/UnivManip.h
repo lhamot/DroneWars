@@ -43,7 +43,6 @@ void stopTask(Planet& planet,
 //! Gere l'écoulement du temps sur la planète.
 //! Peut modifier la liste dse flotte et des planètes
 void planetRound(Player const& player,
-                 size_t const playerFleetCount,
                  Universe& univ,
                  Planet& planet,
                  std::vector<Event>& events);
@@ -53,8 +52,7 @@ void planetRound(Player const& player,
 void fleetRound(Universe& univ,
                 Player const& player,
                 Fleet& fleet,
-                std::vector<Event>& events,
-                std::map<Player::ID, size_t> const& playersPlanetCount);
+                std::vector<Event>& events);
 
 void gather(Fleet& fleet, Fleet const& otherFleet);
 

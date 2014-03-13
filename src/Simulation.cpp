@@ -552,7 +552,6 @@ void applyFleetScript(Universe& univ_,
                       Fleet& scriptModifiedFleet,
                       Fleet& fleet,
                       FleetAction const& action,
-                      std::map<Player::ID, size_t>& playersPlanetCount,
                       std::vector<Event>& events)
 {
 	scriptModifiedFleet.memory.swap(fleet.memory);
@@ -584,7 +583,7 @@ void applyFleetScript(Universe& univ_,
 	{
 		Player const& player = MAP_FIND(playerMap, fleet.playerId)->second;
 		if(planet &&
-		   canColonize(player, fleet, *planet, playersPlanetCount[player.id]))
+		   canColonize(player, fleet, *planet, player.planetCount))
 			addTaskColonize(fleet, univ_.roundCount, *planet);
 		break;
 	}
@@ -641,6 +640,19 @@ std::map<Alliance::ID, Alliance> getAllianceMap(DataBase const& database)
 }
 
 //! Simule le round pour toute les planètes
+void execPlanetTasks(Universe& univ_,
+                     std::map<Player::ID, Player> const& playerMap,
+                     std::vector<Event>& events)
+{
+	for(Planet& planet : univ_.planetMap | boost::adaptors::map_values)
+		if(planet.playerId != Player::NoId)
+			planetRound(playerMap.at(planet.playerId),
+			            univ_,
+			            planet,
+			            events);
+}
+
+//! Excecute applique les scripts des planetes
 void execPlanets(Universe& univ_,
                  ScriptTools::Engine& engine,
                  std::map<Player::ID, Player> const& playerMap,
@@ -649,25 +661,9 @@ void execPlanets(Universe& univ_,
 {
 	LOG4CPLUS_TRACE(logger, "enter");
 
-	std::map<Player::ID, size_t> playerFleetCounts;
-
 	FleetCoordMap fleetMap;
 	for(Fleet const& fleet : univ_.fleetMap | boost::adaptors::map_values)
-	{
 		fleetMap.insert(make_pair(fleet.coord, fleet));
-		playerFleetCounts[fleet.playerId] += 1;
-	}
-
-	//Les planètes
-	{
-		for(Planet& planet : univ_.planetMap | boost::adaptors::map_values)
-			if(planet.playerId != Player::NoId)
-				planetRound(playerMap.at(planet.playerId),
-				            playerFleetCounts[planet.playerId],
-				            univ_,
-				            planet,
-				            events);
-	}
 
 	struct ScriptInputs
 	{
@@ -1225,6 +1221,19 @@ void saveFleetEmition(
 	}
 }
 
+void execFleetTasks(
+  Universe& univ_,
+  std::map<Player::ID, Player> const& playerMap,
+  std::vector<Event>& events
+)
+{
+	for(Fleet& fleet : univ_.fleetMap | boost::adaptors::map_values)
+	{
+		Player const& player = MAP_FIND(playerMap, fleet.playerId)->second;
+		fleetRound(univ_, player, fleet, events);
+	}
+}
+
 //! Excecutes les code des flottes
 void execFleets(
   Universe& univ_,
@@ -1238,10 +1247,6 @@ void execFleets(
 	FleetCoordMap fleetMap;
 	for(Fleet& fleet : univ_.fleetMap | boost::adaptors::map_values)
 		fleetMap.insert(make_pair(fleet.coord, fleet));
-
-	std::map<Player::ID, size_t> playersPlanetCount;
-	for(Planet const& planet : univ_.planetMap | boost::adaptors::map_values)
-		++playersPlanetCount[planet.playerId];
 
 	for(auto iter = fleetMap.begin(); iter != fleetMap.end(); ++iter)
 	{
@@ -1262,7 +1267,6 @@ void execFleets(
 		             planet,
 		             fleetMap,
 		             events);
-		fleetRound(univ_, player, fleet, events, playersPlanetCount);
 	}
 
 	map_remove_erase_if(univ_.fleetMap, []
@@ -1365,7 +1369,6 @@ void execFleets(
 			                 fleetAndAction.scriptModifiedFleet,
 			                 *fleetAndAction.fleet,
 			                 *fleetAndAction.action,
-			                 playersPlanetCount,
 			                 events);
 	}
 
@@ -1450,14 +1453,22 @@ try
 	//! Rechargement des codes flote/planet des joueurs dont le code a été changé
 	updatePlayersCode(scriptEngine, codesMap, events);
 
+	// Excecution des taches des planet
+	execPlanetTasks(univCopy, playerMap, events);
+
+	// Excecution des taches des flottes (déplacement etc...)
+	execFleetTasks(univCopy, playerMap, events);
+
 	//! Excecution du code des planetes(modifie l'univers)
 	execPlanets(univCopy, scriptEngine, playerMap, codesMap, events);
 
-	//! Les combats
-	execFights(univCopy, scriptEngine, database_, playerMap, codesMap, events);
-
+	// execFleets Avant les combats
+	//   pour que les flottes puissent comuniquer avant de mourir
 	//! Les flottes
 	execFleets(univCopy, playerMap, scriptEngine, codesMap, events);
+
+	//! Les combats
+	execFights(univCopy, scriptEngine, database_, playerMap, codesMap, events);
 
 	//! Supprime evenement trop vieux dans les Player et les Rapport plus utile
 	{
