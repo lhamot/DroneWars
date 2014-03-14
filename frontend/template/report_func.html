@@ -7,6 +7,8 @@
     			<button type="button" class="close" data-dismiss="alert">&times;</button>
     			{% trans "No blackbox was found" %}
     		</div>
+    		{% else %}
+    		<h2>{% trans "Coordinate" %}({{fight_report.coord.X}},{{fight_report.coord.Y}},{{fight_report.coord.Z}})</h2>
 			{% endif %}
 			{% for fleetReport in fight_report.fleetList %}
 			<table class="table {{fleetReport|allyOrEnemy:player}} {{fleetReport|winnerOrLooser}}">
@@ -25,8 +27,8 @@
 			{% if fight_report.planet %}
 			<table class="table {{fight_report.planet|allyOrEnemy:player}} {{fight_report.planet|winnerOrLooser}}">
 				<tr>
-					<th>{% trans "Planet coordinate" %}</th>
-					<td><img src="{{ STATIC_URL }}{{fight_report.planet.fightInfo.before|img_path:'min'}}" width="40"/>{{fight_report.planet.fightInfo.before.coord|coord}}</td>
+					<th>{% trans "Planet name" %}</th>
+					<td><img src="{{ STATIC_URL }}{{fight_report.planet.fightInfo.before|img_path:'min'}}" width="40"/>{{fight_report.planet.fightInfo.before.name}}</td>
 				</tr>
 				{% if fight_report.planet.fightInfo.after.playerId %}
 				<tr><th>{% trans "Player" %}</th><td>{{fight_report.planet.fightInfo.after.playerId|playerlink:fight_report.planet.fightInfo.after.playerLogin|safe}}</td></tr>

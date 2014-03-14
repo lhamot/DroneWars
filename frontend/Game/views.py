@@ -214,6 +214,7 @@ def prepareFightReport(fight_report, playerId):
                 fight_report.fleetList[index].enemy = True
 
     for fleetReport in fight_report.fleetList:
+        fight_report.coord = fleetReport.fightInfo.before.coord
         if fleetReport.fightInfo.before.playerId == playerId:
             fillAllyEnemy(fleetReport.enemySet, fight_report);
             allyEnemyFilled = True
