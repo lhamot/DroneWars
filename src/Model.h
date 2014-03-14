@@ -260,6 +260,8 @@ struct Cannon
 
 typedef boost::array<uint32_t, Ship::Count> ShipTab;
 
+enum DontCopyMemoryType { DontCopyMemory };
+
 //! Données d'une planètes
 struct Planet
 {
@@ -339,6 +341,23 @@ struct Planet
 		cannonTab.fill(0);
 		hangar.fill(0);
 	}
+
+	Planet(Planet const& other, DontCopyMemoryType) :
+		name(other.name),
+		coord(other.coord),
+		playerId(other.playerId),
+		buildingList(other.buildingList),
+		taskQueue(other.taskQueue),
+		ressourceSet(other.ressourceSet),
+		cannonTab(other.cannonTab),
+		parentCoord(other.parentCoord),
+		time(other.time),
+		firstRound(other.firstRound),
+		memory(other.memory),
+		hangar(other.hangar)
+	{
+	}
+
 	//! Constructeur
 	Planet(Coord c, size_t round):
 		coord(c), playerId(Player::NoId), time(::time(0)), firstRound(round)
@@ -497,6 +516,20 @@ struct Fleet
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 	}
 
+	Fleet(Fleet const& other, DontCopyMemoryType):
+		id(other.id),
+		playerId(other.playerId),
+		coord(other.coord),
+		origin(other.origin),
+		name(other.name),
+		shipList(other.shipList),
+		time(other.time),
+		firstRound(other.firstRound),
+		ressourceSet(other.ressourceSet),
+		taskQueue(other.taskQueue)
+	{
+	}
+
 	//! test si la flotte est vide
 	bool empty() const
 	{
@@ -576,12 +609,16 @@ public:
 		//! Constructeur par defaut
 		FightInfo() {}
 		//! Constructeur
-		FightInfo(T const& bef, T const& aft): before(bef), after(aft) {}
+		FightInfo(T const& bef, T const& aft) :
+			before(bef, DontCopyMemory),
+			after(aft, DontCopyMemory)
+		{
+		}
 	};
 	FightInfo fightInfo; //!< Info sur le combat
 
 	//! Fabrique un FightInfo a partie d'une armé(flotte ou planète) donnée
-	static FightInfo makeFightInfo(T fighter)
+	static FightInfo makeFightInfo(T const& fighter)
 	{
 		return FightInfo(fighter, fighter);
 	}

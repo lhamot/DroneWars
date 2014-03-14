@@ -60,19 +60,12 @@ typedef std::vector<Unit> UnitTab; //!< Liste d'unité (cannons ou vaisseaux)
 void fillShipList(
   Fleet const& fleet, int16_t armyIndex, Player::ID pid, UnitTab& shipTab)
 {
-	//Contage
-	size_t shipNumber = 0;
-	for(size_t i = 0; i < Ship::Count; ++i)
-		shipNumber += fleet.shipList[i];
-
-	shipTab.reserve(shipNumber);
 	for(uint16_t type = 0; type < Ship::Count; ++type)
 	{
 		Ship const& def = Ship::List[type];
 		size_t const count = fleet.shipList[type];
-		for(size_t i = 0; i < count; ++i)
-			shipTab.push_back(
-			  Unit(type, def.life, def.shield, armyIndex, pid));
+		shipTab.resize(shipTab.size() + count,
+		               Unit(type, def.life, def.shield, armyIndex, pid));
 	}
 }
 
@@ -81,20 +74,13 @@ void fillShipList(
 void fillShipList(
   Planet const& planet, int16_t armyIndex, Player::ID pid, UnitTab& shipTab)
 {
-	//Contage
-	size_t shipNumber = 0;
-	for(size_t i = 0; i < Cannon::Count; ++i)
-		shipNumber += planet.cannonTab[i];
-
-	shipTab.reserve(shipNumber);
 	for(uint16_t type = 0; type < Cannon::Count; ++type)
 	{
 		Cannon const& def = Cannon::List[type];
 		size_t const count = planet.cannonTab[type];
 		uint16_t const unitType = type + Ship::Count;
-		for(size_t i = 0; i < count; ++i)
-			shipTab.push_back(
-			  Unit(unitType, def.life, def.shield, armyIndex, pid));
+		shipTab.resize(shipTab.size() + count,
+		               Unit(unitType, def.life, def.shield, armyIndex, pid));
 	}
 }
 
@@ -399,6 +385,14 @@ void fight(std::vector<Fleet*> const& fleetList,
 
 	//! On remplit la liste des unités (flottes et planete)
 	UnitTab allUnits;
+	// comptage des unités pour réservation du UnitTab
+	size_t unitCount = 0;
+	for(Fleet const* fleet : fleetList)
+		unitCount += boost::accumulate(fleet->shipList, 0);
+	if(planet)
+		unitCount += boost::accumulate(planet->cannonTab, 0);
+	allUnits.reserve(unitCount);
+	// Remplissage du UnitTab
 	for(auto indexFleet :
 	    combine(irange(int16_t(0), int16_t(fleetList.size())), fleetList))
 	{
@@ -435,7 +429,7 @@ void fight(std::vector<Fleet*> const& fleetList,
 		fleet->shipList.assign(0);
 	if(planet)
 		planet->cannonTab.assign(0);
-	//! On les remplis avec se qui reste des unités aprés le combat
+	//! On les remplis avec ce qui reste des unités aprés le combat
 	for(Unit const& unit : allUnits)
 	{
 		if(unit.armyIndex == PlanetIndex)
