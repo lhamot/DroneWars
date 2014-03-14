@@ -13,15 +13,9 @@
 	<div class="row">
 		<div class="col-md-3">
 			<h1>{{planet.name}}</h1>
-			{% if player.id == planet.playerId %}
 			<a href="planet.html?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}">
-				<img src="{{ STATIC_URL }}{{planet|img_path:'pl'}}" class="ally" width="250"/>
+				<img src="{{ STATIC_URL }}{{planet|img_path:'pl'}}" class="{{planet|armyClass:player}}" width="250"/>
 			</a>
-			{% elif planet.playerId != 0 %}
-			<img src="{{ STATIC_URL }}{{planet|img_path:'pl'}}" class="enemy" width="250"/>
-			{% else %}
-				<img src="{{ STATIC_URL }}{{planet|img_path:'pl'}}" class="neutral" width="250"/>
-			{% endif %}
 			<br/>
 			<br/>
 			<table class="table table-condensed">

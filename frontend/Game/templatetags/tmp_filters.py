@@ -197,6 +197,17 @@ def allyOrEnemy(fighter, player):
         return "ally"
 
 @register.filter
+def armyClass(army, player):
+    if player.id == army.playerId:
+        return "myself"
+    elif army.playerId == 0:
+        return "neutral"
+    elif army.allianceID != 0 and army.allianceID == player.allianceID:
+        return "ally"
+    else:
+        return "enemy"
+
+@register.filter
 def winnerOrLooser(fleetReport):
     if fleetReport.isDead:
         return "looser"

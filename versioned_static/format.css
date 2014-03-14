@@ -99,7 +99,7 @@ h2, h3
 .ally
 {
 	border-color: #0000FF;
-	border-width: 3px;
+	border-width: 2px;
 	border-style: solid;
 	border-radius: 5px;
 }
@@ -107,7 +107,7 @@ h2, h3
 .myself
 {
 	border-color: #00FF00;
-	border-width: 3px;
+	border-width: 2px;
 	border-style: solid;
 	border-radius: 5px;
 }
@@ -115,7 +115,7 @@ h2, h3
 .enemy
 {
 	border-color: #FF0000;
-	border-width: 3px;
+	border-width: 2px;
 	border-style: solid;
 	border-radius: 5px;
 }
@@ -123,7 +123,7 @@ h2, h3
 .neutral
 {
 	border-color: #808080;
-	border-width: 3px;
+	border-width: 2px;
 	border-style: solid;
 	border-radius: 5px;
 }

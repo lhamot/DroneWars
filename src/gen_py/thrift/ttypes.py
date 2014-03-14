@@ -2175,8 +2175,9 @@ class Planet:
    - ressourceSet
    - eventList
    - cannonTab
-   - playerLogin
    - hangar
+   - playerLogin
+   - allianceID
   """
 
   thrift_spec = (
@@ -2270,7 +2271,7 @@ class Planet:
     None, # 87
     None, # 88
     None, # 89
-    (90, TType.STRING, 'playerLogin', None, None, ), # 90
+    (90, TType.LIST, 'hangar', (TType.I32,None), None, ), # 90
     None, # 91
     None, # 92
     None, # 93
@@ -2280,10 +2281,20 @@ class Planet:
     None, # 97
     None, # 98
     None, # 99
-    (100, TType.LIST, 'hangar', (TType.I32,None), None, ), # 100
+    (100, TType.STRING, 'playerLogin', None, None, ), # 100
+    None, # 101
+    None, # 102
+    None, # 103
+    None, # 104
+    None, # 105
+    None, # 106
+    None, # 107
+    None, # 108
+    None, # 109
+    (110, TType.I32, 'allianceID', None, None, ), # 110
   )
 
-  def __init__(self, name=None, coord=None, playerId=None, buildingList=None, taskQueue=None, ressourceSet=None, eventList=None, cannonTab=None, playerLogin=None, hangar=None,):
+  def __init__(self, name=None, coord=None, playerId=None, buildingList=None, taskQueue=None, ressourceSet=None, eventList=None, cannonTab=None, hangar=None, playerLogin=None, allianceID=None,):
     self.name = name
     self.coord = coord
     self.playerId = playerId
@@ -2292,8 +2303,9 @@ class Planet:
     self.ressourceSet = ressourceSet
     self.eventList = eventList
     self.cannonTab = cannonTab
-    self.playerLogin = playerLogin
     self.hangar = hangar
+    self.playerLogin = playerLogin
+    self.allianceID = allianceID
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -2369,11 +2381,6 @@ class Planet:
         else:
           iprot.skip(ftype)
       elif fid == 90:
-        if ftype == TType.STRING:
-          self.playerLogin = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 100:
         if ftype == TType.LIST:
           self.hangar = []
           (_etype50, _size47) = iprot.readListBegin()
@@ -2381,6 +2388,16 @@ class Planet:
             _elem52 = iprot.readI32();
             self.hangar.append(_elem52)
           iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 100:
+        if ftype == TType.STRING:
+          self.playerLogin = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 110:
+        if ftype == TType.I32:
+          self.allianceID = iprot.readI32();
         else:
           iprot.skip(ftype)
       else:
@@ -2437,16 +2454,20 @@ class Planet:
         oprot.writeI32(iter56)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
-    if self.playerLogin is not None:
-      oprot.writeFieldBegin('playerLogin', TType.STRING, 90)
-      oprot.writeString(self.playerLogin)
-      oprot.writeFieldEnd()
     if self.hangar is not None:
-      oprot.writeFieldBegin('hangar', TType.LIST, 100)
+      oprot.writeFieldBegin('hangar', TType.LIST, 90)
       oprot.writeListBegin(TType.I32, len(self.hangar))
       for iter57 in self.hangar:
         oprot.writeI32(iter57)
       oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.playerLogin is not None:
+      oprot.writeFieldBegin('playerLogin', TType.STRING, 100)
+      oprot.writeString(self.playerLogin)
+      oprot.writeFieldEnd()
+    if self.allianceID is not None:
+      oprot.writeFieldBegin('allianceID', TType.I32, 110)
+      oprot.writeI32(self.allianceID)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -2479,6 +2500,7 @@ class Fleet:
    - taskQueue
    - eventList
    - playerLogin
+   - allianceID
   """
 
   thrift_spec = (
@@ -2583,9 +2605,19 @@ class Fleet:
     None, # 98
     None, # 99
     (100, TType.STRING, 'playerLogin', None, None, ), # 100
+    None, # 101
+    None, # 102
+    None, # 103
+    None, # 104
+    None, # 105
+    None, # 106
+    None, # 107
+    None, # 108
+    None, # 109
+    (110, TType.I32, 'allianceID', None, None, ), # 110
   )
 
-  def __init__(self, id=None, playerId=None, coord=None, origin=None, name=None, shipList=None, ressourceSet=None, taskQueue=None, eventList=None, playerLogin=None,):
+  def __init__(self, id=None, playerId=None, coord=None, origin=None, name=None, shipList=None, ressourceSet=None, taskQueue=None, eventList=None, playerLogin=None, allianceID=None,):
     self.id = id
     self.playerId = playerId
     self.coord = coord
@@ -2596,6 +2628,7 @@ class Fleet:
     self.taskQueue = taskQueue
     self.eventList = eventList
     self.playerLogin = playerLogin
+    self.allianceID = allianceID
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -2676,6 +2709,11 @@ class Fleet:
           self.playerLogin = iprot.readString();
         else:
           iprot.skip(ftype)
+      elif fid == 110:
+        if ftype == TType.I32:
+          self.allianceID = iprot.readI32();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -2734,6 +2772,10 @@ class Fleet:
     if self.playerLogin is not None:
       oprot.writeFieldBegin('playerLogin', TType.STRING, 100)
       oprot.writeString(self.playerLogin)
+      oprot.writeFieldEnd()
+    if self.allianceID is not None:
+      oprot.writeFieldBegin('allianceID', TType.I32, 110)
+      oprot.writeI32(self.allianceID)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

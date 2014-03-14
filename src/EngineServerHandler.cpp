@@ -165,6 +165,7 @@ ndw::Fleet fleetToThrift(Fleet const& fleet, Player const& player)
 	result.origin = coordToThrift(fleet.origin);
 	result.name = fleet.name;
 	result.playerLogin = player.login;
+	result.allianceID = player.allianceID;
 
 	result.shipList.reserve(fleet.shipList.size());
 	for(size_t value : fleet.shipList)
@@ -190,7 +191,12 @@ ndw::Planet planetToThrift(Planet const& planet, Player const* player)
 	res.playerId = NUMCAST(planet.playerId);
 	res.buildingList.reserve(planet.buildingList.size());
 	if(player)
+	{
 		res.playerLogin = player->login;
+		res.allianceID = player->allianceID;
+	}
+	else
+		res.allianceID = 0;
 	for(size_t value : planet.buildingList)
 		res.buildingList.push_back(NUMCAST(value));
 	res.taskQueue.reserve(planet.taskQueue.size());

@@ -230,8 +230,9 @@ struct Planet
 	60: RessourceSet ressourceSet
 	70: list<Event> eventList
 	80: list<i32> cannonTab
-	90: string playerLogin
-	100: Fleet_ShipTab hangar
+	90: Fleet_ShipTab hangar
+	100: string playerLogin
+	110: Alliance_ID allianceID
 }
 
 
@@ -249,6 +250,7 @@ struct Fleet
 	80: list<FleetTask> taskQueue
 	90: list<Event> eventList
 	100: string playerLogin
+	110: Alliance_ID allianceID
 }
 
 

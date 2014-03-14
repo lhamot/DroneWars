@@ -56,15 +56,9 @@
 				<tr onclick="document.location.href='fleet.html?fleet={{fleet.id}}'">
 					<td>
 						{% if planet %}
-						{% if planet.playerId == fleet.playerId %}
 						<a href="planet.html?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}">
-							<img src="{{ STATIC_URL }}{{planet|img_path:'min'}}" width="40" class="ally"/>
+							<img src="{{ STATIC_URL }}{{planet|img_path:'min'}}" class="{{planet|armyClass:player}}" width="40"/>
 						</a>
-						{% elif planet.playerId != 0 %}
-						<img src="{{ STATIC_URL }}{{planet|img_path:'min'}}" width="40" class="enemy"/>
-						{% else %}
-							<img src="{{ STATIC_URL }}{{planet|img_path:'min'}}" width="40" class="neutral"/>
-						{% endif %}
 						{% endif %}
 					</td>
 					<td class="left-border-col">{{fleet.coord.X}}</td>

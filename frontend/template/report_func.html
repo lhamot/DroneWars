@@ -28,7 +28,11 @@
 			<table class="table {{fight_report.planet|allyOrEnemy:player}} {{fight_report.planet|winnerOrLooser}}">
 				<tr>
 					<th>{% trans "Planet name" %}</th>
-					<td><img src="{{ STATIC_URL }}{{fight_report.planet.fightInfo.before|img_path:'min'}}" width="40"/>{{fight_report.planet.fightInfo.before.name}}</td>
+					<td>
+						<img src="{{ STATIC_URL }}{{fight_report.planet.fightInfo.before|img_path:'min'}}" width="40" class="{{fight_report.planet.fightInfo.before|armyClass:player}}"/>
+						&nbsp;
+						{{fight_report.planet.fightInfo.before.name}}
+					</td>
 				</tr>
 				{% if fight_report.planet.fightInfo.after.playerId %}
 				<tr><th>{% trans "Player" %}</th><td>{{fight_report.planet.fightInfo.after.playerId|playerlink:fight_report.planet.fightInfo.after.playerLogin|safe}}</td></tr>

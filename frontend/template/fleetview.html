@@ -73,15 +73,9 @@
 		{% if planet %}
 		<div class="col-md-3">
 			<h1>{{planet.name}}</h1>
-			{% if planet.playerId == fleet.playerId %}
 			<a href="planet.html?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}">
-				<img class="ally" src="{{ STATIC_URL }}{{planet|img_path:'pl'}}" width="250"/>
+				<img src="{{ STATIC_URL }}{{planet|img_path:'pl'}}" class="{{planet|armyClass:player}}" width="250"/>
 			</a>
-			{% elif planet.playerId != 0 %}
-			<img class="enemy" src="{{ STATIC_URL }}{{planet|img_path:'pl'}}" width="250"/>
-			{% else %}
-			<img class="neutral" src="{{ STATIC_URL }}{{planet|img_path:'pl'}}" width="250"/>
-			{% endif %}
 		</div>
 		{% endif %}
 	</div>
