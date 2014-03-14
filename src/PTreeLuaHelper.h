@@ -208,6 +208,21 @@ private:
 	}
 };
 
+//! Traits pour que Polua puisse obtenir la taille d'un std::vector
+template<>
+struct Length<TypedPtree>
+{
+	typedef TypedPtree Container;
+
+	//! Retourne la taille du std::vector, en 1 sur la pile lua.
+	static int len(lua_State* L)
+	{
+		Container* obj = userdata_fromstack<Container>(L, 1);
+		lua_pushinteger(L, obj->size());
+		return 1;
+	}
+};
+
 }
 
 //! @brief lua_CFunction qui convertie un TypedPtree en string (pour print)

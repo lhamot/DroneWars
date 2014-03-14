@@ -227,17 +227,24 @@ int luaCFunction_simul_fight(lua_State* L)
 
 	//Création de la PlayersFightingMap
 	PlayersFightingMap playerFighting;
+	bool willFight = false;
 	for(Player const& player : playerSet)
 	{
 		for(Player const& player2 : playerSet)
 		{
 			if(player.id != player2.id)
-				playerFighting[std::make_pair(player.id, player2.id)] =
-				  player.alliance == nullptr  ||
+			{
+				bool const areEnemy =
+				  player.alliance == nullptr ||
 				  player2.alliance == nullptr ||
 				  player.alliance->id != player2.alliance->id;
+				playerFighting[std::make_pair(player.id, player2.id)] = areEnemy;
+				willFight = willFight || areEnemy;
+			}
 		}
 	}
+	if(willFight == false)
+		return 100;
 
 	//Simulations N fois
 	size_t const simulCount = playerFightSimulationCount(*playerFleet->player);
