@@ -469,7 +469,7 @@ int initDroneWars(LuaTools::Engine& engine)
 	.toString(&ptree_tostring)
 	;
 	Class<TypedPtree::iterator>(L, "ptree_iterator")
-	.methode("gey_key", &ptree_iter_key)
+	.methode("get_key", &ptree_iter_key)
 	.toString(&ptree_iter_tostring)
 	;
 	Class<std::vector<TypedPtree*> >(L, "MailBox")
