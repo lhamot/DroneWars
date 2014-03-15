@@ -220,7 +220,7 @@ int luaCFunction_simul_fight(lua_State* L)
 	};
 	std::set<Player, PlayerComp> playerSet;
 	playerSet.insert(*playerFleet->player);
-	if(planetOri)
+	if(planetOri && planetOri->player)
 		playerSet.insert(*planetOri->player);
 	for(Fleet const& fleet : fleetVectOri)
 		playerSet.insert(*fleet.player);
