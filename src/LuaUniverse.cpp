@@ -244,7 +244,10 @@ int luaCFunction_simul_fight(lua_State* L)
 		}
 	}
 	if(willFight == false)
-		return 100;
+	{
+		lua_pushnumber(L, 100);
+		return 1;
+	}
 
 	//Simulations N fois
 	size_t const simulCount = playerFightSimulationCount(*playerFleet->player);
