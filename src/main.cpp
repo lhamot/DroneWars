@@ -86,7 +86,7 @@ int main(int argc, char** argv)
 		("user,u", po::value<std::string>(&connInfo.user_)->required(), "MySQL user name")
 		("password,w", po::value<std::string>(&connInfo.password_)->required(), "MySQL user password")
 		("xp_coef,x", po::value<double>(&coefXP)->default_value(0.1), "XP multiplier")
-		("min_round, r", po::value<size_t>(&minRoundDuration)->default_value(10), "Minimum round duration (second)")
+		("min_round,r", po::value<size_t>(&minRoundDuration)->default_value(10), "Minimum round duration (second)")
 		;
 
 		po::variables_map vm;

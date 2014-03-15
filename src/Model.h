@@ -526,7 +526,8 @@ struct Fleet
 		time(other.time),
 		firstRound(other.firstRound),
 		ressourceSet(other.ressourceSet),
-		taskQueue(other.taskQueue)
+		taskQueue(other.taskQueue),
+		player(other.player)
 	{
 	}
 
