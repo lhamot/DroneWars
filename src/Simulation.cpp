@@ -302,7 +302,7 @@ boost::optional<PlanetAction> execPlanetScript(
   PlayerCodes::ObjectMap& codeMap,
   Player const& player,
   Planet& planetCopy,
-  std::vector<Fleet const*> const& fleetList,
+  std::vector<Fleet> const& fleetList,
   std::vector<Event>& events)
 try
 {
@@ -663,12 +663,12 @@ void execPlanets(Universe& univ_,
 
 	FleetCoordMap fleetMap;
 	for(Fleet const& fleet : univ_.fleetMap | boost::adaptors::map_values)
-		fleetMap.insert(make_pair(fleet.coord, fleet));
+		fleetMap.emplace(make_pair(fleet.coord, Fleet(fleet, DontCopyMemory)));
 
 	struct ScriptInputs
 	{
 		Planet planet;
-		std::vector<Fleet const*> fleetList;
+		std::vector<Fleet> fleetList;
 	};
 	std::vector<ScriptInputs> ownedPlanetList;
 	ownedPlanetList.reserve(univ_.planetMap.size());
@@ -681,14 +681,9 @@ void execPlanets(Universe& univ_,
 			ownedPlanetList.back().planet = planet;
 
 			auto localFleets = fleetMap.equal_range(planet.coord);
-			auto getFleetPointer = []
-			                       (FleetCoordMap::value_type const & coordFleet)
-			{
-				return &coordFleet.second;
-			};
 			boost::transform(localFleets,
 			                 back_inserter(ownedPlanetList.back().fleetList),
-			                 getFleetPointer);
+			                 bind(&FleetCoordMap::value_type::second, _1));
 		}
 	}
 
@@ -751,7 +746,11 @@ std::vector<Fleet*> removeEscapedFleet(
 {
 	std::vector<Fleet*> escapedFleets;
 	std::vector<Fleet*> fightingFleets;
-	std::vector<Fleet const*> otherFleets(fleetVect.begin() + 1, fleetVect.end());
+	std::vector<Fleet> otherFleets;
+	otherFleets.reserve(fleetVect.size());
+	for(Fleet const* fleetPtr :
+	    boost::make_iterator_range(fleetVect.begin() + 1, fleetVect.end()))
+		otherFleets.emplace_back(Fleet(*fleetPtr, DontCopyMemory));
 	for(size_t i = 0; i < fleetVect.size(); ++i)
 	{
 		Fleet* fleet = fleetVect[i];
@@ -799,7 +798,7 @@ std::vector<Fleet*> removeEscapedFleet(
 			fightingFleets.push_back(fleet);
 
 		if(i < otherFleets.size())
-			otherFleets[i] = fleet;
+			otherFleets[i] = *fleet;
 	}
 	std::swap(fightingFleets, fleetVect);
 	return escapedFleets;

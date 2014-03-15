@@ -204,8 +204,8 @@ int luaCFunction_simul_fight(lua_State* L)
 	Planet* planetOri = lua_type(L, -2) == LUA_TNIL ?
 	                    nullptr :
 	                    Polua::fromstackAny<Planet*>(L, -2);
-	std::vector<Fleet const*>& fleetVectOri =
-	  Polua::fromstackAny<std::vector<Fleet const*>&>(L, -1);
+	std::vector<Fleet>& fleetVectOri =
+	  Polua::fromstackAny<std::vector<Fleet>&>(L, -1);
 	if(playerFleet->player == nullptr)
 		BOOST_THROW_EXCEPTION(
 		  std::logic_error("playerFleet->player == nullptr"));
@@ -222,8 +222,8 @@ int luaCFunction_simul_fight(lua_State* L)
 	playerSet.insert(*playerFleet->player);
 	if(planetOri)
 		playerSet.insert(*planetOri->player);
-	for(Fleet const* fleet : fleetVectOri)
-		playerSet.insert(*fleet->player);
+	for(Fleet const& fleet : fleetVectOri)
+		playerSet.insert(*fleet.player);
 
 	//Création de la PlayersFightingMap
 	PlayersFightingMap playerFighting;
@@ -255,9 +255,9 @@ int luaCFunction_simul_fight(lua_State* L)
 		std::vector<Fleet> fleetVectCpy;
 		std::vector<Fleet*> fleetPtrVect;
 		fleetVectCpy.reserve(fleetVectOri.size() + 1);
-		for(Fleet const* fleetPtr : fleetVectOri)
+		for(Fleet const& fleet : fleetVectOri)
 		{
-			fleetVectCpy.push_back(*fleetPtr);
+			fleetVectCpy.emplace_back(Fleet(fleet, DontCopyMemory));
 			fleetPtrVect.push_back(&fleetVectCpy.back());
 		}
 		fleetVectCpy.push_back(*playerFleet);
@@ -314,7 +314,6 @@ int initDroneWars(LuaTools::Engine& engine)
 	lua_State* L = engine.state();
 
 	//! @todo: ne plus avoir besoin de ca
-	Class<std::vector<Fleet const*> >(L, "CPFleetVector");
 	Class<std::vector<Fleet> >(L, "FleetVector");
 	Class<Planet::BuildingTab>(L, "");
 	Class<Planet::CannonTab>(L, "");

@@ -382,7 +382,7 @@ size_t playerEmissionRange(Player const& player)
 double calcEscapeProba(Player const& player,
                        Fleet const& fighter,
                        Planet const*, //planet
-                       std::vector<Fleet const*> const& //otherFleets
+                       std::vector<Fleet> const& //otherFleets
                       )
 {
 	size_t const shipCount = boost::accumulate(fighter.shipList, 0);

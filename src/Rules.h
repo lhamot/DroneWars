@@ -76,7 +76,7 @@ bool isEscapeSuccess(double escapeProba);
 double calcEscapeProba(Player const& player,
                        Fleet const& fighter,
                        Planet const* planet,
-                       std::vector<Fleet const*> const& otherFleets);
+                       std::vector<Fleet> const& otherFleets);
 
 //! Test si ce joueur a le droit de logger des messages dans ces scripts
 bool playerCanLog(Player const& player);
