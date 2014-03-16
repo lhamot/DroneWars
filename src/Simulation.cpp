@@ -1353,6 +1353,11 @@ void execFleets(
 				&fleet, scriptModifiedFleet, action
 			};
 			scriptInputsList.push_back(fleetAndAction);
+			if(otherFleetIter != otherFleets.end())
+			{
+				*otherFleetIter = fleet;
+				++otherFleetIter;
+			}
 		}
 	}
 
