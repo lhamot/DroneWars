@@ -492,8 +492,7 @@ class Class
 	//! metamethode "__gc" appelé par lua pour detruire le userdata
 	static int destructor(lua_State* L)
 	{
-		WrapperBase<T>* obj = static_cast<WrapperBase<T>*>(
-		                        luaL_checkudata(L, -1, typeid(T).name()));
+		WrapperBase<T>* obj = static_cast<WrapperBase<T>*>(lua_touserdata(L, -1));
 		if(!obj)
 			return luaL_error(
 			         L, "Not a %s on the stack as expected", typeid(T).name());

@@ -24,10 +24,23 @@ void push(lua_State* L, Any const& any)
 	}
 }
 
+TypedPtree& getThisPTree(lua_State* L)
+{
+	TypedPtree* memory = Polua::userdata_fromstack<TypedPtree>(L, 1);
+	if(!memory)
+	{
+		luaL_error(L, "Not a %s on the stack, as expected", typeid(TypedPtree).name());
+		abort();
+		LOG4CPLUS_FATAL(
+		  log4cplus::Logger::getInstance(LOG4CPLUS_TEXT("PTreeLuaHelper")),
+		  "Not a userdata");
+	}
+	return *memory;
+}
 
 int ptree_get(lua_State* L)
 {
-	TypedPtree const& memory = Polua::fromstackAny<TypedPtree>(L, 1);
+	TypedPtree const& memory = getThisPTree(L);
 	int const nbarg = lua_gettop(L) - 1;
 	if(nbarg != 1)
 		return luaL_error(L,
@@ -49,7 +62,7 @@ int ptree_get(lua_State* L)
 
 int ptree_get_value(lua_State* L)
 {
-	TypedPtree const& memory = Polua::fromstackAny<TypedPtree>(L, 1);
+	TypedPtree const& memory = getThisPTree(L);
 	int const nbarg = lua_gettop(L) - 1;
 	if(nbarg != 0)
 		return luaL_error(L,
@@ -61,7 +74,7 @@ int ptree_get_value(lua_State* L)
 
 int ptree_get_child(lua_State* L)
 {
-	TypedPtree& memory = Polua::fromstackAny<TypedPtree>(L, 1);
+	TypedPtree& memory = getThisPTree(L);
 	int const nbarg = lua_gettop(L) - 1;
 	if(nbarg != 1)
 		return luaL_error(L,
@@ -82,7 +95,7 @@ int ptree_get_child(lua_State* L)
 
 int ptree_erase(lua_State* L)
 {
-	TypedPtree& memory = Polua::fromstackAny<TypedPtree>(L, 1);
+	TypedPtree& memory = getThisPTree(L);
 	int const nbarg = lua_gettop(L) - 1;
 	if(nbarg != 1)
 		return luaL_error(L,
@@ -101,7 +114,7 @@ int ptree_erase(lua_State* L)
 template<typename Putter>
 int ptree_putadd(lua_State* L, Putter putter)
 {
-	TypedPtree& memory = Polua::fromstackAny<TypedPtree>(L, 1);
+	TypedPtree& memory = getThisPTree(L);
 	int const nbarg = lua_gettop(L) - 1;
 	if(nbarg != 2)
 		return luaL_error(
@@ -141,7 +154,7 @@ int ptree_add(lua_State* L)
 
 int ptree_add_child(lua_State* L)
 {
-	TypedPtree& memory = Polua::fromstackAny<TypedPtree>(L, 1);
+	TypedPtree& memory = getThisPTree(L);
 	int const nbarg = lua_gettop(L) - 1;
 	if(nbarg != 2)
 		return luaL_error(
@@ -159,7 +172,7 @@ int ptree_add_child(lua_State* L)
 
 int ptree_put_child(lua_State* L)
 {
-	TypedPtree& memory = Polua::fromstackAny<TypedPtree>(L, 1);
+	TypedPtree& memory = getThisPTree(L);
 	int const nbarg = lua_gettop(L) - 1;
 	if(nbarg != 2)
 		return luaL_error(
@@ -177,7 +190,7 @@ int ptree_put_child(lua_State* L)
 
 int ptree_put_value(lua_State* L)
 {
-	TypedPtree& memory = Polua::fromstackAny<TypedPtree>(L, 1);
+	TypedPtree& memory = getThisPTree(L);
 	int const nbarg = lua_gettop(L) - 1;
 	if(nbarg != 1)
 		return luaL_error(
@@ -220,8 +233,7 @@ int ptree_iter_tostring(lua_State* L)
 int ptree_tostring(lua_State* L)
 {
 	using namespace boost;
-	TypedPtree const& pt =
-	  Polua::fromstackAny<TypedPtree>(L, 1);
+	TypedPtree const& pt = getThisPTree(L);
 	optional<Any> const& value = pt.get_value_optional<Any>();
 	if(value)
 	{
