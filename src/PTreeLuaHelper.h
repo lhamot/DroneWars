@@ -187,24 +187,34 @@ private:
 	static int iterator(lua_State* L)
 	{
 		TypedPtree* obj = userdata_fromstack<TypedPtree>(L, 1);
-		TypedPtree::iterator iter;
+
+		auto pushValue = [&](TypedPtree::iterator & iter)
+		{
+			if(iter == obj->end())
+			{
+				lua_pushnil(L);
+				return 1;
+			}
+			else
+			{
+				Polua::pushPers(L, iter->second);
+				return 2;
+			}
+		};
+
 		if(lua_gettop(L) < 2 || lua_isnil(L, 2))
-			iter = obj->begin();
+		{
+			TypedPtree::iterator iter = obj->begin();
+			Polua::pushTemp(L, iter);
+			return pushValue(iter);
+		}
 		else
 		{
-			iter = *userdata_fromstack<TypedPtree::iterator>(L, 2);
+			TypedPtree::iterator& iter = *userdata_fromstack<TypedPtree::iterator>(L, 2);
 			++iter;
+			lua_pushvalue(L, 2);
+			return pushValue(iter);
 		}
-
-		if(iter == obj->end())
-		{
-			lua_pushnil(L);
-			return 1;
-		}
-
-		Polua::pushTemp(L, iter);
-		Polua::pushPers(L, iter->second);
-		return 2;
 	}
 };
 

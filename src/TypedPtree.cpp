@@ -37,7 +37,7 @@ size_t countPtreeItem(TypedPtree const& pt)
 	boost::optional<Any> any = pt.get_value_optional<Any>();
 	if(any && any->which())
 		count += 1;
-	for(auto nvp : pt)
+	for(auto const& nvp : pt)
 		count += countPtreeItem(nvp.second);
 	return count;
 }
