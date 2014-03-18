@@ -105,10 +105,11 @@ vector<Fleet> Engine::getPlayerFleets(Player::ID pid) const
 {
 	SharedLock lock(univ_.mutex);
 	vector<Fleet> fleetList;
+	fleetList.reserve(1000);
 	for(Fleet const& fleet : univ_.fleetMap | adaptors::map_values)
 	{
 		if(fleet.playerId == pid)
-			fleetList.push_back(fleet);
+			fleetList.push_back(Fleet(fleet, DontCopyMemory));
 	}
 	return fleetList;
 }
@@ -118,10 +119,11 @@ vector<Planet> Engine::getPlayerPlanets(Player::ID pid) const
 {
 	SharedLock lock(univ_.mutex);
 	vector<Planet> planetList;
-	for(Universe::PlanetMap::value_type const& planetNVP : univ_.planetMap)
+	planetList.reserve(1000);
+	for(Planet const& planet : univ_.planetMap | adaptors::map_values)
 	{
-		if(planetNVP.second.playerId == pid)
-			planetList.push_back(planetNVP.second);
+		if(planet.playerId == pid)
+			planetList.push_back(Planet(planet, DontCopyMemory));
 	}
 	return planetList;
 }
