@@ -6,29 +6,31 @@
 
 {% block content %}
 
-<div class="container">
-
-<div class="row">
-<div class="col-md-8 col-md-offset-2">
-<table class="table">
-	{% for message in messages %}
-	<tr>
-		<th>{% trans "Send by"%}</th>
-		<th>{% trans "Subject"%}</th>
-		<th>{% trans "Options"%}</th>
-	</tr>
-	<tr>
-		<td>{{message.sender|playerlink:message.senderLogin|safe}}</td>
-		<td>{{message.subject}}</td>
-		<td><a href="/ingame/messages.html?delete={{message.id}}" class="btn btn-danger">{% trans "Delete" %}</a></td>		
-	</tr>
-	<tr>
-		<td colspan="3">{{message.message}}</td>
-	</tr>
-	{% endfor %}
-</table>
-</div>
-</div>
+<div class="container page">
+	<br/>
+	<div class="row">
+		<div class="col-md-8 col-md-offset-2">
+			{% for message in messages %}
+				<div class="panel panel-default">
+					<table class="table">
+						<tr>
+							<th>{% trans "Send by"%}</th>
+							<th>{% trans "Subject"%}</th>
+							<th>{% trans "Options"%}</th>
+						</tr>
+						<tr>
+							<td>{{message.sender|playerlink:message.senderLogin|safe}}</td>
+							<td>{{message.subject}}</td>
+							<td><a href="/ingame/messages.html?delete={{message.id}}" class="btn btn-danger">{% trans "Delete" %}</a></td>		
+						</tr>
+						<tr>
+							<td colspan="3">{{message.message|escape|linebreaks}}</td>
+						</tr>
+					</table>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
 </div>
 
 {% endblock %}

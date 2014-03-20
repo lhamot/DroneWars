@@ -7,23 +7,30 @@
 {% block reports_class %}active{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container page">
+	<br/>
 	<div class="row">
 		<div class="col-md-6">
-			<table class="table">
-			<tr>
-				<th>Time</th><th>Type</th><th>Message</th>
-			</tr>
-			{% for event in eventList %}
-			<tr onclick="document.location.href='?event_id={{event.id}}'">
-				<td>{{event.time|int2datetime|date:"DATETIME_FORMAT"}}</td><td>{{event.type|eventname}}</td><td>{{event.comment}}</td>
-			</tr>
-			{% endfor %}
-			</table>
+			<div class="panel panel-default">
+				<table class="table table-striped table-condensed table-hover">
+				<thead>
+					<tr>
+						<th>Time</th><th>Type</th><th>Message</th>
+					</tr>
+				</thead>
+				{% for event in eventList %}
+				<tr onclick="document.location.href='?event_id={{event.id}}'">
+					<td>{{event.time|int2datetime|date:"DATETIME_FORMAT"}}</td><td>{{event.type|eventname}}</td><td>{{event.comment}}</td>
+				</tr>
+				{% endfor %}
+				</table>
+			</div>
 		</div>
 		{% if target_event %}
 		<div class="col-md-6">
-			{% include "report_func.html" %}
+			<div class="panel panel-default">
+				{% include "report_func.html" %}
+			</div>
 		</div>
 		{% endif %}
 	</div>

@@ -8,53 +8,67 @@
 
 {% block content %}
 {% if prices %}
-<div class="container">
+<div class="container page">
+	<br/>
 	<div class="row">
-		<div class="col-md-4 col-md-offset-1">
-			<h3>{{target.index|buildingname}}</h3>
-			<div class="manual">
-			<img src="{{ STATIC_URL }}img/buildings/{{target.index}}.jpg" width="200" style="float: left"/>
-			{{target.index|buildingbrief}}
+		<div class="col-md-5 col-md-offset-1">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3>{{target.index|buildingname}}</h3>	
+				</div>
+				<div class="panel-body">
+					<img src="{{ STATIC_URL }}img/buildings/{{target.index}}.jpg" class="img-responsive img-thumbnail"/>
+					{{target.index|buildingbrief}}
+				</div>
 			</div>
 		</div>
-		<div class="col-md-4">
-			<table class="table">
-			<tr>
-				<th>{% trans "Level" %}</th>
-				<th width="1">{% trans "RESOURCE_0" %}</a></th>
-				<th width="1">{% trans "RESOURCE_1" %}</a></th>
-				<th width="1">{% trans "RESOURCE_2" %}</a></th>
-			</tr>
-			{% for price in prices %}
-			<tr>
-				<td>{{forloop.counter}}</td>
-				<td width="1">{{price.tab.0}}</td>
-				<td width="1">{{price.tab.1}}</td>
-				<td width="1">{{price.tab.2}}</td>
-			</tr>
-			{% endfor %}
-			</table>
+		<div class="col-md-5">
+			<div class="panel panel-default">
+				<table class="table table-condensed table-striped">
+				<thead>
+					<tr>
+						<th>{% trans "Level" %}</th>
+						<th width="1">{% trans "RESOURCE_0" %}</a></th>
+						<th width="1">{% trans "RESOURCE_1" %}</a></th>
+						<th width="1">{% trans "RESOURCE_2" %}</a></th>
+					</tr>
+				</thead>
+				{% for price in prices %}
+				<tr>
+					<td>{{forloop.counter}}</td>
+					<td width="1">{{price.tab.0}}</td>
+					<td width="1">{{price.tab.1}}</td>
+					<td width="1">{{price.tab.2}}</td>
+				</tr>
+				{% endfor %}
+				</table>
+			</div>
 		</div>
 	</div>
 </div>
 {% else %}
-<div class="container">
+<div class="container page">
+	<br/>
 	<div class="row">
 		<div class="col-md-10 col-md-offset-1">
-			<table class="table">
-			<tr>
-				<th width="1">{% trans "View" %}</th>
-				<th width="1">{% trans "Name" %}</th>
-				<th>{% trans "Brief" %}</th>
-			</tr>
-			{% for building in buildings %}
-			<tr onclick="document.location.href='?bid={{building.index}}'">
-				<td><img src="{{ STATIC_URL }}img/buildings/{{building.index}}.jpg" width="80"/></td>
-				<td style="white-space: nowrap">{{building.index|buildingname}}</td>
-				<td>{{building.index|buildingbrief}}</td>
-			</tr>
-			{% endfor %}
-			</table>
+			<div class="panel panel-default">
+				<table class="table table-striped table-condensed table-hover">
+				<thead>
+					<tr>
+						<th width="1">{% trans "View" %}</th>
+						<th width="1">{% trans "Name" %}</th>
+						<th>{% trans "Brief" %}</th>
+					</tr>
+				</thead>
+				{% for building in buildings %}
+				<tr onclick="document.location.href='?bid={{building.index}}'">
+					<td><img src="{{ STATIC_URL }}img/buildings/{{building.index}}.jpg" width="80" class="img-thumbnail"/></td>
+					<td style="white-space: nowrap">{{building.index|buildingname}}</td>
+					<td>{{building.index|buildingbrief}}</td>
+				</tr>
+				{% endfor %}
+				</table>
+			</div>
 		</div>
 	</div>
 </div>

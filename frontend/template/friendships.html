@@ -6,47 +6,56 @@
 
 {% block content %}
 
-<div class="container">
+<div class="container page">
+	<br/>
 	<div class="row">
-		<div class="col-md-8 col-md-offset-2">
-			<table class="table">
-				{% for player in requests.received %}
-				<tr>
-					<th>{% trans "Friendship request received"%}</th>
-					<td>{{player.id|playerlink:player.login|safe}}</td>
-					<td>
-						<a href="friends.html?accept=True&sender={{player.id}}">{% trans "Accept" %}</a>
-						<a href="friends.html?accept=False&sender={{player.id}}">{% trans "Reject" %}</a>
-					</td>
-				</tr>
-				{% endfor %}
-			</table>
-			<table class="table">
-				{% for player in requests.sent %}
-				<tr>
-					<th>{% trans "Friendship request sent"%}</th>
-					<td>{{player.id|playerlink:player.login|safe}}</td>
-					<td>
-						<a href="friends.html?cancel&recipientID={{player.id}}">{% trans "Close" %}</a>
-					</td>
-				</tr>
-				{% endfor %}
-			</table>
+		<div class="col-md-4 col-md-offset-2">
+			<div class="panel panel-default">
+				<table class="table">
+					<caption>{% trans "Friendship request received"%}</caption>
+					{% for player in requests.received %}
+					<tr>
+						<td>{{player.id|playerlink:player.login|safe}}</td>
+						<td>
+							<a href="friends.html?accept=True&sender={{player.id}}">{% trans "Accept" %}</a>
+							<a href="friends.html?accept=False&sender={{player.id}}">{% trans "Reject" %}</a>
+						</td>
+					</tr>
+					{% endfor %}
+				</table>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="panel panel-default">
+				<table class="table">
+					<caption>{% trans "Friendship request sent"%}</caption>
+					{% for player in requests.sent %}
+					<tr>
+						<td>{{player.id|playerlink:player.login|safe}}</td>
+						<td>
+							<a href="friends.html?cancel&recipientID={{player.id}}">{% trans "Close" %}</a>
+						</td>
+					</tr>
+					{% endfor %}
+				</table>
+			</div>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-md-8 col-md-offset-2">
-			<table class="table">
-				{% for player in frienships %}
-				<tr>
-					<th>{% trans "Friendship with"%}</th>
-					<td>{{player.id|playerlink:player.login|safe}}</td>
-					<td>
-						<a href="friends.html?close&friend={{player.id}}">{% trans "Close" %}</a>
-					</td>
-				</tr>
-				{% endfor %}
-			</table>
+			<div class="panel panel-default">
+				<table class="table">
+					<caption>{% trans "Friendship with"%}</caption>
+					{% for player in frienships %}
+					<tr>
+						<td>{{player.id|playerlink:player.login|safe}}</td>
+						<td>
+							<a href="friends.html?close&friend={{player.id}}">{% trans "Close" %}</a>
+						</td>
+					</tr>
+					{% endfor %}
+				</table>
+			</div>
 		</div>
 	</div>
 </div>

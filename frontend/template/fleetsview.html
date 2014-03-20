@@ -7,7 +7,7 @@
 {% block fleets_class %}active{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container page">
 	<div class="row">
 		{% if pagecount > 1 %}
 		<div class="col-md-12">
@@ -35,42 +35,46 @@
 		</div>
 		{% endif %}
 		<div class="col-md-10 col-md-offset-1">
-			<table class="table">
-				<tr>
-					<th></th>
-					<th colspan="3" class="left-border-col"><center>{% trans "Coordinates" %}</center></th>
-					<th colspan="3" class="left-border-col"><center>{% trans "Resources" %}</center></th>
-					<th class="left-border-col"></th>
-				</tr>
-				<tr>
-					<th>{% trans "Planet" %}</th>
-					<th class="left-border-col"><a href="?page={{currentpage}}&sort=1&asc={{titleOrder.1}}">{{titleAfter.1|safe}}X</a></th>
-					<th><a href="?page={{currentpage}}&sort=2&asc={{titleOrder.2}}">{{titleAfter.2|safe}}Y</a></th>
-					<th><a href="?page={{currentpage}}&sort=3&asc={{titleOrder.3}}">{{titleAfter.3|safe}}Z</a></th>
-					<th class="left-border-col"><a href="?page={{currentpage}}&sort=4&asc={{titleOrder.4}}">{{titleAfter.4|safe}}{% trans "RESOURCE_0" %}</a></th>
-					<th><a href="?page={{currentpage}}&sort=5&asc={{titleOrder.5}}">{{titleAfter.5|safe}}{% trans "RESOURCE_1" %}</a></th>
-					<th><a href="?page={{currentpage}}&sort=6&asc={{titleOrder.6}}">{{titleAfter.6|safe}}{% trans "RESOURCE_2" %}</a></th>
-					<th class="left-border-col">{% trans "Content" %}</th>
-				</tr>
-				{% for fleet, planet in planetFleetPairs %}
-				<tr onclick="document.location.href='fleet.html?fleet={{fleet.id}}'">
-					<td>
-						{% if planet %}
-						<a href="planet.html?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}">
-							<img src="{{ STATIC_URL }}{{planet|img_path:'min'}}" class="{{planet|armyClass:player}}" width="40"/>
-						</a>
-						{% endif %}
-					</td>
-					<td class="left-border-col">{{fleet.coord.X}}</td>
-					<td>{{fleet.coord.Y}}</td>
-					<td>{{fleet.coord.Z}}</td>
-					<td class="left-border-col">{{fleet.ressourceSet.tab.0}}</td>
-					<td>{{fleet.ressourceSet.tab.1}}</td>
-					<td>{{fleet.ressourceSet.tab.2}}</td>
-					<td class="left-border-col">{{fleet|content}}</td>
-				</tr>
-				{% endfor %}
-			</table>
+			<div class="panel panel-default">
+				<table class="table table-striped table-hover">
+					<thead>
+						<tr>
+							<th></th>
+							<th colspan="3" class="left-border-col"><center>{% trans "Coordinates" %}</center></th>
+							<th colspan="3" class="left-border-col"><center>{% trans "Resources" %}</center></th>
+							<th class="left-border-col"></th>
+						</tr>
+						<tr>
+							<th>{% trans "Planet" %}</th>
+							<th class="left-border-col"><a href="?page={{currentpage}}&sort=1&asc={{titleOrder.1}}">{{titleAfter.1|safe}}X</a></th>
+							<th><a href="?page={{currentpage}}&sort=2&asc={{titleOrder.2}}">{{titleAfter.2|safe}}Y</a></th>
+							<th><a href="?page={{currentpage}}&sort=3&asc={{titleOrder.3}}">{{titleAfter.3|safe}}Z</a></th>
+							<th class="left-border-col"><a href="?page={{currentpage}}&sort=4&asc={{titleOrder.4}}">{{titleAfter.4|safe}}{% trans "RESOURCE_0" %}</a></th>
+							<th><a href="?page={{currentpage}}&sort=5&asc={{titleOrder.5}}">{{titleAfter.5|safe}}{% trans "RESOURCE_1" %}</a></th>
+							<th><a href="?page={{currentpage}}&sort=6&asc={{titleOrder.6}}">{{titleAfter.6|safe}}{% trans "RESOURCE_2" %}</a></th>
+							<th class="left-border-col">{% trans "Content" %}</th>
+						</tr>
+					</thead>
+					{% for fleet, planet in planetFleetPairs %}
+					<tr onclick="document.location.href='fleet.html?fleet={{fleet.id}}'">
+						<td>
+							{% if planet %}
+							<a href="planet.html?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}">
+								<img src="{{ STATIC_URL }}{{planet|img_path:'min'}}" class="{{planet|armyClass:player}}" width="40"/>
+							</a>
+							{% endif %}
+						</td>
+						<td class="left-border-col">{{fleet.coord.X}}</td>
+						<td>{{fleet.coord.Y}}</td>
+						<td>{{fleet.coord.Z}}</td>
+						<td class="left-border-col">{{fleet.ressourceSet.tab.0}}</td>
+						<td>{{fleet.ressourceSet.tab.1}}</td>
+						<td>{{fleet.ressourceSet.tab.2}}</td>
+						<td class="left-border-col">{{fleet|content}}</td>
+					</tr>
+					{% endfor %}
+				</table>
+			</div>
 		</div>
 	</div>
 </div>

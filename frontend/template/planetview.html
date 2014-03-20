@@ -9,105 +9,132 @@
 {% block planets_class %}active{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container page">
+	<br/>
 	<div class="row">
 		<div class="col-md-3">
-			<h1>{{planet.name}}</h1>
-			<a href="planet.html?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}">
-				<img src="{{ STATIC_URL }}{{planet|img_path:'pl'}}" class="{{planet|armyClass:player}}" width="250"/>
-			</a>
-			<br/>
-			<br/>
-			<table class="table table-condensed">
-				<caption>{% trans "Resources" %}</caption>
-				<tr><th>{% trans "RESOURCE_0" %}</th><td>{{planet.ressourceSet.tab.0}}</td></tr>
-				<tr><th>{% trans "RESOURCE_1" %}</th><td>{{planet.ressourceSet.tab.1}}</td></tr>
-				<tr><th>{% trans "RESOURCE_2" %}</th><td>{{planet.ressourceSet.tab.2}}</td></tr>
-			</table>
-			<table class="table table-condensed">
-				<caption>{% trans "Coordinates" %}</caption>
-				<tr><th>X</th><td>{{planet.coord.X}}</td></tr>
-				<tr><th>Y</th><td>{{planet.coord.Y}}</td></tr>
-				<tr><th>Z</th><td>{{planet.coord.Z}}</td></tr>
-			</table>
+			<div class="panel panel-default">
+				<div class="panel-heading"><h3>{{planet.name}}</h3></div>
+				<div class="panel-body">
+				<a href="planet.html?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}">
+					<img src="{{ STATIC_URL }}{{planet|img_path:'pl'}}" class="{{planet|armyClass:player}} img-responsive"/>
+				</a>
+				</div>
+			</div>
+			<div class="panel panel-default">
+				<table class="table table-condensed">
+					<caption>{% trans "Resources" %}</caption>
+					<tr><th>{% trans "RESOURCE_0" %}</th><td>{{planet.ressourceSet.tab.0}}</td></tr>
+					<tr><th>{% trans "RESOURCE_1" %}</th><td>{{planet.ressourceSet.tab.1}}</td></tr>
+					<tr><th>{% trans "RESOURCE_2" %}</th><td>{{planet.ressourceSet.tab.2}}</td></tr>
+				</table>
+			</div>
+			<div class="panel panel-default">
+				<table class="table table-condensed">
+					<caption>{% trans "Coordinates" %}</caption>
+					<tr><th>X</th><td>{{planet.coord.X}}</td></tr>
+					<tr><th>Y</th><td>{{planet.coord.Y}}</td></tr>
+					<tr><th>Z</th><td>{{planet.coord.Z}}</td></tr>
+				</table>
+			</div>
 		</div>
 		{% if player.id == planet.playerId %}
 		<div class="col-md-4">
-			<table class="table table-condensed">
-				<caption>{% trans "Tasks" %}</caption>
-				<tr><th>{% trans "Type" %}</th><th>{% trans "Time left" %}</th><th>{% trans "What" %}</th></tr>
-				{% for task in planet.taskQueue %}
-				<tr><td>{{task.type|planettaskname}}</td>
-					<td><span id="countdown_dashboard_{{forloop.counter0}}" title="{{task|timeleft:timeInfo|unlocalize}}">0</span></td>
-					<script type="text/javascript">
-						function countdownRedirect()
-						{
-							window.setTimeout(
-								"countdown(\"countdown_dashboard_{{forloop.counter0}}\");", 0);
-						}
-						countdownRedirect();
-					</script>	
-					<td>{{task|planettasktarget}}</td></tr>
-				{% endfor %}
-			</table>
-			<table class="table table-condensed">
-				<caption>{% trans "Buildings" %}</caption>
-				<tr><th>{% trans "Name" %}</th><th>{% trans "Level" %}</th></tr>
-				{% for level in planet.buildingList %}
-				{% if level %}
-				<tr><td>{{forloop.counter0|buildingname}}</td><td>{{level}}</td></tr>
-				{% endif %}
-				{% endfor %}
-			</table>
+			<div class="panel panel-default">
+				<table class="table table-condensed table-striped">
+					<caption>{% trans "Tasks" %}</caption>
+					<thead>
+						<tr><th>{% trans "Type" %}</th><th>{% trans "Time left" %}</th><th>{% trans "What" %}</th></tr>
+					</thead>
+					{% for task in planet.taskQueue %}
+					<tr><td>{{task.type|planettaskname}}</td>
+						<td><span id="countdown_dashboard_{{forloop.counter0}}" title="{{task|timeleft:timeInfo|unlocalize}}">0</span></td>
+						<script type="text/javascript">
+							function countdownRedirect()
+							{
+								window.setTimeout(
+									"countdown(\"countdown_dashboard_{{forloop.counter0}}\");", 0);
+							}
+							countdownRedirect();
+						</script>	
+						<td>{{task|planettasktarget}}</td></tr>
+					{% endfor %}
+				</table>
+			</div>
+			<div class="panel panel-default">
+				<table class="table table-condensed table-striped">
+					<caption>{% trans "Buildings" %}</caption>
+					<thead>
+						<tr><th>{% trans "Name" %}</th><th>{% trans "Level" %}</th></tr>
+					</thead>
+					{% for level in planet.buildingList %}
+					{% if level %}
+					<tr><td>{{forloop.counter0|buildingname}}</td><td>{{level}}</td></tr>
+					{% endif %}
+					{% endfor %}
+				</table>
+			</div>
 			{% if cannonCount %}
-			<table class="table table-condensed">
-				<caption>{% trans "Cannons" %}</caption>
-				<tr><th>{% trans "Name" %}</th><th>{% trans "Count" %}</th></tr>
-				{% for level in planet.cannonTab %}
-				{% if level %}
-				<tr><td>{{forloop.counter0|cannonname}}</td><td>{{level}}</td></tr>
-				{% endif %}
-				{% endfor %}
-			</table>
+			<div class="panel panel-default">
+				<table class="table table-condensed table-striped">
+					<caption>{% trans "Cannons" %}</caption>
+					<thead>
+						<tr><th>{% trans "Name" %}</th><th>{% trans "Count" %}</th></tr>
+					</thead>
+					{% for level in planet.cannonTab %}
+					{% if level %}<tr><td>{{forloop.counter0|cannonname}}</td><td>{{level}}</td></tr>{% endif %}
+					{% endfor %}
+				</table>
+			</div>
 			{% endif %}
 			{% if shipCount %}
-			<table class="table table-condensed">
-				<caption>{% trans "Hangar" %}</caption>
-				<tr><th>{% trans "Name" %}</th><th>{% trans "Count" %}</th></tr>
-				{% for level in planet.hangar %}
-				{% if level %}
-				<tr><td>{{forloop.counter0|shipname}}</td><td>{{level}}</td></tr>
-				{% endif %}
-				{% endfor %}
-			</table>
+			<div class="panel panel-default">
+				<table class="table table-condensed table-striped">
+					<caption>{% trans "Hangar" %}</caption>
+					<thead>
+						<tr><th>{% trans "Name" %}</th><th>{% trans "Count" %}</th></tr>
+					</thead>
+					{% for level in planet.hangar %}
+					{% if level %}
+					<tr><td>{{forloop.counter0|shipname}}</td><td>{{level}}</td></tr>
+					{% endif %}
+					{% endfor %}
+				</table>
+			</div>
 			{% endif %}
 		</div>
 		<div class="col-md-5">
-			<table class="table table-condensed">
-				<caption>{% trans "Reports" %}</caption>
-				<tr>
-					<th>{% trans "Date" %}</th>
-					<th>{% trans "Type" %}</th>
-					<th>{% trans "Object" %}</th>
-					<!--<th>{% trans "Comment" %}</th>-->
-				</tr>
-				{% for event in planet.eventList %}
-				<tr onclick="document.location.href=
-'planet.html?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}&event_id={{event.id}}'">
-					<td>{{event.time|int2datetime|date:"DATETIME_FORMAT"}}</td>
-					<td>{{event.type|eventname}}</td>
-					<td>{{event|eventvalue|linebreaks}}</td>
-					<!--<td>{{event.comment}}</td>-->
-				</tr>
-				{% endfor %}
-			</table>
+			<div class="panel panel-default">
+				<table class="table table-condensed table-striped">
+					<caption>{% trans "Reports" %}</caption>
+					<thead>
+						<tr>
+							<th>{% trans "Date" %}</th>
+							<th>{% trans "Type" %}</th>
+							<th>{% trans "Object" %}</th>
+							<!--<th>{% trans "Comment" %}</th>-->
+						</tr>
+					</thead>
+					{% for event in planet.eventList %}
+					<tr onclick="document.location.href=
+	'planet.html?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}&event_id={{event.id}}'">
+						<td>{{event.time|int2datetime|date:"DATETIME_FORMAT"}}</td>
+						<td>{{event.type|eventname}}</td>
+						<td>{{event|eventvalue|linebreaks}}</td>
+						<!--<td>{{event.comment}}</td>-->
+					</tr>
+					{% endfor %}
+				</table>
+			</div>
 		</div>
 		{% endif %}
 	</div>
 	<div class="row">
 		{% if target_event %}
 		<div class="col-md-10 col-md-offset-2">
-			{% include "report_func.html" %}
+			<div class="panel panel-default">
+				{% include "report_func.html" %}
+			</div>
 		</div>
 		{% endif %}
 	</div>

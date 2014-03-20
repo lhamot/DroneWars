@@ -6,39 +6,64 @@
 
 {% block content %}
 
-<div class="container">
+<div class="container page">
+	<br/>
 	<div class="row">
 		<div class="col-md-8 col-md-offset-2">
-			<form method="post">
-				{% csrf_token %}
-				<fieldset>
-				<legend>{% trans "Message" %}</legend>
-				<p><label>{% trans "Recipient" %}</label>{{recipientLogin}}</p>
-				{{messForm.as_p}}
-				<input type="hidden" name="senderID" value="{{senderID}}">
-				<input type="hidden" name="recipientID" value="{{recipientID}}">
-				<input type="hidden" name="recipientLogin" value="{{recipientLogin}}">
-				<p><input class="btn btn-success" type="submit" name="send_message" value="{% trans "Send message" %}" /></p>
-				</fieldset>
-			</form>
-			{% if senderID != recipientID %}
-			<form method="post">
-				{% csrf_token %}
-				<fieldset>
-				<!--<legend>{% trans "Send friendship request" %}</legend>-->
-				<!--<p><label>{% trans "Recipient" %}</label>{{recipientLogin}}</p>-->
-				<input type="hidden" name="senderID" value="{{senderID}}">
-				<input type="hidden" name="recipientID" value="{{recipientID}}">
-				<input type="hidden" name="recipientLogin" value="{{recipientLogin}}">
-				<p>
-					<input class="btn btn-success" type="submit" name="send_friendship_request" value="{% trans "Send friendship request" %}" />
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3>{% trans "Player" %} : {{recipientLogin}}</h3>
+				</div>
+				<form method="post" class="form-horizontal">
+					{% csrf_token %}
+					<fieldset>
+					<legend>{% trans "Message" %}</legend>
+					<div class="form-group">
+						<label for="id_subject" class="col-sm-3 control-label">{% trans "Subject" %}</label>
+						<div class="col-sm-8">
+					    	<input type="text" class="form-control" id="id_subject" name="subject">
+					  	</div>
+					</div>					
+					<div class="form-group">
+						<label for="id_message" class="col-sm-3 control-label">{% trans "Message" %}</label>
+						<div class="col-sm-8">
+					    	<textarea class="form-control" id="id_message" name="message"></textarea>
+					  	</div>
+					</div>					
+					<div class="form-group">
+    					<div class="col-sm-offset-3 col-sm-8">
+      						<input class="btn btn-success" type="submit" value="{% trans "Send message" %}" name="send_message">
+    					</div>
+  					</div>					
+					<input type="hidden" name="senderID" value="{{senderID}}">
+					<input type="hidden" name="recipientID" value="{{recipientID}}">
+					<input type="hidden" name="recipientLogin" value="{{recipientLogin}}">
+					</fieldset>
+				</form>
+				{% if senderID != recipientID %}
+				<form method="post" class="form-horizontal">
+					{% csrf_token %}
+					<fieldset>
+					<legend>{% trans "Others" %}</legend>
+					<input type="hidden" name="senderID" value="{{senderID}}">
+					<input type="hidden" name="recipientID" value="{{recipientID}}">
+					<input type="hidden" name="recipientLogin" value="{{recipientLogin}}">
+					<div class="form-group">
+    					<div class="col-sm-offset-3 col-sm-8">
+      						<input class="btn btn-success" type="submit" name="send_friendship_request" value="{% trans "Send friendship request" %}" />
+    					</div>
+  					</div>
 					{% if player.id == alliance.masterID and inspectedPlayer.allianceID == alliance.id %}
-					<input class="btn btn-success" type="submit" name="transfert_alliance" value="{% trans "Transfert alliance" %}" />
+					<div class="form-group">
+    					<div class="col-sm-offset-3 col-sm-8">
+      						<input class="btn btn-success" type="submit" name="transfert_alliance" value="{% trans "Transfert alliance" %}" />
+    					</div>
+  					</div>					
 					{% endif %}
-				</p>
-				</fieldset>
-			</form>
-			{% endif %}
+					</fieldset>
+				</form>
+				{% endif %}
+			</div>
 		</div>
 	</div>
 	{% if alert %}

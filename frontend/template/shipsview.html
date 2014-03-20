@@ -7,29 +7,34 @@
 {% block buildingsview_class %}active{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container page">
+	<br/>
 	<div class="row">
 		<div class="col-md-10 col-md-offset-1">
-			<table class="table">
-			<tr>
-				<th width="1">{% trans "View" %}</th>
-				<th width="1">{% trans "Name" %}</th>
-				<th>{% trans "Brief" %}</th>
-				<th width="1">{% trans "RESOURCE_0" %}</a></th>
-				<th width="1">{% trans "RESOURCE_1" %}</a></th>
-				<th width="1">{% trans "RESOURCE_2" %}</a></th>
-			</tr>
-			{% for ship in ships %}
-			<tr>
-				<td><img src="{{ STATIC_URL }}img/ships/{{ship.index}}.jpg" width="80"/></td>
-				<td style="white-space: nowrap">{{ship.index|shipname}}</td>
-				<td>{{ship.index|shipbrief}}</td>
-				<td>{{ship.price.tab.0}}</td>
-				<td>{{ship.price.tab.1}}</td>
-				<td>{{ship.price.tab.2}}</td>
-			</tr>
-			{% endfor %}
-			</table>
+			<div class="panel panel-default">
+				<table class="table table-condensed table-striped">
+					<thead>
+						<tr>
+							<th width="1">{% trans "View" %}</th>
+							<th width="1">{% trans "Name" %}</th>
+							<th>{% trans "Brief" %}</th>
+							<th width="1">{% trans "RESOURCE_0" %}</a></th>
+							<th width="1">{% trans "RESOURCE_1" %}</a></th>
+							<th width="1">{% trans "RESOURCE_2" %}</a></th>
+						</tr>
+					</thead>
+					{% for ship in ships %}
+					<tr>
+						<td><img src="{{ STATIC_URL }}img/ships/{{ship.index}}.jpg" width="80" class="img-thumbnail"/></td>
+						<td style="white-space: nowrap">{{ship.index|shipname}}</td>
+						<td>{{ship.index|shipbrief}}</td>
+						<td>{{ship.price.tab.0}}</td>
+						<td>{{ship.price.tab.1}}</td>
+						<td>{{ship.price.tab.2}}</td>
+					</tr>
+					{% endfor %}
+				</table>
+			</div>
 		</div>
 	</div>
 </div>

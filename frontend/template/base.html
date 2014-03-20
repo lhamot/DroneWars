@@ -21,10 +21,12 @@
 		
 		<script src="{{ STATIC_URL }}bootstrap-3.1.0-dist/js/bootstrap.min.js"></script>
 		<link href="{{ STATIC_URL }}bootstrap-3.1.0-dist/css/bootstrap.min.css" rel="stylesheet">
+		<!--<link href="{{ STATIC_URL }}bootstrap-3.1.0-dist/css/bootstrap-theme.min.css" rel="stylesheet">-->
 		
 		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
 		<link rel="shortcut icon" href="{{ STATIC_URL }}favicon.ico" />
 		{% block header_adds %}{% endblock %}
+		<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}magic-bootstrap.css">
 		<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}format.css">
 	</head>
 

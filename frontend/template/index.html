@@ -4,51 +4,107 @@
 
 {% block body %}
 
-<div class="container">
+<div class="container page">
+	<br/>
 	<div class="row">
-		<div class="col-md-3 col-md-offset-4">
-			<h1>Neutrynos</h1>
-			<h2>DroneWars</h2>
-			<h3>Alpha 1.9</h3>
+		<div class="col-md-6 col-md-offset-3">
+			<div class="jumbotron">
+				<h1>Neutrynos</h1>
+				<h2>&nbsp;&nbsp;&nbsp;DroneWars</h2>
+				<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Alpha 1.9</h3>
+				<br/>
+				<p>{% trans "FOUND_COMUNITY"%}</p>
+			</div>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-10 col-md-offset-1">
-			<p class="manual">{% trans "FOUND_COMUNITY"%}</p>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-3 col-md-offset-1">
-			<form method="post">
+		<div class="col-md-4">
+			<form method="post" class="form-horizontal panel panel-default">
 				{% csrf_token %}
 				<fieldset>
 					<legend>{% trans "Log in" %}</legend>
-					{{ logForm.as_p }}
-					<input class="btn btn-success" type="submit" value="{% trans "Log in" %}" name="login_action">
-					{% if logMessage %}
-					<p class="text-danger">{{logMessage}}</p>
-					{% endif %}
+					<div class="form-group">
+						<label for="id_login" class="col-sm-4 control-label">{% trans "Login" %}</label>
+						<div class="col-sm-7">
+					    	<input type="text" class="form-control" id="id_login" name="login">
+					    	{{ logForm.login.errors }}
+					  	</div>
+					</div>					
+					<div class="form-group">
+						<label for="id_password" class="col-sm-4 control-label">{% trans "Password" %}</label>
+						<div class="col-sm-7">
+					    	<input type="password" class="form-control" id="id_password" name="password">
+					    	{{ logForm.password.errors }}
+					  	</div>
+					</div>					
+					<div class="form-group">
+    					<div class="col-sm-offset-4 col-sm-7">
+      						<input class="btn btn-success" type="submit" value="{% trans "Log in" %}" name="login_action">
+    					</div>
+  					</div>					
+  					<div class="form-group">
+  						<div class="col-sm-offset-0 col-sm-12">
+							{% if logMessage %}
+							<p class="alert alert-danger alert-dismissable">{{logMessage}}</p>
+							{% endif %}
+						</div>
+					</div>
+					
 				</fieldset>
 			</form>
 	
-			<form method="post">
+			<form method="post" class="form-horizontal panel panel-default">
 				{% csrf_token %}
 				<fieldset>
 					<legend>{% trans "Create account" %}</legend>
-					{{ subForm.as_p }}
-					<input class="btn btn-success" type="submit" value="{% trans "Register" %}" name="subscribe_action">
-					{% if regMessage %}
-						{% if regMessageState %}
-							<p class="text-success">{{regMessage}}</p>
-						{% else %}
-							<p class="text-danger">{{regMessage}}</p>
+					<div class="form-group">
+						<label for="id_login" class="col-sm-4 control-label">{% trans "Login" %}</label>
+						<div class="col-sm-7">
+					    	<input type="text" class="form-control" id="id_login" name="login">
+					    	{{ subForm.login.errors }}
+					  	</div>
+					</div>					
+					<div class="form-group">
+						<label for="id_password" class="col-sm-4 control-label">{% trans "Password" %}</label>
+						<div class="col-sm-7">
+					    	<input type="password" class="form-control" id="id_password" name="password">
+					    	{{ subForm.password.errors }}
+					  	</div>
+					</div>					
+					<div class="form-group">
+						<label for="id_password2" class="col-sm-4 control-label">{% trans "Password2" %}</label>
+						<div class="col-sm-7">
+					    	<input type="password" class="form-control" id="id_password2" name="password2">
+					    	{{ subForm.password2.errors }}
+					  	</div>
+					</div>	
+					<div class="form-group">
+    					<div class="col-sm-offset-4 col-sm-7">
+							<input class="btn btn-success" type="submit" value="{% trans "Register" %}" name="subscribe_action">
+    					</div>
+  					</div>					
+  					<div class="form-group">
+  						<div class="col-sm-offset-0 col-sm-12">
+						{% if regMessage %}
+							{% if regMessageState %}
+								<p class="alert alert-success alert-dismissable">
+									<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+									{{regMessage}}
+								</p>
+							{% else %}
+								<p class="alert alert-danger alert-dismissable">
+									<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+									{{regMessage}}
+								</p>
+							{% endif %}
 						{% endif %}
-					{% endif %}
+						</div>
+					</div>
 				</fieldset>
 			</form>
 		</div>
-		<div class="col-md-7">
-			<div class="manual">{% trans "ABOUT_TEXT" %}</div>
+		<div class="col-md-8 panel panel-default">
+			<div>{% trans "ABOUT_TEXT" %}</div>
 		</div>
 	</div>
 </div>

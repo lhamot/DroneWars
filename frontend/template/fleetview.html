@@ -9,80 +9,103 @@
 {% block fleets_class %}active{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container page">
+	<br/>
 	<div class="row">
 		<div class="col-md-4">
-			<table class="table table-condensed">
-				<caption>{% trans "Tasks" %}</caption>
-				<tr><th>{% trans "Type" %}</th><th>{% trans "Time left" %}</th><th>{% trans "Where" %}</th></tr>
-				{% for task in fleet.taskQueue %}
-				<tr><td>{{task.type|fleettaskname}}</td>
-					<td><span id="countdown_dashboard_{{forloop.counter0}}" title="{{task|timeleft:timeInfo|unlocalize}}">0</span></td>
-					<script type="text/javascript">
-						function countdownRedirect()
-						{
-							window.setTimeout(
-								"countdown(\"countdown_dashboard_{{forloop.counter0}}\");", 0);
-						}
-						countdownRedirect();
-					</script>	
-					<td>{{task|fleettasktarget}}</td></tr>
-				{% endfor %}
-			</table>
-			<table class="table table-condensed">
-				<caption>{% trans "Ships" %}</caption>
-				<tr><th>{% trans "Name" %}</th><th>{% trans "Count" %}</th></tr>
-				{% for count in fleet.shipList %}
-				{% if count %}
-				<tr><td>{{forloop.counter0|shipname}}</td><td>{{count}}</td></tr>
-				{% endif %}
-				{% endfor %}
-			</table>
-			<table class="table table-condensed">
-				<caption>{% trans "Resources" %}</caption>
-				<tr><th>{% trans "RESOURCE_0" %}</th><td>{{fleet.ressourceSet.tab.0}}</td></tr>
-				<tr><th>{% trans "RESOURCE_1" %}</th><td>{{fleet.ressourceSet.tab.1}}</td></tr>
-				<tr><th>{% trans "RESOURCE_2" %}</th><td>{{fleet.ressourceSet.tab.2}}</td></tr>
-			</table>
-			<table class="table table-condensed">
-				<caption>{% trans "Coordinates" %}</caption>
-				<tr><th>X</th><td>{{fleet.coord.X}}</td></tr>
-				<tr><th>Y</th><td>{{fleet.coord.Y}}</td></tr>
-				<tr><th>Z</th><td>{{fleet.coord.Z}}</td></tr>
-			</table>
+			<div class="panel panel-default">
+				<table class="table table-condensed table-striped">
+					<caption>{% trans "Tasks" %}</caption>
+					<thead>
+						<tr><th>{% trans "Type" %}</th><th>{% trans "Time left" %}</th><th>{% trans "Where" %}</th></tr>
+					</thead>
+					{% for task in fleet.taskQueue %}
+					<tr><td>{{task.type|fleettaskname}}</td>
+						<td><span id="countdown_dashboard_{{forloop.counter0}}" title="{{task|timeleft:timeInfo|unlocalize}}">0</span></td>
+						<script type="text/javascript">
+							function countdownRedirect()
+							{
+								window.setTimeout(
+									"countdown(\"countdown_dashboard_{{forloop.counter0}}\");", 0);
+							}
+							countdownRedirect();
+						</script>	
+						<td>{{task|fleettasktarget}}</td></tr>
+					{% endfor %}
+				</table>
+			</div>
+			<div class="panel panel-default">
+				<table class="table table-condensed table-striped">
+					<caption>{% trans "Ships" %}</caption>
+					<thead>
+						<tr><th>{% trans "Name" %}</th><th>{% trans "Count" %}</th></tr>
+					</thead>
+					{% for count in fleet.shipList %}
+					{% if count %}
+					<tr><td>{{forloop.counter0|shipname}}</td><td>{{count}}</td></tr>
+					{% endif %}
+					{% endfor %}
+				</table>
+			</div>
+			<div class="panel panel-default">
+				<table class="table table-condensed">
+					<caption>{% trans "Resources" %}</caption>
+					<tr><th>{% trans "RESOURCE_0" %}</th><td>{{fleet.ressourceSet.tab.0}}</td></tr>
+					<tr><th>{% trans "RESOURCE_1" %}</th><td>{{fleet.ressourceSet.tab.1}}</td></tr>
+					<tr><th>{% trans "RESOURCE_2" %}</th><td>{{fleet.ressourceSet.tab.2}}</td></tr>
+				</table>
+			</div>
+			<div class="panel panel-default">
+				<table class="table table-condensed">
+					<caption>{% trans "Coordinates" %}</caption>
+					<tr><th>X</th><td>{{fleet.coord.X}}</td></tr>
+					<tr><th>Y</th><td>{{fleet.coord.Y}}</td></tr>
+					<tr><th>Z</th><td>{{fleet.coord.Z}}</td></tr>
+				</table>
+			</div>
 		</div>
 		<div class="col-md-5">
-			<table class="table table-condensed">
-				<caption>{% trans "Reports" %}</caption>
-				<tr>
-					<th>{% trans "Date" %}</th>
-					<th>{% trans "Type" %}</th>
-					<th>{% trans "Object" %}</th>
-					<!--<th>{% trans "Comment" %}</th>-->
-				</tr>
-				{% for event in fleet.eventList %}
-				<tr onclick="document.location.href='fleet.html?fleet={{fleet.id}}&event_id={{event.id}}'">
-					<td>{{event.time|int2datetime|date:"DATETIME_FORMAT"}}</td>
-					<td>{{event.type|eventname}}</td>
-					<td>{{event|eventvalue|linebreaks}}</td>
-					<!--<td>{{event.comment}}</td>-->
-				</tr>
-				{% endfor %}
-			</table>
+			<div class="panel panel-default">
+				<table class="table table-condensed table-striped">
+					<caption>{% trans "Reports" %}</caption>
+					<thead>
+					<tr>
+						<th>{% trans "Date" %}</th>
+						<th>{% trans "Type" %}</th>
+						<th>{% trans "Object" %}</th>
+						<!--<th>{% trans "Comment" %}</th>-->
+					</tr>
+					</thead>
+					{% for event in fleet.eventList %}
+					<tr onclick="document.location.href='fleet.html?fleet={{fleet.id}}&event_id={{event.id}}'">
+						<td>{{event.time|int2datetime|date:"DATETIME_FORMAT"}}</td>
+						<td>{{event.type|eventname}}</td>
+						<td>{{event|eventvalue|linebreaks}}</td>
+						<!--<td>{{event.comment}}</td>-->
+					</tr>
+					{% endfor %}
+				</table>
+			</div>
 		</div>
 		{% if planet %}
 		<div class="col-md-3">
-			<h1>{{planet.name}}</h1>
-			<a href="planet.html?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}">
-				<img src="{{ STATIC_URL }}{{planet|img_path:'pl'}}" class="{{planet|armyClass:player}}" width="250"/>
-			</a>
+			<div class="panel panel-default">
+				<div class="panel-heading"><h3>{{planet.name}}</h3></div>
+				<div class="panel-body">
+					<a href="planet.html?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}">
+						<img src="{{ STATIC_URL }}{{planet|img_path:'pl'}}" class="{{planet|armyClass:player}} img-responsive"/>
+					</a>
+				</div>
+			</div>
 		</div>
 		{% endif %}
 	</div>
 	{% if target_event %}
 	<div class="row">
 		<div class="col-md-10 col-md-offset-2">
-			{% include "report_func.html" %}
+			<div class="panel panel-default">
+				{% include "report_func.html" %}
+			</div>
 		</div>
 	</div>
 	{% endif %}
