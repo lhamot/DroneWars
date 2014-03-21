@@ -455,6 +455,7 @@ int initDroneWars(LuaTools::Engine& engine)
 	;
 	Class<TypedPtree>(L, "UserData")
 	.ctor()
+	.ctor<TypedPtree>()
 	.methode("size", &TypedPtree::size)
 	.methode("empty", &TypedPtree::empty)
 	.methode("clear", &TypedPtree::clear)
