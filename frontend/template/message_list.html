@@ -28,6 +28,8 @@
 						</tr>
 					</table>
 				</div>
+				{% empty %}
+			<div class="alert alert-info">{% trans "No message received." %}</div>
 			{% endfor %}
 		</div>
 	</div>

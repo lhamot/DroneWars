@@ -36,23 +36,8 @@
     </style>
 {% endblock %}
 
-{% block code_content %}
-<div id="blocklyDiv" style="height: 60%; width: 95%; border: 1px solid #ccc; color: #000000">
-</div>
-{% block toolbox %}{% endblock %}
-<script>
-	Blockly.inject(document.getElementById('blocklyDiv'), { 
-			path: '{{ STATIC_URL }}blockly/',
-			toolbox: document.getElementById('toolbox')
-		}
-	);
-	var xml_text = "{{codeData.blocklyCode|escapejs}}";
-	var xml = Blockly.Xml.textToDom(xml_text);                       
-	Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
-</script>
-<div class="container">
-	<div class="row">
-		<div class="col-md-6">
+{% block buttons %}
+		<div class="btn-group">
 			<input class="btn btn-primary" type="submit" value="{% trans "Import" %}" name="import_button" 
 				onclick="
 					var xml_text = prompt('Load', '');
@@ -87,41 +72,58 @@
 					}
 					"/>
 		</div>
+{% endblock %}				
+{% block messages %}					
 		{%if codeData.lastError %}
-		<div class="alert alert-danger col-md-10">
+		<div class="alert alert-danger">
 			<button type="button" class="close" data-dismiss="alert">&times;</button>
 			<strong>{{codeData.lastError|safe|linebreaksbr}}</strong>
 		</div>
 		{% endif %}
 		{%if errorMessage %}
-		<div class="alert alert-danger col-md-10">
+		<div class="alert alert-danger">
 			<button type="button" class="close" data-dismiss="alert">&times;</button>
 			<h4>{% trans "Error!" %}</h4>{{errorMessage|safe}}
 		</div>
 		{% endif %}
 		{%if codeData.blocklyCodeDate < codeData.codeDate %}
-		<div class="alert alert-warning col-md-10">
+		<div class="alert alert-warning">
 			<button type="button" class="close" data-dismiss="alert">&times;</button>
 			<h4>{% trans "Warning!" %}</h4>
 			{% trans "Your visual script is obsolete. If you save, it will reset your textual script." %}
 		</div>
 		{% endif %}
 		{%if message %}
-		<div class="alert alert-success col-md-10">
+		<div class="alert alert-success">
 			<button type="button" class="close" data-dismiss="alert">&times;</button>
 			<strong>{{message|safe}}</strong>
 		</div>
 		{% endif %}
-	</div>
-</div>
-<form method="post" action="" id="saveBlocklyForm">
-{% csrf_token %}
-<input type="hidden" id="blocklyXML" name="blocklyXML" value=""/>
-<input type="hidden" id="scriptXML" name="scriptXML" value=""/>
-<input type="hidden" value="" name="save_button_error" id="save_button_error"/>
-</form>
-<div title="{% trans "Export" %}" id="export_dialog" class="dialog">
-	<p class="neutrybase" id="export_dialog_p"></p>
-</div>
+		
+		<form method="post" action="" id="saveBlocklyForm">
+		{% csrf_token %}
+		<input type="hidden" id="blocklyXML" name="blocklyXML" value=""/>
+		<input type="hidden" id="scriptXML" name="scriptXML" value=""/>
+		<input type="hidden" value="" name="save_button_error" id="save_button_error"/>
+		</form>
+		<div title="{% trans "Export" %}" id="export_dialog" class="dialog">
+			<p class="neutrybase" id="export_dialog_p"></p>
+		</div>
+{% endblock %}
+
+{% block code_content %}
+<!-- Blockly -->
+<div id="blocklyDiv" style="height: 600px; width: 95%; border: 1px solid #ccc; color: #000000"></div>
+{% block toolbox %}{% endblock %}
+<script>
+	Blockly.inject(document.getElementById('blocklyDiv'), { 
+			path: '{{ STATIC_URL }}blockly/',
+			toolbox: document.getElementById('toolbox')
+		}
+	);
+	var xml_text = "{{codeData.blocklyCode|escapejs}}";
+	var xml = Blockly.Xml.textToDom(xml_text);                       
+	Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
+</script>
 
 {% endblock %}

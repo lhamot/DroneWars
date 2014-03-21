@@ -10,7 +10,11 @@
 <div class="container page">
 	<br/>
 	<div class="row">
+		{% if target_event %}
 		<div class="col-md-6">
+		{% else %}
+		<div class="col-md-8 col-md-offset-2">
+		{% endif %}
 			<div class="panel panel-default">
 				<table class="table table-striped table-condensed table-hover">
 				<thead>

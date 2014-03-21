@@ -66,12 +66,7 @@ def CreateMessageView(request):
                                    recipientID, 
                                    messInfo["subject"].encode('utf-8'), 
                                    messInfo["message"].encode('utf-8'))
-                messages = service.getMessages(pid)
-                return render(request, 'message_list.html', {
-                    'player': player,
-                    'messages': messages,
-                    'alert': _("Message successfully sent"),
-                })
+                alert = _("Message successfully sent")
         elif "send_friendship_request" in request.POST:
             playerA = int(request.POST["senderID"])
             if playerA == pid:

@@ -96,7 +96,7 @@ def OutPage(request):
                 if optPlayer.player != None:
                     request.session.clear()
                     request.session["PlayerID"] = optPlayer.player.id
-                    return redirect("/ingame/codes.html") 
+                    return redirect("/ingame/planetlist.html") 
                 else:
                     logMessage = _("Wrong login or password.")
         else:

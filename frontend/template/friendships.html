@@ -21,6 +21,8 @@
 							<a href="friends.html?accept=False&sender={{player.id}}">{% trans "Reject" %}</a>
 						</td>
 					</tr>
+					{% empty %}
+					<tr><td colspan="2">{% trans "No friendship request was received." %}</tr></td>
 					{% endfor %}
 				</table>
 			</div>
@@ -36,6 +38,8 @@
 							<a href="friends.html?cancel&recipientID={{player.id}}">{% trans "Close" %}</a>
 						</td>
 					</tr>
+					{% empty %}
+					<tr><td colspan="2">{% trans "No friendship request was sent." %}</tr></td>
 					{% endfor %}
 				</table>
 			</div>
@@ -53,6 +57,8 @@
 							<a href="friends.html?close&friend={{player.id}}">{% trans "Close" %}</a>
 						</td>
 					</tr>
+					{% empty %}
+					<tr><td colspan="2">{% trans "You doesn't have friend." %}</tr></td>
 					{% endfor %}
 				</table>
 			</div>

@@ -12,7 +12,34 @@
 			<nav class="navbar navbar-inverse" role="navigation">
 				<div class="container">
 						<ul class="nav navbar-nav">
-							<li class="{% block codes_class %}tab{% endblock %}"><a href="/ingame/codes.html">{% trans "Command" %}</a></li>
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Command" %}<b class="caret"></b></a>
+								<ul class="dropdown-menu">
+									<li
+									{% if name == "Planet" and mode == "blockly" %}
+										class="active"
+									{% endif %}
+										><a href="/ingame/codes/planets/blocks.html">{% trans "Planets" %} : {% trans "Visual" %}</a></li>
+									<li 
+									{% if name == "Planet" and mode == "text" %}
+										class="active"
+									{% endif %}
+										><a href="/ingame/codes/planets/text.html">{% trans "Planets" %} : {% trans "Script" %}</a></li>
+									{% if level >= 3 %}
+									<li class="divider-vertical"></li>
+									<li 
+									{% if name == "Fleet" and mode == "blockly" %}
+										class="active"
+									{% endif %}
+										><a href="/ingame/codes/fleets/blocks.html">{% trans "Fleets" %} : {% trans "Visual" %}</a></li>
+									<li 
+									{% if name == "Fleet" and mode == "text" %}
+										class="active"
+									{% endif %}
+										><a href="/ingame/codes/fleets/text.html">{% trans "Fleets" %} : {% trans "Script" %}</a></li>
+									{% endif %}
+								</ul>
+							</li>
 							<li class="{% block planets_class %}tab{% endblock %}"><a href="/ingame/planetlist.html">{% trans "Planets" %}</a></li>
 							<li class="{% block fleets_class %}tab{% endblock %}"><a href="/ingame/fleetlist.html">{% trans "Fleets" %}</a></li>
 							<li class="{% block skills_class %}tab{% endblock %}"><a href="/ingame/skilllist.html">{% trans "Skills" %}</a></li>
@@ -55,10 +82,16 @@
 						</ul>
 				</div>
 			</nav>
-			<div class="container">
+			<div class="container page">
 				<div class="row">
 					{% if helpMessage %}
-					<div class="col-md-4 col-md-offset-1 tutorial">{{helpMessage|safe}}</div>
+					<br/>
+					<div class="col-md-8 col-md-offset-2">
+						<p class="alert alert-info alert-dismissable">
+							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+							{{helpMessage|safe}}
+						</p>
+					</div>
 					{% endif %}
 				</div>
 			</div>

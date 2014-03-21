@@ -7,16 +7,16 @@
 <link rel="stylesheet" href="{{ STATIC_URL }}CodeMirror/theme/cobalt.css">
 {% endblock %}
 
-{% block code_content %}
+{% block buttons %}
 <form method="post" action="">
-<textarea id="TextArea" name="TextArea">{{codeData.code}}</textarea>
 {% csrf_token %}
-<div class="container">
-<div class="row">
-<input class="btn btn-primary" type="submit" value="Reload" name="reload_button"/>
-<input class="btn btn-primary" type="submit" value="Save" name="save_button"/>
+<div class="btn-group">
+	<input class="btn btn-primary" type="submit" value="Reload" name="reload_button"/>
+	<input class="btn btn-primary" type="submit" value="Save" name="save_button"/>
 </div>
-</div>
+{% endblock %}
+
+{% block messages %}
 {%if codeData.lastError %}
 <div class="alert text-danger">
 	<button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -24,6 +24,10 @@
 </div>
 {% endif %}
 <p>{{message}}</p>
+{% endblock %}
+
+{% block code_content %}
+<textarea id="TextArea" name="TextArea">{{codeData.code}}</textarea>
 <script>
 	var editor = CodeMirror.fromTextArea(document.getElementById("TextArea"), {
 	  tabMode: "indent",
@@ -35,5 +39,4 @@
 	editor.setSize("100%", "600px");
 	window.editor = editor;
 </script>
-</form>
 {% endblock %}

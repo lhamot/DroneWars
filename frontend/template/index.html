@@ -45,7 +45,10 @@
   					<div class="form-group">
   						<div class="col-sm-offset-0 col-sm-12">
 							{% if logMessage %}
-							<p class="alert alert-danger alert-dismissable">{{logMessage}}</p>
+							<p class="alert alert-danger alert-dismissable">
+								<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+								{{logMessage}}
+							</p>
 							{% endif %}
 						</div>
 					</div>
@@ -103,8 +106,8 @@
 				</fieldset>
 			</form>
 		</div>
-		<div class="col-md-8 panel panel-default">
-			<div>{% trans "ABOUT_TEXT" %}</div>
+		<div class="col-md-8">
+			<div class="panel panel-default">{% trans "ABOUT_TEXT" %}</div>
 		</div>
 	</div>
 </div>
