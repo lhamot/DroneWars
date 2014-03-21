@@ -1381,8 +1381,9 @@ try
 		received.reserve(100);
 		(*session_) <<
 		            boost::format(GetPlayerRequest) %
-		            "JOIN FriendshipRequest "
-		            "ON sender = Player.id AND recipient = ? ",
+		            "JOIN FriendshipRequest ON"
+		            "  FriendshipRequest.sender = Player.id AND"
+					"  FriendshipRequest.recipient = ? ",
 		            into(received), use(player), now;
 		result.received.reserve(received.size());
 		for(PlayerTmp const& fr : received)
@@ -1393,8 +1394,9 @@ try
 		sent.reserve(100);
 		(*session_) <<
 		            boost::format(GetPlayerRequest) %
-		            "JOIN FriendshipRequest "
-		            "ON sender = ? AND recipient = Player.id ",
+		            "JOIN FriendshipRequest ON"
+		            "  FriendshipRequest.sender = ? AND"
+					"  FriendshipRequest.recipient = Player.id ",
 		            into(sent), use(player), now;
 		result.sent.reserve(sent.size());
 		for(PlayerTmp const& fr : sent)
