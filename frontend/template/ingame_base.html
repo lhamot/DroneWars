@@ -25,8 +25,8 @@
 										class="active"
 									{% endif %}
 										><a href="/ingame/codes/planets/text.html">{% trans "Planets" %} : {% trans "Script" %}</a></li>
-									{% if level >= 3 %}
-									<li class="divider-vertical"></li>
+									{% comment %}{% if player.tutoDisplayed.CoddingLevelTag >= 3 %}{% endcomment %}
+									<li class="divider-horizontal"></li>
 									<li 
 									{% if name == "Fleet" and mode == "blockly" %}
 										class="active"
@@ -37,7 +37,7 @@
 										class="active"
 									{% endif %}
 										><a href="/ingame/codes/fleets/text.html">{% trans "Fleets" %} : {% trans "Script" %}</a></li>
-									{% endif %}
+									{% comment %}{% endif %}{% endcomment %}
 								</ul>
 							</li>
 							<li class="{% block planets_class %}tab{% endblock %}"><a href="/ingame/planetlist.html">{% trans "Planets" %}</a></li>
