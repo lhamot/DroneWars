@@ -1383,7 +1383,7 @@ try
 		            boost::format(GetPlayerRequest) %
 		            "JOIN FriendshipRequest ON"
 		            "  FriendshipRequest.sender = Player.id AND"
-					"  FriendshipRequest.recipient = ? ",
+		            "  FriendshipRequest.recipient = ? ",
 		            into(received), use(player), now;
 		result.received.reserve(received.size());
 		for(PlayerTmp const& fr : received)
@@ -1396,7 +1396,7 @@ try
 		            boost::format(GetPlayerRequest) %
 		            "JOIN FriendshipRequest ON"
 		            "  FriendshipRequest.sender = ? AND"
-					"  FriendshipRequest.recipient = Player.id ",
+		            "  FriendshipRequest.recipient = Player.id ",
 		            into(sent), use(player), now;
 		result.sent.reserve(sent.size());
 		for(PlayerTmp const& fr : sent)

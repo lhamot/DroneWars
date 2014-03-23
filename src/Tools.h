@@ -14,6 +14,25 @@
 //!   préparer les locale et les réutiliser.
 std::locale getLocal(std::string const& loc);
 
+//! Arrondie pour que (moyenne des valeurs arrondies) == (valeur entrée)
+//! @pre attend une valeur non négative
+template<typename O>
+O statRound(double val)
+{
+	//bool sign = signbit(val);
+	//if (sign)
+	//	val = -val;
+	double intpart = 0.;
+	double const fracpart = modf(val, &intpart);
+	O result = static_cast<O>(intpart + 0.5);
+	O const fracpart2 = static_cast<O>((fracpart * 10000.) + 0.5);
+	if(fracpart2 > static_cast<O>(rand() % 10000))
+		++result;
+	//if (sign)
+	//	result = -result;
+	return result;
+}
+
 
 //! @brief Recherche un iterateur dans une map et le retourne
 //! @throw std::logic_error si la clé n'existe pas

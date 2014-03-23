@@ -432,10 +432,10 @@ void addTask(Planet& planet, uint32_t roundCount, Building::Enum building)
 		BOOST_THROW_EXCEPTION(
 		  std::logic_error("Can't create Building without CommandCenter"));
 
-	uint32_t const duration =
-	  static_cast<uint32_t>(
-	    ((Building::List[building].price.tab[0] * pow(buNextLevel, 2.)) /
-	     (log(centerLevel + 1) * 100)) + 0.5);
+	double const floatDuration =
+	  Building::List[building].price.tab[0] /
+	  (centerLevel * pow(1.15, centerLevel) * 4);
+	uint32_t const duration = statRound<uint32_t>(floatDuration);
 	PlanetTask task(PlanetTask::UpgradeBuilding, roundCount, duration);
 	task.value = building;
 	RessourceSet const price = getBuilingPrice(building, buNextLevel);
@@ -455,14 +455,13 @@ void addTask(Planet& planet, uint32_t roundCount, Building::Enum building)
 //! @pre La planète peut payer
 void addTask(Planet& planet, uint32_t roundCount, Ship::Enum ship, uint32_t number)
 {
-	size_t const div = 7;
 	size_t const factoryLvl = planet.buildingList[Building::Factory];
 	if(factoryLvl == 0)
 		BOOST_THROW_EXCEPTION(std::logic_error("Need Factory"));
-	size_t const metal = Ship::List[ship].price.tab[0];
-	uint32_t duration = static_cast<uint32_t>(((metal / div) / factoryLvl) + 0.5);
-	if(duration == 0)
-		duration = 1;
+	double const floatDuration =
+	  Ship::List[ship].price.tab[0] /
+	  (factoryLvl * pow(1.15, factoryLvl) * 4);
+	uint32_t const duration = statRound<uint32_t>(floatDuration);
 	PlanetTask task(PlanetTask::MakeShip, roundCount, duration);
 	task.value = ship;
 	task.value2 = number;
@@ -482,14 +481,13 @@ void addTask(Planet& planet,
              Cannon::Enum cannon,
              uint32_t number)
 {
-	size_t const div = 7;
 	size_t const factoryLvl = planet.buildingList[Building::Factory];
 	if(factoryLvl == 0)
 		BOOST_THROW_EXCEPTION(std::logic_error("Need Factory"));
-	size_t const metal = Cannon::List[cannon].price.tab[0];
-	uint32_t duration = static_cast<uint32_t>(((metal / div) / factoryLvl) + 0.5);
-	if(duration == 0)
-		duration = 1;
+	double const floatDuration =
+	  Cannon::List[cannon].price.tab[0] /
+	  (factoryLvl * pow(1.15, factoryLvl) * 4);
+	uint32_t const duration = statRound<uint32_t>(floatDuration);
 	PlanetTask task(PlanetTask::MakeCannon, roundCount, duration);
 	if(cannon >= Cannon::Count)
 		BOOST_THROW_EXCEPTION(std::logic_error("Unconsistent cannon type"));
