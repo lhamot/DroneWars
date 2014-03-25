@@ -18,12 +18,17 @@
 
 {% block messages %}
 {%if codeData.lastError %}
-<div class="alert text-danger">
+<div class="alert alert-danger">
 	<button type="button" class="close" data-dismiss="alert">&times;</button>
 	<strong>{{codeData.lastError|safe|linebreaksbr}}</strong>
 </div>
 {% endif %}
-<p>{{message}}</p>
+{%if message %}
+<div class="alert alert-success">
+	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	{{message}}
+</div>
+{% endif %}
 {% endblock %}
 
 {% block code_content %}
