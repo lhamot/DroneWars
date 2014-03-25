@@ -184,7 +184,6 @@ def PlanetListView(request):
         'asc': asc,
         'titleAfter': titleAfter,
         'titleOrder': titleOrder,
-        'helpMessage': helpMessage,
     })
 
 
@@ -516,7 +515,12 @@ def BlocklyPlanetsCodesView(request):
     codeData = player.planetsCode
     tutosText = N_("BLOCKLY_TUTO_" + str(plLvl)) if plLvl <= 8 else None
     
-    helpMessage = _("CODE_TUTOS") if not CodeViewTutoTag in player.tutoDisplayed else None
+    if not CodeViewTutoTag in player.tutoDisplayed:
+        helpMessage = _("CODE_TUTOS")
+        service.incrementTutoDisplayed(pid, CodeViewTutoTag)
+    else:
+        helpMessage = None
+    
     timeInfo = service.getTimeInfo()
     
     tutoInfoIsSeen = checkIfTutoInfoSeen(service, player)
