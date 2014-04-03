@@ -245,9 +245,8 @@ def PlanetView(request):
     if fight_report:
         prepareFightReport(fight_report, pid) 
     
-    player = Player()
-    player.id = pid; #Pour éviter une requete au serveur(Les raport de combat ont besoin de l'id)
-    
+    player = service.getPlayer(pid)
+        
     return render(request, 'planetview.html', {
         'player': player,
         'planet' : target,
@@ -338,9 +337,8 @@ def FleetView(request):
     if fight_report:
         prepareFightReport(fight_report, pid) 
 
-    player = Player()
-    player.id = pid; #Pour éviter une requete au serveur(Les raport de combat ont besoin de l'id)
-    
+    player = service.getPlayer(pid)
+        
     return render(request, 'fleetview.html', {
         'player': player,
         'fleet': fleet,

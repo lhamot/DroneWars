@@ -40,6 +40,8 @@ def getBuilingPrice(building, targetLevel):
 def BuildingsView(request):
     service = createEngineClient()
     buildings = service.getBuildingsInfo()
+    pid = request.session["PlayerID"]
+    player = service.getPlayer(pid)
     
     #buildings = [b for b in buildings if b.index in {0, 1, 4}]
     prices = None
@@ -50,6 +52,7 @@ def BuildingsView(request):
         prices = [getBuilingPrice(target, i) for i in range(1, 60)]
 
     return render(request, 'buildingsview.html', {
+        'player': player,
         'buildings': buildings,
         'prices': prices,
         'target': target
@@ -60,10 +63,13 @@ def BuildingsView(request):
 def CannonsView(request):
     service = createEngineClient()
     cannons = service.getCannonsInfo()
+    pid = request.session["PlayerID"]
+    player = service.getPlayer(pid)
     
     #cannons = [b for b in cannons if b.index in {0, 1, 4}]
 
     return render(request, 'cannonsview.html', {
+        'player': player,
         'cannons': cannons
     })    
    
@@ -72,10 +78,13 @@ def CannonsView(request):
 def ShipsView(request):
     service = createEngineClient()
     ships = service.getShipsInfo()
+    pid = request.session["PlayerID"]
+    player = service.getPlayer(pid)
     
     #cannons = [b for b in cannons if b.index in {0, 1, 4}]
 
     return render(request, 'shipsview.html', {
+        'player': player,
         'ships': ships
     })
     
