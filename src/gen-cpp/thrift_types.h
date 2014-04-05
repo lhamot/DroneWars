@@ -161,7 +161,10 @@ struct Sort_Type
 		Z = 3,
 		M = 4,
 		C = 5,
-		L = 6
+		L = 6,
+		S = 7,
+		D = 8,
+		B = 9
 	};
 };
 

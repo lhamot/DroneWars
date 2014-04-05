@@ -207,7 +207,10 @@ int _kSort_TypeValues[] =
 	Sort_Type::Z,
 	Sort_Type::M,
 	Sort_Type::C,
-	Sort_Type::L
+	Sort_Type::L,
+	Sort_Type::S,
+	Sort_Type::D,
+	Sort_Type::B
 };
 const char* _kSort_TypeNames[] =
 {
@@ -217,9 +220,12 @@ const char* _kSort_TypeNames[] =
 	"Z",
 	"M",
 	"C",
-	"L"
+	"L",
+	"S",
+	"D",
+	"B"
 };
-const std::map<int, const char*> _Sort_Type_VALUES_TO_NAMES(::apache::thrift::TEnumIterator(7, _kSort_TypeValues, _kSort_TypeNames), ::apache::thrift::TEnumIterator(-1, NULL, NULL));
+const std::map<int, const char*> _Sort_Type_VALUES_TO_NAMES(::apache::thrift::TEnumIterator(10, _kSort_TypeValues, _kSort_TypeNames), ::apache::thrift::TEnumIterator(-1, NULL, NULL));
 
 const char* Coord::ascii_fingerprint = "CA961494BB2E3F092A20C7271AA01847";
 const uint8_t Coord::binary_fingerprint[16] = {0xCA, 0x96, 0x14, 0x94, 0xBB, 0x2E, 0x3F, 0x09, 0x2A, 0x20, 0xC7, 0x27, 0x1A, 0xA0, 0x18, 0x47};

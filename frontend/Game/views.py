@@ -150,7 +150,7 @@ def PlanetListView(request):
     
     page, sort, asc = getSortInfo(request, Sort_Type.Name)
 
-    playerPlanets = service.getPlayerPlanets(pid, page * 10, (page + 1) * 10, sort, asc)
+    playerPlanets = service.getPlayerPlanets(pid, page * 10, (page + 1) * 10, sort, asc, 0)
     
     PlanetViewTutoTag = "PlanetView"
     if not PlanetViewTutoTag in player.tutoDisplayed:
@@ -270,7 +270,7 @@ def FleetListView(request):
     
     page, sort, asc = getSortInfo(request, Sort_Type.X)
 
-    playerFleets = service.getPlayerFleets(pid, page * 10, (page + 1) * 10, sort, asc)
+    playerFleets = service.getPlayerFleets(pid, page * 10, (page + 1) * 10, sort, asc, 0)
     
     planetMap = {}
     for planet in playerFleets.planetList:

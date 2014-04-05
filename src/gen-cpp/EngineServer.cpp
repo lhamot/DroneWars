@@ -526,6 +526,17 @@ uint32_t EngineServer_getPlayerFleets_args::read(::apache::thrift::protocol::TPr
 				xfer += iprot->skip(ftype);
 			}
 			break;
+		case 60:
+			if(ftype == ::apache::thrift::protocol::T_I32)
+			{
+				xfer += iprot->readI32(this->value);
+				this->__isset.value = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
 		default:
 			xfer += iprot->skip(ftype);
 			break;
@@ -563,6 +574,10 @@ uint32_t EngineServer_getPlayerFleets_args::write(::apache::thrift::protocol::TP
 	xfer += oprot->writeBool(this->asc);
 	xfer += oprot->writeFieldEnd();
 
+	xfer += oprot->writeFieldBegin("value", ::apache::thrift::protocol::T_I32, 60);
+	xfer += oprot->writeI32(this->value);
+	xfer += oprot->writeFieldEnd();
+
 	xfer += oprot->writeFieldStop();
 	xfer += oprot->writeStructEnd();
 	return xfer;
@@ -591,6 +606,10 @@ uint32_t EngineServer_getPlayerFleets_pargs::write(::apache::thrift::protocol::T
 
 	xfer += oprot->writeFieldBegin("asc", ::apache::thrift::protocol::T_BOOL, 50);
 	xfer += oprot->writeBool((*(this->asc)));
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldBegin("value", ::apache::thrift::protocol::T_I32, 60);
+	xfer += oprot->writeI32((*(this->value)));
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldStop();
@@ -785,6 +804,17 @@ uint32_t EngineServer_getPlayerPlanets_args::read(::apache::thrift::protocol::TP
 				xfer += iprot->skip(ftype);
 			}
 			break;
+		case 60:
+			if(ftype == ::apache::thrift::protocol::T_I32)
+			{
+				xfer += iprot->readI32(this->value);
+				this->__isset.value = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
 		default:
 			xfer += iprot->skip(ftype);
 			break;
@@ -822,6 +852,10 @@ uint32_t EngineServer_getPlayerPlanets_args::write(::apache::thrift::protocol::T
 	xfer += oprot->writeBool(this->asc);
 	xfer += oprot->writeFieldEnd();
 
+	xfer += oprot->writeFieldBegin("value", ::apache::thrift::protocol::T_I32, 60);
+	xfer += oprot->writeI32(this->value);
+	xfer += oprot->writeFieldEnd();
+
 	xfer += oprot->writeFieldStop();
 	xfer += oprot->writeStructEnd();
 	return xfer;
@@ -850,6 +884,10 @@ uint32_t EngineServer_getPlayerPlanets_pargs::write(::apache::thrift::protocol::
 
 	xfer += oprot->writeFieldBegin("asc", ::apache::thrift::protocol::T_BOOL, 50);
 	xfer += oprot->writeBool((*(this->asc)));
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldBegin("value", ::apache::thrift::protocol::T_I32, 60);
+	xfer += oprot->writeI32((*(this->value)));
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldStop();
@@ -7400,13 +7438,13 @@ bool EngineServerClient::recv_addPlayer()
 	throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "addPlayer failed: unknown result");
 }
 
-void EngineServerClient::getPlayerFleets(FleetList& _return, const Player_ID pid, const int32_t beginIndex, const int32_t endIndex, const Sort_Type::type sortType, const bool asc)
+void EngineServerClient::getPlayerFleets(FleetList& _return, const Player_ID pid, const int32_t beginIndex, const int32_t endIndex, const Sort_Type::type sortType, const bool asc, const int32_t value)
 {
-	send_getPlayerFleets(pid, beginIndex, endIndex, sortType, asc);
+	send_getPlayerFleets(pid, beginIndex, endIndex, sortType, asc, value);
 	recv_getPlayerFleets(_return);
 }
 
-void EngineServerClient::send_getPlayerFleets(const Player_ID pid, const int32_t beginIndex, const int32_t endIndex, const Sort_Type::type sortType, const bool asc)
+void EngineServerClient::send_getPlayerFleets(const Player_ID pid, const int32_t beginIndex, const int32_t endIndex, const Sort_Type::type sortType, const bool asc, const int32_t value)
 {
 	int32_t cseqid = 0;
 	oprot_->writeMessageBegin("getPlayerFleets", ::apache::thrift::protocol::T_CALL, cseqid);
@@ -7417,6 +7455,7 @@ void EngineServerClient::send_getPlayerFleets(const Player_ID pid, const int32_t
 	args.endIndex = &endIndex;
 	args.sortType = &sortType;
 	args.asc = &asc;
+	args.value = &value;
 	args.write(oprot_);
 
 	oprot_->writeMessageEnd();
@@ -7466,13 +7505,13 @@ void EngineServerClient::recv_getPlayerFleets(FleetList& _return)
 	throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "getPlayerFleets failed: unknown result");
 }
 
-void EngineServerClient::getPlayerPlanets(PlanetList& _return, const Player_ID pid, const int32_t beginIndex, const int32_t endIndex, const Sort_Type::type sortType, const bool asc)
+void EngineServerClient::getPlayerPlanets(PlanetList& _return, const Player_ID pid, const int32_t beginIndex, const int32_t endIndex, const Sort_Type::type sortType, const bool asc, const int32_t value)
 {
-	send_getPlayerPlanets(pid, beginIndex, endIndex, sortType, asc);
+	send_getPlayerPlanets(pid, beginIndex, endIndex, sortType, asc, value);
 	recv_getPlayerPlanets(_return);
 }
 
-void EngineServerClient::send_getPlayerPlanets(const Player_ID pid, const int32_t beginIndex, const int32_t endIndex, const Sort_Type::type sortType, const bool asc)
+void EngineServerClient::send_getPlayerPlanets(const Player_ID pid, const int32_t beginIndex, const int32_t endIndex, const Sort_Type::type sortType, const bool asc, const int32_t value)
 {
 	int32_t cseqid = 0;
 	oprot_->writeMessageBegin("getPlayerPlanets", ::apache::thrift::protocol::T_CALL, cseqid);
@@ -7483,6 +7522,7 @@ void EngineServerClient::send_getPlayerPlanets(const Player_ID pid, const int32_
 	args.endIndex = &endIndex;
 	args.sortType = &sortType;
 	args.asc = &asc;
+	args.value = &value;
 	args.write(oprot_);
 
 	oprot_->writeMessageEnd();
@@ -9861,7 +9901,7 @@ void EngineServerProcessor::process_getPlayerFleets(int32_t seqid, ::apache::thr
 	EngineServer_getPlayerFleets_result result;
 	try
 	{
-		iface_->getPlayerFleets(result.success, args.pid, args.beginIndex, args.endIndex, args.sortType, args.asc);
+		iface_->getPlayerFleets(result.success, args.pid, args.beginIndex, args.endIndex, args.sortType, args.asc, args.value);
 		result.__isset.success = true;
 	}
 	catch(const std::exception& e)
@@ -9924,7 +9964,7 @@ void EngineServerProcessor::process_getPlayerPlanets(int32_t seqid, ::apache::th
 	EngineServer_getPlayerPlanets_result result;
 	try
 	{
-		iface_->getPlayerPlanets(result.success, args.pid, args.beginIndex, args.endIndex, args.sortType, args.asc);
+		iface_->getPlayerPlanets(result.success, args.pid, args.beginIndex, args.endIndex, args.sortType, args.asc, args.value);
 		result.__isset.success = true;
 	}
 	catch(const std::exception& e)

@@ -274,6 +274,9 @@ class Sort_Type:
   M = 4
   C = 5
   L = 6
+  S = 7
+  D = 8
+  B = 9
 
   _VALUES_TO_NAMES = {
     0: "Name",
@@ -283,6 +286,9 @@ class Sort_Type:
     4: "M",
     5: "C",
     6: "L",
+    7: "S",
+    8: "D",
+    9: "B",
   }
 
   _NAMES_TO_VALUES = {
@@ -293,6 +299,9 @@ class Sort_Type:
     "M": 4,
     "C": 5,
     "L": 6,
+    "S": 7,
+    "D": 8,
+    "B": 9,
   }
 
 

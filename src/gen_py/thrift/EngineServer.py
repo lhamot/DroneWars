@@ -32,7 +32,7 @@ class Iface:
     """
     pass
 
-  def getPlayerFleets(self, pid, beginIndex, endIndex, sortType, asc):
+  def getPlayerFleets(self, pid, beginIndex, endIndex, sortType, asc, value):
     """
     Parameters:
      - pid
@@ -40,10 +40,11 @@ class Iface:
      - endIndex
      - sortType
      - asc
+     - value
     """
     pass
 
-  def getPlayerPlanets(self, pid, beginIndex, endIndex, sortType, asc):
+  def getPlayerPlanets(self, pid, beginIndex, endIndex, sortType, asc, value):
     """
     Parameters:
      - pid
@@ -51,6 +52,7 @@ class Iface:
      - endIndex
      - sortType
      - asc
+     - value
     """
     pass
 
@@ -384,7 +386,7 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "addPlayer failed: unknown result");
 
-  def getPlayerFleets(self, pid, beginIndex, endIndex, sortType, asc):
+  def getPlayerFleets(self, pid, beginIndex, endIndex, sortType, asc, value):
     """
     Parameters:
      - pid
@@ -392,11 +394,12 @@ class Client(Iface):
      - endIndex
      - sortType
      - asc
+     - value
     """
-    self.send_getPlayerFleets(pid, beginIndex, endIndex, sortType, asc)
+    self.send_getPlayerFleets(pid, beginIndex, endIndex, sortType, asc, value)
     return self.recv_getPlayerFleets()
 
-  def send_getPlayerFleets(self, pid, beginIndex, endIndex, sortType, asc):
+  def send_getPlayerFleets(self, pid, beginIndex, endIndex, sortType, asc, value):
     self._oprot.writeMessageBegin('getPlayerFleets', TMessageType.CALL, self._seqid)
     args = getPlayerFleets_args()
     args.pid = pid
@@ -404,6 +407,7 @@ class Client(Iface):
     args.endIndex = endIndex
     args.sortType = sortType
     args.asc = asc
+    args.value = value
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -422,7 +426,7 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "getPlayerFleets failed: unknown result");
 
-  def getPlayerPlanets(self, pid, beginIndex, endIndex, sortType, asc):
+  def getPlayerPlanets(self, pid, beginIndex, endIndex, sortType, asc, value):
     """
     Parameters:
      - pid
@@ -430,11 +434,12 @@ class Client(Iface):
      - endIndex
      - sortType
      - asc
+     - value
     """
-    self.send_getPlayerPlanets(pid, beginIndex, endIndex, sortType, asc)
+    self.send_getPlayerPlanets(pid, beginIndex, endIndex, sortType, asc, value)
     return self.recv_getPlayerPlanets()
 
-  def send_getPlayerPlanets(self, pid, beginIndex, endIndex, sortType, asc):
+  def send_getPlayerPlanets(self, pid, beginIndex, endIndex, sortType, asc, value):
     self._oprot.writeMessageBegin('getPlayerPlanets', TMessageType.CALL, self._seqid)
     args = getPlayerPlanets_args()
     args.pid = pid
@@ -442,6 +447,7 @@ class Client(Iface):
     args.endIndex = endIndex
     args.sortType = sortType
     args.asc = asc
+    args.value = value
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -1592,7 +1598,7 @@ class Processor(Iface, TProcessor):
     args.read(iprot)
     iprot.readMessageEnd()
     result = getPlayerFleets_result()
-    result.success = self._handler.getPlayerFleets(args.pid, args.beginIndex, args.endIndex, args.sortType, args.asc)
+    result.success = self._handler.getPlayerFleets(args.pid, args.beginIndex, args.endIndex, args.sortType, args.asc, args.value)
     oprot.writeMessageBegin("getPlayerFleets", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -1603,7 +1609,7 @@ class Processor(Iface, TProcessor):
     args.read(iprot)
     iprot.readMessageEnd()
     result = getPlayerPlanets_result()
-    result.success = self._handler.getPlayerPlanets(args.pid, args.beginIndex, args.endIndex, args.sortType, args.asc)
+    result.success = self._handler.getPlayerPlanets(args.pid, args.beginIndex, args.endIndex, args.sortType, args.asc, args.value)
     oprot.writeMessageBegin("getPlayerPlanets", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -2322,6 +2328,7 @@ class getPlayerFleets_args:
    - endIndex
    - sortType
    - asc
+   - value
   """
 
   thrift_spec = (
@@ -2376,14 +2383,25 @@ class getPlayerFleets_args:
     None, # 48
     None, # 49
     (50, TType.BOOL, 'asc', None, None, ), # 50
+    None, # 51
+    None, # 52
+    None, # 53
+    None, # 54
+    None, # 55
+    None, # 56
+    None, # 57
+    None, # 58
+    None, # 59
+    (60, TType.I32, 'value', None, 0, ), # 60
   )
 
-  def __init__(self, pid=None, beginIndex=None, endIndex=None, sortType=None, asc=None,):
+  def __init__(self, pid=None, beginIndex=None, endIndex=None, sortType=None, asc=None, value=thrift_spec[60][4],):
     self.pid = pid
     self.beginIndex = beginIndex
     self.endIndex = endIndex
     self.sortType = sortType
     self.asc = asc
+    self.value = value
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -2419,6 +2437,11 @@ class getPlayerFleets_args:
           self.asc = iprot.readBool();
         else:
           iprot.skip(ftype)
+      elif fid == 60:
+        if ftype == TType.I32:
+          self.value = iprot.readI32();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -2448,6 +2471,10 @@ class getPlayerFleets_args:
     if self.asc is not None:
       oprot.writeFieldBegin('asc', TType.BOOL, 50)
       oprot.writeBool(self.asc)
+      oprot.writeFieldEnd()
+    if self.value is not None:
+      oprot.writeFieldBegin('value', TType.I32, 60)
+      oprot.writeI32(self.value)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -2535,6 +2562,7 @@ class getPlayerPlanets_args:
    - endIndex
    - sortType
    - asc
+   - value
   """
 
   thrift_spec = (
@@ -2589,14 +2617,25 @@ class getPlayerPlanets_args:
     None, # 48
     None, # 49
     (50, TType.BOOL, 'asc', None, None, ), # 50
+    None, # 51
+    None, # 52
+    None, # 53
+    None, # 54
+    None, # 55
+    None, # 56
+    None, # 57
+    None, # 58
+    None, # 59
+    (60, TType.I32, 'value', None, 0, ), # 60
   )
 
-  def __init__(self, pid=None, beginIndex=None, endIndex=None, sortType=None, asc=None,):
+  def __init__(self, pid=None, beginIndex=None, endIndex=None, sortType=None, asc=None, value=thrift_spec[60][4],):
     self.pid = pid
     self.beginIndex = beginIndex
     self.endIndex = endIndex
     self.sortType = sortType
     self.asc = asc
+    self.value = value
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -2632,6 +2671,11 @@ class getPlayerPlanets_args:
           self.asc = iprot.readBool();
         else:
           iprot.skip(ftype)
+      elif fid == 60:
+        if ftype == TType.I32:
+          self.value = iprot.readI32();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -2661,6 +2705,10 @@ class getPlayerPlanets_args:
     if self.asc is not None:
       oprot.writeFieldBegin('asc', TType.BOOL, 50)
       oprot.writeBool(self.asc)
+      oprot.writeFieldEnd()
+    if self.value is not None:
+      oprot.writeFieldBegin('value', TType.I32, 60)
+      oprot.writeI32(self.value)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

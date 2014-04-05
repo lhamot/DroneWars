@@ -352,9 +352,12 @@ enum Sort_Type
 	X
 	Y
 	Z
-	M
-	C
-	L
+	M  //metal
+	C  //carbon
+	L  //Loicium
+	S  //ship
+	D  //defance (cannon)
+	B  //Building
 }
 
 
@@ -396,8 +399,8 @@ service EngineServer
 	void start()
 	void stop()
 	bool addPlayer(10: string login, 20: string password)
-	FleetList getPlayerFleets(10: Player_ID pid, 20: i32 beginIndex, 30: i32 endIndex, 40: Sort_Type sortType, 50: bool asc)
-	PlanetList getPlayerPlanets(10: Player_ID pid, 20: i32 beginIndex, 30: i32 endIndex, 40: Sort_Type sortType, 50: bool asc)
+	FleetList getPlayerFleets(10: Player_ID pid, 20: i32 beginIndex, 30: i32 endIndex, 40: Sort_Type sortType, 50: bool asc, 60: i32 value = 0)
+	PlanetList getPlayerPlanets(10: Player_ID pid, 20: i32 beginIndex, 30: i32 endIndex, 40: Sort_Type sortType, 50: bool asc, 60: i32 value = 0)
 	void setPlayerFleetCode(10: Player_ID pid, 20: string code)
 	void setPlayerPlanetCode(10: Player_ID pid, 20: string code)
 	void setPlayerFleetBlocklyCode(10: Player_ID pid, 20: string code)

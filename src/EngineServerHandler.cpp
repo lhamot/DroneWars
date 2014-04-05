@@ -424,6 +424,41 @@ void sortOnType(Range& rg, ndw::Sort_Type::type sortType, const bool asc)
 	};
 }
 
+template<typename Range>
+void sortFleetOnType(Range& rg, ndw::Sort_Type::type sortType, const bool asc, const int32_t value)
+{
+	switch(sortType)
+	{
+	case ndw::Sort_Type::S:
+		sortOnAttr(rg, asc, [&](Fleet const & e) {return e.shipList.at(value); });
+		break;
+	case ndw::Sort_Type::C:
+	case ndw::Sort_Type::B:
+		break;
+	default:
+		sortOnType(rg, sortType, asc);
+	};
+}
+
+
+template<typename Range>
+void sortPlanetOnType(Range& rg, ndw::Sort_Type::type sortType, const bool asc, const int32_t value)
+{
+	switch(sortType)
+	{
+	case ndw::Sort_Type::S:
+		break;
+	case ndw::Sort_Type::C:
+		sortOnAttr(rg, asc, [&](Planet const & e) {return e.cannonTab.at(value);});
+		break;
+	case ndw::Sort_Type::B:
+		sortOnAttr(rg, asc, [&](Planet const & e) {return e.buildingList.at(value);});
+		break;
+	default:
+		sortOnType(rg, sortType, asc);
+	};
+}
+
 
 void EngineServerHandler::getPlayerFleets(
   ndw::FleetList& _return,
@@ -431,7 +466,8 @@ void EngineServerHandler::getPlayerFleets(
   const int32_t beginIndexC,
   const int32_t endIndexC,
   const ndw::Sort_Type::type sortType,
-  const bool asc)
+  const bool asc,
+  const int32_t value)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid <<
 	                " beginIndexC : " << beginIndexC <<
@@ -448,7 +484,7 @@ void EngineServerHandler::getPlayerFleets(
 	if(beginIndex > fleetList.size())
 		beginIndex = fleetList.size();
 
-	sortOnType(fleetList, sortType, asc);
+	sortFleetOnType(fleetList, sortType, asc, value);
 
 	if(endIndex > fleetList.size())
 		BOOST_THROW_EXCEPTION(logic_error("endIndex > fleetList.size()"));
@@ -481,7 +517,8 @@ void EngineServerHandler::getPlayerPlanets(
   const int32_t beginIndexC,
   const int32_t endIndexC,
   const  ndw::Sort_Type::type sortType,
-  const bool asc)
+  const bool asc,
+  const int32_t value)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid <<
 	                " beginIndexC : " << beginIndexC <<
@@ -498,7 +535,7 @@ void EngineServerHandler::getPlayerPlanets(
 	if(beginIndex > planetList.size())
 		beginIndex = planetList.size();
 
-	sortOnType(planetList, sortType, asc);
+	sortPlanetOnType(planetList, sortType, asc, value);
 
 	if(endIndex > planetList.size())
 		BOOST_THROW_EXCEPTION(logic_error("endIndex > planetList.size()"));
