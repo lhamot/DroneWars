@@ -110,7 +110,8 @@ public:
 	//! @brief Incremente le niveau d'avancement d'un tutos d'un joueur
 	//! @throw DataBase::Exception si pid invalide
 	void incrementTutoDisplayed(const ndw::Player_ID pid,
-	                            const std::string& tutoName) override;
+	                            const std::string& tutoName,
+	                            const int32_t value) override;
 
 	//! @brief Extrait un rapport de combat a un id donné
 	//! @throw DataBase::Exception si reportID est invalid

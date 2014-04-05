@@ -134,11 +134,12 @@ class Iface:
     """
     pass
 
-  def incrementTutoDisplayed(self, pid, tutoName):
+  def incrementTutoDisplayed(self, pid, tutoName, value):
     """
     Parameters:
      - pid
      - tutoName
+     - value
     """
     pass
 
@@ -793,20 +794,22 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "logPlayer failed: unknown result");
 
-  def incrementTutoDisplayed(self, pid, tutoName):
+  def incrementTutoDisplayed(self, pid, tutoName, value):
     """
     Parameters:
      - pid
      - tutoName
+     - value
     """
-    self.send_incrementTutoDisplayed(pid, tutoName)
+    self.send_incrementTutoDisplayed(pid, tutoName, value)
     self.recv_incrementTutoDisplayed()
 
-  def send_incrementTutoDisplayed(self, pid, tutoName):
+  def send_incrementTutoDisplayed(self, pid, tutoName, value):
     self._oprot.writeMessageBegin('incrementTutoDisplayed', TMessageType.CALL, self._seqid)
     args = incrementTutoDisplayed_args()
     args.pid = pid
     args.tutoName = tutoName
+    args.value = value
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -1741,7 +1744,7 @@ class Processor(Iface, TProcessor):
     args.read(iprot)
     iprot.readMessageEnd()
     result = incrementTutoDisplayed_result()
-    self._handler.incrementTutoDisplayed(args.pid, args.tutoName)
+    self._handler.incrementTutoDisplayed(args.pid, args.tutoName, args.value)
     oprot.writeMessageBegin("incrementTutoDisplayed", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -4235,6 +4238,7 @@ class incrementTutoDisplayed_args:
   Attributes:
    - pid
    - tutoName
+   - value
   """
 
   thrift_spec = (
@@ -4259,11 +4263,22 @@ class incrementTutoDisplayed_args:
     None, # 18
     None, # 19
     (20, TType.STRING, 'tutoName', None, None, ), # 20
+    None, # 21
+    None, # 22
+    None, # 23
+    None, # 24
+    None, # 25
+    None, # 26
+    None, # 27
+    None, # 28
+    None, # 29
+    (30, TType.I32, 'value', None, 1, ), # 30
   )
 
-  def __init__(self, pid=None, tutoName=None,):
+  def __init__(self, pid=None, tutoName=None, value=thrift_spec[30][4],):
     self.pid = pid
     self.tutoName = tutoName
+    self.value = value
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -4284,6 +4299,11 @@ class incrementTutoDisplayed_args:
           self.tutoName = iprot.readString();
         else:
           iprot.skip(ftype)
+      elif fid == 30:
+        if ftype == TType.I32:
+          self.value = iprot.readI32();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -4301,6 +4321,10 @@ class incrementTutoDisplayed_args:
     if self.tutoName is not None:
       oprot.writeFieldBegin('tutoName', TType.STRING, 20)
       oprot.writeString(self.tutoName)
+      oprot.writeFieldEnd()
+    if self.value is not None:
+      oprot.writeFieldBegin('value', TType.I32, 30)
+      oprot.writeI32(self.value)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

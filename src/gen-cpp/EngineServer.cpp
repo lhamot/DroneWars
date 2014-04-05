@@ -3021,6 +3021,17 @@ uint32_t EngineServer_incrementTutoDisplayed_args::read(::apache::thrift::protoc
 				xfer += iprot->skip(ftype);
 			}
 			break;
+		case 30:
+			if(ftype == ::apache::thrift::protocol::T_I32)
+			{
+				xfer += iprot->readI32(this->value);
+				this->__isset.value = true;
+			}
+			else
+			{
+				xfer += iprot->skip(ftype);
+			}
+			break;
 		default:
 			xfer += iprot->skip(ftype);
 			break;
@@ -3046,6 +3057,10 @@ uint32_t EngineServer_incrementTutoDisplayed_args::write(::apache::thrift::proto
 	xfer += oprot->writeString(this->tutoName);
 	xfer += oprot->writeFieldEnd();
 
+	xfer += oprot->writeFieldBegin("value", ::apache::thrift::protocol::T_I32, 30);
+	xfer += oprot->writeI32(this->value);
+	xfer += oprot->writeFieldEnd();
+
 	xfer += oprot->writeFieldStop();
 	xfer += oprot->writeStructEnd();
 	return xfer;
@@ -3062,6 +3077,10 @@ uint32_t EngineServer_incrementTutoDisplayed_pargs::write(::apache::thrift::prot
 
 	xfer += oprot->writeFieldBegin("tutoName", ::apache::thrift::protocol::T_STRING, 20);
 	xfer += oprot->writeString((*(this->tutoName)));
+	xfer += oprot->writeFieldEnd();
+
+	xfer += oprot->writeFieldBegin("value", ::apache::thrift::protocol::T_I32, 30);
+	xfer += oprot->writeI32((*(this->value)));
 	xfer += oprot->writeFieldEnd();
 
 	xfer += oprot->writeFieldStop();
@@ -8234,13 +8253,13 @@ void EngineServerClient::recv_logPlayer(OptionalPlayer& _return)
 	throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "logPlayer failed: unknown result");
 }
 
-void EngineServerClient::incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName)
+void EngineServerClient::incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName, const int32_t value)
 {
-	send_incrementTutoDisplayed(pid, tutoName);
+	send_incrementTutoDisplayed(pid, tutoName, value);
 	recv_incrementTutoDisplayed();
 }
 
-void EngineServerClient::send_incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName)
+void EngineServerClient::send_incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName, const int32_t value)
 {
 	int32_t cseqid = 0;
 	oprot_->writeMessageBegin("incrementTutoDisplayed", ::apache::thrift::protocol::T_CALL, cseqid);
@@ -8248,6 +8267,7 @@ void EngineServerClient::send_incrementTutoDisplayed(const Player_ID pid, const 
 	EngineServer_incrementTutoDisplayed_pargs args;
 	args.pid = &pid;
 	args.tutoName = &tutoName;
+	args.value = &value;
 	args.write(oprot_);
 
 	oprot_->writeMessageEnd();
@@ -10716,7 +10736,7 @@ void EngineServerProcessor::process_incrementTutoDisplayed(int32_t seqid, ::apac
 	EngineServer_incrementTutoDisplayed_result result;
 	try
 	{
-		iface_->incrementTutoDisplayed(args.pid, args.tutoName);
+		iface_->incrementTutoDisplayed(args.pid, args.tutoName, args.value);
 	}
 	catch(const std::exception& e)
 	{

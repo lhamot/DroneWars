@@ -100,7 +100,7 @@ def CannonsView(request):
     ReportViewTutoTag = "ReportView"
     if not ReportViewTutoTag in player.tutoDisplayed:
         helpMessage = _("REPORT_TUTOS")
-        service.incrementTutoDisplayed(pid, ReportViewTutoTag)
+        service.incrementTutoDisplayed(pid, ReportViewTutoTag, 1)
     else:
         helpMessage = ""
 
@@ -128,7 +128,7 @@ def ShipsView(request):
     ReportViewTutoTag = "ReportView"
     if not ReportViewTutoTag in player.tutoDisplayed:
         helpMessage = _("REPORT_TUTOS")
-        service.incrementTutoDisplayed(pid, ReportViewTutoTag)
+        service.incrementTutoDisplayed(pid, ReportViewTutoTag, 1)
     else:
         helpMessage = ""
 

@@ -1008,7 +1008,8 @@ DB_CATCH
 
 
 void DataBase::incrementTutoDisplayed(Player::ID pid,
-                                      std::string const& tutoName)
+                                      std::string const& tutoName,
+                                      int32_t value)
 try
 {
 	checkConnection(session_);
@@ -1018,9 +1019,9 @@ try
 	            "(playerID, tag, level) "
 	            "VALUES(?, ?, ?)", use(pid), use(tutoName), use(0), now;
 	(*session_) << "UPDATE TutoDisplayed "
-	            "SET level = level + 1 "
+	            "SET level = level + ? "
 	            "WHERE playerID = ? AND tag = ? ",
-	            use(pid), use(tutoName), now;
+	            use(value), use(pid), use(tutoName), now;
 	trans.commit();
 }
 DB_CATCH

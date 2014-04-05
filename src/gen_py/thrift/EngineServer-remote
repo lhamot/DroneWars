@@ -39,7 +39,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '   getPlanet(Coord coord)'
   print '  Fleet getFleet(Fleet_ID fid)'
   print '  OptionalPlayer logPlayer(string login, string password)'
-  print '  void incrementTutoDisplayed(Player_ID pid, string tutoName)'
+  print '  void incrementTutoDisplayed(Player_ID pid, string tutoName, i32 value)'
   print '  FightReport getFightReport(i32 id)'
   print '  TimeInfo getTimeInfo()'
   print '  bool eraseAccount(Player_ID pid, string password)'
@@ -211,10 +211,10 @@ elif cmd == 'logPlayer':
   pp.pprint(client.logPlayer(args[0],args[1],))
 
 elif cmd == 'incrementTutoDisplayed':
-  if len(args) != 2:
-    print 'incrementTutoDisplayed requires 2 args'
+  if len(args) != 3:
+    print 'incrementTutoDisplayed requires 3 args'
     sys.exit(1)
-  pp.pprint(client.incrementTutoDisplayed(eval(args[0]),args[1],))
+  pp.pprint(client.incrementTutoDisplayed(eval(args[0]),args[1],eval(args[2]),))
 
 elif cmd == 'getFightReport':
   if len(args) != 1:

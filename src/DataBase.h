@@ -193,7 +193,9 @@ public:
 
 	//! @brief Incremente un tag de tutoriel d'un joueur
 	//! @throw Exception si pid invalide
-	void incrementTutoDisplayed(Player::ID pid, std::string const& tutoName);
+	void incrementTutoDisplayed(Player::ID pid,
+	                            std::string const& tutoName,
+	                            int32_t value);
 
 	//! Tableau assosiatif [tag de tutos] => niveau
 	typedef std::map<std::string, size_t> PlayerTutoMap;

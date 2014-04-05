@@ -33,6 +33,23 @@
 			</div>
 		</div>
 	</div>
+	<div class="row">
+		<div class="col-md-8 col-md-offset-2">
+			<div class="panel panel-default">
+				<form method="post" class="form-horizontal">
+					{% csrf_token %}
+					<fieldset>
+						<legend>{% trans "End tutorial" %}</legend>
+						<div class="form-group">
+	    					<div class="col-sm-offset-4 col-sm-7">
+	      						<input class="btn btn-warning" type="submit" value="{% trans "I don't need tutorial " %}" name="end_tutorial">
+	    					</div>
+	  					</div>					
+					</fieldset>
+				</form>
+			</div>
+		</div>
+	</div>
 	{%if message %}
 	<div class="row">
 		<div class="alert col-md-3 col-md-offset-2">

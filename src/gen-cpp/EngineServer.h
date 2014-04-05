@@ -33,7 +33,7 @@ public:
 	virtual void getPlanet(std::vector<Planet>& _return, const Coord& coord) = 0;
 	virtual void getFleet(Fleet& _return, const Fleet_ID fid) = 0;
 	virtual void logPlayer(OptionalPlayer& _return, const std::string& login, const std::string& password) = 0;
-	virtual void incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName) = 0;
+	virtual void incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName, const int32_t value) = 0;
 	virtual void getFightReport(FightReport& _return, const int32_t id) = 0;
 	virtual void getTimeInfo(TimeInfo& _return) = 0;
 	virtual bool eraseAccount(const Player_ID pid, const std::string& password) = 0;
@@ -155,7 +155,7 @@ public:
 	{
 		return;
 	}
-	void incrementTutoDisplayed(const Player_ID /* pid */, const std::string& /* tutoName */)
+	void incrementTutoDisplayed(const Player_ID /* pid */, const std::string& /* tutoName */, const int32_t /* value */)
 	{
 		return;
 	}
@@ -2168,16 +2168,17 @@ public:
 
 typedef struct _EngineServer_incrementTutoDisplayed_args__isset
 {
-	_EngineServer_incrementTutoDisplayed_args__isset() : pid(false), tutoName(false) {}
+	_EngineServer_incrementTutoDisplayed_args__isset() : pid(false), tutoName(false), value(true) {}
 	bool pid;
 	bool tutoName;
+	bool value;
 } _EngineServer_incrementTutoDisplayed_args__isset;
 
 class EngineServer_incrementTutoDisplayed_args
 {
 public:
 
-	EngineServer_incrementTutoDisplayed_args() : pid(0), tutoName()
+	EngineServer_incrementTutoDisplayed_args() : pid(0), tutoName(), value(1)
 	{
 	}
 
@@ -2185,6 +2186,7 @@ public:
 
 	Player_ID pid;
 	std::string tutoName;
+	int32_t value;
 
 	_EngineServer_incrementTutoDisplayed_args__isset __isset;
 
@@ -2198,11 +2200,18 @@ public:
 		tutoName = val;
 	}
 
+	void __set_value(const int32_t val)
+	{
+		value = val;
+	}
+
 	bool operator == (const EngineServer_incrementTutoDisplayed_args& rhs) const
 	{
 		if(!(pid == rhs.pid))
 			return false;
 		if(!(tutoName == rhs.tutoName))
+			return false;
+		if(!(value == rhs.value))
 			return false;
 		return true;
 	}
@@ -2228,6 +2237,7 @@ public:
 
 	const Player_ID* pid;
 	const std::string* tutoName;
+	const int32_t* value;
 
 	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
 
@@ -4966,8 +4976,8 @@ public:
 	void logPlayer(OptionalPlayer& _return, const std::string& login, const std::string& password);
 	void send_logPlayer(const std::string& login, const std::string& password);
 	void recv_logPlayer(OptionalPlayer& _return);
-	void incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName);
-	void send_incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName);
+	void incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName, const int32_t value);
+	void send_incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName, const int32_t value);
 	void recv_incrementTutoDisplayed();
 	void getFightReport(FightReport& _return, const int32_t id);
 	void send_getFightReport(const int32_t id);
@@ -5355,15 +5365,15 @@ public:
 		return;
 	}
 
-	void incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName)
+	void incrementTutoDisplayed(const Player_ID pid, const std::string& tutoName, const int32_t value)
 	{
 		size_t sz = ifaces_.size();
 		size_t i = 0;
 		for(; i < (sz - 1); ++i)
 		{
-			ifaces_[i]->incrementTutoDisplayed(pid, tutoName);
+			ifaces_[i]->incrementTutoDisplayed(pid, tutoName, value);
 		}
-		ifaces_[i]->incrementTutoDisplayed(pid, tutoName);
+		ifaces_[i]->incrementTutoDisplayed(pid, tutoName, value);
 	}
 
 	void getFightReport(FightReport& _return, const int32_t id)

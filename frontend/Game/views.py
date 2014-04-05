@@ -155,7 +155,7 @@ def PlanetListView(request):
     PlanetViewTutoTag = "PlanetView"
     if not PlanetViewTutoTag in player.tutoDisplayed:
         helpMessage = _("PLANET_TUTOS")
-        service.incrementTutoDisplayed(pid, PlanetViewTutoTag);
+        service.incrementTutoDisplayed(pid, PlanetViewTutoTag, 1);
     else:
         helpMessage = ""
         
@@ -286,7 +286,7 @@ def FleetListView(request):
     FleetViewTutoTag = "FleetView"
     if not FleetViewTutoTag in player.tutoDisplayed:
         helpMessage = _("FLEET_TUTOS")
-        service.incrementTutoDisplayed(pid, FleetViewTutoTag);
+        service.incrementTutoDisplayed(pid, FleetViewTutoTag, 1);
     else:
         helpMessage = ""
         
@@ -357,7 +357,7 @@ def CodesView(request):
     service = createEngineClient()
     player = service.getPlayer(pid)
     if not CodeViewTutoTag in player.tutoDisplayed:
-        service.incrementTutoDisplayed(pid, CodeViewTutoTag);
+        service.incrementTutoDisplayed(pid, CodeViewTutoTag, 1);
         
     plLvl = player.tutoDisplayed.get(CoddingLevelTag, 0);
     
@@ -388,7 +388,7 @@ def ReportsView(request):
     ReportViewTutoTag = "ReportView"
     if not ReportViewTutoTag in player.tutoDisplayed:
         helpMessage = _("REPORT_TUTOS")
-        service.incrementTutoDisplayed(pid, ReportViewTutoTag)
+        service.incrementTutoDisplayed(pid, ReportViewTutoTag, 1)
     else:
         helpMessage = ""
 
@@ -410,7 +410,7 @@ def checkIfTutoInfoSeen(service, player):
     tutoInfoTag = "TUTO_%i_INFO" % plLvl
     tutoInfoIsSeen = tutoInfoTag in player.tutoDisplayed
     if tutoInfoIsSeen == False:
-        service.incrementTutoDisplayed(player.id, tutoInfoTag)
+        service.incrementTutoDisplayed(player.id, tutoInfoTag, 1)
     return tutoInfoIsSeen
 
 
@@ -504,7 +504,7 @@ def BlocklyPlanetsCodesView(request):
             message = _("Code successfully saved")
             firstSave = player.tutoDisplayed.get(FirstSaveTag, 0);
             if firstSave == 0:
-                service.incrementTutoDisplayed(pid, FirstSaveTag)
+                service.incrementTutoDisplayed(pid, FirstSaveTag, 1)
                 message = _("See in planets tab if the building is in progress")
    
     if player == None:
@@ -515,7 +515,7 @@ def BlocklyPlanetsCodesView(request):
     
     if not CodeViewTutoTag in player.tutoDisplayed:
         helpMessage = _("CODE_TUTOS")
-        service.incrementTutoDisplayed(pid, CodeViewTutoTag)
+        service.incrementTutoDisplayed(pid, CodeViewTutoTag, 1)
     else:
         helpMessage = None
     
@@ -621,6 +621,8 @@ def AccountView(request):
         else:
             request.session.clear();
             return redirect("/");
+    elif "end_tutorial" in request.POST:
+        service.incrementTutoDisplayed(pid, CoddingLevelTag, 100)
     
     return render(request, 'account.html', {
         "player": player,
