@@ -19,6 +19,9 @@
     <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/generators/lua/variables.js"> </script>
     <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/language/fr/dronewars.js">    </script>
     <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/language/common/dronewars.js"></script>
+    {% if level < 6  %}
+    <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/language/common/dronewars_tutos.js"></script>
+    {% endif %}
 
     <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/language/common/dronewars_Fleet.js">       </script>
     <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/language/common/dronewars_Planet.js">      </script>
