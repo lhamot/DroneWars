@@ -722,9 +722,9 @@ void EngineServerHandler::logPlayer(ndw::OptionalPlayer& _return,
 
 
 void EngineServerHandler::incrementTutoDisplayed(
-	ndw::Player_ID pid,
-    string const& tutoName,
-    int32_t const value)
+  ndw::Player_ID pid,
+  string const& tutoName,
+  int32_t const value)
 {
 	LOG4CPLUS_TRACE(logger, "pid : " << pid << " tutoName : " << tutoName);
 	database_.incrementTutoDisplayed(pid, tutoName, value);

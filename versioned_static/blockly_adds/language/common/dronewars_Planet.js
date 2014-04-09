@@ -29,6 +29,32 @@ Blockly.Lua['dronewars_is_planet_free'] = function(block)
 };
 
 
+Blockly.Blocks['dronewars_is_main_planet'] =
+{
+category:
+	Blockly.LANG_CATEGORY_DRONEWARS_PLANET,
+init:
+	function()
+	{
+	   this.setColour(230);
+	   this.setInputsInline(true);
+	   this.appendValueInput('PLANET')
+	       .setCheck('Planet')
+	       .appendField(Blockly.LANG_DRONEWARS_IS_MAIN_PLANET_1);
+	   this.appendDummyInput()
+	       .appendField(Blockly.LANG_DRONEWARS_IS_MAIN_PLANET_2);
+	   this.setOutput(true, 'Boolean');
+	}
+};
+
+Blockly.Lua['dronewars_is_main_planet'] = function(block)
+{
+	var planet = Blockly.Lua.valueToCode(
+	               block, 'PLANET', Blockly.Lua.ORDER_NONE) || 'nil';
+	return [ planet + ':is_main_planet()', Blockly.Lua.ORDER_HIGH];
+};
+
+
 Blockly.Blocks['dronewars_planet_age'] =
 {
 category:

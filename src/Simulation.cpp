@@ -878,8 +878,8 @@ void execFights(Universe& univ_,
 	std::vector<Event> tempEvents;
 	std::vector<FightReport> tempReports;
 	PlayersFightingMap playerFightPlayer;
-	tempEvents.reserve(1000000);
-	tempReports.reserve(1000000);
+	tempEvents.reserve(100000);
+	tempReports.reserve(100000);
 	//! Pour chaque coordonées, on accede au range des flotes
 	auto fleetMultimapEnd = fleetMultimap.end();
 	for(FleetCoordMultimap::iterator iter1 = fleetMultimap.begin(), iter2 = nextNot(fleetMultimap, iter1);

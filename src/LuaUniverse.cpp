@@ -178,6 +178,11 @@ int luaCFunction_false(lua_State* L)
 	return 1;
 }
 
+bool isMainPlanet(Planet const& planet)
+{
+	return planet.player && planet.player->mainPlanet == planet.coord;
+}
+
 //! luaCFunction ajoute un message de l'utilisateur dans la global "logger"
 int luaCFunction_log(lua_State* L)
 {
@@ -389,6 +394,7 @@ int initDroneWars(LuaTools::Engine& engine)
 	.methode("age", luaCFunction_age<Planet>)
 	.methode("is_planet", luaCFunction_true)
 	.methode("is_fleet", luaCFunction_false)
+	.methode("is_main_planet", isMainPlanet)
 	.property("memory", &Planet::memory)
 	.read_only("player", &Planet::player)
 	.read_only("coord", &Planet::coord)
