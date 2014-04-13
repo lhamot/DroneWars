@@ -104,6 +104,7 @@ struct Exception : std::runtime_error
 
 //! @brief Traits permettant de savoir
 //!  si un type peut ètre considéré comme un type primitife pour lua
+//! @todo: Gérer les enums
 template<typename T>struct IsPrimitive
 {
 	static bool const value = false; //!< true si primitife (false par defaut)
@@ -506,7 +507,7 @@ void pushTemp(lua_State* L, T const& val, typename BaseIsPrim<T>::Is* = 0)
 template<typename T>
 void pushTemp(lua_State* L, T const& val, typename BaseIsPrim<T>::IsNot* = 0)
 {
-	Push<T, false, true>::push(L, val);
+	Push<T, std::is_enum<T>::value, true>::push(L, val);
 }
 //! Pousse sur la pile un objet persistant primitife
 template<typename T>
@@ -518,7 +519,7 @@ void pushPers(lua_State* L, T const& val, typename BaseIsPrim<T>::Is* = 0)
 template<typename T>
 void pushPers(lua_State* L, T const& val, typename BaseIsPrim<T>::IsNot* = 0)
 {
-	Push<T, false, false>::push(L, val);
+	Push<T, std::is_enum<T>::value, false>::push(L, val);
 }
 
 

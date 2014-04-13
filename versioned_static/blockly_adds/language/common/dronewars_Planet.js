@@ -99,6 +99,9 @@ addProperty('Planet', 'memory', 'UserData',
 addProperty('Planet', 'player', 'Player',
             Blockly.LANG_DRONEWARS_PLANET_PLAYER,
             Blockly.LANG_CATEGORY_DRONEWARS_PLANET);
+addProperty('Planet', 'task', 'PlanetTask', 
+            Blockly.LANG_DRONEWARS_PLANET_TASK,
+            Blockly.LANG_CATEGORY_DRONEWARS_PLANET);
 //addProperty('Planet', 'isFree', Boolean,
 //            Blockly.LANG_DRONEWARS_PLANET_IS_FREE);
 

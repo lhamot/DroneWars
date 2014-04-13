@@ -386,7 +386,14 @@ class Class
 		lua_rawget(L, -2);		// Get the function
 
 		int const type = lua_type(L, -1);
-		if(type == LUA_TUSERDATA)
+		if(type == LUA_TFUNCTION)
+		{
+			lua_CFunction getter = lua_tocfunction(L, -1);
+			lua_pop(L, 2);                                    // Pop metatable and function
+			lua_pushvalue(L, 1);                              // Remet l'objet sur le dessu de la pile
+			return getter(L);
+		}
+		else if(type == LUA_TUSERDATA)
 		{
 			Member* member = static_cast<Member*>(lua_touserdata(L, -1));
 			lua_pop(L, 2);                                      // Pop metatable and Xetter/methode
@@ -644,6 +651,13 @@ public:
 		Xetter set = nullptr;
 		setInMetatable(
 		  L, name, Member(ClassHelpers::memberToVoid(memberPtr), get, set));
+		return *this;
+	}
+
+	//! Ajoute une propriété en lecture seul au type T
+	Class& read_only(std::string const& name, lua_CFunction function)
+	{
+		setInMetatable(L, name, function);
 		return *this;
 	}
 

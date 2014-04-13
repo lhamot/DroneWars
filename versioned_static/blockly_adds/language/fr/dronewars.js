@@ -43,6 +43,7 @@ Blockly.LANG_DRONEWARS_PLANET_AGE = 'age de la planète';
 Blockly.LANG_DRONEWARS_PLANET_AGE_2 = '';
 Blockly.LANG_DRONEWARS_PLANET_MEMORY = 'memoire de la planète';
 Blockly.LANG_DRONEWARS_PLANET_PLAYER = 'propriétaire de la planète';
+Blockly.LANG_DRONEWARS_PLANET_TASK = 'tache de la planète';
  
 Blockly.LANG_DRONEWARS_RESSOURCESET = 'resources';
 Blockly.LANG_DRONEWARS_RESSOURCESET_AT = ' présent dans les ressources';
@@ -65,6 +66,7 @@ Blockly.LANG_DRONEWARS_FLEET_AGE = 'age de la flotte';
 Blockly.LANG_DRONEWARS_FLEET_AGE_2 = '';
 Blockly.LANG_DRONEWARS_FLEET_MEMORY = 'memoire de la flotte';
 Blockly.LANG_DRONEWARS_FLEET_PLAYER = 'propriétaire de la flotte';
+Blockly.LANG_DRONEWARS_FLEET_TASK = 'tache de la flotte';
 Blockly.LANG_DRONEWARS_SIMULATE = 'simuler le combat de la flotte';
 Blockly.LANG_DRONEWARS_SIMULATE_ARG2 = 'contre la planète';
 Blockly.LANG_DRONEWARS_SIMULATE_ARG3 = 'et les flottes';

@@ -316,6 +316,20 @@ int fleetAction_tostring(lua_State* L)
 	return 1;
 }
 
+template<typename T>
+int workingThing_getTask(lua_State* L)
+{
+	auto const& workingThing = Polua::fromstackAny<T>(L, 1);
+	auto const& taskOpt = workingThing.task;
+	if(taskOpt)
+	{
+		Polua::pushPers(L, *taskOpt);
+		return 1;
+	}
+	else
+		return 0;
+}
+
 int initDroneWars(LuaTools::Engine& engine)
 {
 	using namespace Polua;
@@ -402,6 +416,7 @@ int initDroneWars(LuaTools::Engine& engine)
 	.read_only("buildingList", &Planet::buildingList)
 	.read_only("cannonTab", &Planet::cannonTab)
 	.read_only("ressourceSet", &Planet::ressourceSet)
+	.read_only("task", workingThing_getTask<Planet>)
 	;
 	Class<Ship>(L, "Ship")
 	.enumValue("Mosquito",     Ship::Mosquito   + 1)
@@ -427,6 +442,7 @@ int initDroneWars(LuaTools::Engine& engine)
 	.read_only("name", &Fleet::name)
 	.read_only("shipList", &Fleet::shipList)
 	.read_only("ressourceSet", &Fleet::ressourceSet)
+	.read_only("task", workingThing_getTask<Fleet>)
 	;
 	Class<PlanetAction>(L, "PlanetAction")
 	.enumValue("Building", PlanetAction::Building)
@@ -520,6 +536,21 @@ int initDroneWars(LuaTools::Engine& engine)
 	.enumValue("PlayerLog",           Event::PlayerLog)
 	.enumValue("Count",               Event::Count)
 	;
-
+	Class<PlanetTask>(L, "PlanetTask")
+	.enumValue("UpgradeBuilding", PlanetTask::UpgradeBuilding)
+	.enumValue("MakeShip", PlanetTask::MakeShip)
+	.enumValue("MakeCannon", PlanetTask::MakeCannon)
+	.read_only("duration", &PlanetTask::duration)
+	.read_only("type", &PlanetTask::type)
+	.read_only("value", &PlanetTask::value)
+	;
+	Class<FleetTask>(L, "FleetTask")
+	.enumValue("Move", FleetTask::Move)
+	.enumValue("Harvest", FleetTask::Harvest)
+	.enumValue("Colonize", FleetTask::Colonize)
+	.read_only("duration", &FleetTask::duration)
+	.read_only("value", &FleetTask::position)
+	.read_only("type", &FleetTask::type)
+	;
 	return 0;
 }

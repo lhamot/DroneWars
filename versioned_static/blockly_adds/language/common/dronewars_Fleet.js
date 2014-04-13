@@ -21,6 +21,8 @@ addProperty('Fleet', 'memory', 'UserData', Blockly.LANG_DRONEWARS_FLEET_MEMORY,
   Blockly.LANG_CATEGORY_DRONEWARS_FLEET);
 addProperty('Fleet', 'player', 'Player', Blockly.LANG_DRONEWARS_FLEET_PLAYER,
   Blockly.LANG_CATEGORY_DRONEWARS_FLEET);
+addProperty('Fleet', 'task', 'FleetTask', Blockly.LANG_DRONEWARS_FLEET_TASK,
+  Blockly.LANG_CATEGORY_DRONEWARS_FLEET);
 
 //ShipList
 Blockly.Blocks['dronewars_ship_in_fleet'] =
