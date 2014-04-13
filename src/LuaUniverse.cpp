@@ -549,8 +549,8 @@ int initDroneWars(LuaTools::Engine& engine)
 	.enumValue("Harvest", FleetTask::Harvest)
 	.enumValue("Colonize", FleetTask::Colonize)
 	.read_only("duration", &FleetTask::duration)
-	.read_only("value", &FleetTask::position)
 	.read_only("type", &FleetTask::type)
+	.read_only("position", &FleetTask::position)
 	;
 	return 0;
 }
