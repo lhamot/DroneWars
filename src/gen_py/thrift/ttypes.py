@@ -2180,7 +2180,7 @@ class Planet:
    - coord
    - playerId
    - buildingList
-   - taskQueue
+   - task
    - ressourceSet
    - eventList
    - cannonTab
@@ -2240,7 +2240,7 @@ class Planet:
     None, # 47
     None, # 48
     None, # 49
-    (50, TType.LIST, 'taskQueue', (TType.STRUCT,(PlanetTask, PlanetTask.thrift_spec)), None, ), # 50
+    (50, TType.STRUCT, 'task', (PlanetTask, PlanetTask.thrift_spec), None, ), # 50
     None, # 51
     None, # 52
     None, # 53
@@ -2303,12 +2303,12 @@ class Planet:
     (110, TType.I32, 'allianceID', None, None, ), # 110
   )
 
-  def __init__(self, name=None, coord=None, playerId=None, buildingList=None, taskQueue=None, ressourceSet=None, eventList=None, cannonTab=None, hangar=None, playerLogin=None, allianceID=None,):
+  def __init__(self, name=None, coord=None, playerId=None, buildingList=None, task=None, ressourceSet=None, eventList=None, cannonTab=None, hangar=None, playerLogin=None, allianceID=None,):
     self.name = name
     self.coord = coord
     self.playerId = playerId
     self.buildingList = buildingList
-    self.taskQueue = taskQueue
+    self.task = task
     self.ressourceSet = ressourceSet
     self.eventList = eventList
     self.cannonTab = cannonTab
@@ -2352,14 +2352,9 @@ class Planet:
         else:
           iprot.skip(ftype)
       elif fid == 50:
-        if ftype == TType.LIST:
-          self.taskQueue = []
-          (_etype32, _size29) = iprot.readListBegin()
-          for _i33 in xrange(_size29):
-            _elem34 = PlanetTask()
-            _elem34.read(iprot)
-            self.taskQueue.append(_elem34)
-          iprot.readListEnd()
+        if ftype == TType.STRUCT:
+          self.task = PlanetTask()
+          self.task.read(iprot)
         else:
           iprot.skip(ftype)
       elif fid == 60:
@@ -2371,31 +2366,31 @@ class Planet:
       elif fid == 70:
         if ftype == TType.LIST:
           self.eventList = []
-          (_etype38, _size35) = iprot.readListBegin()
-          for _i39 in xrange(_size35):
-            _elem40 = Event()
-            _elem40.read(iprot)
-            self.eventList.append(_elem40)
+          (_etype32, _size29) = iprot.readListBegin()
+          for _i33 in xrange(_size29):
+            _elem34 = Event()
+            _elem34.read(iprot)
+            self.eventList.append(_elem34)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 80:
         if ftype == TType.LIST:
           self.cannonTab = []
-          (_etype44, _size41) = iprot.readListBegin()
-          for _i45 in xrange(_size41):
-            _elem46 = iprot.readI32();
-            self.cannonTab.append(_elem46)
+          (_etype38, _size35) = iprot.readListBegin()
+          for _i39 in xrange(_size35):
+            _elem40 = iprot.readI32();
+            self.cannonTab.append(_elem40)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 90:
         if ftype == TType.LIST:
           self.hangar = []
-          (_etype50, _size47) = iprot.readListBegin()
-          for _i51 in xrange(_size47):
-            _elem52 = iprot.readI32();
-            self.hangar.append(_elem52)
+          (_etype44, _size41) = iprot.readListBegin()
+          for _i45 in xrange(_size41):
+            _elem46 = iprot.readI32();
+            self.hangar.append(_elem46)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -2434,16 +2429,13 @@ class Planet:
     if self.buildingList is not None:
       oprot.writeFieldBegin('buildingList', TType.LIST, 40)
       oprot.writeListBegin(TType.I32, len(self.buildingList))
-      for iter53 in self.buildingList:
-        oprot.writeI32(iter53)
+      for iter47 in self.buildingList:
+        oprot.writeI32(iter47)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
-    if self.taskQueue is not None:
-      oprot.writeFieldBegin('taskQueue', TType.LIST, 50)
-      oprot.writeListBegin(TType.STRUCT, len(self.taskQueue))
-      for iter54 in self.taskQueue:
-        iter54.write(oprot)
-      oprot.writeListEnd()
+    if self.task is not None:
+      oprot.writeFieldBegin('task', TType.STRUCT, 50)
+      self.task.write(oprot)
       oprot.writeFieldEnd()
     if self.ressourceSet is not None:
       oprot.writeFieldBegin('ressourceSet', TType.STRUCT, 60)
@@ -2452,22 +2444,22 @@ class Planet:
     if self.eventList is not None:
       oprot.writeFieldBegin('eventList', TType.LIST, 70)
       oprot.writeListBegin(TType.STRUCT, len(self.eventList))
-      for iter55 in self.eventList:
-        iter55.write(oprot)
+      for iter48 in self.eventList:
+        iter48.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.cannonTab is not None:
       oprot.writeFieldBegin('cannonTab', TType.LIST, 80)
       oprot.writeListBegin(TType.I32, len(self.cannonTab))
-      for iter56 in self.cannonTab:
-        oprot.writeI32(iter56)
+      for iter49 in self.cannonTab:
+        oprot.writeI32(iter49)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.hangar is not None:
       oprot.writeFieldBegin('hangar', TType.LIST, 90)
       oprot.writeListBegin(TType.I32, len(self.hangar))
-      for iter57 in self.hangar:
-        oprot.writeI32(iter57)
+      for iter50 in self.hangar:
+        oprot.writeI32(iter50)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.playerLogin is not None:
@@ -2506,7 +2498,7 @@ class Fleet:
    - name
    - shipList
    - ressourceSet
-   - taskQueue
+   - task
    - eventList
    - playerLogin
    - allianceID
@@ -2593,7 +2585,7 @@ class Fleet:
     None, # 77
     None, # 78
     None, # 79
-    (80, TType.LIST, 'taskQueue', (TType.STRUCT,(FleetTask, FleetTask.thrift_spec)), None, ), # 80
+    (80, TType.STRUCT, 'task', (FleetTask, FleetTask.thrift_spec), None, ), # 80
     None, # 81
     None, # 82
     None, # 83
@@ -2626,7 +2618,7 @@ class Fleet:
     (110, TType.I32, 'allianceID', None, None, ), # 110
   )
 
-  def __init__(self, id=None, playerId=None, coord=None, origin=None, name=None, shipList=None, ressourceSet=None, taskQueue=None, eventList=None, playerLogin=None, allianceID=None,):
+  def __init__(self, id=None, playerId=None, coord=None, origin=None, name=None, shipList=None, ressourceSet=None, task=None, eventList=None, playerLogin=None, allianceID=None,):
     self.id = id
     self.playerId = playerId
     self.coord = coord
@@ -2634,7 +2626,7 @@ class Fleet:
     self.name = name
     self.shipList = shipList
     self.ressourceSet = ressourceSet
-    self.taskQueue = taskQueue
+    self.task = task
     self.eventList = eventList
     self.playerLogin = playerLogin
     self.allianceID = allianceID
@@ -2678,10 +2670,10 @@ class Fleet:
       elif fid == 60:
         if ftype == TType.LIST:
           self.shipList = []
-          (_etype61, _size58) = iprot.readListBegin()
-          for _i62 in xrange(_size58):
-            _elem63 = iprot.readI32();
-            self.shipList.append(_elem63)
+          (_etype54, _size51) = iprot.readListBegin()
+          for _i55 in xrange(_size51):
+            _elem56 = iprot.readI32();
+            self.shipList.append(_elem56)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -2692,24 +2684,19 @@ class Fleet:
         else:
           iprot.skip(ftype)
       elif fid == 80:
-        if ftype == TType.LIST:
-          self.taskQueue = []
-          (_etype67, _size64) = iprot.readListBegin()
-          for _i68 in xrange(_size64):
-            _elem69 = FleetTask()
-            _elem69.read(iprot)
-            self.taskQueue.append(_elem69)
-          iprot.readListEnd()
+        if ftype == TType.STRUCT:
+          self.task = FleetTask()
+          self.task.read(iprot)
         else:
           iprot.skip(ftype)
       elif fid == 90:
         if ftype == TType.LIST:
           self.eventList = []
-          (_etype73, _size70) = iprot.readListBegin()
-          for _i74 in xrange(_size70):
-            _elem75 = Event()
-            _elem75.read(iprot)
-            self.eventList.append(_elem75)
+          (_etype60, _size57) = iprot.readListBegin()
+          for _i61 in xrange(_size57):
+            _elem62 = Event()
+            _elem62.read(iprot)
+            self.eventList.append(_elem62)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -2756,26 +2743,23 @@ class Fleet:
     if self.shipList is not None:
       oprot.writeFieldBegin('shipList', TType.LIST, 60)
       oprot.writeListBegin(TType.I32, len(self.shipList))
-      for iter76 in self.shipList:
-        oprot.writeI32(iter76)
+      for iter63 in self.shipList:
+        oprot.writeI32(iter63)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.ressourceSet is not None:
       oprot.writeFieldBegin('ressourceSet', TType.STRUCT, 70)
       self.ressourceSet.write(oprot)
       oprot.writeFieldEnd()
-    if self.taskQueue is not None:
-      oprot.writeFieldBegin('taskQueue', TType.LIST, 80)
-      oprot.writeListBegin(TType.STRUCT, len(self.taskQueue))
-      for iter77 in self.taskQueue:
-        iter77.write(oprot)
-      oprot.writeListEnd()
+    if self.task is not None:
+      oprot.writeFieldBegin('task', TType.STRUCT, 80)
+      self.task.write(oprot)
       oprot.writeFieldEnd()
     if self.eventList is not None:
       oprot.writeFieldBegin('eventList', TType.LIST, 90)
       oprot.writeListBegin(TType.STRUCT, len(self.eventList))
-      for iter78 in self.eventList:
-        iter78.write(oprot)
+      for iter64 in self.eventList:
+        iter64.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.playerLogin is not None:
@@ -3091,10 +3075,10 @@ class FleetReport:
       elif fid == 40:
         if ftype == TType.SET:
           self.enemySet = set()
-          (_etype82, _size79) = iprot.readSetBegin()
-          for _i83 in xrange(_size79):
-            _elem84 = iprot.readI32();
-            self.enemySet.add(_elem84)
+          (_etype68, _size65) = iprot.readSetBegin()
+          for _i69 in xrange(_size65):
+            _elem70 = iprot.readI32();
+            self.enemySet.add(_elem70)
           iprot.readSetEnd()
         else:
           iprot.skip(ftype)
@@ -3139,8 +3123,8 @@ class FleetReport:
     if self.enemySet is not None:
       oprot.writeFieldBegin('enemySet', TType.SET, 40)
       oprot.writeSetBegin(TType.I32, len(self.enemySet))
-      for iter85 in self.enemySet:
-        oprot.writeI32(iter85)
+      for iter71 in self.enemySet:
+        oprot.writeI32(iter71)
       oprot.writeSetEnd()
       oprot.writeFieldEnd()
     if self.fightInfo is not None:
@@ -3363,10 +3347,10 @@ class PlanetReport:
       elif fid == 40:
         if ftype == TType.SET:
           self.enemySet = set()
-          (_etype89, _size86) = iprot.readSetBegin()
-          for _i90 in xrange(_size86):
-            _elem91 = iprot.readI32();
-            self.enemySet.add(_elem91)
+          (_etype75, _size72) = iprot.readSetBegin()
+          for _i76 in xrange(_size72):
+            _elem77 = iprot.readI32();
+            self.enemySet.add(_elem77)
           iprot.readSetEnd()
         else:
           iprot.skip(ftype)
@@ -3401,8 +3385,8 @@ class PlanetReport:
     if self.enemySet is not None:
       oprot.writeFieldBegin('enemySet', TType.SET, 40)
       oprot.writeSetBegin(TType.I32, len(self.enemySet))
-      for iter92 in self.enemySet:
-        oprot.writeI32(iter92)
+      for iter78 in self.enemySet:
+        oprot.writeI32(iter78)
       oprot.writeSetEnd()
       oprot.writeFieldEnd()
     if self.fightInfo is not None:
@@ -3486,11 +3470,11 @@ class FightReport:
       if fid == 10:
         if ftype == TType.LIST:
           self.fleetList = []
-          (_etype96, _size93) = iprot.readListBegin()
-          for _i97 in xrange(_size93):
-            _elem98 = FleetReport()
-            _elem98.read(iprot)
-            self.fleetList.append(_elem98)
+          (_etype82, _size79) = iprot.readListBegin()
+          for _i83 in xrange(_size79):
+            _elem84 = FleetReport()
+            _elem84.read(iprot)
+            self.fleetList.append(_elem84)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -3518,8 +3502,8 @@ class FightReport:
     if self.fleetList is not None:
       oprot.writeFieldBegin('fleetList', TType.LIST, 10)
       oprot.writeListBegin(TType.STRUCT, len(self.fleetList))
-      for iter99 in self.fleetList:
-        iter99.write(oprot)
+      for iter85 in self.fleetList:
+        iter85.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.hasPlanet is not None:
@@ -3592,49 +3576,49 @@ class Universe:
       if fid == 1:
         if ftype == TType.MAP:
           self.playerMap = {}
-          (_ktype101, _vtype102, _size100 ) = iprot.readMapBegin() 
-          for _i104 in xrange(_size100):
-            _key105 = iprot.readI32();
-            _val106 = Player()
-            _val106.read(iprot)
-            self.playerMap[_key105] = _val106
+          (_ktype87, _vtype88, _size86 ) = iprot.readMapBegin() 
+          for _i90 in xrange(_size86):
+            _key91 = iprot.readI32();
+            _val92 = Player()
+            _val92.read(iprot)
+            self.playerMap[_key91] = _val92
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.MAP:
           self.planetMap = {}
-          (_ktype108, _vtype109, _size107 ) = iprot.readMapBegin() 
-          for _i111 in xrange(_size107):
-            _key112 = Coord()
-            _key112.read(iprot)
-            _val113 = Planet()
-            _val113.read(iprot)
-            self.planetMap[_key112] = _val113
+          (_ktype94, _vtype95, _size93 ) = iprot.readMapBegin() 
+          for _i97 in xrange(_size93):
+            _key98 = Coord()
+            _key98.read(iprot)
+            _val99 = Planet()
+            _val99.read(iprot)
+            self.planetMap[_key98] = _val99
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
       elif fid == 3:
         if ftype == TType.MAP:
           self.fleetMap = {}
-          (_ktype115, _vtype116, _size114 ) = iprot.readMapBegin() 
-          for _i118 in xrange(_size114):
-            _key119 = iprot.readI64();
-            _val120 = Fleet()
-            _val120.read(iprot)
-            self.fleetMap[_key119] = _val120
+          (_ktype101, _vtype102, _size100 ) = iprot.readMapBegin() 
+          for _i104 in xrange(_size100):
+            _key105 = iprot.readI64();
+            _val106 = Fleet()
+            _val106.read(iprot)
+            self.fleetMap[_key105] = _val106
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
       elif fid == 4:
         if ftype == TType.MAP:
           self.reportMap = {}
-          (_ktype122, _vtype123, _size121 ) = iprot.readMapBegin() 
-          for _i125 in xrange(_size121):
-            _key126 = iprot.readI32();
-            _val127 = FightReport()
-            _val127.read(iprot)
-            self.reportMap[_key126] = _val127
+          (_ktype108, _vtype109, _size107 ) = iprot.readMapBegin() 
+          for _i111 in xrange(_size107):
+            _key112 = iprot.readI32();
+            _val113 = FightReport()
+            _val113.read(iprot)
+            self.reportMap[_key112] = _val113
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
@@ -3666,33 +3650,33 @@ class Universe:
     if self.playerMap is not None:
       oprot.writeFieldBegin('playerMap', TType.MAP, 1)
       oprot.writeMapBegin(TType.I32, TType.STRUCT, len(self.playerMap))
-      for kiter128,viter129 in self.playerMap.items():
-        oprot.writeI32(kiter128)
-        viter129.write(oprot)
+      for kiter114,viter115 in self.playerMap.items():
+        oprot.writeI32(kiter114)
+        viter115.write(oprot)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     if self.planetMap is not None:
       oprot.writeFieldBegin('planetMap', TType.MAP, 2)
       oprot.writeMapBegin(TType.STRUCT, TType.STRUCT, len(self.planetMap))
-      for kiter130,viter131 in self.planetMap.items():
-        kiter130.write(oprot)
-        viter131.write(oprot)
+      for kiter116,viter117 in self.planetMap.items():
+        kiter116.write(oprot)
+        viter117.write(oprot)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     if self.fleetMap is not None:
       oprot.writeFieldBegin('fleetMap', TType.MAP, 3)
       oprot.writeMapBegin(TType.I64, TType.STRUCT, len(self.fleetMap))
-      for kiter132,viter133 in self.fleetMap.items():
-        oprot.writeI64(kiter132)
-        viter133.write(oprot)
+      for kiter118,viter119 in self.fleetMap.items():
+        oprot.writeI64(kiter118)
+        viter119.write(oprot)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     if self.reportMap is not None:
       oprot.writeFieldBegin('reportMap', TType.MAP, 4)
       oprot.writeMapBegin(TType.I32, TType.STRUCT, len(self.reportMap))
-      for kiter134,viter135 in self.reportMap.items():
-        oprot.writeI32(kiter134)
-        viter135.write(oprot)
+      for kiter120,viter121 in self.reportMap.items():
+        oprot.writeI32(kiter120)
+        viter121.write(oprot)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
     if self.nextPlayerID is not None:
@@ -3935,22 +3919,22 @@ class FleetList:
       if fid == 10:
         if ftype == TType.LIST:
           self.fleetList = []
-          (_etype139, _size136) = iprot.readListBegin()
-          for _i140 in xrange(_size136):
-            _elem141 = Fleet()
-            _elem141.read(iprot)
-            self.fleetList.append(_elem141)
+          (_etype125, _size122) = iprot.readListBegin()
+          for _i126 in xrange(_size122):
+            _elem127 = Fleet()
+            _elem127.read(iprot)
+            self.fleetList.append(_elem127)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 20:
         if ftype == TType.LIST:
           self.planetList = []
-          (_etype145, _size142) = iprot.readListBegin()
-          for _i146 in xrange(_size142):
-            _elem147 = Planet()
-            _elem147.read(iprot)
-            self.planetList.append(_elem147)
+          (_etype131, _size128) = iprot.readListBegin()
+          for _i132 in xrange(_size128):
+            _elem133 = Planet()
+            _elem133.read(iprot)
+            self.planetList.append(_elem133)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -3972,15 +3956,15 @@ class FleetList:
     if self.fleetList is not None:
       oprot.writeFieldBegin('fleetList', TType.LIST, 10)
       oprot.writeListBegin(TType.STRUCT, len(self.fleetList))
-      for iter148 in self.fleetList:
-        iter148.write(oprot)
+      for iter134 in self.fleetList:
+        iter134.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.planetList is not None:
       oprot.writeFieldBegin('planetList', TType.LIST, 20)
       oprot.writeListBegin(TType.STRUCT, len(self.planetList))
-      for iter149 in self.planetList:
-        iter149.write(oprot)
+      for iter135 in self.planetList:
+        iter135.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.fleetCount is not None:
@@ -4052,11 +4036,11 @@ class PlanetList:
       if fid == 10:
         if ftype == TType.LIST:
           self.planetList = []
-          (_etype153, _size150) = iprot.readListBegin()
-          for _i154 in xrange(_size150):
-            _elem155 = Planet()
-            _elem155.read(iprot)
-            self.planetList.append(_elem155)
+          (_etype139, _size136) = iprot.readListBegin()
+          for _i140 in xrange(_size136):
+            _elem141 = Planet()
+            _elem141.read(iprot)
+            self.planetList.append(_elem141)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -4078,8 +4062,8 @@ class PlanetList:
     if self.planetList is not None:
       oprot.writeFieldBegin('planetList', TType.LIST, 10)
       oprot.writeListBegin(TType.STRUCT, len(self.planetList))
-      for iter156 in self.planetList:
-        iter156.write(oprot)
+      for iter142 in self.planetList:
+        iter142.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.planetCount is not None:
@@ -4346,22 +4330,22 @@ class FriendshipRequests:
       if fid == 10:
         if ftype == TType.LIST:
           self.sent = []
-          (_etype160, _size157) = iprot.readListBegin()
-          for _i161 in xrange(_size157):
-            _elem162 = Player()
-            _elem162.read(iprot)
-            self.sent.append(_elem162)
+          (_etype146, _size143) = iprot.readListBegin()
+          for _i147 in xrange(_size143):
+            _elem148 = Player()
+            _elem148.read(iprot)
+            self.sent.append(_elem148)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 20:
         if ftype == TType.LIST:
           self.received = []
-          (_etype166, _size163) = iprot.readListBegin()
-          for _i167 in xrange(_size163):
-            _elem168 = Player()
-            _elem168.read(iprot)
-            self.received.append(_elem168)
+          (_etype152, _size149) = iprot.readListBegin()
+          for _i153 in xrange(_size149):
+            _elem154 = Player()
+            _elem154.read(iprot)
+            self.received.append(_elem154)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -4378,15 +4362,15 @@ class FriendshipRequests:
     if self.sent is not None:
       oprot.writeFieldBegin('sent', TType.LIST, 10)
       oprot.writeListBegin(TType.STRUCT, len(self.sent))
-      for iter169 in self.sent:
-        iter169.write(oprot)
+      for iter155 in self.sent:
+        iter155.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.received is not None:
       oprot.writeFieldBegin('received', TType.LIST, 20)
       oprot.writeListBegin(TType.STRUCT, len(self.received))
-      for iter170 in self.received:
-        iter170.write(oprot)
+      for iter156 in self.received:
+        iter156.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()

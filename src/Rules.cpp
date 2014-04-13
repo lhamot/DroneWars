@@ -23,7 +23,7 @@ void onPlanetLose(Coord planetCoord,
 		planet.playerId = Player::NoId;
 		planet.player = nullptr;
 		planet.buildingList.assign(0);
-		planet.taskQueue.clear();
+		planet.task.reset();
 		newParentMap[planet.coord] = planet.parentCoord;
 		planet.parentCoord = planet.coord;
 		planet.hangar.assign(0);

@@ -226,7 +226,7 @@ struct Planet
 	20: Coord coord
 	30: Player_ID playerId
 	40: BuildingTab buildingList
-	50: list<PlanetTask> taskQueue
+	50: optional PlanetTask task
 	60: RessourceSet ressourceSet
 	70: list<Event> eventList
 	80: list<i32> cannonTab
@@ -247,7 +247,7 @@ struct Fleet
 	50: string name
 	60: Fleet_ShipTab shipList
 	70: RessourceSet ressourceSet
-	80: list<FleetTask> taskQueue
+	80: optional FleetTask task
 	90: list<Event> eventList
 	100: string playerLogin
 	110: Alliance_ID allianceID

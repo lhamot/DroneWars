@@ -1244,12 +1244,12 @@ void swap(FleetTask& a, FleetTask& b);
 
 typedef struct _Planet__isset
 {
-	_Planet__isset() : name(false), coord(false), playerId(false), buildingList(false), taskQueue(false), ressourceSet(false), eventList(false), cannonTab(false), hangar(false), playerLogin(false), allianceID(false) {}
+	_Planet__isset() : name(false), coord(false), playerId(false), buildingList(false), task(false), ressourceSet(false), eventList(false), cannonTab(false), hangar(false), playerLogin(false), allianceID(false) {}
 	bool name;
 	bool coord;
 	bool playerId;
 	bool buildingList;
-	bool taskQueue;
+	bool task;
 	bool ressourceSet;
 	bool eventList;
 	bool cannonTab;
@@ -1262,8 +1262,8 @@ class Planet
 {
 public:
 
-	static const char* ascii_fingerprint; // = "3B9778BA937561137A329BB8966E30E1";
-	static const uint8_t binary_fingerprint[16]; // = {0x3B,0x97,0x78,0xBA,0x93,0x75,0x61,0x13,0x7A,0x32,0x9B,0xB8,0x96,0x6E,0x30,0xE1};
+	static const char* ascii_fingerprint; // = "33A24B02E2AD80EE90A79C61E4B23AF0";
+	static const uint8_t binary_fingerprint[16]; // = {0x33,0xA2,0x4B,0x02,0xE2,0xAD,0x80,0xEE,0x90,0xA7,0x9C,0x61,0xE4,0xB2,0x3A,0xF0};
 
 	Planet() : name(), playerId(0), playerLogin(), allianceID(0)
 	{
@@ -1275,7 +1275,7 @@ public:
 	Coord coord;
 	Player_ID playerId;
 	BuildingTab buildingList;
-	std::vector<PlanetTask>  taskQueue;
+	PlanetTask task;
 	RessourceSet ressourceSet;
 	std::vector<Event>  eventList;
 	std::vector<int32_t>  cannonTab;
@@ -1305,9 +1305,10 @@ public:
 		buildingList = val;
 	}
 
-	void __set_taskQueue(const std::vector<PlanetTask>& val)
+	void __set_task(const PlanetTask& val)
 	{
-		taskQueue = val;
+		task = val;
+		__isset.task = true;
 	}
 
 	void __set_ressourceSet(const RessourceSet& val)
@@ -1350,7 +1351,9 @@ public:
 			return false;
 		if(!(buildingList == rhs.buildingList))
 			return false;
-		if(!(taskQueue == rhs.taskQueue))
+		if(__isset.task != rhs.__isset.task)
+			return false;
+		else if(__isset.task && !(task == rhs.task))
 			return false;
 		if(!(ressourceSet == rhs.ressourceSet))
 			return false;
@@ -1382,7 +1385,7 @@ void swap(Planet& a, Planet& b);
 
 typedef struct _Fleet__isset
 {
-	_Fleet__isset() : id(false), playerId(false), coord(false), origin(false), name(false), shipList(false), ressourceSet(false), taskQueue(false), eventList(false), playerLogin(false), allianceID(false) {}
+	_Fleet__isset() : id(false), playerId(false), coord(false), origin(false), name(false), shipList(false), ressourceSet(false), task(false), eventList(false), playerLogin(false), allianceID(false) {}
 	bool id;
 	bool playerId;
 	bool coord;
@@ -1390,7 +1393,7 @@ typedef struct _Fleet__isset
 	bool name;
 	bool shipList;
 	bool ressourceSet;
-	bool taskQueue;
+	bool task;
 	bool eventList;
 	bool playerLogin;
 	bool allianceID;
@@ -1400,8 +1403,8 @@ class Fleet
 {
 public:
 
-	static const char* ascii_fingerprint; // = "C76E0C77EF72949CBD758C64E10BF712";
-	static const uint8_t binary_fingerprint[16]; // = {0xC7,0x6E,0x0C,0x77,0xEF,0x72,0x94,0x9C,0xBD,0x75,0x8C,0x64,0xE1,0x0B,0xF7,0x12};
+	static const char* ascii_fingerprint; // = "0B1A7E668E354C09B0775CD997939DEA";
+	static const uint8_t binary_fingerprint[16]; // = {0x0B,0x1A,0x7E,0x66,0x8E,0x35,0x4C,0x09,0xB0,0x77,0x5C,0xD9,0x97,0x93,0x9D,0xEA};
 
 	Fleet() : id(0), playerId(0), name(), playerLogin(), allianceID(0)
 	{
@@ -1416,7 +1419,7 @@ public:
 	std::string name;
 	Fleet_ShipTab shipList;
 	RessourceSet ressourceSet;
-	std::vector<FleetTask>  taskQueue;
+	FleetTask task;
 	std::vector<Event>  eventList;
 	std::string playerLogin;
 	Alliance_ID allianceID;
@@ -1458,9 +1461,10 @@ public:
 		ressourceSet = val;
 	}
 
-	void __set_taskQueue(const std::vector<FleetTask>& val)
+	void __set_task(const FleetTask& val)
 	{
-		taskQueue = val;
+		task = val;
+		__isset.task = true;
 	}
 
 	void __set_eventList(const std::vector<Event>& val)
@@ -1494,7 +1498,9 @@ public:
 			return false;
 		if(!(ressourceSet == rhs.ressourceSet))
 			return false;
-		if(!(taskQueue == rhs.taskQueue))
+		if(__isset.task != rhs.__isset.task)
+			return false;
+		else if(__isset.task && !(task == rhs.task))
 			return false;
 		if(!(eventList == rhs.eventList))
 			return false;
@@ -1586,8 +1592,8 @@ class FleetFightInfo
 {
 public:
 
-	static const char* ascii_fingerprint; // = "2153DC56A03DDECF054E13EF1F872649";
-	static const uint8_t binary_fingerprint[16]; // = {0x21,0x53,0xDC,0x56,0xA0,0x3D,0xDE,0xCF,0x05,0x4E,0x13,0xEF,0x1F,0x87,0x26,0x49};
+	static const char* ascii_fingerprint; // = "D0758180A7F0D798FDE79413F8603335";
+	static const uint8_t binary_fingerprint[16]; // = {0xD0,0x75,0x81,0x80,0xA7,0xF0,0xD7,0x98,0xFD,0xE7,0x94,0x13,0xF8,0x60,0x33,0x35};
 
 	FleetFightInfo()
 	{
@@ -1648,8 +1654,8 @@ class FleetReport
 {
 public:
 
-	static const char* ascii_fingerprint; // = "2387BF8CC4D127D206B7B76E73798CB1";
-	static const uint8_t binary_fingerprint[16]; // = {0x23,0x87,0xBF,0x8C,0xC4,0xD1,0x27,0xD2,0x06,0xB7,0xB7,0x6E,0x73,0x79,0x8C,0xB1};
+	static const char* ascii_fingerprint; // = "798331421319096196F1594277E9F209";
+	static const uint8_t binary_fingerprint[16]; // = {0x79,0x83,0x31,0x42,0x13,0x19,0x09,0x61,0x96,0xF1,0x59,0x42,0x77,0xE9,0xF2,0x09};
 
 	FleetReport() : isDead(0), hasFight(0), experience(0), wantEscape(0), escapeProba(0)
 	{
@@ -1745,8 +1751,8 @@ class PlanetFightInfo
 {
 public:
 
-	static const char* ascii_fingerprint; // = "5608EB01A7A7F683795E4389C2972997";
-	static const uint8_t binary_fingerprint[16]; // = {0x56,0x08,0xEB,0x01,0xA7,0xA7,0xF6,0x83,0x79,0x5E,0x43,0x89,0xC2,0x97,0x29,0x97};
+	static const char* ascii_fingerprint; // = "B768EEDED4DD1E6A6F28528EBE79BEAF";
+	static const uint8_t binary_fingerprint[16]; // = {0xB7,0x68,0xEE,0xDE,0xD4,0xDD,0x1E,0x6A,0x6F,0x28,0x52,0x8E,0xBE,0x79,0xBE,0xAF};
 
 	PlanetFightInfo()
 	{
@@ -1805,8 +1811,8 @@ class PlanetReport
 {
 public:
 
-	static const char* ascii_fingerprint; // = "9477BE1F803C67F44DE1908D1FD832C5";
-	static const uint8_t binary_fingerprint[16]; // = {0x94,0x77,0xBE,0x1F,0x80,0x3C,0x67,0xF4,0x4D,0xE1,0x90,0x8D,0x1F,0xD8,0x32,0xC5};
+	static const char* ascii_fingerprint; // = "DCAC5CB5847AB83B4EDDC975A24E37E6";
+	static const uint8_t binary_fingerprint[16]; // = {0xDC,0xAC,0x5C,0xB5,0x84,0x7A,0xB8,0x3B,0x4E,0xDD,0xC9,0x75,0xA2,0x4E,0x37,0xE6};
 
 	PlanetReport() : isDead(0), hasFight(0), experience(0)
 	{
@@ -1887,8 +1893,8 @@ class FightReport
 {
 public:
 
-	static const char* ascii_fingerprint; // = "1AB014877511737B47095628DF9B7D4D";
-	static const uint8_t binary_fingerprint[16]; // = {0x1A,0xB0,0x14,0x87,0x75,0x11,0x73,0x7B,0x47,0x09,0x56,0x28,0xDF,0x9B,0x7D,0x4D};
+	static const char* ascii_fingerprint; // = "84AC3FBF8353407C70EC4A13771F84F4";
+	static const uint8_t binary_fingerprint[16]; // = {0x84,0xAC,0x3F,0xBF,0x83,0x53,0x40,0x7C,0x70,0xEC,0x4A,0x13,0x77,0x1F,0x84,0xF4};
 
 	FightReport() : hasPlanet(0)
 	{
@@ -1960,8 +1966,8 @@ class Universe
 {
 public:
 
-	static const char* ascii_fingerprint; // = "6D54B59D0E89C07CA87D04FB0285735D";
-	static const uint8_t binary_fingerprint[16]; // = {0x6D,0x54,0xB5,0x9D,0x0E,0x89,0xC0,0x7C,0xA8,0x7D,0x04,0xFB,0x02,0x85,0x73,0x5D};
+	static const char* ascii_fingerprint; // = "79DAEAF925FDDD5A224976224E51CE70";
+	static const uint8_t binary_fingerprint[16]; // = {0x79,0xDA,0xEA,0xF9,0x25,0xFD,0xDD,0x5A,0x22,0x49,0x76,0x22,0x4E,0x51,0xCE,0x70};
 
 	Universe() : nextPlayerID(0), nextFleetID(0), time(0)
 	{
@@ -2166,8 +2172,8 @@ class FleetList
 {
 public:
 
-	static const char* ascii_fingerprint; // = "3AE3833BF5733C62EFD2D4BB4A753F7E";
-	static const uint8_t binary_fingerprint[16]; // = {0x3A,0xE3,0x83,0x3B,0xF5,0x73,0x3C,0x62,0xEF,0xD2,0xD4,0xBB,0x4A,0x75,0x3F,0x7E};
+	static const char* ascii_fingerprint; // = "E37720D14C0E090792B4FECE48A2E487";
+	static const uint8_t binary_fingerprint[16]; // = {0xE3,0x77,0x20,0xD1,0x4C,0x0E,0x09,0x07,0x92,0xB4,0xFE,0xCE,0x48,0xA2,0xE4,0x87};
 
 	FleetList() : fleetCount(0)
 	{
@@ -2231,8 +2237,8 @@ class PlanetList
 {
 public:
 
-	static const char* ascii_fingerprint; // = "BDDD1282588ED992A4A6DEBF58CF7985";
-	static const uint8_t binary_fingerprint[16]; // = {0xBD,0xDD,0x12,0x82,0x58,0x8E,0xD9,0x92,0xA4,0xA6,0xDE,0xBF,0x58,0xCF,0x79,0x85};
+	static const char* ascii_fingerprint; // = "CC0D6E88C62081AE370D3E7CAB34B493";
+	static const uint8_t binary_fingerprint[16]; // = {0xCC,0x0D,0x6E,0x88,0xC6,0x20,0x81,0xAE,0x37,0x0D,0x3E,0x7C,0xAB,0x34,0xB4,0x93};
 
 	PlanetList() : planetCount(0)
 	{

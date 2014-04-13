@@ -173,9 +173,8 @@ ndw::Fleet fleetToThrift(Fleet const& fleet, Player const& player)
 
 	result.ressourceSet = ressourceToThrift(fleet.ressourceSet);
 
-	result.taskQueue.reserve(fleet.taskQueue.size());
-	for(FleetTask const& task : fleet.taskQueue)
-		result.taskQueue.push_back(fleetTaskToThrift(task));
+	if(fleet.task)
+		result.__set_task(fleetTaskToThrift(*fleet.task));
 
 	return result;
 }
@@ -199,10 +198,8 @@ ndw::Planet planetToThrift(Planet const& planet, Player const* player)
 		res.allianceID = 0;
 	for(size_t value : planet.buildingList)
 		res.buildingList.push_back(NUMCAST(value));
-	res.taskQueue.reserve(planet.taskQueue.size());
-	transform(planet.taskQueue,
-	          back_inserter(res.taskQueue),
-	          planetTaskToThrift);
+	if(planet.task)
+		res.__set_task(planetTaskToThrift(*planet.task));
 	res.ressourceSet = ressourceToThrift(planet.ressourceSet);
 	res.cannonTab.reserve(planet.cannonTab.size());
 	for(size_t value : planet.cannonTab)

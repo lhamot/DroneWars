@@ -278,8 +278,8 @@ struct Planet
 				LOG4CPLUS_ERROR(logger, "playerId : " << playerId);
 				BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 			}
-			if(playerId == Player::NoId && taskQueue.empty() == false)
-				BOOST_THROW_EXCEPTION(std::logic_error("taskQueue shourld be empty"));
+			if(playerId == Player::NoId && task)
+				BOOST_THROW_EXCEPTION(std::logic_error("task should be empty"));
 			if(buildingList.size() != Building::Count)
 				BOOST_THROW_EXCEPTION(std::logic_error("buildingList.size() != Building::Count"));
 		});
@@ -288,13 +288,21 @@ struct Planet
 		ar& coord;
 		ar& playerId;
 		ar& buildingList;
-		ar& taskQueue;
+		if(version < 3)
+		{
+			std::vector<PlanetTask> taskQueue;
+			ar& taskQueue;
+			if(taskQueue.empty() == false)
+				task = taskQueue.front();
+		}
+		else
+			ar& task;
 		ar& ressourceSet;
 		ar& cannonTab;
 		if(playerId >= 100000 && playerId != Player::NoId)
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
-		if(playerId == Player::NoId && taskQueue.empty() == false)
-			BOOST_THROW_EXCEPTION(std::logic_error("taskQueue shourld be empty"));
+		if(playerId == Player::NoId && task)
+			BOOST_THROW_EXCEPTION(std::logic_error("task shourld be empty"));
 		if(buildingList.size() != Building::Count)
 			BOOST_THROW_EXCEPTION(std::logic_error("buildingList.size() != Building::Count"));
 		ar& parentCoord;
@@ -317,7 +325,7 @@ struct Planet
 	Coord coord;                       //!< Coordonnées
 	Player::ID playerId;               //!< Propriétaire
 	BuildingTab buildingList;          //!< Niveau de chaque Building
-	std::vector<PlanetTask> taskQueue; //!< Liste des taches en cours
+	boost::optional<PlanetTask> task; //!< Liste des taches en cours
 	RessourceSet ressourceSet;         //!< Ressources présente
 	CannonTab cannonTab;               //!< Nombre de canons pour chaque type
 	Coord parentCoord;                 //!< Coordonées de la planète parente
@@ -331,8 +339,7 @@ struct Planet
 	size_t heap_size() const
 	{
 		size_t const buildingSize = buildingList.size() * sizeof(size_t);
-		size_t const taskSize = taskQueue.capacity() * sizeof(PlanetTask);
-		return name.capacity() + buildingSize + taskSize;
+		return name.capacity() + buildingSize;
 	}
 	//! Constructeur par defaut
 	Planet() : playerId(55555), time(0), firstRound(0)
@@ -347,7 +354,7 @@ struct Planet
 		coord(other.coord),
 		playerId(other.playerId),
 		buildingList(other.buildingList),
-		taskQueue(other.taskQueue),
+		task(other.task),
 		ressourceSet(other.ressourceSet),
 		cannonTab(other.cannonTab),
 		parentCoord(other.parentCoord),
@@ -374,7 +381,7 @@ struct Planet
 		return playerId == Player::NoId;
 	}
 };
-BOOST_CLASS_VERSION(Planet, 2);
+BOOST_CLASS_VERSION(Planet, 3);
 
 
 //! Ordre donné par le script lua a une planète
@@ -459,7 +466,15 @@ struct Fleet
 		ar& shipList;
 		ar& time;
 		ar& ressourceSet;
-		ar& taskQueue;
+		if(version < 2)
+		{
+			std::vector<FleetTask> taskQueue;
+			ar& taskQueue;
+			if(taskQueue.empty() == false)
+				task = taskQueue.front();
+		}
+		else
+			ar& task;
 		if(playerId >= 100000)
 			BOOST_THROW_EXCEPTION(std::logic_error("playerId >= 100000!!"));
 		if(playerId == 0)
@@ -484,7 +499,7 @@ struct Fleet
 	time_t time;              //!< Date de création
 	size_t firstRound;     //!< Round de creation
 	RessourceSet ressourceSet;        //!< Ressources transportés par la flotte
-	std::vector<FleetTask> taskQueue; //!< Liste de taque a éxcecuter
+	boost::optional<FleetTask> task; //!< Liste de taque a éxcecuter
 	TypedPtree memory; //!< Données utilisateurs
 	Player* player = nullptr;
 
@@ -526,7 +541,7 @@ struct Fleet
 		time(other.time),
 		firstRound(other.firstRound),
 		ressourceSet(other.ressourceSet),
-		taskQueue(other.taskQueue),
+		task(other.task),
 		player(other.player)
 	{
 	}
@@ -537,7 +552,7 @@ struct Fleet
 		return boost::accumulate(shipList, 0) == 0;
 	}
 };
-BOOST_CLASS_VERSION(Fleet, 1);
+BOOST_CLASS_VERSION(Fleet, 2);
 
 
 //! Ordre qu'un scrupt LUA peut donner a une flotte

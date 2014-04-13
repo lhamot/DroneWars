@@ -371,7 +371,7 @@ bool canBuild(Planet const& planet,
 		return false;
 	if(planet.buildingList[Building::Factory] == 0)
 		return false;
-	if(planet.taskQueue.size() > 0)
+	if(planet.task)
 		return false;
 
 	RessourceSet price = Ship::List[type].price;
@@ -390,17 +390,15 @@ bool canBuild(Planet const& planet, Building::Enum type)
 		return false;
 	if(planet.buildingList[Building::CommandCenter] == 0)
 		return false;
-	if(planet.taskQueue.size() > 0)
+	if(planet.task)
 		return false;
 
 	size_t const buNextLevel = planet.buildingList[type] + 1;
 	RessourceSet const price = getBuilingPrice(type, buNextLevel);
 	if(false == canPay(planet, price))
 		return false;
-
-	auto iter = find_if(planet.taskQueue.begin(), planet.taskQueue.end(),
-	                    boost::bind(&PlanetTask::value, _1) == uint32_t(type));
-	return iter == planet.taskQueue.end();
+	else
+		return true;
 }
 
 
@@ -411,7 +409,7 @@ bool canBuild(Planet const& planet, Cannon::Enum type, size_t number)
 		return false;
 	if(planet.buildingList[Building::Factory] == 0)
 		return false;
-	if(planet.taskQueue.size() > 0)
+	if(planet.task)
 		return false;
 
 	RessourceSet price = Cannon::List[type].price;
@@ -444,7 +442,9 @@ void addTask(Planet& planet, uint32_t roundCount, Building::Enum building)
 	if(canPay(planet, price) == false)
 		BOOST_THROW_EXCEPTION(std::logic_error("Can't pay"));
 
-	planet.taskQueue.push_back(task);
+	if(planet.task)
+		BOOST_THROW_EXCEPTION(std::logic_error("planet.task is full"));
+	planet.task = task;
 	pay(planet, price);
 }
 
@@ -467,7 +467,9 @@ void addTask(Planet& planet, uint32_t roundCount, Ship::Enum ship, uint32_t numb
 	task.value2 = number;
 	RessourceSet const& price = Ship::List[ship].price;
 	task.startCost = price;
-	planet.taskQueue.push_back(task);
+	if(planet.task)
+		BOOST_THROW_EXCEPTION(std::logic_error("planet.task is full"));
+	planet.task = task;
 	pay(planet, price);
 }
 
@@ -495,7 +497,9 @@ void addTask(Planet& planet,
 	task.value2 = number;
 	RessourceSet const& price = Cannon::List[cannon].price;
 	task.startCost = price;
-	planet.taskQueue.push_back(task);
+	if(planet.task)
+		BOOST_THROW_EXCEPTION(std::logic_error("planet.task is full"));
+	planet.task = task;
 	pay(planet, price);
 }
 
@@ -516,15 +520,12 @@ void stopTask(Planet& planet,
               PlanetTask::Enum tasktype,
               Building::Enum building)
 {
-	auto iter = boost::find_if(planet.taskQueue, [&]
-	                           (PlanetTask const & task)
-	{
-		return task.type == tasktype &&
-		       task.value == static_cast<uint32_t>(building);
-	});
-
-	if(iter != planet.taskQueue.end())
-		planet.taskQueue.erase(iter);
+	if(!planet.task)
+		return;
+	PlanetTask const& task = *planet.task;
+	if(task.type == tasktype &&
+	   task.value == static_cast<uint32_t>(building))
+		planet.task.reset();
 }
 
 
@@ -686,8 +687,8 @@ void planetRound(Player const& player,
                  Planet& planet,
                  std::vector<Event>& events)
 {
-	for(PlanetTask& task : planet.taskQueue)
-		execTask(univ, planet, task, events);
+	if(planet.task)
+		execTask(univ, planet, *planet.task, events);
 
 	size_t const maxFleetCount = getMaxFleetCount(player);
 	if(player.fleetCount < maxFleetCount && boost::accumulate(planet.hangar, 0))
@@ -702,7 +703,8 @@ void planetRound(Player const& player,
 	}
 
 
-	remove_erase_if(planet.taskQueue, boost::bind(&PlanetTask::expired, _1));
+	if(planet.task && planet.task->expired)
+		planet.task.reset();
 
 	for(size_t type = 0; type < planet.buildingList.size(); ++type)
 		execBuilding(planet, Building::Enum(type), planet.buildingList[type]);
@@ -727,10 +729,11 @@ void fleetRound(Universe& univ,
                 Fleet& fleet,
                 std::vector<Event>& events)
 {
-	for(FleetTask& task : fleet.taskQueue)
-		execTask(univ, player, fleet, task, events);
+	if(fleet.task)
+		execTask(univ, player, fleet, *fleet.task, events);
 
-	remove_erase_if(fleet.taskQueue, boost::bind(&FleetTask::expired, _1));
+	if(fleet.task && fleet.task->expired)
+		fleet.task.reset();
 
 	//Limitation des ressources à un milliard
 	for(auto& val : fleet.ressourceSet.tab)
@@ -754,7 +757,7 @@ bool canMove(Fleet const& fleet,
              Coord const& coord //Destination en valeur absolue
             )
 {
-	if(false == fleet.taskQueue.empty())
+	if(fleet.task)
 		return false;
 	if(abs(fleet.coord.X - coord.X) > 1 ||
 	   abs(fleet.coord.Y - coord.Y) > 1 ||
@@ -773,16 +776,18 @@ bool canMove(Fleet const& fleet,
 //! @pre la flotte peut se rendre a cet coordonée (canMove)
 void addTaskMove(Fleet& fleet, uint32_t roundCount, Coord const& coord)
 {
+	if(fleet.task)
+		BOOST_THROW_EXCEPTION(std::logic_error("fleet.task is not NULL!"));
 	FleetTask task(FleetTask::Move, roundCount, 1);
 	task.position = coord;
-	fleet.taskQueue.push_back(task);
+	fleet.task = task;
 }
 
 
 //! Test si la flotte peut récolter la planète
 bool canHarvest(Fleet const& fleet, Planet const& planet)
 {
-	if(fleet.taskQueue.empty() == false)
+	if(fleet.task)
 		return false;
 	return planet.playerId == Player::NoId;
 }
@@ -792,9 +797,11 @@ bool canHarvest(Fleet const& fleet, Planet const& planet)
 //! @pre la flotte peut récolter la planète (canHarvest)
 void addTaskHarvest(Fleet& fleet, uint32_t roundCount, Planet const& planet)
 {
+	if(fleet.task)
+		BOOST_THROW_EXCEPTION(std::logic_error("fleet.task is not NULL!"));
 	FleetTask task(FleetTask::Harvest, roundCount, 1);
 	task.position = planet.coord;
-	fleet.taskQueue.push_back(task);
+	fleet.task = task;
 }
 
 
@@ -804,7 +811,7 @@ bool canColonize(Player const& player,
                  Planet const& planet,
                  size_t planetCount)
 {
-	if(false == fleet.taskQueue.empty())
+	if(fleet.task)
 		return false;
 	if(planet.playerId != Player::NoId || fleet.shipList[Ship::Queen] == 0)
 		return false;
@@ -816,9 +823,11 @@ bool canColonize(Player const& player,
 //! @pre la flotte peut colonizer la planète (canColonize)
 void addTaskColonize(Fleet& fleet, uint32_t roundCount, Planet const& planet)
 {
+	if(fleet.task)
+		BOOST_THROW_EXCEPTION(std::logic_error("fleet.task is not NULL!"));
 	FleetTask task(FleetTask::Colonize, roundCount, 1);
 	task.position = planet.coord;
-	fleet.taskQueue.push_back(task);
+	fleet.task = task;
 }
 
 
