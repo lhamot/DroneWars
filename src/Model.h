@@ -719,7 +719,7 @@ struct Event
 		Count
 	};
 
-	typedef size_t ID;       //!< Type d'indentifiant d'évenement
+	typedef uint64_t ID;       //!< Type d'indentifiant d'évenement
 	ID id = 0;               //!< Indentifiant unique
 	time_t time = 0;         //!< Date de l'évenement
 	Type type = Type::Count; //!< Type d'évenement

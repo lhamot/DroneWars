@@ -164,7 +164,7 @@ try : connectionInfo_(connectionInfo)
 		            "CREATE TABLE "
 		            "if not exists "
 		            "Event ("
-		            "  id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+		            "  id BIGINT PRIMARY KEY AUTO_INCREMENT,"
 		            "  time INTEGER NOT NULL,"
 		            "  type INTEGER NOT NULL,"
 		            "  comment VARCHAR(500) NOT NULL,"
