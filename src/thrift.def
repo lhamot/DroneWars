@@ -34,7 +34,7 @@ enum Event_Type
 	Count
 }
 
-typedef i32 Event_ID
+typedef i64 Event_ID
 
 struct Event 
 {

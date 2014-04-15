@@ -439,7 +439,7 @@ class Event:
     None, # 7
     None, # 8
     None, # 9
-    (10, TType.I32, 'id', None, None, ), # 10
+    (10, TType.I64, 'id', None, None, ), # 10
     None, # 11
     None, # 12
     None, # 13
@@ -521,8 +521,8 @@ class Event:
       if ftype == TType.STOP:
         break
       if fid == 10:
-        if ftype == TType.I32:
-          self.id = iprot.readI32();
+        if ftype == TType.I64:
+          self.id = iprot.readI64();
         else:
           iprot.skip(ftype)
       elif fid == 20:
@@ -566,8 +566,8 @@ class Event:
       return
     oprot.writeStructBegin('Event')
     if self.id is not None:
-      oprot.writeFieldBegin('id', TType.I32, 10)
-      oprot.writeI32(self.id)
+      oprot.writeFieldBegin('id', TType.I64, 10)
+      oprot.writeI64(self.id)
       oprot.writeFieldEnd()
     if self.time is not None:
       oprot.writeFieldBegin('time', TType.I32, 20)
