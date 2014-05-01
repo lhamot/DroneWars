@@ -7,6 +7,7 @@
 
 #include "Model.h"
 #include <boost/format.hpp>
+#include <boost/range/size.hpp>
 
 #include "Polua/Class.h"
 #include "Polua/RegFunc.h"
@@ -330,6 +331,111 @@ int workingThing_getTask(lua_State* L)
 		return 0;
 }
 
+
+//! Applique l'action demandé par le script de la flotte
+FleetActionTest checkFleetActionImpl(
+  Player const& player,
+  FleetAction const& action,
+  Fleet const& fleet,
+  Planet const* planet
+)
+{
+	switch(action.action)
+	{
+	case FleetAction::Nothing:
+		return FleetActionTest::Ok;
+	case FleetAction::Move:
+	{
+		Coord target = fleet.coord;
+		target.X += action.target.X;
+		target.Y += action.target.Y;
+		target.Z += action.target.Z;
+		return canMove(fleet, target);
+	}
+	case FleetAction::Harvest:
+		return canHarvest(fleet, planet);
+	case FleetAction::Colonize:
+		return canColonize(player, fleet, planet, player.planetCount);
+	case FleetAction::Drop:
+		return canDrop(fleet, planet);
+	}
+	return FleetActionTest::BadValue;
+}
+
+int checkFleetAction(lua_State* L)
+{
+	Polua::object playerObj = Polua::refFromName(L, "currentPlayer");
+	Player const& player = playerObj->get<Player>();
+	FleetAction const& action = Polua::fromstackAny<FleetAction>(L, -3);
+	Fleet const& fleet = Polua::fromstackAny<Fleet>(L, -2);
+	Planet const* planet =
+	  static_cast<Planet const*>(luaL_testudata(L, -1, typeid(Planet).name()));
+	FleetActionTest const state =
+	  checkFleetActionImpl(player, action, fleet, planet);
+	static char const* const ActionNames[] =
+	{
+		"Ok",
+		"OtherTaskRunning",
+		"NotEnoughRessources",
+		"TooFarAway",
+		"OutOfGalaxy",
+		"PlanetHasOwner",
+		"QueenMissing",
+		"PlanetLimitReached",
+		"NotYourOwnPlanet",
+		"FleetLimitReached",
+		"NoPlanet",
+		"BadValue"
+	};
+	static_assert(TABLESIZE(ActionNames) == size_t(FleetActionTest::Count),
+	              "ActionNames need update");
+	lua_pushstring(L, ActionNames[size_t(state)]);
+	return 1;
+}
+
+BuildTestState checkPlanetActionImpl(
+  PlanetAction const& action,
+  Planet const& planet
+)
+{
+	switch(action.action)
+	{
+	case PlanetAction::Undefined:
+		return BuildTestState::Ok;
+	case PlanetAction::Building:
+		return canBuild(planet, action.building);
+	case PlanetAction::StopBuilding:
+		return BuildTestState::Ok;
+	case PlanetAction::Ship:
+		return canBuild(planet, action.ship);
+	case PlanetAction::Cannon:
+		return canBuild(planet, action.cannon);
+	};
+	return BuildTestState::BadValue;
+}
+
+int checkPlanetAction(lua_State* L)
+{
+	PlanetAction const& action = Polua::fromstackAny<PlanetAction>(L, -2);
+	Planet const& planet = Polua::fromstackAny<Planet>(L, -1);
+	BuildTestState const state =
+	  checkPlanetActionImpl(action, planet);
+	static char const* const ActionNames[] =
+	{
+		"Ok",
+		"OtherTaskRunning",
+		"NotEnoughRessources",
+		"BadValue",
+		"FactoryMissing",
+		"CommendCenterMissing",
+		"HangarFull"
+	};
+	static_assert(TABLESIZE(ActionNames) == size_t(BuildTestState::Count),
+	              "ActionNames need update");
+	lua_pushstring(L, ActionNames[size_t(state)]);
+	return 1;
+}
+
 int initDroneWars(LuaTools::Engine& engine)
 {
 	using namespace Polua;
@@ -353,6 +459,8 @@ int initDroneWars(LuaTools::Engine& engine)
 	regFunc(L, "log", luaCFunction_log);
 	regFunc(L, "print", luaCFunction_log);
 	regFunc(L, "simulates", luaCFunction_simul_fight);
+	regFunc(L, "checkFleetAction", checkFleetAction);
+	regFunc(L, "checkPlanetAction", checkPlanetAction);
 	Class<Ressource>(L, "Ressource")
 	.enumValue("Metal", Ressource::Metal)
 	.enumValue("Carbon", Ressource::Carbon)

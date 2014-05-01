@@ -606,12 +606,12 @@ public:
 
 
 	//! Ajoute une valeur statique au type T
-	Class& enumValue(std::string const& name, lua_Integer value)
+	Class& enumValue(std::string const& enumName, lua_Integer value)
 	{
 		POLUA_CHECK_STACK(L, 0);
 		pushMetatable();
 		lua_getmetatable(L, -1);
-		setInMetatable(L, name.c_str(), value);
+		setInMetatable(L, enumName.c_str(), value);
 		lua_pop(L, 2);
 		return *this;
 	}
@@ -634,104 +634,104 @@ public:
 
 	//! Ajoute une propriété au type T
 	template<typename A>
-	Class& property(std::string const& name, A T::*memberPtr)
+	Class& property(std::string const& propName, A T::*memberPtr)
 	{
 		Xetter get = &getter<A>;
 		Xetter set = &setter<A>;
 		setInMetatable(
-		  L, name, Member(ClassHelpers::memberToVoid(memberPtr), get, set));
+		  L, propName, Member(ClassHelpers::memberToVoid(memberPtr), get, set));
 		return *this;
 	}
 
 	//! Ajoute une propriété en lecture seul au type T
 	template<typename A>
-	Class& read_only(std::string const& name, A T::*memberPtr)
+	Class& read_only(std::string const& propName, A T::*memberPtr)
 	{
 		Xetter get = &getter<A>;
 		Xetter set = nullptr;
 		setInMetatable(
-		  L, name, Member(ClassHelpers::memberToVoid(memberPtr), get, set));
+		  L, propName, Member(ClassHelpers::memberToVoid(memberPtr), get, set));
 		return *this;
 	}
 
 	//! Ajoute une propriété en lecture seul au type T
-	Class& read_only(std::string const& name, lua_CFunction function)
+	Class& read_only(std::string const& propName, lua_CFunction function)
 	{
-		setInMetatable(L, name, function);
+		setInMetatable(L, propName, function);
 		return *this;
 	}
 
 	//! Ajoute une methode au type T, a partir d'un lua_CFunction
-	Class& methode(std::string const& name, lua_CFunction methode)
+	Class& methode(std::string const& methName, lua_CFunction methode)
 	{
 		Member mem(Methode(methode, VoidPtr()));
-		setInMetatable(L, name, mem);
+		setInMetatable(L, methName, mem);
 		return *this;
 	}
 
 	//! Ajoute une methode au type T, a partir d'une vrai methode non const
 	template<typename... Args>
-	Class& methode(std::string const& name, void(T::*methode)(Args...))
+	Class& methode(std::string const& methName, void(T::*methode)(Args...))
 	{
 		typedef void(T::*FuncPtr)(Args...);
 		Methode closure(&ClassHelpers::MemCaller<FuncPtr>::call,
 		                ClassHelpers::memberToVoid(methode));
-		setInMetatable(L, name, Member(closure));
+		setInMetatable(L, methName, Member(closure));
 		return *this;
 	}
 
 	//! Ajoute une methode au type T, a partir d'une vrai methode constante
 	template<typename... Args>
-	Class& methode(std::string const& name, void(T::*methode)(Args...) const)
+	Class& methode(std::string const& methName, void(T::*methode)(Args...) const)
 	{
 		typedef void(T::*FuncPtr)(Args...) const;
 		Methode closure(&ClassHelpers::MemCaller<FuncPtr>::call,
 		                ClassHelpers::memberToVoid(methode));
-		setInMetatable(L, name, Member(closure));
+		setInMetatable(L, methName, Member(closure));
 		return *this;
 	}
 
 	//! Ajoute une methode au type T, a partir d'une fonction libre
 	template<typename... Args>
-	Class& methode(std::string const& name, void(*methode)(Args...))
+	Class& methode(std::string const& methName, void(*methode)(Args...))
 	{
 		typedef void(*FuncPtr)(Args...);
 		Methode closure(&ClassHelpers::MemCaller<FuncPtr>::call,
 		                ClassHelpers::memberToVoid(methode));
-		setInMetatable(L, name, Member(closure));
+		setInMetatable(L, methName, Member(closure));
 		return *this;
 	}
 
 	//! Ajoute une methode au type T, a partir d'une vrai methode non const
 	template<typename R, typename... Args>
-	Class& methode(std::string const& name, R(T::*methode)(Args...))
+	Class& methode(std::string const& methName, R(T::*methode)(Args...))
 	{
 		typedef R(T::*FuncPtr)(Args...);
 		Methode closure(&ClassHelpers::MemCallerR<FuncPtr>::call,
 		                ClassHelpers::memberToVoid(methode));
-		setInMetatable(L, name, Member(closure));
+		setInMetatable(L, methName, Member(closure));
 		return *this;
 	}
 
 	//! Ajoute une methode au type T, a partir d'une vrai methode constante
 	template<typename R, typename... Args>
-	Class& methode(std::string const& name, R(T::*methode)(Args...) const)
+	Class& methode(std::string const& methName, R(T::*methode)(Args...) const)
 	{
 		typedef R(T::*FuncPtr)(Args...) const;
 		Methode closure(&ClassHelpers::MemCallerR<FuncPtr>::call,
 		                ClassHelpers::memberToVoid(methode));
-		setInMetatable(L, name, Member(closure));
+		setInMetatable(L, methName, Member(closure));
 		return *this;
 	}
 
 	//! Ajoute une methode au type T, a partir d'une fonction libre
 	template<typename R, typename... Args>
-	Class& methode(std::string const& name, R(*methode)(Args...))
+	Class& methode(std::string const& methName, R(*methode)(Args...))
 	{
 		typedef R(*FuncPtr)(Args...);
 		Methode closure(&ClassHelpers::MemCallerR<FuncPtr>::call,
 		                ClassHelpers::memberToVoid(methode));
-		setInMetatable(L, name, Member(closure));
+		setInMetatable(L, methName, Member(closure));
 		return *this;
 	}
 };

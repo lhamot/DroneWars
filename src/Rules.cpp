@@ -418,26 +418,30 @@ size_t playerFightSimulationCount(Player const& player)
 namespace InternalRules
 {
 //! Test si la flotte peut colonizer la planète
-bool canColonize(Player const& player,
-                 Fleet const& fleet,
-                 Planet const& planet,
-                 size_t planetCount)
+FleetActionTest canColonize(
+  Player const& player,
+  Fleet const&, //fleet
+  Planet const&, //planet
+  size_t planetCount)
 {
-	return
-	  planetCount < getMaxPlanetCount(player) &&
-	  planet.playerId == Player::NoId && fleet.shipList[Ship::Queen];
+	return planetCount < getMaxPlanetCount(player) ?
+	       FleetActionTest::Ok :
+	       FleetActionTest::PlanetLimitReached;
 }
 
 
-bool canGather(Player const& player,
-               Fleet const& fleet1,
-               Fleet const& fleet2)
+FleetActionTest canGather(
+  Player const& player,
+  Fleet const& fleet1,
+  Fleet const& fleet2)
 {
 	size_t const maxShipCount = getMaxFleetSize(player);
 	size_t const fleetSize =
 	  boost::accumulate(fleet1.shipList, 0) +
 	  boost::accumulate(fleet2.shipList, 0);
-	return fleetSize <= maxShipCount;
+	return fleetSize <= maxShipCount ?
+	       FleetActionTest::Ok :
+	       FleetActionTest::FleetLimitReached;
 }
 
 }

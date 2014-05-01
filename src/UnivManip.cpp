@@ -2,7 +2,7 @@
 //! @author Loïc HAMOT
 
 #include "stdafx.h"
-#include "Model.h"
+#include "UnivManip.h"
 
 #include "Tools.h"
 #include "Rules.h"
@@ -364,57 +364,61 @@ void pay(Fleet& fleet, RessourceSet const& price)
 
 
 //! Test si une planète peut fabriquer un vaisseau dans la quantité demandée
-bool canBuild(Planet const& planet,
-              Ship::Enum type)
+BuildTestState canBuild(Planet const& planet, Ship::Enum type)
 {
-	if(type >= Ship::Count)
-		return false;
+	if(type < 0 || type >= Ship::Count)
+		return BuildTestState::BadValue;
 	if(planet.buildingList[Building::Factory] == 0)
-		return false;
+		return BuildTestState::FactoryMissing;
 	if(planet.task)
-		return false;
+		return BuildTestState::OtherTaskRunning;
 
 	RessourceSet price = Ship::List[type].price;
-	boost::geometry::multiply_value(price.tab, 1);
 	if(canPay(planet, price) == false)
-		return false;
+		return BuildTestState::NotEnoughRessources;
 
-	return boost::accumulate(planet.hangar, 0) == 0;
+	size_t const hangarSize = boost::accumulate(planet.hangar, 0);
+	if(hangarSize)
+		return BuildTestState::HangarFull;
+	else
+		return BuildTestState::Ok;
 }
 
 
 //! Test si une planète peut upgrader un batiment
-bool canBuild(Planet const& planet, Building::Enum type)
+BuildTestState canBuild(Planet const& planet, Building::Enum type)
 {
-	if(type >= Building::Count)
-		return false;
+	if(type < 0 || type >= Building::Count)
+		return BuildTestState::BadValue;
 	if(planet.buildingList[Building::CommandCenter] == 0)
-		return false;
+		return BuildTestState::CommendCenterMissing;
 	if(planet.task)
-		return false;
+		return BuildTestState::OtherTaskRunning;
 
 	size_t const buNextLevel = planet.buildingList[type] + 1;
 	RessourceSet const price = getBuilingPrice(type, buNextLevel);
 	if(false == canPay(planet, price))
-		return false;
+		return BuildTestState::NotEnoughRessources;
 	else
-		return true;
+		return BuildTestState::Ok;
 }
 
 
 //! Test si une planète peut fabriquer un canon dans la quantité demandée
-bool canBuild(Planet const& planet, Cannon::Enum type, size_t number)
+BuildTestState canBuild(Planet const& planet, Cannon::Enum type)
 {
 	if(type < 0 || type >= Cannon::Count)
-		return false;
+		return BuildTestState::BadValue;
 	if(planet.buildingList[Building::Factory] == 0)
-		return false;
+		return BuildTestState::FactoryMissing;
 	if(planet.task)
-		return false;
+		return BuildTestState::OtherTaskRunning;
 
-	RessourceSet price = Cannon::List[type].price;
-	boost::geometry::multiply_value(price.tab, Ressource::Value(number));
-	return canPay(planet, price);
+	RessourceSet price = Ship::List[type].price;
+	if(false == canPay(planet, price))
+		return BuildTestState::NotEnoughRessources;
+	else
+		return BuildTestState::Ok;
 }
 
 
@@ -432,7 +436,7 @@ void addTask(Planet& planet, uint32_t roundCount, Building::Enum building)
 
 	double const floatDuration =
 	  Building::List[building].price.tab[0] /
-	  (centerLevel * pow(1.15, centerLevel) * 4);
+	  (centerLevel * pow(1.15, centerLevel) * 4); //-V112
 	uint32_t const duration = statRound<uint32_t>(floatDuration);
 	PlanetTask task(PlanetTask::UpgradeBuilding, roundCount, duration);
 	task.value = building;
@@ -460,7 +464,7 @@ void addTask(Planet& planet, uint32_t roundCount, Ship::Enum ship, uint32_t numb
 		BOOST_THROW_EXCEPTION(std::logic_error("Need Factory"));
 	double const floatDuration =
 	  Ship::List[ship].price.tab[0] /
-	  (factoryLvl * pow(1.15, factoryLvl) * 4);
+	  (factoryLvl * pow(1.15, factoryLvl) * 4); //-V112
 	uint32_t const duration = statRound<uint32_t>(floatDuration);
 	PlanetTask task(PlanetTask::MakeShip, roundCount, duration);
 	task.value = ship;
@@ -488,7 +492,7 @@ void addTask(Planet& planet,
 		BOOST_THROW_EXCEPTION(std::logic_error("Need Factory"));
 	double const floatDuration =
 	  Cannon::List[cannon].price.tab[0] /
-	  (factoryLvl * pow(1.15, factoryLvl) * 4);
+	  (factoryLvl * pow(1.15, factoryLvl) * 4); //-V112
 	uint32_t const duration = statRound<uint32_t>(floatDuration);
 	PlanetTask task(PlanetTask::MakeCannon, roundCount, duration);
 	if(cannon >= Cannon::Count)
@@ -753,22 +757,22 @@ void gather(Fleet& fleet, Fleet const& otherFleet)
 
 
 //! Test si une flotte peut se rendre a la destination coord
-bool canMove(Fleet const& fleet,
-             Coord const& coord //Destination en valeur absolue
-            )
+FleetActionTest canMove(Fleet const& fleet,
+                        Coord const& coord //Destination en valeur absolue
+                       )
 {
 	if(fleet.task)
-		return false;
+		return FleetActionTest::OtherTaskRunning;
 	if(abs(fleet.coord.X - coord.X) > 1 ||
 	   abs(fleet.coord.Y - coord.Y) > 1 ||
 	   abs(fleet.coord.Z - coord.Z) > 1)
-		return false;
+		return FleetActionTest::TooFarAway;
 	if(coord.X < 0 || coord.X >= Universe::MapSizeX ||
 	   coord.Y < 0 || coord.Y >= Universe::MapSizeY ||
 	   coord.Z < 0 || coord.Z >= Universe::MapSizeZ)
-		return false;
+		return FleetActionTest::OutOfGalaxy;
 	//! @todo: Gestion du caburant
-	return true;
+	return FleetActionTest::Ok;
 }
 
 
@@ -785,11 +789,16 @@ void addTaskMove(Fleet& fleet, uint32_t roundCount, Coord const& coord)
 
 
 //! Test si la flotte peut récolter la planète
-bool canHarvest(Fleet const& fleet, Planet const& planet)
+FleetActionTest canHarvest(Fleet const& fleet, Planet const* planet)
 {
 	if(fleet.task)
-		return false;
-	return planet.playerId == Player::NoId;
+		return FleetActionTest::OtherTaskRunning;
+	else if(planet == nullptr)
+		return FleetActionTest::NoPlanet;
+	else if(planet->playerId)
+		return FleetActionTest::PlanetHasOwner;
+	else
+		return FleetActionTest::Ok;
 }
 
 
@@ -806,16 +815,20 @@ void addTaskHarvest(Fleet& fleet, uint32_t roundCount, Planet const& planet)
 
 
 //! Test si la flotte peut colonizer la planète
-bool canColonize(Player const& player,
-                 Fleet const& fleet,
-                 Planet const& planet,
-                 size_t planetCount)
+FleetActionTest canColonize(Player const& player,
+                            Fleet const& fleet,
+                            Planet const* planet,
+                            size_t planetCount)
 {
 	if(fleet.task)
-		return false;
-	if(planet.playerId != Player::NoId || fleet.shipList[Ship::Queen] == 0)
-		return false;
-	return InternalRules::canColonize(player, fleet, planet, planetCount);
+		return FleetActionTest::OtherTaskRunning;
+	else if(planet == nullptr)
+		return FleetActionTest::NoPlanet;
+	else if(planet->playerId != Player::NoId)
+		return FleetActionTest::PlanetHasOwner;
+	else if(fleet.shipList[Ship::Queen] == 0)
+		return FleetActionTest::QueenMissing;
+	return InternalRules::canColonize(player, fleet, *planet, planetCount);
 }
 
 
@@ -832,10 +845,17 @@ void addTaskColonize(Fleet& fleet, uint32_t roundCount, Planet const& planet)
 
 
 //! Test si la flotte peut balancer ses ressources sur la planète
-bool canDrop(Fleet const& fleet, Planet const& planet)
+FleetActionTest canDrop(Fleet const& fleet, Planet const* planet)
 {
+	if(planet == nullptr)
+		return FleetActionTest::NoPlanet;
 	Ressource::Value const ressCount = boost::accumulate(fleet.ressourceSet.tab, 0);
-	return planet.playerId == fleet.playerId && ressCount > 0;
+	if(planet->playerId != fleet.playerId)
+		return FleetActionTest::NotYourOwnPlanet;
+	else if(ressCount == 0)
+		return FleetActionTest::NotEnoughRessources;
+	else
+		return FleetActionTest::Ok;
 }
 
 
@@ -848,9 +868,10 @@ void drop(Fleet& fleet, Planet& planet)
 }
 
 
-bool canGather(Player const& player,
-               Fleet const& fleet1,
-               Fleet const& fleet2)
+FleetActionTest canGather(
+  Player const& player,
+  Fleet const& fleet1,
+  Fleet const& fleet2)
 {
 	return InternalRules::canGather(player, fleet1, fleet2);
 }

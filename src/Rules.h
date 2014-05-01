@@ -87,18 +87,50 @@ bool playerCanSeeFightReport(Player const& player);
 //! Calcul le nombre de passe effectuées pour chaque simulation de combat
 size_t playerFightSimulationCount(Player const& player);
 
+enum class BuildTestState
+{
+  Ok,
+  OtherTaskRunning,
+  NotEnoughRessources,
+  BadValue,
+  FactoryMissing,
+  CommendCenterMissing,
+  HangarFull,
+  Count
+};
+
+enum class FleetActionTest
+{
+  Ok,
+  OtherTaskRunning,
+  NotEnoughRessources,
+  TooFarAway,
+  OutOfGalaxy,
+  PlanetHasOwner,
+  QueenMissing,
+  PlanetLimitReached,
+  NotYourOwnPlanet,
+  FleetLimitReached,
+  NoPlanet,
+  BadValue,
+  Count
+};
+
+
 namespace InternalRules
 {
 //! Test si la flote de ce joueur peut coloniser cette planète
-bool canColonize(Player const& player,
-                 Fleet const& fleet,
-                 Planet const& planet,
-                 size_t planetCount);
+FleetActionTest canColonize(
+  Player const& player,
+  Fleet const& fleet,
+  Planet const& planet,
+  size_t planetCount);
 
 //! Test si les deux flottes peuvent ce réunir
-bool canGather(Player const& player,
-               Fleet const& fleet1,
-               Fleet const& fleet2);
+FleetActionTest canGather(
+  Player const& player,
+  Fleet const& fleet1,
+  Fleet const& fleet2);
 }
 
 

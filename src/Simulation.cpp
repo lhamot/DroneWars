@@ -73,31 +73,33 @@ public:
 
 	//! Ajoute les log du joueur dans la base si il as la compétence.
 	~CheckPlayerLog()
-	try
 	{
-		ScriptTools::Object logger =
-		  ScriptTools::refFromName(state_, "logger");
-		if(ScriptTools::isValid(logger))
+		try
 		{
-			if(playerCanLog(player_))
+			ScriptTools::Object logger =
+			  ScriptTools::refFromName(state_, "logger");
+			if(ScriptTools::isValid(logger))
 			{
-				Event event(player_.id, time(0), Event::PlayerLog);
-				event.setComment(ScriptTools::extract<std::string>(logger));
-				if(fleetID_ == Fleet::NoId)
-					event.setPlanetCoord(coord_);
+				if(playerCanLog(player_))
+				{
+					Event event(player_.id, time(0), Event::PlayerLog);
+					event.setComment(ScriptTools::extract<std::string>(logger));
+					if(fleetID_ == Fleet::NoId)
+						event.setPlanetCoord(coord_);
+					else
+						event.setFleetID(fleetID_);
+					events_.push_back(Event(event));
+				}
 				else
-					event.setFleetID(fleetID_);
-				events_.push_back(Event(event));
-			}
-			else
-			{
-				addErrorMessage(codeMap_,
-				                BL::gettext("Log failed"),
-				                events_);
+				{
+					addErrorMessage(codeMap_,
+					                BL::gettext("Log failed"),
+					                events_);
+				}
 			}
 		}
+		CATCH_LOG_EXCEPTION(logger);
 	}
-	CATCH_LOG_EXCEPTION(logger);
 
 private:
 	ScriptTools::Engine& state_;        //!< Etats lua
@@ -130,19 +132,21 @@ public:
 	//! @brief Verifie si le joueur à modifié la memoire de sa planète / flotte
 	//! pour l'autoriser ou non, en fonction de son skill mémoire.
 	~CheckMemory()
-	try
 	{
-		cleanPtreeNil(memory_);
-		if(acceptMemoryPtree(player_, memory_) == false)
+		try
 		{
-			memory_ = oldMem_;
-			addErrorMessage(codeMap_,
-			                BL::gettext("Too much items in your "
-			                            "planet memory for your Memory skill level."),
-			                events_);
+			cleanPtreeNil(memory_);
+			if(acceptMemoryPtree(player_, memory_) == false)
+			{
+				memory_ = oldMem_;
+				addErrorMessage(codeMap_,
+				                BL::gettext("Too much items in your "
+				                            "planet memory for your Memory skill level."),
+				                events_);
+			}
 		}
+		CATCH_LOG_EXCEPTION(logger);
 	}
-	CATCH_LOG_EXCEPTION(logger);
 
 private:
 	PlayerCodes::ObjectMap& codeMap_;  //!< Scripts du joueur
@@ -351,7 +355,7 @@ void applyPlanetAction(
 		break;
 	case PlanetAction::Building:
 	{
-		if(canBuild(planet, action.building))
+		if(canBuild(planet, action.building) == BuildTestState::Ok)
 			addTask(planet, univ_.roundCount, action.building);
 	}
 	break;
@@ -362,14 +366,14 @@ void applyPlanetAction(
 	}
 	case PlanetAction::Ship:
 	{
-		if(canBuild(planet, action.ship))
+		if(canBuild(planet, action.ship) == BuildTestState::Ok)
 			addTask(planet, univ_.roundCount, action.ship, 1);
 	}
 	break;
 	case PlanetAction::Cannon:
 	{
-		if(canBuild(planet, action.cannon, action.number))
-			addTask(planet, univ_.roundCount, action.cannon, action.number);
+		if(canBuild(planet, action.cannon) == BuildTestState::Ok)
+			addTask(planet, univ_.roundCount, action.cannon, 1);
 	}
 	break;
 	default:
@@ -428,7 +432,7 @@ void gatherIfWant(
 			Fleet& otherFleet = fleetIter->second;
 			if((otherFleet.id > fleet.id) &&
 			   (otherFleet.playerId == fleet.playerId) &&
-			   canGather(player, fleet, otherFleet))
+			   canGather(player, fleet, otherFleet) == FleetActionTest::Ok)
 			{
 				bool wantGather1 = false, wantGather2 = false;
 				try
@@ -468,7 +472,8 @@ void gatherIfWant(
 		{
 			Fleet otherFleet(0, planet->playerId, planet->coord, planet->firstRound);
 			otherFleet.shipList = planet->hangar;
-			if(boost::accumulate(planet->hangar, 0) && canGather(player, fleet, otherFleet))
+			if(boost::accumulate(planet->hangar, 0) &&
+			   canGather(player, fleet, otherFleet) == FleetActionTest::Ok)
 			{
 				bool wantGather1 = false;
 				try
@@ -530,14 +535,9 @@ try
 		planet = nullptr;
 	prepareLuaCall(univ_, actionFunc, player);
 	DWObject actionFunc2(actionFunc);
-	if(planet)
-		action = actionFunc2.call<FleetAction>(
-		           engine, player, codeMap, events,
-		           fleet, *planet, otherFleets, mails);
-	else
-		action = actionFunc2.call<FleetAction>(
-		           engine, player, codeMap, events,
-		           fleet, false, otherFleets, mails);
+	action = actionFunc2.call<FleetAction>(
+	           engine, player, codeMap, events,
+	           fleet, planet, otherFleets, mails);
 	return action;
 }
 catch(Polua::Exception const& ex)
@@ -571,24 +571,23 @@ void applyFleetScript(Universe& univ_,
 		target.X += action.target.X;
 		target.Y += action.target.Y;
 		target.Z += action.target.Z;
-		if(canMove(fleet, target))
+		if(canMove(fleet, target) == FleetActionTest::Ok)
 			addTaskMove(fleet, univ_.roundCount, target);
 	}
 	break;
 	case FleetAction::Harvest:
-		if(planet && canHarvest(fleet, *planet))
+		if(canHarvest(fleet, planet) == FleetActionTest::Ok)
 			addTaskHarvest(fleet, univ_.roundCount, *planet);
 		break;
 	case FleetAction::Colonize:
 	{
 		Player const& player = MAP_FIND(playerMap, fleet.playerId)->second;
-		if(planet &&
-		   canColonize(player, fleet, *planet, player.planetCount))
+		if(canColonize(player, fleet, planet, player.planetCount) == FleetActionTest::Ok)
 			addTaskColonize(fleet, univ_.roundCount, *planet);
 		break;
 	}
 	case FleetAction::Drop:
-		if(planet && canDrop(fleet, *planet))
+		if(canDrop(fleet, planet) == FleetActionTest::Ok)
 		{
 			drop(fleet, *planet);
 			Event event(planet->playerId, time(0), Event::FleetDrop);

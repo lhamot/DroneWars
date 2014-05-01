@@ -2,6 +2,7 @@
 #define __NDW_UNIV_MANIP__
 
 #include "Model.h"
+#include "Rules.h"
 
 class DataBase;
 
@@ -15,30 +16,6 @@ Coord createMainPlanet(Universe& univ, Player::ID pid);
 
 void saveToStream(Universe const& univ, std::ostream& out);
 void loadFromStream_v2(std::istream& in, Universe& univ);
-
-bool canBuild(Planet const& planet, Ship::Enum type);
-
-bool canBuild(Planet const& planet, Building::Enum type);
-
-void addTask(Planet& planet, uint32_t roundCount, Building::Enum building);
-
-void addTask(Planet& planet,
-             uint32_t roundCount,
-             Ship::Enum ship,
-             uint32_t number);
-
-bool canBuild(Planet const& planet, Cannon::Enum type, size_t number);
-
-void addTask(Planet& planet,
-             uint32_t roundCount,
-             Cannon::Enum cannon,
-             uint32_t number);
-
-bool canStop(Planet const& planet, Building::Enum type);
-
-void stopTask(Planet& planet,
-              PlanetTask::Enum tasktype,
-              Building::Enum building);
 
 //! Gere l'écoulement du temps sur la planète.
 //! Peut modifier la liste dse flotte et des planètes
@@ -54,31 +31,57 @@ void fleetRound(Universe& univ,
                 Fleet& fleet,
                 std::vector<Event>& events);
 
-void gather(Fleet& fleet, Fleet const& otherFleet);
+bool canPay(RessourceSet const& stock, RessourceSet const& price);
 
-bool canMove(Fleet const& fleet, Coord const& coord);
+
+BuildTestState canBuild(Planet const& planet, Ship::Enum type);
+BuildTestState canBuild(Planet const& planet, Building::Enum type);
+BuildTestState canBuild(Planet const& planet, Cannon::Enum type);
+bool canStop(Planet const& planet, Building::Enum type);
+
+void addTask(Planet& planet,
+             uint32_t roundCount,
+             Ship::Enum ship,
+             uint32_t number);
+
+void addTask(Planet& planet, uint32_t roundCount, Building::Enum building);
+
+void addTask(Planet& planet,
+             uint32_t roundCount,
+             Cannon::Enum cannon,
+             uint32_t number);
+
+void stopTask(Planet& planet,
+              PlanetTask::Enum tasktype,
+              Building::Enum building);
+
+
+FleetActionTest canMove(Fleet const& fleet, Coord const& coord);
+
+FleetActionTest canHarvest(Fleet const& fleet, Planet const* planet);
+
+FleetActionTest canColonize(
+  Player const& player,
+  Fleet const& fleet,
+  Planet const* planet,
+  size_t planetCount);
+
+FleetActionTest canDrop(Fleet const& fleet, Planet const* planet);
+
+FleetActionTest canGather(
+  Player const& player,
+  Fleet const& fleet1,
+  Fleet const& fleet2);
+
 
 void addTaskMove(Fleet& fleet, uint32_t roundCount, Coord const& coord);
 
-bool canHarvest(Fleet const& fleet, Planet const& planet);
-
 void addTaskHarvest(Fleet& fleet, uint32_t roundCount, Planet const& planet);
-
-bool canColonize(Player const& player,
-                 Fleet const& fleet,
-                 Planet const& planet,
-                 size_t planetCount);
 
 void addTaskColonize(Fleet& fleet, uint32_t roundCount, Planet const& planet);
 
-bool canDrop(Fleet const& fleet, Planet const& planet);
-
 void drop(Fleet& fleet, Planet& planet);
 
-bool canPay(RessourceSet const& stock, RessourceSet const& price);
-
-bool canGather(Player const& player,
-               Fleet const& fleet1,
-               Fleet const& fleet2);
+void gather(Fleet& fleet, Fleet const& otherFleet);
 
 #endif //__NDW_UNIV_MANIP__

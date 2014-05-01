@@ -14,6 +14,18 @@
 //!   préparer les locale et les réutiliser.
 std::locale getLocal(std::string const& loc);
 
+template<typename T>
+struct TableTraits;
+
+template<typename T, size_t I>
+struct TableTraits<T[I]>
+{
+	static size_t const Size = I;
+};
+
+#define TABLESIZE(Table) TableTraits<decltype(Table)>::Size
+
+
 //! Arrondie pour que (moyenne des valeurs arrondies) == (valeur entrée)
 //! @pre attend une valeur non négative
 template<typename O>
