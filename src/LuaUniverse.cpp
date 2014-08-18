@@ -436,6 +436,12 @@ int checkPlanetAction(lua_State* L)
 	return 1;
 }
 
+template<typename T>
+size_t accumulate(T const& container)
+{
+	return boost::accumulate(container, 0);
+}
+
 int initDroneWars(LuaTools::Engine& engine)
 {
 	using namespace Polua;
@@ -443,9 +449,11 @@ int initDroneWars(LuaTools::Engine& engine)
 
 	//! @todo: ne plus avoir besoin de ca
 	Class<std::vector<Fleet> >(L, "FleetVector");
-	Class<Planet::BuildingTab>(L, "");
-	Class<Planet::CannonTab>(L, "");
-	Class<ShipTab>(L, "");
+	Class<Planet::BuildingTab>(L, "BuildingTab");
+	Class<Planet::CannonTab>(L, "CannonTab")
+	.methode("count", &accumulate<Planet::CannonTab>);
+	Class<ShipTab>(L, "ShipTab")
+	.methode("count", &accumulate<ShipTab>);
 
 	regFunc(L, "shipPrice", shipPrice);
 	regFunc(L, "cannonPrice", cannonPrice);
@@ -525,6 +533,7 @@ int initDroneWars(LuaTools::Engine& engine)
 	.read_only("cannonTab", &Planet::cannonTab)
 	.read_only("ressourceSet", &Planet::ressourceSet)
 	.read_only("task", workingThing_getTask<Planet>)
+	.read_only("hangar", &Planet::hangar)
 	;
 	Class<Ship>(L, "Ship")
 	.enumValue("Mosquito",     Ship::Mosquito   + 1)
