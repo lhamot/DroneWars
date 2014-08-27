@@ -68,6 +68,8 @@ public:
 	//! @pre le pid designe un joueur qui existe
 	void reloadPlayer(Player::ID pid);
 
+	void createUniverse(const bool keepPlayers);
+
 private:
 	//! Charge une sauvegarde
 	void load(std::string const& univName, size_t version);
@@ -75,6 +77,7 @@ private:
 	Universe univ_; //!< Les donnés manipulées par le simulateur
 	std::unique_ptr<Simulation> simulation_; //!< La Simulation
 	boost::thread simulating_;               //!< Excecute la Simulation
+	DataBase::ConnectionInfo connInfo_;
 };
 
 #endif //__BTA_ENGINE__

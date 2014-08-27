@@ -16,7 +16,8 @@ typedef boost::shared_lock<boost::shared_mutex> SharedLock; //!< Verou en lectur
 
 Engine::Engine(DataBase::ConnectionInfo const& connInfo,
                size_t minRoundDuration) :
-	simulation_(new Simulation(univ_, connInfo, minRoundDuration))
+	simulation_(new Simulation(univ_, connInfo, minRoundDuration)),
+	connInfo_(connInfo)
 {
 	filesystem::directory_iterator dir("save/"), end;
 
@@ -51,15 +52,8 @@ Engine::Engine(DataBase::ConnectionInfo const& connInfo,
 			if(player.mainPlanet == UndefinedCoord)
 				simulation_->createMainPlanet(player.id);
 		}
+		start();
 	}
-	else
-	{
-		//! Sinon on construit un Univers par defaut
-		DataBase database(connInfo);
-		construct(univ_, database);
-	}
-	//! On lance le simulateur (Start)
-	start();
 }
 
 
@@ -175,3 +169,15 @@ void Engine::reloadPlayer(Player::ID pid)
 {
 	simulation_->reloadPlayer(pid);
 }
+
+void Engine::createUniverse(bool keepPlayers)
+{
+	stop();
+	DataBase database(connInfo_);
+	auto players = database.getPlayers();
+	univ_ = Universe();
+	database.clear(keepPlayers);
+	construct(univ_, database);
+	start();
+}
+

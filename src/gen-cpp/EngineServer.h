@@ -57,6 +57,7 @@ public:
 	virtual void eraseAlliance(const Alliance_ID aid) = 0;
 	virtual void joinAlliance(const Player_ID pid, const Alliance_ID aid) = 0;
 	virtual void quitAlliance(const Player_ID pid) = 0;
+	virtual void createUniverse(const bool keepPlayers) = 0;
 };
 
 class EngineServerIfFactory
@@ -251,6 +252,10 @@ public:
 		return;
 	}
 	void quitAlliance(const Player_ID /* pid */)
+	{
+		return;
+	}
+	void createUniverse(const bool /* keepPlayers */)
 	{
 		return;
 	}
@@ -4903,6 +4908,104 @@ public:
 
 };
 
+typedef struct _EngineServer_createUniverse_args__isset
+{
+	_EngineServer_createUniverse_args__isset() : keepPlayers(false) {}
+	bool keepPlayers;
+} _EngineServer_createUniverse_args__isset;
+
+class EngineServer_createUniverse_args
+{
+public:
+
+	EngineServer_createUniverse_args() : keepPlayers(0)
+	{
+	}
+
+	virtual ~EngineServer_createUniverse_args() throw() {}
+
+	bool keepPlayers;
+
+	_EngineServer_createUniverse_args__isset __isset;
+
+	void __set_keepPlayers(const bool val)
+	{
+		keepPlayers = val;
+	}
+
+	bool operator == (const EngineServer_createUniverse_args& rhs) const
+	{
+		if(!(keepPlayers == rhs.keepPlayers))
+			return false;
+		return true;
+	}
+	bool operator != (const EngineServer_createUniverse_args& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_createUniverse_args&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_createUniverse_pargs
+{
+public:
+
+
+	virtual ~EngineServer_createUniverse_pargs() throw() {}
+
+	const bool* keepPlayers;
+
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_createUniverse_result
+{
+public:
+
+	EngineServer_createUniverse_result()
+	{
+	}
+
+	virtual ~EngineServer_createUniverse_result() throw() {}
+
+
+	bool operator == (const EngineServer_createUniverse_result& /* rhs */) const
+	{
+		return true;
+	}
+	bool operator != (const EngineServer_createUniverse_result& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	bool operator < (const EngineServer_createUniverse_result&) const;
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+	uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class EngineServer_createUniverse_presult
+{
+public:
+
+
+	virtual ~EngineServer_createUniverse_presult() throw() {}
+
+
+	uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
 class EngineServerClient : virtual public EngineServerIf
 {
 public:
@@ -5048,6 +5151,9 @@ public:
 	void quitAlliance(const Player_ID pid);
 	void send_quitAlliance(const Player_ID pid);
 	void recv_quitAlliance();
+	void createUniverse(const bool keepPlayers);
+	void send_createUniverse(const bool keepPlayers);
+	void recv_createUniverse();
 protected:
 	boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
 	boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -5104,6 +5210,7 @@ private:
 	void process_eraseAlliance(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_joinAlliance(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 	void process_quitAlliance(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+	void process_createUniverse(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
 public:
 	EngineServerProcessor(boost::shared_ptr<EngineServerIf> iface) :
 		iface_(iface)
@@ -5148,6 +5255,7 @@ public:
 		processMap_["eraseAlliance"] = &EngineServerProcessor::process_eraseAlliance;
 		processMap_["joinAlliance"] = &EngineServerProcessor::process_joinAlliance;
 		processMap_["quitAlliance"] = &EngineServerProcessor::process_quitAlliance;
+		processMap_["createUniverse"] = &EngineServerProcessor::process_createUniverse;
 	}
 
 	virtual ~EngineServerProcessor() {}
@@ -5637,6 +5745,17 @@ public:
 			ifaces_[i]->quitAlliance(pid);
 		}
 		ifaces_[i]->quitAlliance(pid);
+	}
+
+	void createUniverse(const bool keepPlayers)
+	{
+		size_t sz = ifaces_.size();
+		size_t i = 0;
+		for(; i < (sz - 1); ++i)
+		{
+			ifaces_[i]->createUniverse(keepPlayers);
+		}
+		ifaces_[i]->createUniverse(keepPlayers);
 	}
 
 };

@@ -440,4 +440,6 @@ service EngineServer
 	void eraseAlliance(10: Alliance_ID aid)
 	void joinAlliance(10: Player_ID pid, 20: Alliance_ID aid)
 	void quitAlliance(10: Player_ID pid)
+
+	void createUniverse(10: bool keepPlayers)
 }

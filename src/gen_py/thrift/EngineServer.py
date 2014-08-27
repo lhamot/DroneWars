@@ -301,6 +301,13 @@ class Iface:
     """
     pass
 
+  def createUniverse(self, keepPlayers):
+    """
+    Parameters:
+     - keepPlayers
+    """
+    pass
+
 
 class Client(Iface):
   def __init__(self, iprot, oprot=None):
@@ -1502,6 +1509,34 @@ class Client(Iface):
     self._iprot.readMessageEnd()
     return
 
+  def createUniverse(self, keepPlayers):
+    """
+    Parameters:
+     - keepPlayers
+    """
+    self.send_createUniverse(keepPlayers)
+    self.recv_createUniverse()
+
+  def send_createUniverse(self, keepPlayers):
+    self._oprot.writeMessageBegin('createUniverse', TMessageType.CALL, self._seqid)
+    args = createUniverse_args()
+    args.keepPlayers = keepPlayers
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_createUniverse(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = createUniverse_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
 
 class Processor(Iface, TProcessor):
   def __init__(self, handler):
@@ -1547,6 +1582,7 @@ class Processor(Iface, TProcessor):
     self._processMap["eraseAlliance"] = Processor.process_eraseAlliance
     self._processMap["joinAlliance"] = Processor.process_joinAlliance
     self._processMap["quitAlliance"] = Processor.process_quitAlliance
+    self._processMap["createUniverse"] = Processor.process_createUniverse
 
   def process(self, iprot, oprot):
     (name, type, seqid) = iprot.readMessageBegin()
@@ -1999,6 +2035,17 @@ class Processor(Iface, TProcessor):
     result = quitAlliance_result()
     self._handler.quitAlliance(args.pid)
     oprot.writeMessageBegin("quitAlliance", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_createUniverse(self, seqid, iprot, oprot):
+    args = createUniverse_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = createUniverse_result()
+    self._handler.createUniverse(args.keepPlayers)
+    oprot.writeMessageBegin("createUniverse", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -7366,6 +7413,117 @@ class quitAlliance_result:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('quitAlliance_result')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class createUniverse_args:
+  """
+  Attributes:
+   - keepPlayers
+  """
+
+  thrift_spec = (
+    None, # 0
+    None, # 1
+    None, # 2
+    None, # 3
+    None, # 4
+    None, # 5
+    None, # 6
+    None, # 7
+    None, # 8
+    None, # 9
+    (10, TType.BOOL, 'keepPlayers', None, None, ), # 10
+  )
+
+  def __init__(self, keepPlayers=None,):
+    self.keepPlayers = keepPlayers
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 10:
+        if ftype == TType.BOOL:
+          self.keepPlayers = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('createUniverse_args')
+    if self.keepPlayers is not None:
+      oprot.writeFieldBegin('keepPlayers', TType.BOOL, 10)
+      oprot.writeBool(self.keepPlayers)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class createUniverse_result:
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('createUniverse_result')
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 

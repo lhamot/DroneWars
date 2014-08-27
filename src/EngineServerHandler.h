@@ -211,6 +211,8 @@ public:
 	//! Redirection vers DataBase::quitAlliance
 	void quitAlliance(const ndw::Player_ID pid) override;
 
+	void createUniverse(const bool keepPlayers) override;
+
 private:
 	Engine engine_;     //!< Acces à la simulation et ces données
 	DataBase database_; //!< Acces à la base de donnée

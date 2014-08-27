@@ -330,7 +330,7 @@ ndw::FightReport fightReportToThrift(
 
 EngineServerHandler::EngineServerHandler(
   DataBase::ConnectionInfo const& connInfo,
-  size_t minRoundDuration) :
+  size_t minRoundDuration):
 	engine_(connInfo, minRoundDuration),
 	database_(connInfo)
 {
@@ -1028,6 +1028,13 @@ void EngineServerHandler::quitAlliance(const ndw::Player_ID pid)
 {
 	LOG4CPLUS_TRACE(logger, "playerID:" << pid);
 	database_.quitAlliance(pid);
+	LOG4CPLUS_TRACE(logger, "exit");
+}
+
+void EngineServerHandler::createUniverse(const bool keepPlayers)
+{
+	LOG4CPLUS_TRACE(logger, "enter");
+	engine_.createUniverse(keepPlayers);
 	LOG4CPLUS_TRACE(logger, "exit");
 }
 

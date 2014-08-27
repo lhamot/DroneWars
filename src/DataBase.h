@@ -78,12 +78,15 @@ public:
 	DataBase(ConnectionInfo const& connection);
 	~DataBase();
 
+	void clear(bool keepPlayer);
+
 	//***************************  Player  ************************************
 
 	//! Crée un nouveau joueur
 	Player::ID addPlayer(std::string const& login,
 	                     std::string const& password,
-	                     std::vector<std::string> const& codes);
+	                     std::vector<std::string> const& codes,
+	                     bool isAI = false);
 
 	//! Définie la planète principale d'un joueur
 	void setPlayerMainPlanet(Player::ID, Coord mainPlanet);
@@ -303,6 +306,8 @@ private:
 	                        std::string const& code);
 	void checkConnection(std::unique_ptr<Poco::Data::Session>& session) const;
 
+	//! Crée toute les tables si elles n'éxistent pas déja
+	void createTables();
 };
 
 #endif //__DRONEWARS_DATABASE__

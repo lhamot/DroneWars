@@ -208,10 +208,13 @@ Coord createMainPlanet(Universe& univ, Player::ID pid)
 
 
 //! Construit l'Universe et la base de donnée SQL, au premier lancement
+//!
+//! Si des joueurs sont présent dans la base ils seront conservés mais reinisialisés
 void construct(Universe& univ, DataBase& database)
 {
 	univ.roundCount = 0;
 
+	// Creation des planetes
 	std::set<Coord, CompCoord> coordSet;
 	for(int i = 0; i < 100000; ++i)
 	{
@@ -233,13 +236,16 @@ void construct(Universe& univ, DataBase& database)
 		}
 	}
 
+	// Création des joueurs AI
 	std::string const& password = "test";
 	std::vector<std::string> codes;
 	getNewPlayerCode(codes);
 	for(size_t playerCount = 0; playerCount < 100;)
 	{
-		Player::ID const pid = database.addPlayer(nameGen(), password, codes);
+		Player::ID pid = database.addPlayer(nameGen(), password, codes, true);
+		if(pid != Player::NoId)
 		{
+			playerCount += 1;
 			Player::SkillTab skillTab;
 			skillTab.fill(0);
 			skillTab[Skill::Cohesion] = rand() % 10;
@@ -247,23 +253,33 @@ void construct(Universe& univ, DataBase& database)
 			skillTab[Skill::Conquest] = rand() % 10;
 			database.setPlayerSkills(pid, skillTab);
 		}
-		if(pid != Player::NoId)
+	}
+	auto players = database.getPlayers();
+	// Assignement d'une planete a chaque joueurs (AI et non AI)
+	for(Player const& player : players)
+	{
+		Coord const coord = createMainPlanet(univ, player.id);
+		database.setPlayerMainPlanet(player.id, createMainPlanet(univ, player.id));
+	}
+	// Definition du code source de chaque joueur (AI et non AI)
+	for(Player const& player : players)
+	{
+		if(player.isAI)
 		{
-			Coord coord = createMainPlanet(univ, pid);
-			database.setPlayerMainPlanet(pid, coord);
-			{
-				ifstream file("planetScript.lua");
-				std::string script;
-				std::getline(file, script, char(0));
-				database.addScript(pid, CodeData::Planet, script);
-			}
-			{
-				ifstream file("fleetScript.lua");
-				std::string script;
-				std::getline(file, script, char(0));
-				database.addScript(pid, CodeData::Fleet, script);
-			}
-			playerCount += 1;
+			std::string script;
+			ifstream planetFile("planetScript.lua");
+			std::getline(planetFile, script, char(0));
+			database.addScript(player.id, CodeData::Planet, script);
+			ifstream fleetFile("fleetScript.lua");
+			std::getline(fleetFile, script, char(0));
+			database.addScript(player.id, CodeData::Fleet, script);
+		}
+		else
+		{
+			database.addScript(player.id, CodeData::Planet, codes[0]);
+			database.addScript(player.id, CodeData::Fleet, codes[2]);
+			database.addBlocklyCode(player.id, CodeData::Planet, codes[1]);
+			database.addBlocklyCode(player.id, CodeData::Fleet, codes[3]);
 		}
 	}
 };

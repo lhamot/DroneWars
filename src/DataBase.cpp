@@ -128,20 +128,17 @@ try : connectionInfo_(connectionInfo)
 {
 	Poco::Data::MySQL::Connector::registerConnector();
 	checkConnection(session_);
+	createTables();
+}
+DB_CATCH
 
+void DataBase::createTables()
+{
 	std::vector<std::string> tableList;
 	(*session_) <<
 	            "SHOW TABLES", into(tableList), now;
 	if(tableList.empty())
 	{
-		(*session_) <<
-		            "CREATE TABLE "
-		            "if not exists "
-		            "Options ("
-		            "  name VARCHAR(30) NOT NULL,"
-		            "  value VARCHAR(30) NOT NULL"
-		            ")", now;
-
 		(*session_) <<
 		            "CREATE TABLE "
 		            "if not exists "
@@ -156,7 +153,8 @@ try : connectionInfo_(connectionInfo)
 		            "  allianceID INTEGER,"
 		            "  experience BIGINT NOT NULL,"
 		            "  skillpoints BIGINT NOT NULL,"
-		            "  skilltab VARCHAR(200) NOT NULL"
+		            "  skilltab VARCHAR(200) NOT NULL,"
+		            "  isAI BOOLEAN NOT NULL DEFAULT 0"
 		            //"  FOREIGN KEY (allianceID) REFERENCES Alliance(id) "
 		            ")", now;
 
@@ -297,61 +295,59 @@ try : connectionInfo_(connectionInfo)
 
 	/*for(size_t p1: boost::irange(1, 101))
 	{
-		if(p1 == 52)
-			continue;
-		(*session_) <<
-			"INSERT INTO `script`(`playerID`, `time`, `target`, `code`) VALUES (?, NOW(), 1, \'"
-			"taille_flottes2 = 10\n"
-			"function AI_do_gather(my_fleet2, autre_flotte2)\n"
-			"  return true\n"
-			"end\n"
-			"function AI_do_fight(myself, other_player)\n"
-			"  return (myself.id % 4) ~= (other_player.id % 4)\n"
-			"end\n"
-			//"function AI_emit(my_fleet2, planete_locale2)\n"
-			//"  message = userdata()\n"
-			//"  message:put(\"X\", my_fleet2.coord.X)\n"
-			//"  message:put(\"Y\", my_fleet2.coord.Y)\n"
-			//"  message:put(\"Z\", my_fleet2.coord.Z)\n"
-			//"  return message\n"
-			//"end\n"
-			"function AI_action(my_fleet2, planete_locale2, mails)\n"
-			"  --print(mails:size())\n"
-			"  --if mails:size() > 0 then\n"
-			"  --  print(mails[1].X, mails[1].Y, mails[1].Z)\n"
-			"  --end\n"
-			"  --for k, v in ipairs(mails) do\n"
-			"  --  print(k, v)\n"
-			"  --end\n"
-			"  if planete_locale2 then\n"
-			"    if planete_locale2:isFree() then\n"
-			"      if(my_fleet2.shipList[Ship.Queen] > 0) then\n"
-			"        if(math.random(2) == 1) then return FleetAction(FleetAction.Colonize) end\n"
-			"      end\n"
-			"      if(planete_locale2.ressourceSet:at(Ressource.Metal) > 0) then\n"
-			"        return FleetAction(FleetAction.Harvest)\n"
-			"      end\n"
-			"    elseif my_fleet2.coord == my_fleet2.origin then\n"
-			"      if(my_fleet2.ressourceSet:at(Ressource.Metal) > 0) then\n"
-			"        return FleetAction(FleetAction.Drop)\n"
-			"      end\n"
-			"      if(my_fleet2.shipList[Ship.Queen] < 1) then\n"
-			"        return FleetAction(FleetAction.Nothing)\n"
-			"      end\n"
-			"    end\n"
-			"  end\n"
-			"  if(my_fleet2.ressourceSet:at(Ressource.Metal) > (10000)) then\n"
-			"    return FleetAction(FleetAction.Move,directionFromTo(my_fleet2.coord, my_fleet2.origin))\n"
-			"  end\n"
-			"  return FleetAction(FleetAction.Move,directionRandom())\n"
-			"end\n"
-			"\')",
-			use(p1),
-			now;
+	if(p1 == 52)
+	continue;
+	(*session_) <<
+	"INSERT INTO `script`(`playerID`, `time`, `target`, `code`) VALUES (?, NOW(), 1, \'"
+	"taille_flottes2 = 10\n"
+	"function AI_do_gather(my_fleet2, autre_flotte2)\n"
+	"  return true\n"
+	"end\n"
+	"function AI_do_fight(myself, other_player)\n"
+	"  return (myself.id % 4) ~= (other_player.id % 4)\n"
+	"end\n"
+	//"function AI_emit(my_fleet2, planete_locale2)\n"
+	//"  message = userdata()\n"
+	//"  message:put(\"X\", my_fleet2.coord.X)\n"
+	//"  message:put(\"Y\", my_fleet2.coord.Y)\n"
+	//"  message:put(\"Z\", my_fleet2.coord.Z)\n"
+	//"  return message\n"
+	//"end\n"
+	"function AI_action(my_fleet2, planete_locale2, mails)\n"
+	"  --print(mails:size())\n"
+	"  --if mails:size() > 0 then\n"
+	"  --  print(mails[1].X, mails[1].Y, mails[1].Z)\n"
+	"  --end\n"
+	"  --for k, v in ipairs(mails) do\n"
+	"  --  print(k, v)\n"
+	"  --end\n"
+	"  if planete_locale2 then\n"
+	"    if planete_locale2:isFree() then\n"
+	"      if(my_fleet2.shipList[Ship.Queen] > 0) then\n"
+	"        if(math.random(2) == 1) then return FleetAction(FleetAction.Colonize) end\n"
+	"      end\n"
+	"      if(planete_locale2.ressourceSet:at(Ressource.Metal) > 0) then\n"
+	"        return FleetAction(FleetAction.Harvest)\n"
+	"      end\n"
+	"    elseif my_fleet2.coord == my_fleet2.origin then\n"
+	"      if(my_fleet2.ressourceSet:at(Ressource.Metal) > 0) then\n"
+	"        return FleetAction(FleetAction.Drop)\n"
+	"      end\n"
+	"      if(my_fleet2.shipList[Ship.Queen] < 1) then\n"
+	"        return FleetAction(FleetAction.Nothing)\n"
+	"      end\n"
+	"    end\n"
+	"  end\n"
+	"  if(my_fleet2.ressourceSet:at(Ressource.Metal) > (10000)) then\n"
+	"    return FleetAction(FleetAction.Move,directionFromTo(my_fleet2.coord, my_fleet2.origin))\n"
+	"  end\n"
+	"  return FleetAction(FleetAction.Move,directionRandom())\n"
+	"end\n"
+	"\')",
+	use(p1),
+	now;
 	}*/
 }
-DB_CATCH
-
 
 DataBase::~DataBase()
 {
@@ -398,7 +394,8 @@ DB_CATCH
 
 Player::ID DataBase::addPlayer(std::string const& login,
                                std::string const& rawPassword,
-                               std::vector<std::string> const& codes)
+                               std::vector<std::string> const& codes,
+                               bool isAI)
 try
 {
 	checkConnection(session_);
@@ -407,13 +404,14 @@ try
 	(*session_) <<
 	            "INSERT IGNORE INTO Player "
 	            "(login, password, planetCoordX, planetCoordY, planetCoordZ, "
-	            " experience, skillpoints) "
-	            "VALUES(?, ?, ?, ?, ?, 0, 0)",
+	            " experience, skillpoints, isAI) "
+	            "VALUES(?, ?, ?, ?, ?, 0, 0, ?)",
 	            use(login),
 	            use(password),
 	            use(UndefinedCoord.X),
 	            use(UndefinedCoord.Y),
 	            use(UndefinedCoord.Z),
+	            use(isAI),
 	            now;
 	size_t rowCount;
 	(*session_) << "SELECT ROW_COUNT() ", into(rowCount), now;
@@ -463,7 +461,8 @@ DB_CATCH
 //! Tuple pour stoker le données d'un Player quand elle sorte du SGBD
 typedef Tuple < Player::ID, std::string, std::string, uint64_t,
         Coord::Value, Coord::Value, Coord::Value,
-        Alliance::ID, uint32_t, uint32_t, std::string, std::string, uint32_t > PlayerTmp;
+        Alliance::ID, uint32_t, uint32_t, std::string,
+        bool, std::string, uint32_t> PlayerTmp;
 //! Convertie un PlayerTmp en Player
 Player playerFromTuple(PlayerTmp const& playerTup)
 {
@@ -475,8 +474,9 @@ Player playerFromTuple(PlayerTmp const& playerTup)
 	player.allianceID = playerTup.get<7>();
 	player.experience = playerTup.get<8>();
 	player.skillpoints = playerTup.get<9>();
-	player.allianceName = playerTup.get<11>();
-	player.unreadMessageCount = playerTup.get<12>();
+	player.isAI = playerTup.get<11>();
+	player.allianceName = playerTup.get<12>();
+	player.unreadMessageCount = playerTup.get<13>();
 
 	//La skill tab doit etre déserialisée
 	if(playerTup.get<10>().size())
@@ -1566,6 +1566,45 @@ try
 	            use(pid), now;
 	if(alliance.masterID == pid)
 		eraseAlliance(alliance.id);
+	trans.commit();
+}
+DB_CATCH
+
+
+void DataBase::clear(bool keepPlayer)
+try
+{
+	checkConnection(session_);
+	Transaction trans(*session_);
+
+	if(keepPlayer == false)
+		(*session_) << "SET FOREIGN_KEY_CHECKS = 0", now;
+
+	if(keepPlayer == false)
+		(*session_) << "TRUNCATE Player", now;
+	(*session_) << "TRUNCATE Event", now;
+	(*session_) << "TRUNCATE Script", now;
+	(*session_) << "TRUNCATE BlocklyCode", now;
+	(*session_) << "TRUNCATE FightReport", now;
+	(*session_) << "TRUNCATE TutoDisplayed", now;
+	if(keepPlayer == false)
+		(*session_) << "TRUNCATE Message", now;
+	if(keepPlayer == false)
+		(*session_) << "TRUNCATE FriendshipRequest", now;
+	if(keepPlayer == false)
+		(*session_) << "TRUNCATE Friendship", now;
+	if(keepPlayer == false)
+		(*session_) << "TRUNCATE Alliance", now;
+
+	(*session_) << "DELETE FROM Player WHERE isAI=True", now;
+	(*session_) <<
+	            "UPDATE Player SET score = 0, "
+	            "  planetCoordX = -1, planetCoordY = -1, planetCoordZ = -1, "
+	            "  experience = 0, skillpoints = 0, skilltab = \"\"", now;
+
+	if(keepPlayer == false)
+		(*session_) << "SET FOREIGN_KEY_CHECKS = 1", now;
+
 	trans.commit();
 }
 DB_CATCH

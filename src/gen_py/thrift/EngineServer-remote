@@ -63,6 +63,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  void eraseAlliance(Alliance_ID aid)'
   print '  void joinAlliance(Player_ID pid, Alliance_ID aid)'
   print '  void quitAlliance(Player_ID pid)'
+  print '  void createUniverse(bool keepPlayers)'
   print ''
   sys.exit(0)
 
@@ -353,6 +354,12 @@ elif cmd == 'quitAlliance':
     print 'quitAlliance requires 1 args'
     sys.exit(1)
   pp.pprint(client.quitAlliance(eval(args[0]),))
+
+elif cmd == 'createUniverse':
+  if len(args) != 1:
+    print 'createUniverse requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.createUniverse(eval(args[0]),))
 
 else:
   print 'Unrecognized method %s' % cmd
