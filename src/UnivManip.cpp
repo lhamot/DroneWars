@@ -257,10 +257,8 @@ void construct(Universe& univ, DataBase& database)
 	auto players = database.getPlayers();
 	// Assignement d'une planete a chaque joueurs (AI et non AI)
 	for(Player const& player : players)
-	{
-		Coord const coord = createMainPlanet(univ, player.id);
-		database.setPlayerMainPlanet(player.id, createMainPlanet(univ, player.id));
-	}
+		database.setPlayerMainPlanet(player.id,
+		                             createMainPlanet(univ, player.id));
 	// Definition du code source de chaque joueur (AI et non AI)
 	for(Player const& player : players)
 	{
