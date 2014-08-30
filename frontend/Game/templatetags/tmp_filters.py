@@ -29,13 +29,19 @@ def shipbrief(value):
 
 
 @register.filter
+def eventcomment(event):
+    toto = unicode(event.comment)
+    toto = toto.replace("__LINE__", u"{0}".format(_("Line:")))
+    return toto[0:toto.find("\n")]
+
+@register.filter
 def eventname(value):
     return  _(Event_Type._VALUES_TO_NAMES[value])
 
 
 @register.filter
 def eventvalue(event):
-    if event.type == Event_Type.PlayerLog:
+    if event.type == Event_Type.PlayerLog or event.type == Event_Type.PlayerLogGather:
         toto = unicode(event.comment)
         toto = toto.replace("__LINE__", u"{0}".format(_("Line:")))
         return toto

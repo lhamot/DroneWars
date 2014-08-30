@@ -48,25 +48,14 @@ public:
 	CheckPlayerLog(ScriptTools::Engine& L,
 	               PlayerCodes::ObjectMap& codeMap,
 	               Player const& player,
+	               Fleet::ID const& fleetId,
 	               Coord const& coord,
 	               vector<Event>& events) :
 		state_(L),
 		codeMap_(codeMap),
 		player_(player),
-		coord_(coord),
-		events_(events)
-	{
-	}
-	//! ctor
-	CheckPlayerLog(ScriptTools::Engine& L,
-	               PlayerCodes::ObjectMap& codeMap,
-	               Player const& player,
-	               Fleet::ID const& fleetId,
-	               vector<Event>& events) :
-		state_(L),
-		codeMap_(codeMap),
-		player_(player),
 		fleetID_(fleetId),
+		coord_(coord),
 		events_(events)
 	{
 	}
@@ -84,18 +73,13 @@ public:
 				{
 					Event event(player_.id, time(0), Event::PlayerLog);
 					event.setComment(ScriptTools::extract<std::string>(logger));
-					if(fleetID_ == Fleet::NoId)
-						event.setPlanetCoord(coord_);
-					else
-						event.setFleetID(fleetID_);
-					events_.push_back(Event(event));
+					event.setFleetID(fleetID_).setPlanetCoord(coord_);
+					events_.push_back(event);
 				}
 				else
-				{
 					addErrorMessage(codeMap_,
 					                BL::gettext("Log failed"),
 					                events_);
-				}
 			}
 		}
 		CATCH_LOG_EXCEPTION(logger);
@@ -194,19 +178,19 @@ public:
 	{
 		CheckMemory checkMem(codeMap, player, fleetOrPlanet, events);
 		CheckPlayerLog checkPlayerLog(
-		  engine, codeMap, player, getID(fleetOrPlanet), events);
+		  engine, codeMap, player, getFleetID(fleetOrPlanet), fleetOrPlanet.coord, events);
 		return obj_->call<R>(fleetOrPlanet, args...);
 	}
 
 private:
 	//! @return la coordoné de la planète
-	static Coord getID(Planet const& planet)
+	static Fleet::ID getFleetID(Planet const&)
 	{
-		return planet.coord;
+		return Fleet::NoId;
 	}
 
 	//! @return l'ID de la flotte
-	static Fleet::ID getID(Fleet const& fleet)
+	static Fleet::ID getFleetID(Fleet const& fleet)
 	{
 		return fleet.id;
 	}
@@ -1475,6 +1459,26 @@ try
 		for(Player const& player : database_.getPlayers())
 			maxEventPerPlayer[player.id] = getMaxEventCount(player);
 		database_.removeOldEvents(maxEventPerPlayer);
+	}
+
+	//! Compile les evenements de log
+	std::map<Player::ID, std::string> logResume;
+	for(Event const& ev : events)
+	{
+		using namespace boost::locale;
+		if(ev.type == Event::PlayerLog)
+		{
+			std::stringstream ss;
+			ss << ((ev.fleetID == Fleet::NoId) ? translate("Planet : ") : translate("Fleet : "))
+			   << format("({1,num}, {2,num}, {3,num})") % int(ev.planetCoord.X) % int(ev.planetCoord.Y) % int(ev.planetCoord.Z)
+			   << "\n" << ev.comment << "\n\n";
+			logResume[ev.playerID] += ss.str();
+		}
+	}
+	for(auto const& playerComment : logResume)
+	{
+		events.push_back(Event(playerComment.first, time(0), Event::PlayerLogGather));
+		events.back().comment = playerComment.second;
 	}
 
 	//! Ajoute les nouveau evenements dans la base

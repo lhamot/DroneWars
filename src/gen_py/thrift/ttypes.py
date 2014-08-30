@@ -35,7 +35,8 @@ class Event_Type:
   CannonMade = 15
   FightAvoided = 16
   PlayerLog = 17
-  Count = 18
+  PlayerLogGather = 18
+  Count = 19
 
   _VALUES_TO_NAMES = {
     0: "FleetCodeError",
@@ -56,7 +57,8 @@ class Event_Type:
     15: "CannonMade",
     16: "FightAvoided",
     17: "PlayerLog",
-    18: "Count",
+    18: "PlayerLogGather",
+    19: "Count",
   }
 
   _NAMES_TO_VALUES = {
@@ -78,7 +80,8 @@ class Event_Type:
     "CannonMade": 15,
     "FightAvoided": 16,
     "PlayerLog": 17,
-    "Count": 18,
+    "PlayerLogGather": 18,
+    "Count": 19,
   }
 
 class Ressource:

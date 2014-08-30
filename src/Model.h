@@ -716,6 +716,7 @@ struct Event
 		CannonMade,
 		FightAvoided,
 		PlayerLog,
+		PlayerLogGather,
 		Count
 	};
 

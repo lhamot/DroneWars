@@ -51,12 +51,11 @@
 			<h2>{% trans "Escape probability"%} : {{target_event.value2|div:10000}}%</h2>
 			{% endif %}
 			{% endif %}
-			{% if target_event.type == Event_Type.FleetCodeError or target_event.type == Event_Type.FleetCodeExecError or target_event.type == Event_Type.PlanetCodeError or target_event.type == Event_Type.PlanetCodeExecError %}
+			{% if target_event.type == Event_Type.FleetCodeError or target_event.type == Event_Type.FleetCodeExecError or target_event.type == Event_Type.PlanetCodeError or target_event.type == Event_Type.PlanetCodeExecError or target_event.type == Event_Type.PlayerLogGather %}
 			<h1>{{target_event.type|eventname}}</h1>
 			<br>
 			<div class="alert alert-danger">
 				<!--<h4>{{target_event.type|eventname}}</h4>-->
-    			{{target_event.comment}}
-    		</div>			
+    			{{target_event|eventvalue|linebreaks}}
 			{% endif %}
 	

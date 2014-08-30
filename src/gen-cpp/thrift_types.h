@@ -39,7 +39,8 @@ struct Event_Type
 		CannonMade = 15,
 		FightAvoided = 16,
 		PlayerLog = 17,
-		Count = 18
+		PlayerLogGather = 18,
+		Count = 19
 	};
 };
 

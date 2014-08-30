@@ -165,7 +165,7 @@ void DataBase::createTables()
 		            "  id BIGINT PRIMARY KEY AUTO_INCREMENT,"
 		            "  time INTEGER NOT NULL,"
 		            "  type INTEGER NOT NULL,"
-		            "  comment VARCHAR(500) NOT NULL,"
+		            "  comment VARCHAR(16383) NOT NULL,"
 		            "  value INTEGER NOT NULL,"
 		            "  value2 INTEGER NOT NULL,"
 		            "  viewed INTEGER NOT NULL,"
@@ -691,7 +691,7 @@ try
 	(*session_) <<
 	            "SELECT * FROM Event "
 	            "WHERE playerID = ? "
-	            " AND type IN (?, ?, ?, ?, ?, ?) "
+	            " AND type IN (?, ?, ?, ?, ?, ?, ?) "
 	            "ORDER BY id DESC LIMIT 100 ",
 	            into(dbEvents),
 	            use(pid),
@@ -701,6 +701,7 @@ try
 	            use((int)Event::PlanetCodeExecError),
 	            use((int)Event::FleetLose),
 	            use((int)Event::PlanetLose),
+	            use((int)Event::PlayerLogGather),
 	            now;
 
 	std::vector<Event> out;

@@ -71,6 +71,7 @@ _("PlanetWin");
 _("CannonMade");
 _("FightAvoided");
 _("PlayerLog");
+_("PlayerLogGather");
 
 _("Cannon1");
 _("CANNON_BRIEF_0");
