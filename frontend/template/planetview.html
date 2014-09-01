@@ -46,9 +46,9 @@
 					<thead>
 						<tr><th>{% trans "Type" %}</th><th>{% trans "Time left" %}</th><th>{% trans "What" %}</th></tr>
 					</thead>
-					{% for task in planet.taskQueue %}
-					<tr><td>{{task.type|planettaskname}}</td>
-						<td><span id="countdown_dashboard_{{forloop.counter0}}" title="{{task|timeleft:timeInfo|unlocalize}}">0</span></td>
+					{% if planet.task %}
+					<tr><td>{{planet.task.type|planettaskname}}</td>
+						<td><span id="countdown_dashboard_{{forloop.counter0}}" title="{{planet.task|timeleft:timeInfo|unlocalize}}">0</span></td>
 						<script type="text/javascript">
 							function countdownRedirect()
 							{
@@ -57,8 +57,9 @@
 							}
 							countdownRedirect();
 						</script>	
-						<td>{{task|planettasktarget}}</td></tr>
-					{% endfor %}
+						<td>{{planet.task|planettasktarget}}</td>
+					</tr>
+					{% endif %}
 				</table>
 			</div>
 			<div class="panel panel-default">
