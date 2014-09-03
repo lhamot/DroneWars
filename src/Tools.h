@@ -145,6 +145,26 @@ O lexicalCast(I in, char const* const filename, int line)
 #define LEXICAL_CAST(O, in) \
 	lexicalCast<O>(in, __FILE__, __LINE__)
 
+
+template<typename O, typename I>
+O numericCast(I in, char const* const filename, int line)
+{
+	try
+	{
+		return boost::numeric_cast<O>(in);
+	}
+	catch(boost::bad_numeric_cast& blc)
+	{
+		boost::throw_exception(
+		  boost::enable_error_info(blc) <<
+		  boost::throw_file(filename) <<
+		  boost::throw_line(line));
+	}
+}
+
+#define NUMERIC_CAST(O, in) \
+	lexicalCast<O>(in, __FILE__, __LINE__)
+
 template<typename M>
 auto mapFind(M& map, typename M::key_type key, char const* const filename, int line) -> decltype(map.find(key))
 {

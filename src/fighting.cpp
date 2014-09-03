@@ -318,7 +318,7 @@ void fire(UnitTab const& allUnits,
 		std::vector<Unit*> const& enemyVect = enemyVects[ship.playerID];
 		size_t const enemyCount = enemyVect.size();
 		boost::random::uniform_int_distribution<> dist(
-		  0, boost::numeric_cast<int>(enemyCount - 1));
+		  0, NUMERIC_CAST(int, enemyCount - 1));
 
 		size_t const pos = dist(gen);
 

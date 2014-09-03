@@ -678,7 +678,8 @@ void execBuilding(Planet& planet, Building::Enum type, size_t level)
 		break;
 	case Building::MetalMine:
 		planet.ressourceSet.tab[Ressource::Metal] +=
-		  boost::numeric_cast<Ressource::Value>(
+		  NUMERIC_CAST(
+		    Ressource::Value,
 		    level * size_t(std::pow(1.1, double(level))) * speedMult);
 		break;
 	case Building::CarbonMine:

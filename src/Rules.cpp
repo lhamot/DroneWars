@@ -329,27 +329,27 @@ void calcExperience(PlayerMap const& playerMap,
 
 size_t getMaxPlanetCount(Player const& player)
 {
-	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::Conquest] + 3));
+	return NUMERIC_CAST(size_t, pow(2., player.skilltab[Skill::Conquest] + 3));
 }
 
 size_t getMaxFleetCount(Player const& player)
 {
-	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::Strategy] + 4)); //-V112
+	return NUMERIC_CAST(size_t, pow(2., player.skilltab[Skill::Strategy] + 4)); //-V112
 }
 
 size_t getMaxFleetSize(Player const& player)
 {
-	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::Cohesion] + 4)); //-V112
+	return NUMERIC_CAST(size_t, pow(2., player.skilltab[Skill::Cohesion] + 4)); //-V112
 }
 
 size_t getMaxEventCount(Player const& player)
 {
-	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::ServerFarm] + 7));
+	return NUMERIC_CAST(size_t, pow(2., player.skilltab[Skill::ServerFarm] + 7));
 }
 
 size_t memoryPtreeSize(Player const& player)
 {
-	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::Memory] + 3));
+	return NUMERIC_CAST(size_t, pow(2., player.skilltab[Skill::Memory] + 3));
 }
 
 bool acceptMemoryPtree(Player const& player, TypedPtree const& pt)
@@ -362,7 +362,7 @@ bool acceptMemoryPtree(Player const& player, TypedPtree const& pt)
 
 size_t emitionPTreeSize(Player const& player)
 {
-	return numeric_cast<size_t>(pow(2., player.skilltab[Skill::EmissionRate] + 3));
+	return NUMERIC_CAST(size_t, pow(2., player.skilltab[Skill::EmissionRate] + 3));
 }
 
 

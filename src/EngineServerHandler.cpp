@@ -271,7 +271,7 @@ ndw::FleetReport fleetReportToThrift(Report<Fleet> const& fleetReport,
 	result.wantEscape = fleetReport.wantEscape;
 	result.escapeProba = fleetReport.escapeProba;
 	for(intptr_t id : fleetReport.enemySet)
-		result.enemySet.insert(numeric_cast<int32_t>(id));
+		result.enemySet.insert(NUMERIC_CAST(int32_t, id));
 	result.fightInfo.before =
 	  fleetToThrift(fleetReport.fightInfo.before, player);
 	result.fightInfo.after =
@@ -289,7 +289,7 @@ ndw::PlanetReport planetReportToThrift(Report<Planet> const& planetReport,
 	result.hasFight = planetReport.hasFight;
 	result.experience = planetReport.experience;
 	for(intptr_t id : planetReport.enemySet)
-		result.enemySet.insert(numeric_cast<int32_t>(id));
+		result.enemySet.insert(NUMERIC_CAST(int32_t, id));
 	result.fightInfo.before =
 	  planetToThrift(planetReport.fightInfo.before, player);
 	result.fightInfo.after =
@@ -652,9 +652,9 @@ void EngineServerHandler::getPlanet(vector<ndw::Planet>& _return,
 {
 	LOG4CPLUS_TRACE(logger, "ndwCoord : " << ndwCoord);
 	Coord const coord(
-	  numeric_cast<Coord::Value>(ndwCoord.X),
-	  numeric_cast<Coord::Value>(ndwCoord.Y),
-	  numeric_cast<Coord::Value>(ndwCoord.Z));
+	  NUMERIC_CAST(Coord::Value, ndwCoord.X),
+	  NUMERIC_CAST(Coord::Value, ndwCoord.Y),
+	  NUMERIC_CAST(Coord::Value, ndwCoord.Z));
 	optional<Planet> planet = engine_.getPlanet(coord);
 	if(planet)
 	{

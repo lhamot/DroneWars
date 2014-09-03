@@ -25,7 +25,7 @@ void simulOneFight()
 			uint32_t const count = rand() % (10000 / Ship::List[type].life);
 			fleetVect.back().shipList[type] = count;
 		}
-		Player::ID pid = boost::numeric_cast<Player::ID>(fleetIdx) + 1;
+		Player::ID pid = NUMERIC_CAST(Player::ID, fleetIdx) + 1;
 		playerMap.emplace(pid, Player(pid, ""));
 	}
 	/*fleetVect.push_back(Fleet(1, 1, Coord(0, 0, 0), 0));
