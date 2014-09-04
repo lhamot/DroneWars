@@ -171,7 +171,7 @@ O numericCast(I in, char const* const filename, int line)
 }
 
 #define NUMERIC_CAST(O, in) \
-	lexicalCast<O>(in, __FILE__, __LINE__)
+	numericCast<O>(in, __FILE__, __LINE__)
 
 template<typename M>
 auto mapFind(M& map, typename M::key_type key, char const* const filename, int line) -> decltype(map.find(key))
