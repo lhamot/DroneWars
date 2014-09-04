@@ -135,6 +135,10 @@ O lexicalCast(I in, char const* const filename, int line)
 	}
 	catch(boost::bad_lexical_cast& blc)
 	{
+		using namespace log4cplus;
+		static Logger logger = Logger::getRoot();
+		LOG4CPLUS_ERROR(logger, "bad_lexical_cast : " << "value: " << in <<
+		                " filename : " << filename << " line: " << line);
 		boost::throw_exception(
 		  boost::enable_error_info(blc) <<
 		  boost::throw_file(filename) <<
@@ -155,6 +159,10 @@ O numericCast(I in, char const* const filename, int line)
 	}
 	catch(boost::bad_numeric_cast& blc)
 	{
+		using namespace log4cplus;
+		static Logger logger = Logger::getRoot();
+		LOG4CPLUS_ERROR(logger, "bad_numeric_cast : " << "value: " << in <<
+		                " filename : " << filename << " line: " << line);
 		boost::throw_exception(
 		  boost::enable_error_info(blc) <<
 		  boost::throw_file(filename) <<
