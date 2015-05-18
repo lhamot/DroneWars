@@ -19,7 +19,7 @@
 #include <boost/range/algorithm/copy.hpp>
 #include <boost/format.hpp>
 #pragma warning(push)
-#pragma warning(disable: 4189)
+#pragma warning(disable: 4189 4459)
 #include <boost/multi_array.hpp>
 #pragma warning(pop)
 

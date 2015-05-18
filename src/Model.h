@@ -127,7 +127,7 @@ struct PlanetTask
 	uint32_t value;         //!< Valeur utilisée en fonction du type Enum
 	uint32_t value2;        //!< Valeur utilisée en fonction du type Enum
 	uint32_t lauchTime;     //!< Round de lancement
-	uint32_t duration;      //!< Durré total d'excecution
+	uint32_t duration;      //!< Durré total d'excecution en round
 	//! @todo: A quoi sert le cout de lancement?
 	RessourceSet startCost; //!< Cout de lancement
 	bool expired;           //!< true si la tache a déja été excecuté

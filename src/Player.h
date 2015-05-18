@@ -51,6 +51,11 @@ inline bool operator != (Coord const& a, Coord const& b)
 	return (a == b) == false;
 }
 
+inline std::ostream& operator << (std::ostream& os, Coord const& c)
+{
+	os << "(" << int(c.X) << "," << int(c.Y) << "," << int(c.Z) << ")" << std::endl;
+	return os;
+}
 
 //! Direction tridimentionelle en valeur entière
 struct Direction

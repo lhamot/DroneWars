@@ -34,5 +34,8 @@ function AI_action(my_fleet2, planete_locale2)
   end
   return FleetAction(FleetAction.Move,directionRandom())
 end
+function AI_do_escape(ma_flotte, planete_locale, autres_flottes)
+  return simulates(ma_flotte,planete_locale,autres_flottes) < 50
+end
 
 

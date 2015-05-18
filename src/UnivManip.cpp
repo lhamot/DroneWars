@@ -165,6 +165,9 @@ void getNewPlayerCode(std::vector<std::string>& codes)
 		  "function AI_action(myFleet, planet)\n"
 		  "  order = FleetAction(FleetAction.Nothing, Direction())\n"
 		  "  return order\n"
+		  "end\n"
+		  "function AI_do_escape(ma_flotte, planete_locale, autres_flottes)\n"
+		  "  return simulates(ma_flotte, planete_locale, autres_flottes) < 50\n"
 		  "end";
 		result.push_back(code);
 		result.push_back(blocklyCode);
@@ -251,6 +254,7 @@ void construct(Universe& univ, DataBase& database)
 			skillTab[Skill::Cohesion] = rand() % 10;
 			skillTab[Skill::Strategy] = rand() % 10;
 			skillTab[Skill::Conquest] = rand() % 10;
+			skillTab[Skill::Escape] = rand() % 3;
 			database.setPlayerSkills(pid, skillTab);
 		}
 	}
@@ -259,18 +263,22 @@ void construct(Universe& univ, DataBase& database)
 	for(Player const& player : players)
 		database.setPlayerMainPlanet(player.id,
 		                             createMainPlanet(univ, player.id));
+	// Chargement des codes des IA
+	std::string planetScript;
+	std::string fleetScript;
+	{
+		ifstream planetFile("planetScript.lua");
+		std::getline(planetFile, planetScript, char(0));
+		ifstream fleetFile("fleetScript.lua");
+		std::getline(fleetFile, fleetScript, char(0));
+	}
 	// Definition du code source de chaque joueur (AI et non AI)
 	for(Player const& player : players)
 	{
 		if(player.isAI)
 		{
-			std::string script;
-			ifstream planetFile("planetScript.lua");
-			std::getline(planetFile, script, char(0));
-			database.addScript(player.id, CodeData::Planet, script);
-			ifstream fleetFile("fleetScript.lua");
-			std::getline(fleetFile, script, char(0));
-			database.addScript(player.id, CodeData::Fleet, script);
+			database.addScript(player.id, CodeData::Planet, planetScript);
+			database.addScript(player.id, CodeData::Fleet, fleetScript);
 		}
 		else
 		{
@@ -476,6 +484,7 @@ void addTask(Planet& planet, uint32_t roundCount, Ship::Enum ship, uint32_t numb
 	size_t const factoryLvl = planet.buildingList[Building::Factory];
 	if(factoryLvl == 0)
 		BOOST_THROW_EXCEPTION(std::logic_error("Need Factory"));
+	//! @todo: Ajouter regle sur durée de fabrication dans Rules
 	double const floatDuration =
 	  Ship::List[ship].price.tab[0] /
 	  (factoryLvl * pow(1.15, factoryLvl) * 4); //-V112

@@ -37,4 +37,26 @@
       </block>
     </value>
   </block>
+  <block type="procedures_defreturn" inline="false" x="58" y="88">
+    <mutation>
+      <arg name="ma_flotte"></arg>
+      <arg name="planete_locale"></arg>
+      <arg name="autres_flottes"></arg>
+    </mutation>
+    <field name="NAME">AI_do_escape</field>
+    <comment pinned="false" h="200" w="400"></comment>
+    <value name="RETURN">
+      <block type="logic_compare" inline="true">
+        <field name="OP">LT</field>
+        <value name="A">
+          <block type="dronewars_simulates" inline="false">
+            <value name="FLEET"><block type="variables_get"><field name="VAR">ma_flotte</field></block></value>
+            <value name="PLANET"><block type="variables_get"><field name="VAR">planete_locale</field></block></value>
+            <value name="OTHER_FLEETS"><block type="variables_get"><field name="VAR">autres_flottes</field></block></value></block></value>
+            <value name="B"><block type="math_number"><field name="NUM">50</field>
+          </block>
+        </value>
+      </block>
+    </value>
+  </block>  
 </xml>
