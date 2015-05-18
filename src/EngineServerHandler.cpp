@@ -445,7 +445,7 @@ void sortPlanetOnType(Range& rg, ndw::Sort_Type::type sortType, const bool asc, 
 	{
 	case ndw::Sort_Type::S:
 		break;
-	case ndw::Sort_Type::C:
+	case ndw::Sort_Type::D:
 		sortOnAttr(rg, asc, [&](Planet const & e) {return e.cannonTab.at(value);});
 		break;
 	case ndw::Sort_Type::B:
