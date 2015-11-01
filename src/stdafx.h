@@ -50,8 +50,8 @@
 #include <boost/serialization/variant.hpp>
 #include <boost/serialization/utility.hpp>
 #include <boost/serialization/optional.hpp>
-//#include <boost/serialization/collections_save_imp.hpp>
-//#include <boost/serialization/collections_load_imp.hpp>
+#include <boost/serialization/collections_save_imp.hpp>
+#include <boost/serialization/collections_load_imp.hpp>
 //#include <boost/serialization/unordered_map.hpp>
 #include <boost/serialization/split_free.hpp>
 #include <boost/thread/thread.hpp>

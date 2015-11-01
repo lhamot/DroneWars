@@ -155,10 +155,10 @@ inline void load(
 	load_collection <
 	Archive,
 	std::unordered_multimap<Key, Type, Hash, Compare, Allocator>,
-	boost::serialization::stl::archive_input_map <
+	archive_input_map <
 	Archive, std::unordered_multimap<Key, Type, Hash, Compare, Allocator>
 	> ,
-	boost::serialization::stl::no_reserve_imp <
+	no_reserve_imp <
 	std::unordered_multimap<Key, Type, Hash, Compare, Allocator>
 	>
 	> (ar, t);

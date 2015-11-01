@@ -209,7 +209,7 @@ template<typename T>
 void addArray(T& out, T const& in)
 {
 	for(auto valPair : boost::combine(out, in))
-		cappedAdd(valPair.get<0>(), valPair.get<1>());
+		cappedAdd(boost::get<0>(valPair), boost::get<1>(valPair));
 }
 
 #endif //__BTA_TOOLS__
