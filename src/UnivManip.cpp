@@ -83,7 +83,7 @@ static_assert(sizeof(Cannon::List) == (sizeof(Cannon) * Cannon::Count),
 //! Retourne le prix d'un Building donné, à un niveau donné
 //! @pre id est dans [0: Building::Count[
 //! @pre level > 0
-RessourceSet getBuilingPrice(Building::Enum id, size_t level)
+boost::optional<RessourceSet> getBuilingPrice(Building::Enum id, size_t level)
 {
 	if(id < 0 || id >= Building::Count)
 		BOOST_THROW_EXCEPTION(
@@ -93,10 +93,18 @@ RessourceSet getBuilingPrice(Building::Enum id, size_t level)
 		  std::out_of_range("Expect a level greater than 1"));
 
 	Building const& building = Building::List[id];
-	double const coef = std::pow(building.coef, level - 1.);
+	double const coef = std::pow(building.coef, level - 1.) * 1000.;
 	RessourceSet result = building.price;
-	boost::geometry::multiply_value(result.tab, Ressource::Value(coef * 1000.));
-	boost::geometry::divide_value(result.tab, 1000);
+	static double const maxVal = std::numeric_limits<Ressource::Value>::max();
+	for(auto& val : result.tab)
+	{
+		double val2 = (double(val) * coef);
+		if(val2 > maxVal)
+			return boost::none;
+		val = NUMERIC_CAST(Ressource::Value, val2);
+	}
+	for(auto& val : result.tab)
+		val /= 1000;
 	return result;
 }
 
@@ -418,11 +426,16 @@ BuildTestState canBuild(Planet const& planet, Building::Enum type)
 		return BuildTestState::OtherTaskRunning;
 
 	size_t const buNextLevel = planet.buildingList[type] + 1;
-	RessourceSet const price = getBuilingPrice(type, buNextLevel);
-	if(false == canPay(planet, price))
-		return BuildTestState::NotEnoughRessources;
+	boost::optional<RessourceSet> const price = getBuilingPrice(type, buNextLevel);
+	if(price.is_initialized())
+	{
+		if(false == canPay(planet, price.get()))
+			return BuildTestState::NotEnoughRessources;
+		else
+			return BuildTestState::Ok;
+	}
 	else
-		return BuildTestState::Ok;
+		return BuildTestState::NotEnoughRessources;
 }
 
 
@@ -457,21 +470,23 @@ void addTask(Planet& planet, uint32_t roundCount, Building::Enum building)
 		  std::logic_error("Can't create Building without CommandCenter"));
 
 	double const floatDuration =
-	  Building::List[building].price.tab[0] /
+	  double(Building::List[building].price.tab[0]) /
 	  (centerLevel * pow(1.15, centerLevel) * 4); //-V112
 	uint32_t const duration = statRound<uint32_t>(floatDuration);
 	PlanetTask task(PlanetTask::UpgradeBuilding, roundCount, duration);
 	task.value = building;
-	RessourceSet const price = getBuilingPrice(building, buNextLevel);
-	task.startCost = price;
+	boost::optional<RessourceSet> const price = getBuilingPrice(building, buNextLevel);
+	if(price.is_initialized() == false)
+		BOOST_THROW_EXCEPTION(std::logic_error("Can't pay"));
+	task.startCost = price.get();
 
-	if(canPay(planet, price) == false)
+	if(canPay(planet, price.get()) == false)
 		BOOST_THROW_EXCEPTION(std::logic_error("Can't pay"));
 
 	if(planet.task)
 		BOOST_THROW_EXCEPTION(std::logic_error("planet.task is full"));
 	planet.task = task;
-	pay(planet, price);
+	pay(planet, price.get());
 }
 
 
@@ -486,7 +501,7 @@ void addTask(Planet& planet, uint32_t roundCount, Ship::Enum ship, uint32_t numb
 		BOOST_THROW_EXCEPTION(std::logic_error("Need Factory"));
 	//! @todo: Ajouter regle sur durée de fabrication dans Rules
 	double const floatDuration =
-	  Ship::List[ship].price.tab[0] /
+	  double(Ship::List[ship].price.tab[0]) /
 	  (factoryLvl * pow(1.15, factoryLvl) * 4); //-V112
 	uint32_t const duration = statRound<uint32_t>(floatDuration);
 	PlanetTask task(PlanetTask::MakeShip, roundCount, duration);
@@ -514,7 +529,7 @@ void addTask(Planet& planet,
 	if(factoryLvl == 0)
 		BOOST_THROW_EXCEPTION(std::logic_error("Need Factory"));
 	double const floatDuration =
-	  Cannon::List[cannon].price.tab[0] /
+	  double(Cannon::List[cannon].price.tab[0]) /
 	  (factoryLvl * pow(1.15, factoryLvl) * 4); //-V112
 	uint32_t const duration = statRound<uint32_t>(floatDuration);
 	PlanetTask task(PlanetTask::MakeCannon, roundCount, duration);
@@ -623,9 +638,8 @@ void execTask(Universe& univ,
 			Planet& planet = MAP_FIND(univ.planetMap, task.position)->second;
 			if(planet.playerId == Player::NoId)
 			{
-				boost::geometry::add_point(fleet.ressourceSet.tab,
-				                           planet.ressourceSet.tab);
-				boost::geometry::assign_value(planet.ressourceSet.tab, 0);
+				addArray(fleet.ressourceSet.tab, planet.ressourceSet.tab);
+				planet.ressourceSet.tab.fill(0);
 				Event event(fleet.playerId, time(0), Event::PlanetHarvested);
 				event.setFleetID(fleet.id);
 				events.push_back(event);
@@ -650,8 +664,7 @@ void execTask(Universe& univ,
 					fleet.shipList[Ship::Queen] -= 1;
 
 					planet.buildingList[Building::CommandCenter] = 1;
-					boost::geometry::add_point(planet.ressourceSet.tab,
-					                           RessourceSet(2000, 500, 0).tab);
+					addArray(planet.ressourceSet.tab, RessourceSet(2000, 500, 0).tab);
 					planet.playerId = fleet.playerId;
 					planet.player = fleet.player;
 					planet.parentCoord = fleet.origin;
@@ -683,14 +696,18 @@ void execBuilding(Planet& planet, Building::Enum type, size_t level)
 	switch(type)
 	{
 	case Building::CommandCenter:
-		planet.ressourceSet.tab[Ressource::Metal] += 1;
+		cappedAdd(planet.ressourceSet.tab[Ressource::Metal], Ressource::Value(1));
 		break;
 	case Building::MetalMine:
-		planet.ressourceSet.tab[Ressource::Metal] +=
-		  NUMERIC_CAST(
-		    Ressource::Value,
-		    level * size_t(std::pow(1.1, double(level))) * speedMult);
-		break;
+	{
+		size_t toAdd = level * size_t(std::pow(1.1, double(level))) * speedMult;
+		toAdd = min<size_t>(std::numeric_limits<Ressource::Value>::max(), toAdd);
+		if(toAdd > (std::numeric_limits<Ressource::Value>::max() - planet.ressourceSet.tab[Ressource::Metal]))
+			planet.ressourceSet.tab[Ressource::Metal] = std::numeric_limits<Ressource::Value>::max();
+		else
+			planet.ressourceSet.tab[Ressource::Metal] += static_cast<Ressource::Value>(toAdd);
+	}
+	break;
 	case Building::CarbonMine:
 		break;
 	case Building::LoiciumFilter:
@@ -740,14 +757,14 @@ void planetRound(Player const& player,
 	//Cristalisations des ressources
 	if((rand() % 10) == 0) //! @todo: rand rapide
 	{
-		planet.ressourceSet.tab[Ressource::Metal] += rand() % 7;
-		planet.ressourceSet.tab[Ressource::Carbon] += rand() % 5;
-		planet.ressourceSet.tab[Ressource::Loicium] += rand() % 3;
+		cappedAdd(planet.ressourceSet.tab[Ressource::Metal], Ressource::Value(rand() % 7));
+		cappedAdd(planet.ressourceSet.tab[Ressource::Carbon], Ressource::Value(rand() % 5));
+		cappedAdd(planet.ressourceSet.tab[Ressource::Loicium], Ressource::Value(rand() % 3));
 	}
 
 	//Limitation des ressources à un milliard
 	for(auto& val : planet.ressourceSet.tab)
-		val = std::min(val, uint32_t(1000000000));
+		val = std::min(val, Ressource::Value(1000000000));
 }
 
 
@@ -765,20 +782,15 @@ void fleetRound(Universe& univ,
 
 	//Limitation des ressources à un milliard
 	for(auto& val : fleet.ressourceSet.tab)
-		val = std::min(val, uint32_t(1000000000));
+		val = std::min(val, Ressource::Value(1000000000));
 }
-
 
 //! Ajoute otherFleet dans fleet
 void gather(Fleet& fleet, Fleet const& otherFleet)
 {
-	geometry::add_point(fleet.ressourceSet.tab, otherFleet.ressourceSet.tab);
-	boost::transform(fleet.shipList,
-	                 otherFleet.shipList,
-	                 fleet.shipList.begin(),
-	                 std::plus<uint32_t>());
+	addArray(fleet.ressourceSet.tab, otherFleet.ressourceSet.tab);
+	addArray(fleet.shipList, otherFleet.shipList);
 }
-
 
 //! Test si une flotte peut se rendre a la destination coord
 FleetActionTest canMove(Fleet const& fleet,
@@ -887,8 +899,8 @@ FleetActionTest canDrop(Fleet const& fleet, Planet const* planet)
 //! @pre la flotte peut balancer ses ressources sur la planète (canDrop)
 void drop(Fleet& fleet, Planet& planet)
 {
-	geometry::add_point(planet.ressourceSet.tab, fleet.ressourceSet.tab);
-	geometry::assign_value(fleet.ressourceSet.tab, 0);
+	addArray(planet.ressourceSet.tab, fleet.ressourceSet.tab);
+	fleet.ressourceSet.tab.fill(0);
 }
 
 

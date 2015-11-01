@@ -8,7 +8,7 @@ class DataBase;
 
 void construct(Universe& univ, DataBase& database);
 
-RessourceSet getBuilingPrice(Building::Enum id, size_t level);
+boost::optional<RessourceSet> getBuilingPrice(Building::Enum id, size_t level);
 
 void getNewPlayerCode(std::vector<std::string>& codes);
 

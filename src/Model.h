@@ -56,7 +56,7 @@ struct CompCoord
 //! Les types de Ressource
 struct Ressource
 {
-	typedef uint32_t Value; //!< Type contenant une quantité d'une ressource
+	typedef SafeInt<uint32_t> Value; //!< Type contenant une quantité d'une ressource
 	//! Les types de Ressource
 	enum Enum : uint8_t
 	{
@@ -75,7 +75,10 @@ struct RessourceSet
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int)
 	{
-		ar& tab;
+		boost::array<uint32_t, Ressource::Count> tab2;
+		tab2 = tab;
+		ar& tab2;
+		tab = tab2;
 	}
 
 	//! Tableau contenant une quantité pour chaque type de ressource

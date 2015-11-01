@@ -20,8 +20,10 @@
 #include <log4cplus/logger.h>
 #include <log4cplus/loggingmacros.h>
 
+#include "SafeInt3.hpp"
+
 #pragma warning(push)
-#pragma warning(disable:4244 4310 4100 4512 4127 4458 4459 4706 4702 4503 4345 6011)
+#pragma warning(disable:4244 4310 4100 4512 4127 4456 4458 4459 4706 4702 4503 4345 6011)
 #include <boost/array.hpp>
 #include <boost/exception/all.hpp>
 #include <boost/functional/hash.hpp>
@@ -48,8 +50,9 @@
 #include <boost/serialization/variant.hpp>
 #include <boost/serialization/utility.hpp>
 #include <boost/serialization/optional.hpp>
-#include <boost/serialization/collections_save_imp.hpp>
-#include <boost/serialization/collections_load_imp.hpp>
+//#include <boost/serialization/collections_save_imp.hpp>
+//#include <boost/serialization/collections_load_imp.hpp>
+//#include <boost/serialization/unordered_map.hpp>
 #include <boost/serialization/split_free.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/thread.hpp>

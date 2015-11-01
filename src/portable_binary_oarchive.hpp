@@ -2,7 +2,7 @@
 #define PORTABLE_BINARY_OARCHIVE_HPP
 
 // MS compatible compilers support #pragma once
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+#if defined(_MSC_VER)
 # pragma once
 #endif
 
@@ -34,19 +34,21 @@
 // exception to be thrown if integer read from archive doesn't fit
 // variable being loaded
 class portable_binary_oarchive_exception :
-	public virtual boost::archive::archive_exception
+	public boost::archive::archive_exception
 {
 public:
 	typedef enum
 	{
 		invalid_flags
 	} exception_code;
-	portable_binary_oarchive_exception(exception_code = invalid_flags)
+	portable_binary_oarchive_exception(
+	  exception_code //c
+	  = invalid_flags)
 	{}
 	virtual const char* what() const throw()
 	{
 		const char* msg = "programmer error";
-		switch(int(code))
+		switch(code)
 		{
 		case invalid_flags:
 			msg = "cannot be both big and little endian";
@@ -67,7 +69,7 @@ class portable_binary_oarchive :
 	portable_binary_oarchive,
 	std::ostream::char_type,
 	std::ostream::traits_type
-	> ,
+	>,
 	public boost::archive::detail::common_oarchive <
 	portable_binary_oarchive
 	>
@@ -135,26 +137,24 @@ protected:
 		this->primitive_base_t::save(t);
 	}
 
-
 	// default processing - kick back to base class.  Note the
 	// extra stuff to get it passed borland compilers
 	typedef boost::archive::detail::common_oarchive<portable_binary_oarchive>
 	detail_common_oarchive;
 	template<class T>
-	void save_override(T& t, BOOST_PFTO int)
+	void save_override(T& t)
 	{
-		this->detail_common_oarchive::save_override(t, 0);
+		this->detail_common_oarchive::save_override(t);
 	}
 	// explicitly convert to char * to avoid compile ambiguities
-	void save_override(const boost::archive::class_name_type& t, int)
+	void save_override(const boost::archive::class_name_type& t)
 	{
 		const std::string s(t);
 		* this << s;
 	}
 	// binary files don't include the optional information
 	void save_override(
-	  const boost::archive::class_id_optional_type& /* t */,
-	  int
+	  const boost::archive::class_id_optional_type&  /* t */
 	) {}
 
 	void init(unsigned int flags);

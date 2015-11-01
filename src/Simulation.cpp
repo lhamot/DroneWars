@@ -65,14 +65,14 @@ public:
 	{
 		try
 		{
-			ScriptTools::Object logger =
+			ScriptTools::Object logger_ =
 			  ScriptTools::refFromName(state_, "logger");
-			if(ScriptTools::isValid(logger))
+			if(ScriptTools::isValid(logger_))
 			{
 				if(playerCanLog(player_))
 				{
 					Event event(player_.id, time(0), Event::PlayerLog);
-					event.setComment(ScriptTools::extract<std::string>(logger));
+					event.setComment(ScriptTools::extract<std::string>(logger_));
 					event.setFleetID(fleetID_).setPlanetCoord(coord_);
 					events_.push_back(event);
 				}
@@ -476,10 +476,7 @@ void gatherIfWant(
 				//! @todo: Décoreler script et traitement
 				if(wantGather1)
 				{
-					boost::transform(fleet.shipList,
-					                 planet->hangar,
-					                 fleet.shipList.begin(),
-					                 std::plus<uint32_t>());
+					addArray(fleet.shipList, planet->hangar);
 					planet->hangar.fill(0);
 					Event event(fleet.playerId, time(0), Event::FleetsGather);
 					event.setFleetID(fleet.id);
@@ -921,12 +918,12 @@ void execFights(Universe& univ_,
 
 		{
 			std::vector<Player::ID> playerVect(playerSet.begin(), playerSet.end());
-			for(auto iter1 = playerVect.begin(); iter1 != playerVect.end(); ++iter1)
+			for(auto plIter1 = playerVect.begin(); plIter1 != playerVect.end(); ++plIter1)
 			{
-				for(auto iter2 = iter1 + 1; iter2 != playerVect.end(); ++iter2)
+				for(auto plIter2 = plIter1 + 1; plIter2 != playerVect.end(); ++plIter2)
 				{
-					Player const& player1 = MAP_FIND(playerMap, *iter1)->second;
-					Player const& player2 = MAP_FIND(playerMap, *iter2)->second;
+					Player const& player1 = MAP_FIND(playerMap, *plIter1)->second;
+					Player const& player2 = MAP_FIND(playerMap, *plIter2)->second;
 					addIfTheyWantFight(univ_,
 					                   player1,
 					                   player2,

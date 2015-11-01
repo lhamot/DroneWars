@@ -132,7 +132,7 @@ RessourceSet cannonPrice(Cannon::Enum cannon)
 //! Retourne le prix d'un Building donné, à un niveau donné
 //! @throw std::runtime_error si building n'est pas dans [1; Building::Count]
 //! @throw std::runtime_error si level < 1
-RessourceSet buildingPrice(Building::Enum building, size_t level)
+boost::optional<RessourceSet> buildingPrice(Building::Enum building, size_t level)
 {
 	if(building < 1 || building > Building::Count)
 	{

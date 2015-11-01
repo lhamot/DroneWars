@@ -33,6 +33,68 @@ inline void save(
 	> (ar, t);
 }
 
+template<class Container>
+class no_reserve_imp
+{
+public:
+	void operator()(Container& /* s */, std::size_t /* count */) const {}
+};
+
+// map input
+template<class Archive, class Container>
+struct archive_input_map
+{
+	inline BOOST_DEDUCED_TYPENAME Container::iterator
+	operator()(
+	  Archive& ar,
+	  Container& s,
+	  const unsigned int v,
+	  BOOST_DEDUCED_TYPENAME Container::iterator hint
+	)
+	{
+		typedef BOOST_DEDUCED_TYPENAME Container::value_type type;
+		detail::stack_construct<Archive, type> t(ar, v);
+		// borland fails silently w/o full namespace
+		ar >> boost::serialization::make_nvp("item", t.reference());
+		BOOST_DEDUCED_TYPENAME Container::iterator result =
+		  s.insert(hint, t.reference());
+		// note: the following presumes that the map::value_type was NOT tracked
+		// in the archive.  This is the usual case, but here there is no way
+		// to determine that.
+		ar.reset_object_address(
+		  &(result->second),
+		  &t.reference().second
+		);
+		return result;
+	}
+};
+
+template<class Archive, class Container, class InputFunction, class R>
+inline void load_collection(Archive& ar, Container& s)
+{
+	s.clear();
+	collection_size_type count;
+	const boost::archive::library_version_type library_version(
+	  ar.get_library_version()
+	);
+	// retrieve number of elements
+	item_version_type item_version(0);
+	ar >> BOOST_SERIALIZATION_NVP(count);
+	if(boost::archive::library_version_type(3) < library_version)
+	{
+		ar >> BOOST_SERIALIZATION_NVP(item_version);
+	}
+
+	R rx;
+	rx(s, count);
+	InputFunction ifunc;
+	BOOST_DEDUCED_TYPENAME Container::iterator hint;
+	hint = s.begin();
+	while(count-- > 0)
+	{
+		hint = ifunc(ar, s, item_version, hint);
+	}
+}
 
 //! déserialization d'un std::unordered_map
 template<class Archive, class Type, class Key, class Hash, class Compare, class Allocator>
@@ -42,12 +104,12 @@ inline void load(
   const unsigned int /* file_version */
 )
 {
-	boost::serialization::stl::load_collection <
+	load_collection <
 	Archive,
 	std::unordered_map<Key, Type, Hash, Compare, Allocator>,
-	boost::serialization::stl::archive_input_map <
+	archive_input_map <
 	Archive, std::unordered_map<Key, Type, Hash, Compare, Allocator> > ,
-	boost::serialization::stl::no_reserve_imp < std::unordered_map <
+	no_reserve_imp < std::unordered_map <
 	Key, Type, Hash, Compare, Allocator
 	>
 	>
@@ -90,7 +152,7 @@ inline void load(
   const unsigned int /* file_version */
 )
 {
-	boost::serialization::stl::load_collection <
+	load_collection <
 	Archive,
 	std::unordered_multimap<Key, Type, Hash, Compare, Allocator>,
 	boost::serialization::stl::archive_input_map <

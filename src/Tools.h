@@ -8,6 +8,7 @@
 #include <string>
 #include <boost/iterator/zip_iterator.hpp>
 #include <boost/range/iterator_range.hpp>
+#include "SafeInt3.hpp"
 
 //! Obtient une local pour la culture demandée
 //! @todo: Si le nombre de trad pas seconde augmente, il faudra surement
@@ -136,8 +137,8 @@ O lexicalCast(I in, char const* const filename, int line)
 	catch(boost::bad_lexical_cast& blc)
 	{
 		using namespace log4cplus;
-		static Logger logger = Logger::getRoot();
-		LOG4CPLUS_ERROR(logger, "bad_lexical_cast : " << "value: " << in <<
+		static Logger logger_ = Logger::getRoot();
+		LOG4CPLUS_ERROR(logger_, "bad_lexical_cast : " << "value: " << in <<
 		                " filename : " << filename << " line: " << line);
 		boost::throw_exception(
 		  boost::enable_error_info(blc) <<
@@ -160,8 +161,8 @@ O numericCast(I in, char const* const filename, int line)
 	catch(boost::bad_numeric_cast& blc)
 	{
 		using namespace log4cplus;
-		static Logger logger = Logger::getRoot();
-		LOG4CPLUS_ERROR(logger, "bad_numeric_cast : " << "value: " << in <<
+		static Logger logger_ = Logger::getRoot();
+		LOG4CPLUS_ERROR(logger_, "bad_numeric_cast : " << "value: " << in <<
 		                " filename : " << filename << " line: " << line);
 		boost::throw_exception(
 		  boost::enable_error_info(blc) <<
@@ -187,5 +188,28 @@ auto mapFind(M& map, typename M::key_type key, char const* const filename, int l
 
 #define MAP_FIND(map, key) \
 	mapFind(map, key, __FILE__, __LINE__)
+
+namespace std
+{
+template<typename T>
+class numeric_limits<SafeInt<T> > : public numeric_limits<T> {};
+}
+
+template<typename A>
+void cappedAdd(A& a, A const b)
+{
+	A maxAdd = std::numeric_limits<A>::max() - a;
+	if(b > maxAdd)
+		a = std::numeric_limits<A>::max();
+	else
+		a += b;
+}
+
+template<typename T>
+void addArray(T& out, T const& in)
+{
+	for(auto valPair : boost::combine(out, in))
+		cappedAdd(valPair.get<0>(), valPair.get<1>());
+}
 
 #endif //__BTA_TOOLS__

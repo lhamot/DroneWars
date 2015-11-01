@@ -31,9 +31,6 @@ TypedPtree& getThisPTree(lua_State* L)
 	{
 		luaL_error(L, "Not a %s on the stack, as expected", typeid(TypedPtree).name());
 		abort();
-		LOG4CPLUS_FATAL(
-		  log4cplus::Logger::getInstance(LOG4CPLUS_TEXT("PTreeLuaHelper")),
-		  "Not a userdata");
 	}
 	return *memory;
 }
