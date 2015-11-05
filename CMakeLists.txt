@@ -14,10 +14,6 @@ find_path(THRIFT_INCLUDE_DIR thrift
    PATH_SUFFIXES thrift
    DOC "Include directory for thrift"
    )
-find_path(LOG4CPLUS_INCLUDE_DIR log4cplus
-   PATH_SUFFIXES log4cplus
-   DOC "Include directory for log4cplus"
-   )
 find_path(POCO_INCLUDE_DIR poco
    PATH_SUFFIXES poco
    DOC "poco root directory for includes"
@@ -25,7 +21,6 @@ find_path(POCO_INCLUDE_DIR poco
 include_directories(${BOOST_INCLUDE_DIR})
 include_directories(${LUA_INCLUDE_DIR})
 include_directories(${THRIFT_INCLUDE_DIR})
-include_directories(${LOG4CPLUS_INCLUDE_DIR})
 include_directories(${POCO_INCLUDE_DIR}/Foundation/include)
 include_directories(${POCO_INCLUDE_DIR}/Data/include)
 include_directories(${POCO_INCLUDE_DIR}/Data/MySQL/include)
@@ -39,9 +34,6 @@ find_path(LUA_LIBRARY NAMES lua
 find_path(THRIFT_LIBRARY NAMES thrift
           DOC "The thrift libraries path"
 )
-find_path(LOG4CPLUS_LIBRARY NAMES log4cplus
-          DOC "The log4cplus libraries path"
-)
 find_path(POCO_LIBRARY NAMES poco
           DOC "The POCO libraries path"
 )
@@ -49,7 +41,6 @@ find_path(POCO_LIBRARY NAMES poco
 link_directories(${BOOST_LIBRARY})
 link_directories(${LUA_LIBRARY})
 link_directories(${THRIFT_LIBRARY})
-link_directories(${LOG4CPLUS_LIBRARY})
 link_directories(${POCO_LIBRARY})
 
 # Déclaration de l'exécutable
@@ -74,6 +65,7 @@ add_executable(
     src/Tools.cpp
     src/TypedPtree.cpp
     src/UnivManip.cpp
+    src/Logger.cpp
     src/gen-cpp/EngineServer.cpp
     src/gen-cpp/thrift_constants.cpp
     src/gen-cpp/thrift_types.cpp
@@ -85,9 +77,6 @@ target_link_libraries( DroneWars optimized lua5.2 )
 
 target_link_libraries( DroneWars debug thriftd )
 target_link_libraries( DroneWars optimized thrift )
-
-target_link_libraries( DroneWars debug log4cplusd )
-target_link_libraries( DroneWars optimized log4cplus )
 
 target_link_libraries( DroneWars debug PocoDatad )
 target_link_libraries( DroneWars debug PocoFoundationd )
@@ -107,6 +96,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     target_link_libraries( DroneWars debug boost_chronod )
     target_link_libraries( DroneWars debug boost_program_optionsd )
     target_link_libraries( DroneWars debug boost_localed )
+    target_link_libraries( DroneWars debug boost_logd )
     target_link_libraries( DroneWars optimized boost_thread )
     target_link_libraries( DroneWars optimized boost_signals )
     target_link_libraries( DroneWars optimized boost_system )
@@ -116,6 +106,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     target_link_libraries( DroneWars optimized boost_chrono )
     target_link_libraries( DroneWars optimized boost_program_options )
     target_link_libraries( DroneWars optimized boost_locale )
+    target_link_libraries( DroneWars optimized boost_log )
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 endif()
 if("${CMAKE_GENERATOR}" MATCHES "^Visual Studio")

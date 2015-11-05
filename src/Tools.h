@@ -9,6 +9,7 @@
 #include <boost/iterator/zip_iterator.hpp>
 #include <boost/range/iterator_range.hpp>
 #include "SafeInt3.hpp"
+#include "Logger.h"
 
 //! Obtient une local pour la culture demandée
 //! @todo: Si le nombre de trad pas seconde augmente, il faudra surement
@@ -136,10 +137,8 @@ O lexicalCast(I in, char const* const filename, int line)
 	}
 	catch(boost::bad_lexical_cast& blc)
 	{
-		using namespace log4cplus;
-		static Logger logger_ = Logger::getRoot();
-		LOG4CPLUS_ERROR(logger_, "bad_lexical_cast : " << "value: " << in <<
-		                " filename : " << filename << " line: " << line);
+		DW_LOG_ERROR << "bad_lexical_cast : " << "value: " << in <<
+		             " filename : " << filename << " line: " << line;
 		boost::throw_exception(
 		  boost::enable_error_info(blc) <<
 		  boost::throw_file(filename) <<
@@ -160,10 +159,8 @@ O numericCast(I in, char const* const filename, int line)
 	}
 	catch(boost::bad_numeric_cast& blc)
 	{
-		using namespace log4cplus;
-		static Logger logger_ = Logger::getRoot();
-		LOG4CPLUS_ERROR(logger_, "bad_numeric_cast : " << "value: " << in <<
-		                " filename : " << filename << " line: " << line);
+		DW_LOG_ERROR << "bad_numeric_cast : " << "value: " << in <<
+		             " filename : " << filename << " line: " << line;
 		boost::throw_exception(
 		  boost::enable_error_info(blc) <<
 		  boost::throw_file(filename) <<

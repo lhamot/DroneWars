@@ -95,8 +95,7 @@ public:
 		std::cout << ex.code() << std::endl;                                  \
 		if (ex.code() == 2006 || ex.code() == 2013)                           \
 			session_.reset();                                                 \
-		LOG4CPLUS_ERROR(                                                      \
-		    log4cplus::Logger::getInstance("DataBase"), ex.displayText());    \
+		DW_LOG_ERROR << ex.displayText();                                     \
 		BOOST_THROW_EXCEPTION(DataBase::Exception(ex.displayText()));         \
 	}
 
@@ -107,8 +106,7 @@ void DataBase::checkConnection(
 	Poco::Data::DataException ex;
 	if(session == nullptr || session->isConnected() == false)
 	{
-		LOG4CPLUS_DEBUG(
-		  log4cplus::Logger::getInstance("DataBase"), "Connection!");
+		DW_LOG_DEBUG << "Connection!";
 		ConnectionInfo const& con = connectionInfo_;
 		std::array<char, 10> buffer;
 		std::sprintf(buffer.data(), "%d", con.port_);

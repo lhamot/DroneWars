@@ -17,9 +17,6 @@
 #include <utility>
 #include <unordered_map>
 
-#include <log4cplus/logger.h>
-#include <log4cplus/loggingmacros.h>
-
 #include "SafeInt3.hpp"
 
 #pragma warning(push)
@@ -50,9 +47,7 @@
 #include <boost/serialization/variant.hpp>
 #include <boost/serialization/utility.hpp>
 #include <boost/serialization/optional.hpp>
-#include <boost/serialization/collections_save_imp.hpp>
-#include <boost/serialization/collections_load_imp.hpp>
-//#include <boost/serialization/unordered_map.hpp>
+#include <boost/serialization/unordered_map.hpp>
 #include <boost/serialization/split_free.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/thread.hpp>
@@ -60,6 +55,11 @@
 #include <boost/variant.hpp>
 #include <boost/locale.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/log/sources/severity_logger.hpp>
+#include <boost/log/expressions/keyword.hpp>
+#include <boost/log/utility/manipulators/add_value.hpp>
+#include <boost/log/sources/global_logger_storage.hpp>
 #pragma warning(pop)
 
 #define NOMINMAX

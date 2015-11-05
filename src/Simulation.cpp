@@ -36,10 +36,6 @@ typedef boost::upgrade_to_unique_lock<Universe::Mutex> UpToUniqueLock;
 using namespace std;
 namespace BL = boost::locale;
 
-using namespace log4cplus;
-//! Logger du thread de simulation
-static Logger logger = Logger::getInstance(LOG4CPLUS_TEXT("Simulation"));
-
 //! Verifie à la sortie du scope si le joueur a appelé la fonction de log
 class CheckPlayerLog : boost::noncopyable
 {
@@ -590,7 +586,7 @@ void Simulation::updatePlayersCode(ScriptTools::Engine& luaEngine,
                                    PlayerCodeMap& codesMap,
                                    std::vector<Event>& events)
 {
-	LOG4CPLUS_TRACE(logger, "enter");
+	DW_LOG_TRACE << "enter";
 
 	UniqueLock lockReload(reloadPlayerMutex_);
 	for(Player::ID pid : playerToReload_)
@@ -605,7 +601,7 @@ void Simulation::updatePlayersCode(ScriptTools::Engine& luaEngine,
 		codesMap[pid] = newCodes;
 	}
 	playerToReload_.clear();
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
@@ -639,7 +635,7 @@ void execPlanets(Universe& univ_,
                  PlayerCodeMap& codesMap,
                  std::vector<Event>& events)
 {
-	LOG4CPLUS_TRACE(logger, "enter");
+	DW_LOG_TRACE << "enter";
 
 	FleetCoordMap fleetMap;
 	for(Fleet const& fleet : univ_.fleetMap | boost::adaptors::map_values)
@@ -709,7 +705,7 @@ void execPlanets(Universe& univ_,
 			                  planet,
 			                  *extAction.optAction);
 	}
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 //! Retire les flotte qui veulent et parviennent à s'échaper
@@ -830,7 +826,7 @@ void execFights(Universe& univ_,
                 PlayerCodeMap& codesMap,
                 std::vector<Event>& events)
 {
-	LOG4CPLUS_TRACE(logger, "enter");
+	DW_LOG_TRACE << "enter";
 
 	if(univ_.fleetMap.empty()) //si il y as des flottes
 		return;
@@ -1090,7 +1086,7 @@ void execFights(Universe& univ_,
 	for(Fleet::ID fleetID : deadFleets)
 		univ_.fleetMap.erase(fleetID);
 
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
@@ -1217,7 +1213,7 @@ void execFleets(
   PlayerCodeMap& codesMap,
   std::vector<Event>& events)
 {
-	LOG4CPLUS_TRACE(logger, "enter");
+	DW_LOG_TRACE << "enter";
 
 	FleetCoordMap fleetMap;
 	for(Fleet& fleet : univ_.fleetMap | boost::adaptors::map_values)
@@ -1369,7 +1365,7 @@ void execFleets(
 		}
 	}
 
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 void Simulation::createNewPlayersPlanets(Universe& univCopy)
@@ -1393,7 +1389,7 @@ void Simulation::round(ScriptTools::Engine& scriptEngine,
 try
 {
 	//! @todo: Ne plus passer events en argument
-	LOG4CPLUS_TRACE(logger, "enter");
+	DW_LOG_TRACE << "enter";
 
 	std::cout << time(0) << " ";
 
@@ -1497,13 +1493,13 @@ try
 	database_.addCodeErrors(errorVect);
 
 	//! Met a jour les score des joueurs (modifie les joueurs)
-	LOG4CPLUS_TRACE(logger, "updateScore start");
+	DW_LOG_TRACE << "updateScore start";
 	updateScore(univCopy, database_);
 
 	//! CheckTutos
-	LOG4CPLUS_TRACE(logger, "checkTutos start");
+	DW_LOG_TRACE << "checkTutos start";
 	checkTutos(univCopy, database_, events);
-	LOG4CPLUS_TRACE(logger, "checkTutos end");
+	DW_LOG_TRACE << "checkTutos end";
 
 	for(Fleet& fleet : univCopy.fleetMap | boost::adaptors::map_values)
 		fleet.player = nullptr;
@@ -1703,9 +1699,6 @@ double Simulation::getUnivTime()
 }
 
 
-//! Logger pour le thread de sauvegarde
-Logger saveLogger = Logger::getInstance(LOG4CPLUS_TEXT("Save"));
-
 void Simulation::save(std::string const& saveName) const
 {
 	auto savingFunc = [](std::shared_ptr<Universe const> clone, std::string const & saveName)
@@ -1714,7 +1707,7 @@ void Simulation::save(std::string const& saveName) const
 		try
 		{
 			//! todo: Utiliser boost::filesystem avec un boost plus recent
-			LOG4CPLUS_TRACE(saveLogger, "saveToStream");
+			DW_LOG_TRACE << "saveToStream";
 			using namespace std;
 			std::string const newSaveName = saveName + ".new";
 			{
@@ -1723,7 +1716,7 @@ void Simulation::save(std::string const& saveName) const
 					BOOST_THROW_EXCEPTION(std::ios::failure("Can't save in " + newSaveName));
 				saveToStream(*clone, saveFile);
 			}
-			LOG4CPLUS_TRACE(saveLogger, "remove/rename");
+			DW_LOG_TRACE << "remove/rename";
 			std::string const ansSaveName = saveName + ".ans";
 			remove(ansSaveName.c_str());
 			struct stat buf;
@@ -1739,7 +1732,7 @@ void Simulation::save(std::string const& saveName) const
 				  std::ios::failure(str(format("Can't rename %1% to %2%") %
 				                        newSaveName % saveName)));
 
-			LOG4CPLUS_TRACE(saveLogger, "copy");
+			DW_LOG_TRACE << "copy";
 			std::ifstream in(saveName, ios::binary | ios::in);
 			std::ofstream out("save/last_save.bta2", ios::binary | ios::out);
 			boost::iostreams::copy(in, out);
@@ -1753,10 +1746,10 @@ void Simulation::save(std::string const& saveName) const
 
 	if(canSave)
 	{
-		LOG4CPLUS_TRACE(logger, "copy universe to save");
+		DW_LOG_TRACE << "copy universe to save";
 		SharedLock lockAll(univ_.mutex);
 		std::shared_ptr<Universe const> clone = make_shared<Universe>(univ_);
-		LOG4CPLUS_TRACE(logger, "lauch save");
+		DW_LOG_TRACE << "lauch save";
 		savingThread_ = boost::thread(savingFunc, clone, saveName);
 	}
 }

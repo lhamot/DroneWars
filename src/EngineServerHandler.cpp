@@ -15,10 +15,6 @@
 using namespace boost;
 using namespace std;
 
-using namespace log4cplus;
-//! Logger dédié au EngineServerHandler
-static Logger logger =
-  Logger::getInstance(LOG4CPLUS_TEXT("EngineServerHandler"));
 
 //! @cond Doxygen_Suppress
 bool ndw::Coord::operator < (const ndw::Coord& b) const
@@ -66,7 +62,7 @@ struct NumerciCast
 		}
 		catch(...)
 		{
-			LOG4CPLUS_ERROR(logger, "value: " << value << " valueName : " << valueName);
+			DW_LOG_ERROR << "value: " << value << " valueName : " << valueName;
 			throw;
 		}
 	}
@@ -350,7 +346,7 @@ void EngineServerHandler::stop()
 bool EngineServerHandler::addPlayer(const string& login,
                                     const string& password)
 {
-	LOG4CPLUS_TRACE(logger, "login: " << login << " password : " << password);
+	DW_LOG_TRACE << "login: " << login << " password : " << password;
 	if(login.size() > MaxStringSize)
 		BOOST_THROW_EXCEPTION(InvalidData("login"));
 	if(password.size() > MaxStringSize)
@@ -466,11 +462,11 @@ void EngineServerHandler::getPlayerFleets(
   const bool asc,
   const int32_t value)
 {
-	LOG4CPLUS_TRACE(logger, "pid : " << pid <<
-	                " beginIndexC : " << beginIndexC <<
-	                " endIndexC : " << endIndexC <<
-	                " sortType : " << sortType <<
-	                " asc : " << asc);
+	DW_LOG_TRACE << "pid : " << pid <<
+	             " beginIndexC : " << beginIndexC <<
+	             " endIndexC : " << endIndexC <<
+	             " sortType : " << sortType <<
+	             " asc : " << asc;
 	if(beginIndexC >= endIndexC || beginIndexC < 0)
 		BOOST_THROW_EXCEPTION(runtime_error("Unconsistent index"));
 	size_t beginIndex = NUMCAST(beginIndexC);
@@ -504,7 +500,7 @@ void EngineServerHandler::getPlayerFleets(
 		_return.planetList.push_back(planetToThrift(planet, &player));
 
 	_return.fleetCount = NUMCAST(fleetList.size());
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
@@ -517,11 +513,11 @@ void EngineServerHandler::getPlayerPlanets(
   const bool asc,
   const int32_t value)
 {
-	LOG4CPLUS_TRACE(logger, "pid : " << pid <<
-	                " beginIndexC : " << beginIndexC <<
-	                " endIndexC : " << endIndexC <<
-	                " sortType : " << sortType <<
-	                " asc : " << asc);
+	DW_LOG_TRACE << "pid : " << pid <<
+	             " beginIndexC : " << beginIndexC <<
+	             " endIndexC : " << endIndexC <<
+	             " sortType : " << sortType <<
+	             " asc : " << asc;
 	if(beginIndexC >= endIndexC || beginIndexC < 0)
 		BOOST_THROW_EXCEPTION(runtime_error("Unconsistent index"));
 	size_t beginIndex = NUMCAST(beginIndexC);
@@ -546,7 +542,7 @@ void EngineServerHandler::getPlayerPlanets(
 	for(Planet const& planet : pageRange)
 		_return.planetList.push_back(planetToThrift(planet, &player));
 	_return.planetCount = NUMCAST(planetList.size());
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
@@ -554,12 +550,12 @@ void EngineServerHandler::setPlayerFleetCode(
   const ndw::Player_ID pid,
   const string& code)
 {
-	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
+	DW_LOG_TRACE << "pid : " << pid << " code : " << code;
 	if(code.size() > CodeData::MaxCodeSize)
 		BOOST_THROW_EXCEPTION(InvalidData("Code size too long"));
 	database_.addScript(pid, CodeData::Fleet, code);
 	engine_.reloadPlayer(pid);
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
@@ -567,12 +563,12 @@ void EngineServerHandler::setPlayerPlanetCode(
   const ndw::Player_ID pid,
   const string& code)
 {
-	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
+	DW_LOG_TRACE << "pid : " << pid << " code : " << code;
 	if(code.size() > CodeData::MaxCodeSize)
 		BOOST_THROW_EXCEPTION(InvalidData("Code size too long"));
 	database_.addScript(pid, CodeData::Planet, code);
 	engine_.reloadPlayer(pid);
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
@@ -580,11 +576,11 @@ void EngineServerHandler::setPlayerFleetBlocklyCode(
   const ndw::Player_ID pid,
   const string& code)
 {
-	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
+	DW_LOG_TRACE << "pid : " << pid << " code : " << code;
 	if(code.size() > CodeData::MaxBlocklySize)
 		BOOST_THROW_EXCEPTION(InvalidData("Code size too long"));
 	database_.addBlocklyCode(pid, CodeData::Fleet, code);
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
@@ -592,11 +588,11 @@ void EngineServerHandler::setPlayerPlanetBlocklyCode(
   const ndw::Player_ID pid,
   const string& code)
 {
-	LOG4CPLUS_TRACE(logger, "pid : " << pid << " code : " << code);
+	DW_LOG_TRACE << "pid : " << pid << " code : " << code;
 	if(code.size() > CodeData::MaxBlocklySize)
 		BOOST_THROW_EXCEPTION(InvalidData("Code size too long"));
 	database_.addBlocklyCode(pid, CodeData::Planet, code);
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
@@ -604,9 +600,9 @@ void EngineServerHandler::getPlayerFleetCode(
   ndw::CodeData& ret,
   const ndw::Player_ID pid)
 {
-	LOG4CPLUS_TRACE(logger, "pid : " << pid);
+	DW_LOG_TRACE << "pid : " << pid;
 	codeDataCppToThrift(database_.getPlayerCode(pid, CodeData::Fleet), ret);
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
@@ -614,19 +610,19 @@ void EngineServerHandler::getPlayerPlanetCode(
   ndw::CodeData& ret,
   const ndw::Player_ID pid)
 {
-	LOG4CPLUS_TRACE(logger, "pid : " << pid);
+	DW_LOG_TRACE << "pid : " << pid;
 	codeDataCppToThrift(database_.getPlayerCode(pid, CodeData::Planet), ret);
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
 void EngineServerHandler::getPlayers(vector<ndw::Player>& _return)
 {
-	LOG4CPLUS_TRACE(logger, "enter");
+	DW_LOG_TRACE << "enter";
 	vector<Player> players = database_.getPlayers();
 	_return.reserve(players.size());
 	transform(players, back_inserter(_return), playerToThrift);
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
@@ -634,7 +630,7 @@ void EngineServerHandler::getPlayer(ndw::Player& outPlayer,
                                     const ndw::Player_ID pid)
 {
 	//! @todo: Séparer en deux requetes differentes
-	LOG4CPLUS_TRACE(logger, "pid : " << pid);
+	DW_LOG_TRACE << "pid : " << pid;
 	outPlayer = playerToThrift(database_.getPlayer(pid));
 	CodeData const fleetCode = database_.getPlayerCode(pid, CodeData::Fleet);
 	codeDataCppToThrift(fleetCode, outPlayer.fleetsCode);
@@ -643,14 +639,14 @@ void EngineServerHandler::getPlayer(ndw::Player& outPlayer,
 	map<string, size_t> const levelMap = database_.getTutoDisplayed(pid);
 	for(auto tutoNVP : levelMap)
 		outPlayer.tutoDisplayed[tutoNVP.first] = NUMCAST(tutoNVP.second);
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
 void EngineServerHandler::getPlanet(vector<ndw::Planet>& _return,
                                     const ndw::Coord& ndwCoord)
 {
-	LOG4CPLUS_TRACE(logger, "ndwCoord : " << ndwCoord);
+	DW_LOG_TRACE << "ndwCoord : " << ndwCoord;
 	Coord const coord(
 	  NUMERIC_CAST(Coord::Value, ndwCoord.X),
 	  NUMERIC_CAST(Coord::Value, ndwCoord.Y),
@@ -671,14 +667,14 @@ void EngineServerHandler::getPlanet(vector<ndw::Planet>& _return,
 		for(Event const& ev : events)
 			_return.front().eventList.push_back(eventToThrift(ev));
 	}
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
 void EngineServerHandler::getFleet(ndw::Fleet& _return,
                                    const ndw::Fleet_ID fid)
 {
-	LOG4CPLUS_TRACE(logger, "fid : " << fid);
+	DW_LOG_TRACE << "fid : " << fid;
 	//! @todo: Gerer proprement l'absence de flotte
 	boost::optional<Fleet> const optFleet = engine_.getFleet(fid);
 	if(!optFleet)
@@ -691,7 +687,7 @@ void EngineServerHandler::getFleet(ndw::Fleet& _return,
 	for(Event const& ev : events)
 		_return.eventList.push_back(eventToThrift(ev));
 
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
@@ -699,7 +695,7 @@ void EngineServerHandler::logPlayer(ndw::OptionalPlayer& _return,
                                     const string& login,
                                     const string& password)
 {
-	LOG4CPLUS_TRACE(logger, "login : " << login << " password : " << password);
+	DW_LOG_TRACE << "login : " << login << " password : " << password;
 	optional<Player> optPlayer = database_.getPlayer(login, password);
 	if(optPlayer)
 	{
@@ -714,7 +710,7 @@ void EngineServerHandler::logPlayer(ndw::OptionalPlayer& _return,
 		for(auto tutoNVP : database_.getTutoDisplayed(outPlayer.id))
 			outPlayer.tutoDisplayed[tutoNVP.first] = NUMCAST(tutoNVP.second);
 	}
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
@@ -723,47 +719,47 @@ void EngineServerHandler::incrementTutoDisplayed(
   string const& tutoName,
   int32_t const value)
 {
-	LOG4CPLUS_TRACE(logger, "pid : " << pid << " tutoName : " << tutoName);
+	DW_LOG_TRACE << "pid : " << pid << " tutoName : " << tutoName;
 	database_.incrementTutoDisplayed(pid, tutoName, value);
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
 void EngineServerHandler::getFightReport(ndw::FightReport& _return,
     const int32_t id)
 {
-	LOG4CPLUS_TRACE(logger, "id : " << id);
+	DW_LOG_TRACE << "id : " << id;
 	FightReport fr = database_.getFightReport(NUMCAST(id));
 	_return = fightReportToThrift(fr, database_.getPlayerMap());
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
 void EngineServerHandler::getTimeInfo(ndw::TimeInfo& _return)
 {
-	LOG4CPLUS_TRACE(logger, "enter");
+	DW_LOG_TRACE << "enter";
 	TimeInfo info = engine_.getTimeInfo();
 	_return.roundDuration = info.roundDuration;
 	_return.univTime = info.univTime;
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
 bool EngineServerHandler::eraseAccount(const ndw::Player_ID pid,
                                        const string& password)
 {
-	LOG4CPLUS_TRACE(logger, "password : " << password);
+	DW_LOG_TRACE << "password : " << password;
 	Player player = database_.getPlayer(pid);
 	if(database_.getPlayer(player.login, password).is_initialized())
 	{
 		database_.eraseAccount(pid);
 		engine_.reloadPlayer(pid);
-		LOG4CPLUS_TRACE(logger, "true");
+		DW_LOG_TRACE << "true";
 		return true;
 	}
 	else
 	{
-		LOG4CPLUS_TRACE(logger, "false");
+		DW_LOG_TRACE << "false";
 		return false;
 	}
 }
@@ -773,29 +769,29 @@ void EngineServerHandler::getPlayerEvents(
   vector<ndw::Event>& _return,
   const ndw::Player_ID pid)
 {
-	LOG4CPLUS_TRACE(logger, "pid : " << pid);
+	DW_LOG_TRACE << "pid : " << pid;
 	vector<Event> events = database_.getPlayerEvents(pid);
 	_return.reserve(events.size());
 	transform(events, back_inserter(_return), eventToThrift);
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
 bool EngineServerHandler::buySkill(const ndw::Player_ID pid,
                                    const int16_t skillID)
 {
-	LOG4CPLUS_TRACE(logger, "pid : " << pid << " skillID : " << skillID);
+	DW_LOG_TRACE << "pid : " << pid << " skillID : " << skillID;
 	if(skillID >= Skill::Count || skillID < 0)
 		return false;
 	bool const done = database_.buySkill(pid, skillID);
-	LOG4CPLUS_TRACE(logger, "exit " << done);
+	DW_LOG_TRACE << "exit " << done;
 	return done;
 }
 
 
 void EngineServerHandler::getBuildingsInfo(vector<ndw::Building>& _return)
 {
-	LOG4CPLUS_TRACE(logger, "enter");
+	DW_LOG_TRACE << "enter";
 	_return.reserve(Building::Count);
 	int32_t index = 0;
 	for(Building const& b : Building::List)
@@ -806,13 +802,13 @@ void EngineServerHandler::getBuildingsInfo(vector<ndw::Building>& _return)
 		newBu.coef = b.coef;
 		_return.push_back(newBu);
 	}
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
 void EngineServerHandler::getCannonsInfo(vector<ndw::Cannon>& _return)
 {
-	LOG4CPLUS_TRACE(logger, "enter");
+	DW_LOG_TRACE << "enter";
 	_return.reserve(Cannon::Count);
 	int32_t index = 0;
 	for(Cannon const& c : Cannon::List)
@@ -824,13 +820,13 @@ void EngineServerHandler::getCannonsInfo(vector<ndw::Cannon>& _return)
 		newCa.power = NUMCAST(c.power);
 		_return.push_back(newCa);
 	}
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
 void EngineServerHandler::getShipsInfo(vector<ndw::Ship>& _return)
 {
-	LOG4CPLUS_TRACE(logger, "enter");
+	DW_LOG_TRACE << "enter";
 	_return.reserve(Ship::Count);
 	for(Ship const& s : Ship::List)
 	{
@@ -841,7 +837,7 @@ void EngineServerHandler::getShipsInfo(vector<ndw::Ship>& _return)
 		newSh.power = NUMCAST(s.power);
 		_return.push_back(newSh);
 	}
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
@@ -853,12 +849,12 @@ void EngineServerHandler::addMessage(
   const std::string& suject,
   const std::string& message)
 {
-	LOG4CPLUS_TRACE(logger, "server:" << sender <<
-	                " recipient:" << recipient <<
-	                " suject:" << suject <<
-	                " message:" << message);
+	DW_LOG_TRACE << "server:" << sender <<
+	             " recipient:" << recipient <<
+	             " suject:" << suject <<
+	             " message:" << message;
 	database_.addMessage(sender, recipient, suject, message);
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
@@ -866,7 +862,7 @@ void EngineServerHandler::getMessages(
   std::vector<ndw::Message>& _return,
   const ndw::Player_ID recipient)
 {
-	LOG4CPLUS_TRACE(logger, "recipient:" << recipient);
+	DW_LOG_TRACE << "recipient:" << recipient;
 	std::vector<Message> messages = database_.getMessages(recipient);
 	_return.reserve(messages.size());
 	for(Message const& message : messages)
@@ -879,23 +875,23 @@ void EngineServerHandler::getMessages(
 		newMess.subject = message.subject;
 		newMess.message = message.message;
 		newMess.senderLogin = message.senderLogin;
-		LOG4CPLUS_TRACE(logger, "id:" << message.id <<
-		                " sender:" << message.recipient <<
-		                " time:" << message.time <<
-		                " subject:" << message.subject <<
-		                " message:" << message.message <<
-		                " senderLogin:" << message.senderLogin);
+		DW_LOG_TRACE << "id:" << message.id <<
+		             " sender:" << message.recipient <<
+		             " time:" << message.time <<
+		             " subject:" << message.subject <<
+		             " message:" << message.message <<
+		             " senderLogin:" << message.senderLogin;
 		_return.push_back(newMess);
 	}
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
 void EngineServerHandler::eraseMesage(const ndw::Message_ID mid)
 {
-	LOG4CPLUS_TRACE(logger, "message.id:" << mid);
+	DW_LOG_TRACE << "message.id:" << mid;
 	database_.eraseMesage(NUMCAST(mid));
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
@@ -905,9 +901,9 @@ void EngineServerHandler::addFriendshipRequest(
   const ndw::Player_ID playerA,
   const ndw::Player_ID playerB)
 {
-	LOG4CPLUS_TRACE(logger, "playerA:" << playerA << " playerB:" << playerB);
+	DW_LOG_TRACE << "playerA:" << playerA << " playerB:" << playerB;
 	database_.addFriendshipRequest(playerA, playerB);
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
@@ -916,11 +912,11 @@ void EngineServerHandler::acceptFriendshipRequest(
   const ndw::Player_ID playerB,
   const bool accept)
 {
-	LOG4CPLUS_TRACE(logger, "playerA:" << playerA <<
-	                " playerB:" << playerB <<
-	                " accept:" << accept);
+	DW_LOG_TRACE << "playerA:" << playerA <<
+	             " playerB:" << playerB <<
+	             " accept:" << accept;
 	database_.acceptFriendshipRequest(playerA, playerB, accept);
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
@@ -928,9 +924,9 @@ void EngineServerHandler::closeFriendship(
   const ndw::Player_ID playerA,
   const ndw::Player_ID playerB)
 {
-	LOG4CPLUS_TRACE(logger, "playerA:" << playerA << " playerB:" << playerB);
+	DW_LOG_TRACE << "playerA:" << playerA << " playerB:" << playerB;
 	database_.closeFriendship(playerA, playerB);
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
@@ -938,11 +934,11 @@ void EngineServerHandler::getFriends(
   std::vector<ndw::Player>& _return,
   const ndw::Player_ID player)
 {
-	LOG4CPLUS_TRACE(logger, "player:" << player);
+	DW_LOG_TRACE << "player:" << player;
 	boost::transform(database_.getFriends(player),
 	                 back_inserter(_return),
 	                 playerToThrift);
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
@@ -950,11 +946,11 @@ void EngineServerHandler::getFriendshipRequest(
   ndw::FriendshipRequests& ret,
   const ndw::Player_ID player)
 {
-	LOG4CPLUS_TRACE(logger, "player:" << player);
+	DW_LOG_TRACE << "player:" << player;
 	FriendshipRequests requ = database_.getFriendshipRequest(player);
 	transform(requ.received, back_inserter(ret.received), playerToThrift);
 	transform(requ.sent, back_inserter(ret.sent), playerToThrift);
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
@@ -966,9 +962,9 @@ ndw::Alliance_ID EngineServerHandler::addAlliance(
   const std::string& name,
   const std::string& descri)
 {
-	LOG4CPLUS_TRACE(logger, "pid:" << pid <<
-	                " name:" << name <<
-	                " descri:" << descri);
+	DW_LOG_TRACE << "pid:" << pid <<
+	             " name:" << name <<
+	             " descri:" << descri;
 	return database_.addAlliance(pid, name, descri);
 }
 
@@ -976,23 +972,23 @@ ndw::Alliance_ID EngineServerHandler::addAlliance(
 void EngineServerHandler::getAlliance(ndw::Alliance& _return,
                                       const ndw::Alliance_ID aid)
 {
-	LOG4CPLUS_TRACE(logger, "allianceID:" << aid);
+	DW_LOG_TRACE << "allianceID:" << aid;
 	Alliance al = database_.getAlliance(aid);
 	_return.id          = al.id;
 	_return.masterID    = al.masterID;
 	_return.name        = al.name;
 	_return.description = al.description;
 	_return.masterLogin = al.masterLogin;
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
 void EngineServerHandler::updateAlliance(const ndw::Alliance& al)
 {
-	LOG4CPLUS_TRACE(logger, "allianceID:" << al.id);
+	DW_LOG_TRACE << "allianceID:" << al.id;
 	database_.updateAlliance(
 	  Alliance(al.id, al.masterID, al.name, al.description, al.masterLogin));
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
@@ -1000,41 +996,41 @@ void EngineServerHandler::transfertAlliance(
   const ndw::Alliance_ID aid,
   const ndw::Player_ID pid)
 {
-	LOG4CPLUS_TRACE(logger, "allianceID:" << aid << " playerID:" << pid);
+	DW_LOG_TRACE << "allianceID:" << aid << " playerID:" << pid;
 	database_.transfertAlliance(aid, pid);
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
 
 void EngineServerHandler::eraseAlliance(const ndw::Alliance_ID aid)
 {
-	LOG4CPLUS_TRACE(logger, "allianceID:" << aid);
+	DW_LOG_TRACE << "allianceID:" << aid;
 	database_.eraseAlliance(aid);
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
 void EngineServerHandler::joinAlliance(const ndw::Player_ID pid,
                                        const ndw::Alliance_ID aid)
 {
-	LOG4CPLUS_TRACE(logger, "playerID:" << pid << " allianceID:" << aid);
+	DW_LOG_TRACE << "playerID:" << pid << " allianceID:" << aid;
 	database_.joinAlliance(pid, aid);
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 
 void EngineServerHandler::quitAlliance(const ndw::Player_ID pid)
 {
-	LOG4CPLUS_TRACE(logger, "playerID:" << pid);
+	DW_LOG_TRACE << "playerID:" << pid;
 	database_.quitAlliance(pid);
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 
 void EngineServerHandler::createUniverse(const bool keepPlayers)
 {
-	LOG4CPLUS_TRACE(logger, "enter");
+	DW_LOG_TRACE << "enter";
 	engine_.createUniverse(keepPlayers);
-	LOG4CPLUS_TRACE(logger, "exit");
+	DW_LOG_TRACE << "exit";
 }
 

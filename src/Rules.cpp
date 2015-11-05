@@ -275,14 +275,14 @@ uint32_t calcExp(PlayerMap const& playerMap,
 		exp /= 2;
 	Player const& player = MAP_FIND(playerMap, allyReport.fightInfo.before.playerId)->second;
 	Player const& enemy = MAP_FIND(playerMap, enemyReport.fightInfo.before.playerId)->second;
-	exp *= log(double(enemy.experience + 2)) / log(double(player.experience + 2));
+	exp *= ::log(double(enemy.experience + 2)) / ::log(double(player.experience + 2));
 	size_t const fleetPrice = armyPrice(allyReport.fightInfo.before);
 	size_t const fleetPrice2 = armyPrice(allyReport.fightInfo.after);
 	size_t const enemyFleetPrice = armyPrice(enemyReport.fightInfo.before);
 	size_t const enemyFleetPrice2 = armyPrice(enemyReport.fightInfo.after);
 	size_t const allyLost = fleetPrice - fleetPrice2;
 	size_t const enemyLost = enemyFleetPrice - enemyFleetPrice2;
-	exp *= log(allyLost + 1) + log(enemyLost + 1) * 3;
+	exp *= ::log(allyLost + 1) + ::log(enemyLost + 1) * 3;
 	exp *= coefXP;
 	if(boost::math::isfinite(exp) == false)
 		BOOST_THROW_EXCEPTION(std::logic_error("isnormal(exp) == false"));

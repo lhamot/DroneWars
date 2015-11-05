@@ -36,22 +36,17 @@
 #pragma warning(pop)
 #include <boost/make_shared.hpp>
 
-#include <log4cplus/configurator.h>
+#include "Logger.h"
 
 #include "Engine.h"
 #include "Rules.h"
 
 
 using namespace std;
-using namespace log4cplus;
 
 //! Fonction main
 int main(int argc, char** argv)
 {
-	static Logger logger = Logger::getInstance(LOG4CPLUS_TEXT("main"));
-
-	log4cplus::PropertyConfigurator::doConfigure("DroneWarsLog.properties");
-
 	srand(static_cast<unsigned int>(time(NULL)));
 
 	boost::locale::generator gen;
@@ -72,6 +67,8 @@ int main(int argc, char** argv)
 
 	try
 	{
+		initLogger("DroneWarsLog.ini");
+
 		DataBase::ConnectionInfo connInfo;
 
 		namespace po = boost::program_options;
@@ -120,12 +117,12 @@ int main(int argc, char** argv)
 		  proc, serverTransport, transpFactory, protocolFactory);
 
 		server.serve();
-		LOG4CPLUS_ERROR(logger, "Unexpected server stop");
+		DW_LOG_ERROR << "Unexpected server stop";
 	}
 	catch(std::exception const& ex)
 	{
 		std::cerr << ex.what() << std::endl;
-		LOG4CPLUS_ERROR(logger, boost::diagnostic_information(ex));
+		DW_LOG_ERROR << boost::diagnostic_information(ex);
 		return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;
