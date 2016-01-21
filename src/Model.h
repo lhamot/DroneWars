@@ -4,11 +4,9 @@
 #ifndef _BTA_MODEL_
 #define _BTA_MODEL_
 
-#include "stdafx.h"
-
 #include "Player.h"
-#include "Tools.h"
 #include "TypedPtree.h"
+#include "Logger.h"
 
 
 //! Pour éviter un warning bidon de doxygen
@@ -325,7 +323,7 @@ struct Planet
 	Coord coord;                       //!< Coordonnées
 	Player::ID playerId;               //!< Propriétaire
 	BuildingTab buildingList;          //!< Niveau de chaque Building
-	boost::optional<PlanetTask> task; //!< Liste des taches en cours
+	boost::optional<PlanetTask> task;  //!< Liste des taches en cours
 	RessourceSet ressourceSet;         //!< Ressources présente
 	CannonTab cannonTab;               //!< Nombre de canons pour chaque type
 	Coord parentCoord;                 //!< Coordonées de la planète parente
@@ -544,12 +542,6 @@ struct Fleet
 		task(other.task),
 		player(other.player)
 	{
-	}
-
-	//! test si la flotte est vide
-	bool empty() const
-	{
-		return boost::accumulate(shipList, 0) == 0;
 	}
 };
 BOOST_CLASS_VERSION(Fleet, 2);

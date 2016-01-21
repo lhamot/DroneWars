@@ -5,8 +5,8 @@
 #define __BTA_RULES__
 
 #include "Model.h"
-#include <boost/range/adaptor/map.hpp>
-#include "DataBase.h"
+
+class DataBase;
 
 static size_t const XPPerSkillPoints = 1000;
 

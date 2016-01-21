@@ -5,9 +5,11 @@
 #include "Rules.h"
 #include <boost/format.hpp>
 #include <boost/range/numeric.hpp>
+#include <boost/range/adaptor/map.hpp>
 
 #include "DataBase.h"
 #include "Skills.h"
+#include "Tools.h"
 
 using namespace boost;
 

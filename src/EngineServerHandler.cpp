@@ -11,6 +11,7 @@
 
 #include "Skills.h"
 #include "UnivManip.h"
+#include "Tools.h"
 
 using namespace boost;
 using namespace std;

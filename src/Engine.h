@@ -4,7 +4,6 @@
 #ifndef __BTA_ENGINE__
 #define __BTA_ENGINE__
 
-#include "stdafx.h"
 #include "Model.h"
 #include "DataBase.h"
 

@@ -4,10 +4,6 @@
 #ifndef __BTA_TOOLS__
 #define __BTA_TOOLS__
 
-#include "stdafx.h"
-#include <string>
-#include <boost/iterator/zip_iterator.hpp>
-#include <boost/range/iterator_range.hpp>
 #include "SafeInt3.hpp"
 #include "Logger.h"
 #include <vector>

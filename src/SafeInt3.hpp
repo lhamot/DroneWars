@@ -669,7 +669,7 @@ inline void SafeIntExceptionAssert() SAFEINT_NOTHROW {}
 #define SAFEINT_WEAK
 #endif
 
-class SAFEINT_VISIBLE SAFEINT_WEAK SafeIntException
+class SAFEINT_VISIBLE SafeIntException
 {
 public:
 	SafeIntException() SAFEINT_NOTHROW { m_code = SafeIntNoError; }

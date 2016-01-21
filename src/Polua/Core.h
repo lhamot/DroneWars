@@ -288,13 +288,6 @@ U uint_fromstack(lua_State* L, int index)
 	}
 #ifdef BOOST_GCC
 POLUA_DECL_INT(char)
-POLUA_DECL_INT(unsigned char)
-POLUA_DECL_INT(short)
-POLUA_DECL_INT(unsigned short)
-POLUA_DECL_INT(int)
-POLUA_DECL_INT(unsigned int)
-POLUA_DECL_INT(long)
-POLUA_DECL_INT(unsigned long)
 #endif
 POLUA_DECL_INT(int8_t)
 POLUA_DECL_INT(int16_t)

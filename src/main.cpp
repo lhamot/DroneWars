@@ -33,6 +33,7 @@
 #include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TBufferTransports.h>
 #include <boost/program_options.hpp>
+#include <boost/locale.hpp>
 #pragma warning(pop)
 #include <boost/make_shared.hpp>
 

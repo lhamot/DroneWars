@@ -4,7 +4,6 @@
 #ifndef __LUA_TOOLS__
 #define __LUA_TOOLS__
 
-#include "stdafx.h"
 #include "Polua/Core.h"
 #include "Polua/State.h"
 #include "Polua/Ref.h"

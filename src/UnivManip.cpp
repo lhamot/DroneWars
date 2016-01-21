@@ -13,13 +13,26 @@
 #include <boost/bind.hpp>
 
 #pragma warning(push)
-#pragma warning(disable: 4310 4100)
+#pragma warning(disable: 4310 4100 4244 4458 4456 4706 4702)
 #include <boost/archive/binary_iarchive.hpp>
 #include "portable_binary_oarchive.hpp"
 #include "portable_binary_iarchive.hpp"
 #include <boost/property_tree/ptree_serialization.hpp>
+#include <boost/locale.hpp>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/vector.hpp>
+#include <boost/serialization/map.hpp>
+#include <boost/serialization/set.hpp>
+#include <boost/serialization/array.hpp>
 #include <boost/serialization/variant.hpp>
+#include <boost/serialization/utility.hpp>
 #include <boost/serialization/optional.hpp>
+#include <boost/serialization/unordered_map.hpp>
+#include <boost/serialization/split_free.hpp>
+#include <boost/range/numeric.hpp>
+#include <boost/range/combine.hpp>
+#include <boost/iostreams/filter/gzip.hpp>
+#include <boost/iostreams/copy.hpp>
 #pragma warning(pop)
 #include <boost/iostreams/filtering_streambuf.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
@@ -912,3 +925,8 @@ FleetActionTest canGather(
 	return InternalRules::canGather(player, fleet1, fleet2);
 }
 
+//! test si la flotte est vide
+bool emptyFleet(Fleet const& fleet)
+{
+	return boost::accumulate(fleet.shipList, 0) == 0;
+}

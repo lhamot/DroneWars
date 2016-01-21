@@ -2,6 +2,8 @@
 //! @author Loïc HAMOT
 
 #include "stdafx.h"
+#include <boost/range/adaptor/map.hpp>
+
 #include "Engine.h"
 
 #include "Tools.h"

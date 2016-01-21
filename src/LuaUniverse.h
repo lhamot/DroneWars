@@ -4,7 +4,6 @@
 #ifndef __BTA_LUA_UNIVERSE__
 #define __BTA_LUA_UNIVERSE__
 
-#include "stdafx.h"
 #include "LuaTools.h"
 
 extern "C"

@@ -4,7 +4,6 @@
 #ifndef __NDW_SKILLS__
 #define __NDW_SKILLS__
 
-#include "stdafx.h"
 #include "Player.h"
 
 //! Interface de tout les skills

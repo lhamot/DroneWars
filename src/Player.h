@@ -180,22 +180,22 @@ struct Player
 {
 	//! Un uint8_t pour chaque Skill
 	typedef boost::array<uint8_t, SkillCount> SkillTab;
-	typedef uint32_t ID;      //!< Type d'identifiant
-	static ID const NoId = 0; //!< Valeur indiquant l'absence de joueur
-	ID id;                    //!< Identifiant unique
-	std::string login;        //!< Login
-	Coord mainPlanet;         //!< Coordonées de la planète principale
-	uint64_t score;           //!< Score
-	Alliance::ID allianceID = 0; //!< ID de l'alliance, ou Alliance::NoID
-	std::string allianceName;    //!< Nom de l'alliance (Pas stoké dans le SGBD)
-	uint32_t experience = 0;     //!< Experience
-	uint32_t skillpoints = 0;    //!< Points de competances
-	SkillTab skilltab;        //!< Niveau du joueur dans chaque competance
+	typedef uint32_t ID;           //!< Type d'identifiant
+	static ID const NoId = 0;      //!< Valeur indiquant l'absence de joueur
+	ID id;                         //!< Identifiant unique
+	std::string login;             //!< Login
+	Coord mainPlanet;              //!< Coordonées de la planète principale
+	uint64_t score = 0;            //!< Score
+	Alliance::ID allianceID = 0;   //!< ID de l'alliance, ou Alliance::NoID
+	std::string allianceName;      //!< Nom de l'alliance (Pas stoké dans le SGBD)
+	uint32_t experience = 0;       //!< Experience
+	uint32_t skillpoints = 0;      //!< Points de competances
+	SkillTab skilltab;             //!< Niveau du joueur dans chaque competance
 	size_t unreadMessageCount = 0; //!< Nombre de message en attente de lecture
-	Alliance* alliance = nullptr; //!< Pour les script lua uniquement
-	size_t planetCount = 0;   //!< Pour les script lua uniquement
-	size_t fleetCount = 0;    //!< Pour les script lua uniquement
-	bool isAI = false;        //!< Si une IA
+	Alliance* alliance = nullptr;  //!< Pour les script lua uniquement
+	size_t planetCount = 0;        //!< Pour les script lua uniquement
+	size_t fleetCount = 0;         //!< Pour les script lua uniquement
+	bool isAI = false;             //!< Si une IA
 
 	//! Constructeur
 	Player(ID i, std::string const& lg):

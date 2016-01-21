@@ -4,8 +4,6 @@
 #ifndef __DRONEWARS_DATABASE__
 #define __DRONEWARS_DATABASE__
 
-#include "stdafx.h"
-#include <memory>
 #include "Model.h"
 
 

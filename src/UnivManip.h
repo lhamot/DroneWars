@@ -84,4 +84,7 @@ void drop(Fleet& fleet, Planet& planet);
 
 void gather(Fleet& fleet, Fleet const& otherFleet);
 
+//! test si la flotte est vide
+bool emptyFleet(Fleet const& fleet);
+
 #endif //__NDW_UNIV_MANIP__

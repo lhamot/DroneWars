@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "fighting.h"
 #include "ScriptTools.h"
+#include "Tools.h"
 
 #pragma warning(push)
 #pragma warning(disable: 4724 6385 6294 6201)
@@ -13,6 +14,9 @@
 #include <boost/range/irange.hpp>
 #include <boost/range/numeric.hpp>
 #include <boost/random/taus88.hpp>
+#include <boost/range/combine.hpp>
+#include <boost/range/algorithm_ext/erase.hpp>
+#include <boost/range/adaptors.hpp>
 #include <numeric>
 #include <unordered_set>
 #pragma warning(pop)

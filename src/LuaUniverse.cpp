@@ -7,7 +7,8 @@
 
 #include "Model.h"
 #include <boost/format.hpp>
-#include <boost/range/size.hpp>
+#include <boost/locale.hpp>
+#include <boost/range/numeric.hpp>
 
 #include "Polua/Class.h"
 #include "Polua/RegFunc.h"

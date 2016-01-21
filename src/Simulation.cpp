@@ -13,14 +13,15 @@
 #include "DataBase.h"
 #include "UnivManip.h"
 
-#include <boost/range/numeric.hpp>
-#include <boost/range/adaptor/filtered.hpp>
-#include <boost/range/irange.hpp>
-#include <boost/range/algorithm/copy.hpp>
 #include <boost/format.hpp>
+#include <boost/locale.hpp>
+#include <boost/range/combine.hpp>
+#include <boost/range/numeric.hpp>
+#include <boost/range/adaptors.hpp>
 #pragma warning(push)
-#pragma warning(disable: 4189 4459)
+#pragma warning(disable: 4189 4459 4244)
 #include <boost/multi_array.hpp>
+#include <boost/iostreams/copy.hpp>
 #pragma warning(pop)
 
 
@@ -1351,7 +1352,7 @@ void execFleets(
 	std::map<Fleet::ID, Fleet> newFleetMap;
 	for(Fleet& fleet : fleetMap | boost::adaptors::map_values)
 	{
-		if(fleet.empty() == false) //Si flotte vide, on garde pas
+		if(emptyFleet(fleet) == false) //Si flotte vide, on garde pas
 			newFleetMap.insert(make_pair(fleet.id, fleet));
 	}
 	newFleetMap.swap(univ_.fleetMap);
