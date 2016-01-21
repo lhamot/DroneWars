@@ -89,31 +89,31 @@ size_t playerFightSimulationCount(Player const& player);
 
 enum class BuildTestState
 {
-  Ok,
-  OtherTaskRunning,
-  NotEnoughRessources,
-  BadValue,
-  FactoryMissing,
-  CommendCenterMissing,
-  HangarFull,
-  Count
+	Ok,
+	OtherTaskRunning,
+	NotEnoughRessources,
+	BadValue,
+	FactoryMissing,
+	CommendCenterMissing,
+	HangarFull,
+	Count
 };
 
 enum class FleetActionTest
 {
-  Ok,
-  OtherTaskRunning,
-  NotEnoughRessources,
-  TooFarAway,
-  OutOfGalaxy,
-  PlanetHasOwner,
-  QueenMissing,
-  PlanetLimitReached,
-  NotYourOwnPlanet,
-  FleetLimitReached,
-  NoPlanet,
-  BadValue,
-  Count
+	Ok,
+	OtherTaskRunning,
+	NotEnoughRessources,
+	TooFarAway,
+	OutOfGalaxy,
+	PlanetHasOwner,
+	QueenMissing,
+	PlanetLimitReached,
+	NotYourOwnPlanet,
+	FleetLimitReached,
+	NoPlanet,
+	BadValue,
+	Count
 };
 
 

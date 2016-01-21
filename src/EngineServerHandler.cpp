@@ -637,7 +637,7 @@ void EngineServerHandler::getPlayer(ndw::Player& outPlayer,
 	CodeData const planetCode = database_.getPlayerCode(pid, CodeData::Planet);
 	codeDataCppToThrift(planetCode, outPlayer.planetsCode);
 	map<string, size_t> const levelMap = database_.getTutoDisplayed(pid);
-	for(auto tutoNVP : levelMap)
+	for(auto const& tutoNVP : levelMap)
 		outPlayer.tutoDisplayed[tutoNVP.first] = NUMCAST(tutoNVP.second);
 	DW_LOG_TRACE << "exit";
 }
@@ -707,7 +707,7 @@ void EngineServerHandler::logPlayer(ndw::OptionalPlayer& _return,
 		CodeData const planetCode =
 		  database_.getPlayerCode(_return.player.id, CodeData::Planet);
 		codeDataCppToThrift(planetCode, outPlayer.planetsCode);
-		for(auto tutoNVP : database_.getTutoDisplayed(outPlayer.id))
+		for(auto const& tutoNVP : database_.getTutoDisplayed(outPlayer.id))
 			outPlayer.tutoDisplayed[tutoNVP.first] = NUMCAST(tutoNVP.second);
 	}
 	DW_LOG_TRACE << "exit";

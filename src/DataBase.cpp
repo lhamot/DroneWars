@@ -460,7 +460,7 @@ DB_CATCH
 typedef Tuple < Player::ID, std::string, std::string, uint64_t,
         Coord::Value, Coord::Value, Coord::Value,
         Alliance::ID, uint32_t, uint32_t, std::string,
-        bool, std::string, uint32_t> PlayerTmp;
+        bool, std::string, uint32_t > PlayerTmp;
 //! Convertie un PlayerTmp en Player
 Player playerFromTuple(PlayerTmp const& playerTup)
 {
@@ -484,8 +484,7 @@ Player playerFromTuple(PlayerTmp const& playerTup)
 		if(strs.size() > player.skilltab.size())
 			BOOST_THROW_EXCEPTION(std::logic_error("Too mush skills in tab"));
 		auto toUInt16 = [](string const & str) {return LEXICAL_CAST(uint16_t, str); };
-		transform(
-		  strs, player.skilltab.begin(), toUInt16);
+		transform(strs, player.skilltab.begin(), toUInt16);
 	}
 	return player;
 }
@@ -543,11 +542,7 @@ try
 	checkConnection(session_);
 	std::vector<PlayerTmp> playerList;
 	(*session_) << boost::format(GetPlayerRequest) % "", into(playerList), now;
-	std::vector<Player> outPlayerList;
-	outPlayerList.reserve(playerList.size());
-	boost::transform(
-	  playerList, back_inserter(outPlayerList), playerFromTuple);
-	return outPlayerList;
+	return playerList | transformed(playerFromTuple) | converted;
 }
 DB_CATCH
 
@@ -557,13 +552,9 @@ std::map<Player::ID, Player> DataBase::getPlayerMap() const
 	checkConnection(session_);
 	std::vector<PlayerTmp> playerList;
 	(*session_) << boost::format(GetPlayerRequest) % "", into(playerList), now;
-	std::map<Player::ID, Player> outPlayerList;
-	for(PlayerTmp const& player : playerList)
-		outPlayerList.insert(std::make_pair(player.get<0>(),
-		                                    playerFromTuple(player)));
-	return outPlayerList;
+	auto get_key_value = [](auto & p) {return make_pair(p.get<0>(), playerFromTuple(p)); };
+	return playerList | transformed(get_key_value) | converted;
 }
-
 
 
 Player DataBase::getPlayer(Player::ID id) const
@@ -574,8 +565,7 @@ try
 	(*session_) << boost::format(GetPlayerRequest) % "WHERE Player.id = ?",
 	            into(playerList), use(id), now;
 	if(playerList.size() != 1)
-		BOOST_THROW_EXCEPTION(
-		  Exception("Player id not found in base"));
+		BOOST_THROW_EXCEPTION(Exception("Player id not found in base"));
 	else
 		return playerFromTuple(playerList.front());
 }
@@ -591,25 +581,25 @@ try
 	typedef Poco::Tuple < time_t, int, std::string const&, intptr_t, intptr_t,
 	        int, Player::ID, Fleet::ID, Coord::Value, Coord::Value,
 	        Coord::Value > DBEvent;
-	std::vector<DBEvent> dbEvents;
-	dbEvents.reserve(events.size());
-	for(Event const& event : events)
+
+	auto event_to_tuple = [](auto & e)
 	{
-		dbEvents.push_back(
-		  DBEvent(event.time, event.type, event.comment, event.value,
-		          event.value2, event.viewed, event.playerID, event.fleetID,
-		          event.planetCoord.X, event.planetCoord.Y,
-		          event.planetCoord.Z));
-		if(event.playerID == Player::NoId)
-			BOOST_THROW_EXCEPTION(std::logic_error("event.playerID == Player::NoId"));
-	}
+		if(e.playerID == Player::NoId)
+			BOOST_THROW_EXCEPTION(
+			  logic_error("event.playerID == Player::NoId"));
+		return DBEvent(e.time, e.type, e.comment, e.value, e.value2, e.viewed,
+		               e.playerID, e.fleetID, e.planetCoord.X, e.planetCoord.Y,
+		               e.planetCoord.Z);
+	};
 
 	Transaction trans(*session_);
 	(*session_) <<
 	            "INSERT INTO Event "
 	            "(time, type, comment, value, value2, viewed, playerID, "
 	            "  fleetID, planetCoordX, planetCoordY, planetCoordZ) "
-	            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", use(dbEvents), now;
+	            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+	            use(events | transformed(event_to_tuple) | cached),
+	            now;
 	trans.commit();
 }
 DB_CATCH
@@ -621,7 +611,7 @@ try
 	checkConnection(session_);
 	Transaction trans(*session_);
 
-	for(auto maxEventCount : maxEventCountPerPlayer)
+	for(auto& maxEventCount : maxEventCountPerPlayer)
 	{
 		int count = 0;
 		(*session_) <<
@@ -715,7 +705,6 @@ std::vector<Event> DataBase::getPlanetEvents(Player::ID pid,
 try
 {
 	checkConnection(session_);
-	std::vector<Event> out;
 
 	std::vector<DBEvent> dbEvents;
 	(*session_) <<
@@ -729,19 +718,15 @@ try
 	            use(pcoord.X), use(pcoord.Y), use(pcoord.Z),
 	            now;
 
-	out.reserve(dbEvents.size());
-	boost::transform(dbEvents, back_inserter(out), toEvent);
-	return out;
+	return dbEvents | transformed(toEvent) | converted;
 }
 DB_CATCH
-
 
 std::vector<Event> DataBase::getFleetEvents(
   Player::ID pid, Fleet::ID fid) const
 try
 {
 	checkConnection(session_);
-	std::vector<Event> out;
 	std::vector<DBEvent> dbEvents;
 	(*session_) <<
 	            "SELECT * FROM Event "
@@ -750,9 +735,7 @@ try
 	            into(dbEvents), use(pid), use(fid),
 	            now;
 
-	out.reserve(dbEvents.size());
-	boost::transform(dbEvents, back_inserter(out), toEvent);
-	return out;
+	return dbEvents | transformed(toEvent) | converted;
 }
 DB_CATCH
 
@@ -1045,16 +1028,15 @@ DataBase::PlayerTutoMap DataBase::getTutoDisplayed(Player::ID pid) const
 try
 {
 	checkConnection(session_);
-	PlayerTutoMap result;
 	typedef Poco::Tuple<std::string, size_t> TutoTuple;
 	std::vector<TutoTuple> tutos;
 	(*session_) <<
 	            "SELECT tag, level FROM TutoDisplayed "
 	            "WHERE playerID = ? ",
 	            use(pid), into(tutos), now;
-	for(TutoTuple const& tuto : tutos)
-		result.insert(make_pair(tuto.get<0>(), tuto.get<1>()));
-	return result;
+
+	auto get_pair = [](auto const & t) {return make_pair(t.get<0>(), t.get<1>()); };
+	return tutos | transformed(get_pair) | converted;
 }
 DB_CATCH
 
@@ -1064,10 +1046,11 @@ DataBase::getAllTutoDisplayed() const
 try
 {
 	checkConnection(session_);
-	std::map<Player::ID, PlayerTutoMap> result;
 	typedef Poco::Tuple<Player::ID, std::string, size_t> TutoTuple;
 	std::vector<TutoTuple> tutos;
 	(*session_) << "SELECT * FROM TutoDisplayed", into(tutos), now;
+
+	std::map<Player::ID, PlayerTutoMap> result;
 	for(TutoTuple const& tuto : tutos)
 		result[tuto.get<0>()].insert(make_pair(tuto.get<1>(), tuto.get<2>()));
 	return result;
@@ -1081,12 +1064,12 @@ try
 	checkConnection(session_);
 	Transaction trans(*session_);
 	typedef Poco::Tuple<uint64_t, Player::ID> ScoreTuple;
-	std::vector<ScoreTuple> scoreVect;
-	scoreVect.reserve(scoreMap.size());
-	for(auto nvp : scoreMap)
-		scoreVect.push_back(ScoreTuple(nvp.second, nvp.first));
+
+	auto pair_to_poco = [](auto const & p) {return ScoreTuple(get<1>(p), get<0>(p)); };
+
 	(*session_) << "UPDATE Player SET score = ? WHERE id = ?",
-	            use(scoreVect), now;
+	            use(scoreMap | transformed(pair_to_poco) | cached),
+	            now;
 	trans.commit();
 }
 DB_CATCH
@@ -1099,17 +1082,7 @@ try
 		return;
 	checkConnection(session_);
 	Transaction trans(*session_);
-	typedef Poco::Tuple<uint32_t, Player::ID> expTuple;
-	std::vector<expTuple> scoreVect;
-	scoreVect.reserve(expMap.size());
-	/*
-	for(auto nvp : expMap)
-		scoreVect.push_back(expTuple(nvp.second, nvp.first));
-	(*session_) <<
-	            "UPDATE Player SET experience =? WHERE id = ?",
-	            use(expMap), now;
-				*/
-	for(auto nvp : expMap)
+	for(auto& nvp : expMap)
 		(*session_) <<
 		            "UPDATE Player SET "
 		            "experience = experience + ?, "
@@ -1129,7 +1102,7 @@ std::string skillTabToString(Player::SkillTab const& skillTab)
 	bool first = true;
 	for(uint16_t val : skillTab)
 	{
-		if(!first)
+		if(not first)
 			ss << ",";
 		ss << val;
 		first = false;
@@ -1223,25 +1196,21 @@ try
 	            "ON sender = Player.id "
 	            "WHERE recipient = ? ",
 	            into(messages), use(recipient), now;
-	std::vector<Message> result;
-	result.reserve(messages.size());
-	for(MessageTup const& messTup : messages)
-	{
-		Message message(messTup.get<0>(),
-		                messTup.get<1>(),
-		                messTup.get<2>(),
-		                messTup.get<3>(),
-		                messTup.get<4>(),
-		                toString(messTup.get<5>()),
-		                messTup.get<7>());
-		result.push_back(message);
-	}
+
 	(*session_) <<
 	            "UPDATE Message SET viewed = 1 "
 	            "WHERE recipient = ? ",
 	            use(recipient), now;
+
 	trans.commit();
-	return result;
+
+	auto tuple_to_message = [](auto const & m)
+	{
+		return Message(m.get<0>(), m.get<1>(), m.get<2>(), m.get<3>(),
+		               m.get<4>(), toString(m.get<5>()), m.get<7>());
+	};
+
+	return messages | transformed(tuple_to_message) | converted;
 }
 DB_CATCH
 
@@ -1374,14 +1343,11 @@ try
 	            "ON (friend_a = Player.id AND friend_b = ?) "
 	            "  OR (friend_b = Player.id AND friend_a = ?)",
 	            into(friends), use(player), use(player), now;
-	std::vector<Player> result;
-	result.reserve(friends.size());
-	for(PlayerTmp const& fr : friends)
-	{
-		if(fr.get<0>() != player)
-			result.push_back(playerFromTuple(fr));
-	}
-	return result;
+
+	return friends
+	       | filtered([&](auto & fr)->bool {return fr.get<0>() != player; })
+	       | transformed(playerFromTuple)
+	       | converted;
 }
 DB_CATCH
 
@@ -1400,9 +1366,8 @@ try
 		            "  FriendshipRequest.sender = Player.id AND"
 		            "  FriendshipRequest.recipient = ? ",
 		            into(received), use(player), now;
-		result.received.reserve(received.size());
-		for(PlayerTmp const& fr : received)
-			result.received.push_back(playerFromTuple(fr));
+
+		result.received = received | transformed(playerFromTuple) | converted;
 	}
 	{
 		std::vector<PlayerTmp> sent;
@@ -1413,9 +1378,8 @@ try
 		            "  FriendshipRequest.sender = ? AND"
 		            "  FriendshipRequest.recipient = Player.id ",
 		            into(sent), use(player), now;
-		result.sent.reserve(sent.size());
-		for(PlayerTmp const& fr : sent)
-			result.sent.push_back(playerFromTuple(fr));
+
+		result.sent = sent | transformed(playerFromTuple) | converted;
 	}
 	return result;
 }
@@ -1451,13 +1415,17 @@ try
 }
 DB_CATCH
 
+typedef Tuple <Alliance::ID, Player::ID, std::string, BLOB, std::string> AllianceTup;
+
+Alliance toAllicance(AllianceTup const& a)
+{
+	return Alliance(a.get<0>(), a.get<1>(), a.get<2>(), toString(a.get<3>()), a.get<4>());
+};
 
 Alliance DataBase::getAlliance(Alliance::ID aid) const
 try
 {
 	checkConnection(session_);
-	typedef Tuple < Alliance::ID, Player::ID,
-	        std::string, BLOB, std::string > AllianceTup;
 	AllianceTup allianceTup;
 	(*session_) <<
 	            "SELECT Alliance.*, Player.login FROM Alliance "
@@ -1466,11 +1434,7 @@ try
 	            "WHERE Alliance.id = ? ",
 	            into(allianceTup),
 	            use(aid), now;
-	return Alliance(allianceTup.get<0>(),
-	                allianceTup.get<1>(),
-	                allianceTup.get<2>(),
-	                toString(allianceTup.get<3>()),
-	                allianceTup.get<4>());
+	return toAllicance(allianceTup);
 }
 DB_CATCH
 
@@ -1478,8 +1442,6 @@ std::vector<Alliance> DataBase::getAlliances() const
 try
 {
 	checkConnection(session_);
-	typedef Tuple < Alliance::ID, Player::ID,
-	        std::string, BLOB, std::string > AllianceTup;
 	std::vector<AllianceTup> allianceVect;
 	(*session_) <<
 	            "SELECT Alliance.*, Player.login FROM Alliance "
@@ -1487,19 +1449,8 @@ try
 	            "ON masterID = Player.id ",
 	            into(allianceVect),
 	            now;
-	std::vector<Alliance> result;
-	result.reserve(allianceVect.size());
-	for(AllianceTup const& alliTup : allianceVect)
-	{
-		result.push_back(
-		  Alliance(alliTup.get<0>(),
-		           alliTup.get<1>(),
-		           alliTup.get<2>(),
-		           toString(alliTup.get<3>()),
-		           alliTup.get<4>()));
-	}
-	return result;
 
+	return allianceVect | transformed(toAllicance) | converted;
 }
 DB_CATCH
 

@@ -393,7 +393,7 @@ void fight(std::vector<Fleet*> const& fleetList,
 		unitCount += boost::accumulate(planet->cannonTab, 0);
 	allUnits.reserve(unitCount);
 	// Remplissage du UnitTab
-	for(auto indexFleet :
+	for(auto const& indexFleet :
 	    combine(irange(int16_t(0), int16_t(fleetList.size())), fleetList))
 	{
 		int16_t const index = indexFleet.get<0>();
@@ -442,7 +442,7 @@ void fight(std::vector<Fleet*> const& fleetList,
 			++fleetList[unit.armyIndex]->shipList[unit.type];
 	}
 	//! On les copie aussi dans les rapport
-	for(auto reportAndFleet : boost::combine(reportList.fleetList, fleetList))
+	for(auto const& reportAndFleet : boost::combine(reportList.fleetList, fleetList))
 		fillReport(playerFightingSet,
 		           fleetList,
 		           planet,

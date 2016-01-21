@@ -50,7 +50,7 @@ struct ArgIdxListMaker2<TypeList<Outputs...> >
 
 template<typename ArgList, typename First, typename... Inputs>
 struct ArgIdxListMaker2<ArgList, First, Inputs...> :
-		public ArgIdxListMaker2 <
+	public ArgIdxListMaker2 <
 typename Add<sizeof...(Inputs), First, ArgList>::Type, Inputs... >
 {
 };
@@ -65,7 +65,7 @@ struct ArgIdxListMaker;
 
 template<typename First, typename... Inputs>
 struct ArgIdxListMaker<First, Inputs...> :
-		public ArgIdxListMaker2 <
+	public ArgIdxListMaker2 <
 typename Add<sizeof...(Inputs), First, TypeList<> >::Type, Inputs... >
 {
 };

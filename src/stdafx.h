@@ -16,6 +16,7 @@
 #include <vector>
 #include <utility>
 #include <unordered_map>
+#include <ciso646>
 
 #include "SafeInt3.hpp"
 

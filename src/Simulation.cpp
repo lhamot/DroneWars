@@ -905,7 +905,7 @@ void execFights(Universe& univ_,
 		    univ_, engine, playerMap, planetPtr, codesMap, events, escapeProbaMap, fleetVect);
 
 		playerSet.clear();
-		for(auto fleet : fleetVect)
+		for(auto const& fleet : fleetVect)
 			playerSet.insert(fleet->playerId);
 		if(planetPtr)
 			playerSet.insert(planetPtr->playerId);
@@ -941,7 +941,7 @@ void execFights(Universe& univ_,
 		calcExperience(playerMap, fightReport);
 		bool hasFight = false;
 		auto range = boost::combine(fleetVect, fightReport.fleetList);
-		for(auto fleetReportPair : range)
+		for(auto const& fleetReportPair : range)
 		{
 			Report<Fleet> const& report = fleetReportPair.get<1>();
 			if(report.hasFight)
@@ -959,7 +959,7 @@ void execFights(Universe& univ_,
 
 		//! - On ajoute les evenement/message dans les flottes/joueur
 		std::set<Player::ID> informedPlayer;
-		for(auto fleetReportPair : range)
+		for(auto const& fleetReportPair : range)
 		{
 			//! --Pour les flotes
 			Fleet* fleetPtr = fleetReportPair.get<0>();
@@ -1763,7 +1763,7 @@ void Simulation::removeOldSaves() const
 	std::set<time_t> timeSet;
 
 	DirIter beginFileIter("save/"), endFileIter;
-	for(auto path : boost::make_iterator_range(beginFileIter, endFileIter))
+	for(auto const& path : boost::make_iterator_range(beginFileIter, endFileIter))
 	{
 		std::string const filename = path.path().filename().string();
 		if((filename.find("_save.bta") != 10)               ||
