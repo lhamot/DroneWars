@@ -48,51 +48,6 @@ using namespace boost;
 namespace BL = boost::locale;
 
 
-Building const Building::List[] =
-{
-	{RessourceSet(100, 0, 0), 1.6}, //CommandCenter
-	{RessourceSet(100, 0, 0), 1.6}, //MetalMine
-	{RessourceSet(100, 0, 0), 1.6}, //CarbonMine
-	{RessourceSet(100, 0, 0), 1.6}, //CristalMine
-	{RessourceSet(100, 0, 0), 1.6}, //Factory
-	{RessourceSet(100, 0, 0), 1.6}, //Laboratory
-	{RessourceSet(100, 0, 0), 1.6}, //CarbonicCentral
-	{RessourceSet(100, 0, 0), 1.6}, //SolarCentral
-	{RessourceSet(100, 0, 0), 1.6}  //GeothermicCentral
-};
-static_assert(sizeof(Building::List) == (sizeof(Building) * Building::Count),
-              "Building info missing");
-
-
-Ship const Ship::List[] =
-{
-	//price               , life,  power, shield}
-	{RessourceSet(100, 0, 0),    1,       1,  1}, //Mosquito
-	{RessourceSet(400, 0, 0),    2,       2,  2}, //Hornet
-	{RessourceSet(2000, 0, 0),   4,       4,  4}, //Vulture
-	{RessourceSet(10000, 0, 0),  8,       8,  8}, //Dragon
-	{RessourceSet(40000, 0, 0),  16,     16, 16}, //Behemoth
-	{RessourceSet(200000, 0, 0), 32,     32, 32}, //Azathoth
-	{RessourceSet(2000, 0, 0),   4,       2,  2}, //Queen
-	{RessourceSet(400, 0, 0),    2,       0,  2}, //Cargo
-	{RessourceSet(2000, 0, 0),   8,       0,  4}  //LargeCargo
-};
-static_assert(sizeof(Ship::List) == (sizeof(Ship) * Ship::Count),
-              "Ship info missing");
-
-Cannon const Cannon::List[] =
-{
-	{RessourceSet(100, 0, 0),    1,       1,  1},
-	{RessourceSet(400, 0, 0),    2,       2,  2},
-	{RessourceSet(2000, 0, 0),   4,       4,  4},
-	{RessourceSet(10000, 0, 0),  8,       8,  8},
-	{RessourceSet(40000, 0, 0),  16,     16, 16},
-	{RessourceSet(200000, 0, 0), 32,     32, 32},
-};
-static_assert(sizeof(Cannon::List) == (sizeof(Cannon) * Cannon::Count),
-              "Cannon info missing");
-
-
 //! Retourne le prix d'un Building donné, à un niveau donné
 //! @pre id est dans [0: Building::Count[
 //! @pre level > 0
@@ -126,7 +81,6 @@ boost::optional<RessourceSet> getBuilingPrice(Building::Enum id, size_t level)
 //! @param codes [out] planète_lua, planète_blockly, flotte_lua, flotte_blockly
 void getNewPlayerCode(std::vector<std::string>& codes)
 {
-	namespace BL = boost::locale;
 	std::vector<std::string> result;
 
 	//Ajout du code du joueur (Planet)
@@ -735,6 +689,8 @@ void execBuilding(Planet& planet, Building::Enum type, size_t level)
 		break;
 	case Building::GeothermicCentral:
 		break;
+	default:
+		assert(false && "Unconsistent Building::Enum type");
 	};
 }
 

@@ -39,11 +39,13 @@ BOOST_LOG_ATTRIBUTE_KEYWORD(file, "File", std::string);
 BOOST_LOG_ATTRIBUTE_KEYWORD(function, "Function", std::string);
 }
 
-#define DW_LOG_SEV(level) \
+#define DW_LOG_SEV_EXT(level, LINE, FILE, FUNC) \
 	BOOST_LOG_WITH_PARAMS(logger::get(), (boost::log::keywords::severity = level)) \
-	    << boost::log::add_value("Line", __LINE__) \
-	    << boost::log::add_value("File", __FILE__) \
-	    << boost::log::add_value("Function", __func__)
+	    << boost::log::add_value("Line", LINE) \
+	    << boost::log::add_value("File", FILE) \
+	    << boost::log::add_value("Function", FUNC)
+
+#define DW_LOG_SEV(level) DW_LOG_SEV_EXT(level, __LINE__, __FILE__, __func__)
 
 #define DW_LOG_TRACE DW_LOG_SEV(boost::log::trivial::trace)
 #define DW_LOG_DEBUG DW_LOG_SEV(boost::log::trivial::debug)

@@ -1,6 +1,8 @@
 //! @file
 //! @author Loïc HAMOT
 
+#define NOMINMAX
+
 //std
 #include <algorithm>
 #include <ctime>
@@ -38,5 +40,3 @@
 #include <boost/log/utility/manipulators/add_value.hpp>
 #include <boost/log/sources/global_logger_storage.hpp>
 #pragma warning(pop)
-
-#define NOMINMAX

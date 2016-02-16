@@ -49,9 +49,10 @@ using namespace boost;
 using namespace std;
 using namespace boost::adaptors;
 
+typedef DataBase::PlayerTutoMap PlayerTutoMap;
 
 //! Convertie un BLOB en std::string
-std::string toString(BLOB const& blob)
+std::string toString(Data::BLOB const& blob)
 {
 	return std::string(blob.begin(), blob.end());
 }
@@ -96,15 +97,20 @@ public:
 
 
 //! Attrape toutes exceptions venant du SGBD pour les logger et les relancer
-#define DB_CATCH \
-	catch(Poco::Data::DataException const& ex)                                \
-	{                                                                         \
-		std::cout << ex.code() << std::endl;                                  \
-		if (ex.code() == 2006 || ex.code() == 2013)                           \
-			session_.reset();                                                 \
-		DW_LOG_ERROR << ex.displayText();                                     \
-		BOOST_THROW_EXCEPTION(DataBase::Exception(ex.displayText()));         \
-	}
+#define DB_CATCH handleException(ex, __FILE__, __LINE__, __func__);
+
+void DataBase::handleException(
+  Poco::Data::DataException const& ex,
+  char const* file,
+  int line,
+  char const* func) const
+{
+	std::cout << ex.code() << std::endl;
+	if(ex.code() == 2006 || ex.code() == 2013)
+		session_.reset();
+	DW_LOG_SEV_EXT(boost::log::trivial::error, line, file, func) << ex.displayText();
+	::boost::exception_detail::throw_exception_(DataBase::Exception(ex.displayText()), func, file, line);
+}
 
 //! Reconnecte si la connecion est perdue
 void DataBase::checkConnection(
@@ -135,7 +141,12 @@ try : connectionInfo_(connectionInfo)
 	checkConnection(session_);
 	createTables();
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex)
+{
+	std::cout << ex.code() << std::endl;
+	DW_LOG_ERROR << ex.displayText();
+	BOOST_THROW_EXCEPTION(DataBase::Exception(ex.displayText()));
+};
 
 void DataBase::createTables()
 {
@@ -320,7 +331,7 @@ try
 	            use(code),
 	            now;
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 void DataBase::addBlocklyCodeImpl(Player::ID pid,
@@ -339,7 +350,7 @@ try
 	            use(code),
 	            now;
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 Player::ID DataBase::addPlayer(std::string const& login,
@@ -388,7 +399,7 @@ try
 		return pid;
 	}
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 void DataBase::setPlayerMainPlanet(Player::ID pid, Coord mainPlanet)
@@ -405,7 +416,7 @@ try
 	            use(pid),
 	            now;
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 //! Tuple pour stoker le données d'un Player quand elle sorte du SGBD
@@ -485,7 +496,7 @@ try
 			return playerFromTuple(playerList.front());
 	}
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 std::vector<Player> DataBase::getPlayers() const
@@ -494,9 +505,9 @@ try
 	checkConnection(session_);
 	std::vector<PlayerTmp> playerList;
 	(*session_) << boost::format(GetPlayerRequest) % "", into(playerList), now;
-	return playerList | transformed(playerFromTuple) | converted;
+	return playerList | transformed(playerFromTuple) | collected<std::vector<Player>>();
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 std::map<Player::ID, Player> DataBase::getPlayerMap() const
@@ -504,8 +515,8 @@ std::map<Player::ID, Player> DataBase::getPlayerMap() const
 	checkConnection(session_);
 	std::vector<PlayerTmp> playerList;
 	(*session_) << boost::format(GetPlayerRequest) % "", into(playerList), now;
-	auto get_key_value = [](auto & p) {return make_pair(p.get<0>(), playerFromTuple(p)); };
-	return playerList | transformed(get_key_value) | converted;
+	auto get_key_value = [](PlayerTmp const & p) {return make_pair(p.get<0>(), playerFromTuple(p)); };
+	return playerList | transformed(get_key_value) | collected<std::map<Player::ID, Player>>();
 }
 
 
@@ -521,7 +532,7 @@ try
 	else
 		return playerFromTuple(playerList.front());
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 void DataBase::addEvents(std::vector<Event> const& events)
@@ -554,7 +565,7 @@ try
 	            now;
 	trans.commit();
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 void DataBase::removeOldEvents(std::map<Player::ID, size_t> const& maxEventCountPerPlayer)
@@ -595,7 +606,7 @@ try
 
 	trans.commit();
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 //! Tuple pour stoker les donnée d'un Event quand il sort de la base de donnée
@@ -649,7 +660,7 @@ try
 	boost::transform(dbEvents, back_inserter(out), toEvent);
 	return out;
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 std::vector<Event> DataBase::getPlanetEvents(Player::ID pid,
@@ -670,9 +681,9 @@ try
 	            use(pcoord.X), use(pcoord.Y), use(pcoord.Z),
 	            now;
 
-	return dbEvents | transformed(toEvent) | converted;
+	return dbEvents | transformed(toEvent) | collected<std::vector<Event>>();
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 std::vector<Event> DataBase::getFleetEvents(
   Player::ID pid, Fleet::ID fid) const
@@ -687,9 +698,9 @@ try
 	            into(dbEvents), use(pid), use(fid),
 	            now;
 
-	return dbEvents | transformed(toEvent) | converted;
+	return dbEvents | transformed(toEvent) | collected<std::vector<Event>>();
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 void  DataBase::resetPlanetEvents(Coord pcoord)
@@ -702,7 +713,7 @@ try
 	            "  planetCoordX=? AND planetCoordY=? AND planetCoordZ=?",
 	            use(pcoord.X), use(pcoord.Y), use(pcoord.Z), now;
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 size_t DataBase::addFightReport(FightReport const& report)
@@ -723,7 +734,7 @@ try
 	trans.commit();
 	return id;
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 size_t DataBase::addFightReports(std::vector<FightReport> const& reports)
@@ -752,7 +763,7 @@ try
 	trans.commit();
 	return id;
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 FightReport DataBase::getFightReport(size_t reportID)
@@ -773,7 +784,7 @@ try
 	ia& report;
 	return report;
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 size_t DataBase::addScript(Player::ID pid,
@@ -789,7 +800,7 @@ try
 	trans.commit();
 	return id;
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 size_t DataBase::addBlocklyCode(Player::ID pid,
@@ -805,7 +816,7 @@ try
 	trans.commit();
 	return id;
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 namespace Poco
@@ -878,7 +889,7 @@ try
 	            now;
 	trans.commit();
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 CodeData DataBase::getPlayerCode(Player::ID pid, CodeData::Target target) const
@@ -886,7 +897,7 @@ try
 {
 	checkConnection(session_);
 	typedef Poco::Tuple < size_t, Player::ID, time_t, size_t,
-	        BLOB, BLOB > ScriptTuple;
+	        Data::BLOB, Data::BLOB > ScriptTuple;
 	ScriptTuple scrData;
 	(*session_) <<
 	            "SELECT * FROM Script "
@@ -895,7 +906,7 @@ try
 	            "LIMIT 1 ",
 	            use(pid), use((int)target), into(scrData), now;
 
-	typedef Poco::Tuple<size_t, Player::ID, time_t, size_t, BLOB> BlocklyTuple;
+	typedef Poco::Tuple<size_t, Player::ID, time_t, size_t, Data::BLOB> BlocklyTuple;
 	BlocklyTuple bloData;
 	(*session_) <<
 	            "SELECT * FROM BlocklyCode "
@@ -915,7 +926,7 @@ try
 	res.codeDate = scrData.get<2>();
 	return res;
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 void DataBase::eraseAccount(Player::ID pid)
@@ -936,7 +947,7 @@ try
 	addScript(pid, CodeData::Fleet, "");
 	trans.commit();
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 void DataBase::incrementTutoDisplayed(std::vector<Player::ID> const& pids,
@@ -953,7 +964,7 @@ try
 	ss << "0) AND tag = ? ";
 	(*session_) << ss.str(), use(tutoName), now;
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 void DataBase::incrementTutoDisplayed(Player::ID pid,
@@ -973,10 +984,10 @@ try
 	            use(value), use(pid), use(tutoName), now;
 	trans.commit();
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
-DataBase::PlayerTutoMap DataBase::getTutoDisplayed(Player::ID pid) const
+PlayerTutoMap DataBase::getTutoDisplayed(Player::ID pid) const
 try
 {
 	checkConnection(session_);
@@ -987,13 +998,13 @@ try
 	            "WHERE playerID = ? ",
 	            use(pid), into(tutos), now;
 
-	auto get_pair = [](auto const & t) {return make_pair(t.get<0>(), t.get<1>()); };
-	return tutos | transformed(get_pair) | converted;
+	auto get_pair = [](TutoTuple const & t) {return make_pair(t.get<0>(), t.get<1>()); };
+	return tutos | transformed(get_pair) | collected<PlayerTutoMap>();
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
-std::map<Player::ID, DataBase::PlayerTutoMap>
+std::map<Player::ID, PlayerTutoMap>
 DataBase::getAllTutoDisplayed() const
 try
 {
@@ -1007,7 +1018,7 @@ try
 		result[tuto.get<0>()].insert(make_pair(tuto.get<1>(), tuto.get<2>()));
 	return result;
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 void DataBase::updateScore(std::map<Player::ID, uint64_t> const& scoreMap)
@@ -1024,7 +1035,7 @@ try
 	            now;
 	trans.commit();
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 void DataBase::updateXP(std::map<Player::ID, uint32_t> const& expMap)
@@ -1046,7 +1057,7 @@ try
 		            now;
 	trans.commit();
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 std::string skillTabToString(Player::SkillTab const& skillTab)
 {
@@ -1094,7 +1105,7 @@ try
 	trans.commit();
 	return true;
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 void DataBase::setPlayerSkills(Player::ID pid,
@@ -1130,7 +1141,7 @@ try
 	            "VALUES(?, ?, ?, ?, ?, 0)",
 	            use(sender), use(recip), use(time(0)), use(obj), use(mes), now;
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 std::vector<Message> DataBase::getMessages(Player::ID recipient)
@@ -1139,7 +1150,7 @@ try
 	checkConnection(session_);
 	Transaction trans(*session_);
 	typedef Tuple < Message::ID, Player::ID, Player::ID, time_t, std::string,
-	        BLOB, int, std::string > MessageTup;
+	        Data::BLOB, int, std::string > MessageTup;
 	std::vector<MessageTup> messages;
 	messages.reserve(100);
 	(*session_) <<
@@ -1156,15 +1167,15 @@ try
 
 	trans.commit();
 
-	auto tuple_to_message = [](auto const & m)
+	auto tuple_to_message = [](MessageTup const & m)
 	{
 		return Message(m.get<0>(), m.get<1>(), m.get<2>(), m.get<3>(),
 		               m.get<4>(), toString(m.get<5>()), m.get<7>());
 	};
 
-	return messages | transformed(tuple_to_message) | converted;
+	return messages | transformed(tuple_to_message) | collected<std::vector<Message>>();
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 void DataBase::eraseMesage(Message::ID mid)
@@ -1173,7 +1184,7 @@ try
 	checkConnection(session_);
 	(*session_) << "DELETE FROM Message WHERE id = ?", use(mid), now;
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 //***************************  Friendship  ********************************
@@ -1226,7 +1237,7 @@ try
 	}
 	trans.commit();
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 void DataBase::acceptFriendshipRequest(Player::ID sender,
@@ -1267,7 +1278,7 @@ try
 	            use(sender), use(recipient), now;
 	trans.commit();
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 void DataBase::closeFriendship(Player::ID playerA, Player::ID playerB)
@@ -1280,7 +1291,7 @@ try
 	            "WHERE friend_a = ? AND friend_b = ? ",
 	            use(playerA), use(playerB), now;
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 std::vector<Player> DataBase::getFriends(Player::ID player) const
@@ -1297,11 +1308,11 @@ try
 	            into(friends), use(player), use(player), now;
 
 	return friends
-	       | filtered([&](auto & fr)->bool {return fr.get<0>() != player; })
+	       | filtered([&](PlayerTmp const & fr)->bool {return fr.get<0>() != player; })
 	       | transformed(playerFromTuple)
-	       | converted;
+	       | collected<std::vector<Player>>();
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 FriendshipRequests DataBase::getFriendshipRequest(Player::ID player) const
@@ -1319,7 +1330,7 @@ try
 		            "  FriendshipRequest.recipient = ? ",
 		            into(received), use(player), now;
 
-		result.received = received | transformed(playerFromTuple) | converted;
+		result.received = received | transformed(playerFromTuple) | collected<std::vector<Player>>();
 	}
 	{
 		std::vector<PlayerTmp> sent;
@@ -1331,11 +1342,11 @@ try
 		            "  FriendshipRequest.recipient = Player.id ",
 		            into(sent), use(player), now;
 
-		result.sent = sent | transformed(playerFromTuple) | converted;
+		result.sent = sent | transformed(playerFromTuple) | collected<std::vector<Player>>();
 	}
 	return result;
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 //***************************  Alliance  **********************************
@@ -1365,9 +1376,9 @@ try
 	trans.commit();
 	return id;
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
-typedef Tuple <Alliance::ID, Player::ID, std::string, BLOB, std::string> AllianceTup;
+typedef Tuple <Alliance::ID, Player::ID, std::string, Data::BLOB, std::string> AllianceTup;
 
 Alliance toAllicance(AllianceTup const& a)
 {
@@ -1388,7 +1399,7 @@ try
 	            use(aid), now;
 	return toAllicance(allianceTup);
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 std::vector<Alliance> DataBase::getAlliances() const
 try
@@ -1402,9 +1413,9 @@ try
 	            into(allianceVect),
 	            now;
 
-	return allianceVect | transformed(toAllicance) | converted;
+	return allianceVect | transformed(toAllicance) | collected<std::vector<Alliance>>();
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 void DataBase::updateAlliance(Alliance const& al)
@@ -1417,7 +1428,7 @@ try
 	            "WHERE id = ?",
 	            use(al.name), use(al.description), use(al.id), now;
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 void DataBase::transfertAlliance(Alliance::ID aid, Player::ID pid)
@@ -1433,7 +1444,7 @@ try
 	            use(pid), use(aid), now;
 	trans.commit();
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 void DataBase::eraseAlliance(Alliance::ID aid)
@@ -1442,7 +1453,7 @@ try
 	checkConnection(session_);
 	(*session_) << "DELETE FROM Alliance WHERE id = ? ", use(aid), now;
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 void DataBase::joinAlliance(Player::ID pid, Alliance::ID aid)
@@ -1453,7 +1464,7 @@ try
 	            "UPDATE Player SET allianceID = ? WHERE id = ?",
 	            use(aid), use(pid), now;
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 void DataBase::quitAlliance(Player::ID pid)
@@ -1470,7 +1481,7 @@ try
 		eraseAlliance(alliance.id);
 	trans.commit();
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 void DataBase::clear(bool keepPlayer)
@@ -1509,4 +1520,4 @@ try
 
 	trans.commit();
 }
-DB_CATCH
+catch(Poco::Data::DataException const& ex) {DB_CATCH;};

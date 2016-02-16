@@ -47,7 +47,14 @@ struct FriendshipRequests
 };
 
 
-namespace Poco {namespace Data {class Session;}}
+namespace Poco
+{
+namespace Data
+{
+class Session;
+class DataException;
+}
+}
 
 
 //! @brief Acces à la base de donnée SQL
@@ -306,6 +313,12 @@ private:
 
 	//! Crée toute les tables si elles n'éxistent pas déja
 	void createTables();
+
+	inline void handleException(
+	  Poco::Data::DataException const& ex,
+	  char const* file,
+	  int line,
+	  char const* func) const;
 };
 
 #endif //__DRONEWARS_DATABASE__

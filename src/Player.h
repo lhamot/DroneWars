@@ -20,12 +20,12 @@ struct Coord
 	}
 
 	typedef int8_t Value; //!< Type pour une Coordonée monodimensionnelle
-	Value X;              //!< Coordonée en X
-	Value Y;              //!< Coordonée en Y
-	Value Z;              //!< Coordonée en Z
+	Value X = 0;              //!< Coordonée en X
+	Value Y = 0;              //!< Coordonée en Y
+	Value Z = 0;              //!< Coordonée en Z
 
 	//! Constructeur par defaut
-	Coord(): X(0), Y(0), Z(0) {}
+	Coord() {}
 
 	//! Constructeur prenant 3 valeurs X, Y et Z
 	Coord(Value x, Value y, Value z):
@@ -68,12 +68,12 @@ struct Direction
 	}
 
 	typedef int8_t Value; //!< Type pour une C
-	Value X;			  //!< Composante X
-	Value Y;			  //!< Composante Y
-	Value Z;			  //!< Composante Z
+	Value X = 0;		  //!< Composante X
+	Value Y = 0;		  //!< Composante Y
+	Value Z = 0;		  //!< Composante Z
 
 	//! Constructeur par defaut : Vecteur nulle
-	Direction(): X(0), Y(0), Z(0) {}
+	Direction() {}
 
 	//! Constructeur
 	Direction(Value x, Value y, Value z):
@@ -126,23 +126,6 @@ struct CodeData
 	std::string lastError;   //!< ernière erreur, si applicable
 	time_t blocklyCodeDate = 0;
 	time_t codeDate = 0;
-
-	//! Constructeur par defaut
-	CodeData() {}
-
-	//! Operateur de copie
-	CodeData& operator=(CodeData other)
-	{
-		std::swap(id, other.id);
-		std::swap(playerId, other.playerId);
-		std::swap(target, other.target);
-		code.swap(other.code);
-		blocklyCode.swap(other.blocklyCode);
-		lastError.swap(other.lastError);
-		std::swap(blocklyCodeDate, other.blocklyCodeDate);
-		std::swap(codeDate, other.codeDate);
-		return *this;
-	}
 };
 
 struct Player;
@@ -162,14 +145,14 @@ struct Alliance
 	//! Constructeur
 	Alliance(Alliance::ID id,
 	         uint32_t playerID,
-	         std::string const& name,
-	         std::string const& description,
-	         std::string const& masterLogin) :
+	         std::string const& name_,
+	         std::string const& description_,
+	         std::string const& masterLogin_) :
 		id(id),
 		masterID(playerID),
-		name(name),
-		description(description),
-		masterLogin(masterLogin)
+		name(name_),
+		description(description_),
+		masterLogin(masterLogin_)
 	{
 	}
 };

@@ -218,7 +218,7 @@ inline C operator | (const Range& r, const collected<C>&)
 
 
 // Rande adaptor cached
-struct cached_t {};
+struct cached_t { cached_t() {}; };
 
 static cached_t const cached;
 
@@ -228,28 +228,5 @@ inline std::vector<typename Range::value_type> operator | (const Range& r, const
 	return boost::copy_range<std::vector<typename Range::value_type>>(r);
 }
 
-
-// Rande adaptor converted
-struct converted_t {};
-
-static converted_t const converted;
-
-template<typename Range>
-struct range_converter
-{
-	Range range_;
-
-	template<typename Container>
-	operator Container()
-	{
-		return boost::copy_range<Container>(range_);
-	}
-};
-
-template<class Range>
-inline range_converter<Range> operator | (const Range& r, const converted_t&)
-{
-	return range_converter<Range> { r };
-}
 
 #endif //__BTA_TOOLS__
