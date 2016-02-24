@@ -1,5 +1,5 @@
 //! @file
-//! @author Loïc HAMOT
+//! @author LoÃ¯c HAMOT
 
 #ifndef __DRONEWARS_LOGGER__
 #define __DRONEWARS_LOGGER__

@@ -1,4 +1,4 @@
 //! @file
-//! @author Loïc HAMOT
+//! @author LoÃ¯c HAMOT
 
 #include "stdafx.h"

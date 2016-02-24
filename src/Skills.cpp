@@ -1,5 +1,5 @@
 //! @file
-//! @author Loïc HAMOT
+//! @author LoÃ¯c HAMOT
 
 #include "stdafx.h"
 #include "Skills.h"
@@ -13,7 +13,7 @@ size_t powInt(size_t val, size_t power)
 }
 
 
-//! Skill non abstrait de rempacement, pour ceux qui ne sont pas encore codés
+//! Skill non abstrait de rempacement, pour ceux qui ne sont pas encore codÃ©s
 class DummySkill : public ISkill
 {
 	virtual bool canUpgradeImpl(Player const&) const {return true;};
@@ -31,7 +31,7 @@ public:
 	explicit DummySkill(std::string const& name): ISkill(name) {}
 };
 
-//! Compétance Conquest
+//! CompÃ©tance Conquest
 class ConquestSkill : public ISkill
 {
 	virtual bool canUpgradeImpl(Player const&) const {return true;};
@@ -49,7 +49,7 @@ public:
 	ConquestSkill(): ISkill("Conquest") {}
 };
 
-//! Compétance Strategy
+//! CompÃ©tance Strategy
 class StrategySkill : public ISkill
 {
 	virtual bool canUpgradeImpl(Player const&) const {return true;};
@@ -67,7 +67,7 @@ public:
 	StrategySkill(): ISkill("Strategy") {}
 };
 
-//! Compétance Cohesion
+//! CompÃ©tance Cohesion
 class CohesionSkill : public ISkill
 {
 	virtual bool canUpgradeImpl(Player const&) const {return true;};
@@ -85,7 +85,7 @@ public:
 	CohesionSkill(): ISkill("Cohesion") {}
 };
 
-//! Compétance Service d'information
+//! CompÃ©tance Service d'information
 //! @toto: tout
 class InfoServiceSkill : public ISkill
 {
@@ -107,7 +107,7 @@ public:
 	InfoServiceSkill(): ISkill("InformationService") {}
 };
 
-//! Compétance Ferme de serveur
+//! CompÃ©tance Ferme de serveur
 class ServerFarmSkill : public ISkill
 {
 	virtual bool canUpgradeImpl(Player const&) const {return true;};
@@ -125,7 +125,7 @@ public:
 	ServerFarmSkill(): ISkill("ServerFarm") {}
 };
 
-//! Compétance Chronos
+//! CompÃ©tance Chronos
 class ChronosSkill : public ISkill
 {
 	virtual bool canUpgradeImpl(Player const& player) const
@@ -148,7 +148,7 @@ public:
 	ChronosSkill(): ISkill("Chronos") {}
 };
 
-//! Compétance Memoire
+//! CompÃ©tance Memoire
 class MemorySkill : public ISkill
 {
 	virtual bool canUpgradeImpl(Player const& //player
@@ -172,7 +172,7 @@ public:
 };
 
 
-//! Compétance Portée d'Emition
+//! CompÃ©tance PortÃ©e d'Emition
 class EmissionRangeSkill : public ISkill
 {
 	virtual bool canUpgradeImpl(Player const& //player
@@ -195,7 +195,7 @@ public:
 };
 
 
-//! Compétance Evasion
+//! CompÃ©tance Evasion
 class EvasionSkill : public ISkill
 {
 	virtual bool canUpgradeImpl(Player const& //player
@@ -220,7 +220,7 @@ public:
 };
 
 
-//! Compétance Journal
+//! CompÃ©tance Journal
 class LogSkill : public ISkill
 {
 	virtual bool canUpgradeImpl(Player const& player) const
@@ -246,7 +246,7 @@ public:
 };
 
 
-//! Compétance Simulation
+//! CompÃ©tance Simulation
 //! @toto: tout
 class SimulationSkill : public ISkill
 {
@@ -274,7 +274,7 @@ public:
 	SimulationSkill() : ISkill("Simulation") {}
 };
 
-//! Compétance Boite noir
+//! CompÃ©tance Boite noir
 class BlackBoxSkill : public ISkill
 {
 	virtual bool canUpgradeImpl(Player const& player) const
@@ -298,7 +298,7 @@ public:
 };
 
 
-//! Compétance Débit d'Emition
+//! CompÃ©tance DÃ©bit d'Emition
 class EmissionRateSkill : public ISkill
 {
 	virtual bool canUpgradeImpl(Player const& //player

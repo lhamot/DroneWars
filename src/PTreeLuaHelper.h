@@ -40,17 +40,17 @@ TypedPtree& ptree_get_child_(TypedPtree& pt, std::string const& name);
 
 //! @brief lua_CFunction pour la function TypePtree::get_child_optional
 //! @remark Contrairement a TypePtree::get_child_optional,
-//!         Quand le child n'existe pas, il est crée.
+//!         Quand le child n'existe pas, il est crÃ©e.
 //! @return 1
 int ptree_get_child(lua_State* L);
 
-//! lua_CFunction qui Supprime tout les enfants direct qui ont la clef donné,
+//! lua_CFunction qui Supprime tout les enfants direct qui ont la clef donnÃ©,
 //!   et retourne le nombre
 //! @return 1
 int ptree_erase(lua_State* L);
 
 
-//! Ajoute une valeur dans un TypedPtree en utilisant le Putter donné
+//! Ajoute une valeur dans un TypedPtree en utilisant le Putter donnÃ©
 //! @remark Un lua_CFunction peut utiliser cette fonction
 //!         et retourner son resultat
 //! @return 0 ou luaL_error
@@ -166,14 +166,14 @@ private:
 template<>
 struct IPairs<TypedPtree>
 {
-	//! @brief lua_CFunction : métamethode __ipairs pour TypedPtree
-	//! @warning Ce code n'est pas sensé fonctioner et déclenche une erreur lua
+	//! @brief lua_CFunction : mÃ©tamethode __ipairs pour TypedPtree
+	//! @warning Ce code n'est pas sensÃ© fonctioner et dÃ©clenche une erreur lua
 	static int ipairs(lua_State* L)
 	{
 		return luaL_error(L , "Can't iterate by index a TypedPtree");
 	}
 
-	//! @brief lua_CFunction : métamethode __pairs pour TypedPtree
+	//! @brief lua_CFunction : mÃ©tamethode __pairs pour TypedPtree
 	static int pairs(lua_State* L)
 	{
 		lua_pushcfunction(L, &IPairs<TypedPtree>::iterator);
@@ -238,7 +238,7 @@ struct Length<TypedPtree>
 //! @brief lua_CFunction qui convertie un TypedPtree en string (pour print)
 int ptree_tostring(lua_State* L);
 
-//! @brief Donne le nom d'un élément pointé pas un TypedPtree::iterator
+//! @brief Donne le nom d'un Ã©lÃ©ment pointÃ© pas un TypedPtree::iterator
 TypedPtree::iterator::value_type::first_type
 ptree_iter_key(TypedPtree::iterator const& iter);
 

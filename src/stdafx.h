@@ -1,5 +1,5 @@
 //! @file
-//! @author Loïc HAMOT
+//! @author LoÃ¯c HAMOT
 
 #define NOMINMAX
 

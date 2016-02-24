@@ -11,7 +11,7 @@
 struct NilType {}; //! Object par defaut du AnyTypeList
 //! Operateur de sortie dans un flux du NilType
 std::ostream& operator<< (std::ostream& os, NilType);
-//! Operateur d'égalité du NilType
+//! Operateur d'Ã©galitÃ© du NilType
 inline bool operator == (NilType, NilType)
 {
 	return true;
@@ -23,9 +23,9 @@ enum class AnyTypeList {Nil, Boolean, Integer, Decimal, Text};
 typedef boost::variant<NilType, bool, ptrdiff_t, double, std::string> Any;
 //! Arbre assosiant un nom a un Any
 typedef boost::property_tree::basic_ptree<std::string, Any> TypedPtree;
-//! Supprime les élément inutile d'un TypedPtree (c-a-d les NilType)
+//! Supprime les Ã©lÃ©ment inutile d'un TypedPtree (c-a-d les NilType)
 void cleanPtreeNil(TypedPtree& pt);
-//! Compte les éléments dans un TypedPtree (de manière récursive)
+//! Compte les Ã©lÃ©ments dans un TypedPtree (de maniÃ¨re rÃ©cursive)
 size_t countPtreeItem(TypedPtree const& pt);
 
 namespace boost

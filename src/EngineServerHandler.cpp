@@ -1,5 +1,5 @@
 //! @file
-//! @author Loïc HAMOT
+//! @author LoÃ¯c HAMOT
 
 #include "stdafx.h"
 #include "EngineServerHandler.h"
@@ -35,7 +35,7 @@ bool ndw::Coord::operator < (const ndw::Coord& b) const
 
 namespace ndw
 {
-//! operateur d'écriture d'un ndw::Coord dans un flux
+//! operateur d'Ã©criture d'un ndw::Coord dans un flux
 ostream& operator << (ostream& os, ndw::Coord const& coord)
 {
 	os << "(" << coord.X << "," << coord.Y << "," << coord.Z << ")";
@@ -46,7 +46,7 @@ ostream& operator << (ostream& os, ndw::Coord const& coord)
 
 namespace
 {
-//! Foncteur qui applique un boost::numeric_cast sans spécifier le type
+//! Foncteur qui applique un boost::numeric_cast sans spÃ©cifier le type
 template<typename I>
 struct NumerciCast
 {
@@ -70,7 +70,7 @@ struct NumerciCast
 };
 
 
-//! Crée un NumerciCast pour faire un numeric_cast sans spécifier le type
+//! CrÃ©e un NumerciCast pour faire un numeric_cast sans spÃ©cifier le type
 template<typename I>
 NumerciCast<I> numCast(
   I value,                    //!< Valeur a caster
@@ -81,7 +81,7 @@ NumerciCast<I> numCast(
 	return cast;
 }
 
-//! Crée un NumerciCast pour faire un numeric_cast sans spécifier le type
+//! CrÃ©e un NumerciCast pour faire un numeric_cast sans spÃ©cifier le type
 //! @param value Valeur a caster
 #define NUMCAST(value) numCast(value, #value)
 
@@ -366,7 +366,7 @@ bool EngineServerHandler::addPlayer(const string& login,
 }
 
 
-//! Trie un range d'objet en comparent un attribut donnée de ces objets
+//! Trie un range d'objet en comparent un attribut donnÃ©e de ces objets
 template<class RandomAccessRange, class Attribute>
 RandomAccessRange& sortOnAttr(RandomAccessRange& rng, bool asc, Attribute attr)
 {
@@ -385,7 +385,7 @@ RandomAccessRange& sortOnAttr(RandomAccessRange& rng, bool asc, Attribute attr)
 }
 
 
-//! Trie un range de planète ou flotte, en fonction d'un critère donné
+//! Trie un range de planÃ¨te ou flotte, en fonction d'un critÃ¨re donnÃ©
 template<typename Range>
 void sortOnType(Range& rg, ndw::Sort_Type::type sortType, const bool asc)
 {
@@ -630,7 +630,7 @@ void EngineServerHandler::getPlayers(vector<ndw::Player>& _return)
 void EngineServerHandler::getPlayer(ndw::Player& outPlayer,
                                     const ndw::Player_ID pid)
 {
-	//! @todo: Séparer en deux requetes differentes
+	//! @todo: SÃ©parer en deux requetes differentes
 	DW_LOG_TRACE << "pid : " << pid;
 	outPlayer = playerToThrift(database_.getPlayer(pid));
 	CodeData const fleetCode = database_.getPlayerCode(pid, CodeData::Fleet);

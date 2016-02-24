@@ -1,5 +1,5 @@
 //! @file
-//! @author Loïc HAMOT
+//! @author LoÃ¯c HAMOT
 
 #ifndef __BTA_RULES__
 #define __BTA_RULES__
@@ -12,7 +12,7 @@ static size_t const XPPerSkillPoints = 1000;
 
 extern double coefXP;
 
-//! Reset la planète + MaJ des liens de parentés en cas de perte de planète.
+//! Reset la planÃ¨te + MaJ des liens de parentÃ©s en cas de perte de planÃ¨te.
 void onPlanetLose(Coord planetCoord,
                   Universe& univ,
                   std::map<Player::ID, Player> const& playerMap,
@@ -25,24 +25,24 @@ void checkTutos(Universe& univ_,
                 std::vector<Event> const& events);
 
 
-//! @brief Test si une flotte est capable de voir une planète locale
+//! @brief Test si une flotte est capable de voir une planÃ¨te locale
 //!
 //! Par example, si la difference de niveau est trop grande,
-//! la flotte ne pourra pas voir la planète.
+//! la flotte ne pourra pas voir la planÃ¨te.
 bool fleetCanSeePlanet(Fleet const& fleet,
                        Planet const& planet,
                        Universe const& univ);
 
 
-//! Recalcul les scores des joueur et les met a jour dans la base de donnée
+//! Recalcul les scores des joueur et les met a jour dans la base de donnÃ©e
 void updateScore(Universe const& univ, DataBase& database);
 
-//! Tableau qui associe chaque Player à son ID
+//! Tableau qui associe chaque Player Ã  son ID
 typedef std::map<Player::ID, Player> PlayerMap;
-//! Calcule l'experience que chaque armés dans un FightReport a gagnées
+//! Calcule l'experience que chaque armÃ©s dans un FightReport a gagnÃ©es
 void calcExperience(PlayerMap const& planerMap, FightReport& report);
 
-//! Nombre maximum de planètes qu'un joueur peut posseder
+//! Nombre maximum de planÃ¨tes qu'un joueur peut posseder
 size_t getMaxPlanetCount(Player const& player);
 
 //! Nombre maximum de flottes qu'un joueur peut posseder
@@ -51,16 +51,16 @@ size_t getMaxFleetCount(Player const& player);
 //! Nombre maximum de vaisseaux dans la flotte du joueur
 size_t getMaxFleetSize(Player const& player);
 
-//! Nombre maximum d'evenements du joueur qui sont concervés
+//! Nombre maximum d'evenements du joueur qui sont concervÃ©s
 size_t getMaxEventCount(Player const& player);
 
-//! Nombre maximum d'élément acceptés dans les "memory" des flottes et planètes
+//! Nombre maximum d'Ã©lÃ©ment acceptÃ©s dans les "memory" des flottes et planÃ¨tes
 size_t memoryPtreeSize(Player const& player);
 
-//! Teste si ce TypedPtree est acceptable (nombre l'élément)
+//! Teste si ce TypedPtree est acceptable (nombre l'Ã©lÃ©ment)
 bool acceptMemoryPtree(Player const& player, TypedPtree const& pt);
 
-//! Quantité d'emision des message des flotte de ce joueur (nombre d'item)
+//! QuantitÃ© d'emision des message des flotte de ce joueur (nombre d'item)
 size_t emitionPTreeSize(Player const& player);
 
 bool acceptEmitionPtree(Player const& player, TypedPtree const& pt);
@@ -68,11 +68,11 @@ bool acceptEmitionPtree(Player const& player, TypedPtree const& pt);
 //! Distance d'emision des message des flotte de ce joueur
 size_t playerEmissionRange(Player const& player);
 
-//! Test si une tentative de fuite réussit
+//! Test si une tentative de fuite rÃ©ussit
 bool isEscapeSuccess(double escapeProba);
 
-//! Calcule la probabilité de fuite d'une flotte face a plusieurs flotte
-//! @return probabilité de fuite entre 0 et 1
+//! Calcule la probabilitÃ© de fuite d'une flotte face a plusieurs flotte
+//! @return probabilitÃ© de fuite entre 0 et 1
 double calcEscapeProba(Player const& player,
                        Fleet const& fighter,
                        Planet const* planet,
@@ -81,10 +81,10 @@ double calcEscapeProba(Player const& player,
 //! Test si ce joueur a le droit de logger des messages dans ces scripts
 bool playerCanLog(Player const& player);
 
-//! Test si le joueur à le droit de recevoir ces rapport de combat
+//! Test si le joueur Ã  le droit de recevoir ces rapport de combat
 bool playerCanSeeFightReport(Player const& player);
 
-//! Calcul le nombre de passe effectuées pour chaque simulation de combat
+//! Calcul le nombre de passe effectuÃ©es pour chaque simulation de combat
 size_t playerFightSimulationCount(Player const& player);
 
 enum class BuildTestState
@@ -119,14 +119,14 @@ enum class FleetActionTest
 
 namespace InternalRules
 {
-//! Test si la flote de ce joueur peut coloniser cette planète
+//! Test si la flote de ce joueur peut coloniser cette planÃ¨te
 FleetActionTest canColonize(
   Player const& player,
   Fleet const& fleet,
   Planet const& planet,
   size_t planetCount);
 
-//! Test si les deux flottes peuvent ce réunir
+//! Test si les deux flottes peuvent ce rÃ©unir
 FleetActionTest canGather(
   Player const& player,
   Fleet const& fleet1,

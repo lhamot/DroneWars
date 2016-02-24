@@ -1,5 +1,5 @@
 //! @file
-//! @author Loïc HAMOT
+//! @author LoÃ¯c HAMOT
 
 #ifndef __DRONEWARS_DATABASE__
 #define __DRONEWARS_DATABASE__
@@ -7,17 +7,17 @@
 #include "Model.h"
 
 
-//! Message envoyé d'un joueur à un autre
+//! Message envoyÃ© d'un joueur Ã  un autre
 struct Message
 {
 	typedef uint32_t ID;     //!< Type de l'identifiant des message
 	ID id;                   //!< Identifiant unique
-	Player::ID sender;       //!< Joueur qui a envoyé le message
+	Player::ID sender;       //!< Joueur qui a envoyÃ© le message
 	Player::ID recipient;    //!< Joueur qui a recue le message
 	time_t time;             //!< Date de l'envoie
 	std::string subject;     //!< Sujet
 	std::string message;     //!< Corps du message
-	std::string senderLogin; //!< Login de l'éméteur (Pas stoké dans le SGBD)
+	std::string senderLogin; //!< Login de l'Ã©mÃ©teur (Pas stokÃ© dans le SGBD)
 
 	//! Constructeur
 	Message(uint32_t id,
@@ -39,11 +39,11 @@ struct Message
 };
 
 
-//! Liste des demande de d'amitié d'un joueur
+//! Liste des demande de d'amitiÃ© d'un joueur
 struct FriendshipRequests
 {
-	std::vector<Player> sent;     //!< Demandes que le joueur a envoyés
-	std::vector<Player> received; //!< Demandes que le joueur a reçues
+	std::vector<Player> sent;     //!< Demandes que le joueur a envoyÃ©s
+	std::vector<Player> received; //!< Demandes que le joueur a reÃ§ues
 };
 
 
@@ -57,8 +57,8 @@ class DataException;
 }
 
 
-//! @brief Acces à la base de donnée SQL
-//! @remark D'une manière général, un id inexistant entrainera une exception
+//! @brief Acces Ã  la base de donnÃ©e SQL
+//! @remark D'une maniÃ¨re gÃ©nÃ©ral, un id inexistant entrainera une exception
 //! de type Exception
 class DataBase
 {
@@ -87,20 +87,20 @@ public:
 
 	//***************************  Player  ************************************
 
-	//! Crée un nouveau joueur
+	//! CrÃ©e un nouveau joueur
 	Player::ID addPlayer(std::string const& login,
 	                     std::string const& password,
 	                     std::vector<std::string> const& codes,
 	                     bool isAI = false);
 
-	//! Définie la planète principale d'un joueur
+	//! DÃ©finie la planÃ¨te principale d'un joueur
 	void setPlayerMainPlanet(Player::ID, Coord mainPlanet);
 
-	//! Extrait les données d'un joueur si il existe
+	//! Extrait les donnÃ©es d'un joueur si il existe
 	boost::optional<Player> getPlayer(
 	  std::string const& login, std::string const& password) const;
 
-	//! @brief Extrait les données un joueur existant
+	//! @brief Extrait les donnÃ©es un joueur existant
 	//! @throw Exception si pid invalid
 	Player getPlayer(Player::ID pid) const;
 
@@ -112,8 +112,8 @@ public:
 
 	//! @brief Supprime le joueur
 	//!
-	//! Change le login et la mot de passe de manière que personne ne peut
-	//! plus ce connecter a ce compte. Les code source sont vidés.
+	//! Change le login et la mot de passe de maniÃ¨re que personne ne peut
+	//! plus ce connecter a ce compte. Les code source sont vidÃ©s.
 	void eraseAccount(Player::ID pid);
 
 	//! Met a jour le score des joueurs
@@ -122,7 +122,7 @@ public:
 	//! Met a jour l'XP des joueurs
 	void updateXP(std::map<Player::ID, uint32_t> const& expMap);
 
-	//! @brief Gère l'achat d'un skill
+	//! @brief GÃ¨re l'achat d'un skill
 	//!
 	//! Inscremente le skill skillID du joueur pid, et reduit ses skillpoints
 	//! de cost
@@ -139,54 +139,54 @@ public:
 	//! Ajoute des eventements Event dans la base
 	void addEvents(std::vector<Event> const& events);
 
-	//! Extrait les evenements lié au joueur pid
+	//! Extrait les evenements liÃ© au joueur pid
 	std::vector<Event> getPlayerEvents(Player::ID pid) const;
 
-	//! Extrait les evenements lié au joueur pid, et à la planète pcoord
+	//! Extrait les evenements liÃ© au joueur pid, et Ã  la planÃ¨te pcoord
 	std::vector<Event> getPlanetEvents(Player::ID pid, Coord pcoord) const;
 
-	//! Extrait les evenements lié au joueur pid, et à la flotte fid
+	//! Extrait les evenements liÃ© au joueur pid, et Ã  la flotte fid
 	std::vector<Event> getFleetEvents(Player::ID pid, Fleet::ID fid) const;
 
-	//! Supprime les évenements de la planète pcoord
+	//! Supprime les Ã©venements de la planÃ¨te pcoord
 	void resetPlanetEvents(Coord pcoord);
 
-	//! Supprime les évenements trop vieux
+	//! Supprime les Ã©venements trop vieux
 	void removeOldEvents(std::map<Player::ID, size_t> const& maxEventCount);
 
 	//***************************  Script  ************************************
 
-	//! Ajoute un nouveau code lua de planète ou flotte à un joueur
+	//! Ajoute un nouveau code lua de planÃ¨te ou flotte Ã  un joueur
 	size_t addScript(Player::ID pid,
 	                 CodeData::Target target,
 	                 std::string const& code);
 
-	//! Ajoute un nouveau code blockly de planète ou flotte à un joueur
+	//! Ajoute un nouveau code blockly de planÃ¨te ou flotte Ã  un joueur
 	size_t addBlocklyCode(Player::ID pid,
 	                      CodeData::Target target,
 	                      std::string const& code);
 
-	//! @brief Extrait le dernier code planète ou flotte d'un joueur
+	//! @brief Extrait le dernier code planÃ¨te ou flotte d'un joueur
 	//! @remark l'id du CodeData sera 0 si code introuvable
 	CodeData getPlayerCode(Player::ID pid, CodeData::Target) const;
 
-	//! Donnée sur une erreur dans un script
+	//! DonnÃ©e sur une erreur dans un script
 	struct CodeError
 	{
 		size_t codeDataId;   //!< ID du CodeData
 		std::string message; //!< Message d'erreur (En anglais)
 	};
-	//! Ajoute à la base tout les CodeError généré dans un round
+	//! Ajoute Ã  la base tout les CodeError gÃ©nÃ©rÃ© dans un round
 	void addCodeErrors(std::vector<CodeError> const& errors);
 
 	//***************************  FightReport  *******************************
 
-	//! @brief Ajoute un rapport de combat à la base
+	//! @brief Ajoute un rapport de combat Ã  la base
 	//! @return ID du rapport de combat
 	size_t addFightReport(FightReport const& report);
 
 	//! @brief Ajoute une liste de Rapport de combat
-	//! @return Dernier ID inseré
+	//! @return Dernier ID inserÃ©
 	size_t addFightReports(std::vector<FightReport> const& reports);
 
 	//! @brief Extrait un rapport de combat depuit la base
@@ -208,7 +208,7 @@ public:
 	//! Tableau assosiatif [tag de tutos] => niveau
 	typedef std::map<std::string, size_t> PlayerTutoMap;
 	//! @brief Extrait la liste des valeurs de toturiel d'un joueur
-	//! @return Un tableau associant chaque tag de tutos à son niveau
+	//! @return Un tableau associant chaque tag de tutos Ã  son niveau
 	PlayerTutoMap getTutoDisplayed(Player::ID pid) const;
 
 	//! @brief Extrait la liste des valeurs de toturiel de tout les joueurs
@@ -217,70 +217,70 @@ public:
 
 	//***************************  Messages  **********************************
 
-	//! @brief Ajoute un Message dans la base de donnée
+	//! @brief Ajoute un Message dans la base de donnÃ©e
 	//! @throw Exception si sender ou recipient invalide
 	void addMessage(Player::ID sender,
 	                Player::ID recipient,
 	                std::string const& suject,
 	                std::string const& message);
 
-	//! @brief Extrait la liste des méssages reçues par un joueur
+	//! @brief Extrait la liste des mÃ©ssages reÃ§ues par un joueur
 	//! @remark le retour sera vide si recipient est invalide
 	std::vector<Message> getMessages(Player::ID recipient);
 
-	//! Supprime un méssage donnée
+	//! Supprime un mÃ©ssage donnÃ©e
 	void eraseMesage(Message::ID mid);
 
 	//***************************  Friendship  ********************************
 
-	//! @brief Ajoute une demande d'amitié dans la base
+	//! @brief Ajoute une demande d'amitiÃ© dans la base
 	//! @throw Exception si sender ou recipient invalide
 	void addFriendshipRequest(Player::ID sender, Player::ID recipient);
 
-	//! Accepte ou refuse une demande d'amitié, si elle éxiste
+	//! Accepte ou refuse une demande d'amitiÃ©, si elle Ã©xiste
 	void acceptFriendshipRequest(
 	  Player::ID sender, Player::ID recipient, bool accept);
 
-	//! Termine une amitié, si elle éxiste
+	//! Termine une amitiÃ©, si elle Ã©xiste
 	void closeFriendship(Player::ID playerA, Player::ID playerB);
 
 	//! Extrait la liste des amies d'un joueur
 	std::vector<Player> getFriends(Player::ID player) const;
 
-	//! Extrait la liste des demande d'amitiés lié à un joueur
+	//! Extrait la liste des demande d'amitiÃ©s liÃ© Ã  un joueur
 	FriendshipRequests getFriendshipRequest(Player::ID player) const;
 
 	//***************************  Alliance  **********************************
 
-	//! @brief Crée un alliance
+	//! @brief CrÃ©e un alliance
 	//! @throw Exception si pid invalide
 	//! @return ID de la nouvel alliance, ou Alliance::NoId, si doublon
 	Alliance::ID addAlliance(Player::ID pid,
 	                         std::string const& name,
 	                         std::string const& description);
 
-	//! @brief Extrait les données d'une alliance
+	//! @brief Extrait les donnÃ©es d'une alliance
 	//! @remark si aid invalide l'ID de l'alliance sera zero
 	Alliance getAlliance(Alliance::ID aid) const;
 
 	//! @brief Extrait toutes les alliances
 	std::vector<Alliance> getAlliances() const;
 
-	//! Modifie les données d'une alliance, si elle existe
+	//! Modifie les donnÃ©es d'une alliance, si elle existe
 	void updateAlliance(Alliance const& alliance);
 
-	//! @brief Transfert la propriété d'une alliance à un joueur
+	//! @brief Transfert la propriÃ©tÃ© d'une alliance Ã  un joueur
 	//!
-	//! C'est a dire que la joueur devient l'unique propriétaire de l'alliance
+	//! C'est a dire que la joueur devient l'unique propriÃ©taire de l'alliance
 	//! @remark N'as aucun effet si le joueur n'est pas membre de l'alliance
 	//! @throw Exception si pid invalide
 	void transfertAlliance(Alliance::ID aid, Player::ID pid);
 
 	//! @brief Supprime une alliance, si elle existe
 	//!
-	//! Le propriétaire ne possede plus d'alliance.
+	//! Le propriÃ©taire ne possede plus d'alliance.
 	//! Les membres n'ont plus d'alliance.
-	//! L'alliance est supprimé de la base
+	//! L'alliance est supprimÃ© de la base
 	void eraseAlliance(Alliance::ID aid);
 
 	//! @brief Un joueur rejoin une alliance
@@ -291,27 +291,27 @@ public:
 	//! @brief Un joueur quite son alliance
 	//!
 	//! Le joueur n'as plus d'alliance.
-	//! Si il était le propriétaire, l'alliance est dissoute (eraseAlliance)
+	//! Si il Ã©tait le propriÃ©taire, l'alliance est dissoute (eraseAlliance)
 	//! @throw Exception si pid invalide
 	void quitAlliance(Player::ID pid);
 private:
 	ConnectionInfo connectionInfo_;
 
-	//! Handle de connection a la base de donnée
+	//! Handle de connection a la base de donnÃ©e
 	mutable std::unique_ptr<Poco::Data::Session> session_;
 
-	//! Ajoute un script lua planète ou flotte, à un joueur, sans transaction
+	//! Ajoute un script lua planÃ¨te ou flotte, Ã  un joueur, sans transaction
 	void addScriptImpl(Player::ID pid,
 	                   CodeData::Target target,
 	                   std::string const& code);
 
-	//! Ajoute un code blockly planète ou flotte, à un joueur, sans transaction
+	//! Ajoute un code blockly planÃ¨te ou flotte, Ã  un joueur, sans transaction
 	void addBlocklyCodeImpl(Player::ID pid,
 	                        CodeData::Target target,
 	                        std::string const& code);
 	void checkConnection(std::unique_ptr<Poco::Data::Session>& session) const;
 
-	//! Crée toute les tables si elles n'éxistent pas déja
+	//! CrÃ©e toute les tables si elles n'Ã©xistent pas dÃ©ja
 	void createTables();
 
 	inline void handleException(

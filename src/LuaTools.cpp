@@ -1,5 +1,5 @@
 //! @file
-//! @author Loïc HAMOT
+//! @author LoÃ¯c HAMOT
 
 #include "stdafx.h"
 #include "LuaTools.h"
@@ -9,7 +9,7 @@
 namespace LuaTools
 {
 
-//! callback appelé par lua quand le nombre d'instruction max est dépassé
+//! callback appelÃ© par lua quand le nombre d'instruction max est dÃ©passÃ©
 void luaCountHook(lua_State* L,
                   lua_Debug* ar
                  )

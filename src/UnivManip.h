@@ -17,15 +17,15 @@ Coord createMainPlanet(Universe& univ, Player::ID pid);
 void saveToStream(Universe const& univ, std::ostream& out);
 void loadFromStream_v2(std::istream& in, Universe& univ);
 
-//! Gere l'écoulement du temps sur la planète.
-//! Peut modifier la liste dse flotte et des planètes
+//! Gere l'Ã©coulement du temps sur la planÃ¨te.
+//! Peut modifier la liste dse flotte et des planÃ¨tes
 void planetRound(Player const& player,
                  Universe& univ,
                  Planet& planet,
                  std::vector<Event>& events);
 
-//! Gere l'écoulement du temps sur la flotte.
-//! Peut modifier la liste des flottes et des planètes
+//! Gere l'Ã©coulement du temps sur la flotte.
+//! Peut modifier la liste des flottes et des planÃ¨tes
 void fleetRound(Universe& univ,
                 Player const& player,
                 Fleet& fleet,

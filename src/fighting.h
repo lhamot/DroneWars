@@ -1,5 +1,5 @@
 //! @file
-//! @author Loïc HAMOT
+//! @author LoÃ¯c HAMOT
 
 #ifndef __BTA_FIGHTING__
 #define __BTA_FIGHTING__
@@ -47,13 +47,13 @@ inline void addErrorMessage(PlayerCodes::ObjectMap& objMap,
 }
 
 
-//! @brief Combatant : Pointeur de flotte ou de planète
+//! @brief Combatant : Pointeur de flotte ou de planÃ¨te
 //!
-//! Union réencapsulée d'un pointeur de Fleet et d'un pointeur de Planet
+//! Union rÃ©encapsulÃ©e d'un pointeur de Fleet et d'un pointeur de Planet
 struct FighterPtr
 {
 private:
-	bool isPlanet_; //!< true si l'objet pointe une planète
+	bool isPlanet_; //!< true si l'objet pointe une planÃ¨te
 	union
 	{
 		Fleet* fleet_;
@@ -61,13 +61,13 @@ private:
 	};
 public:
 
-	//! Constructeur à partir d'une flotte
+	//! Constructeur Ã  partir d'une flotte
 	explicit FighterPtr(Fleet* fleet): isPlanet_(false), fleet_(fleet) {};
-	//! Constructeur à partir d'une planète
+	//! Constructeur Ã  partir d'une planÃ¨te
 	explicit FighterPtr(Planet* planet): isPlanet_(true), planet_(planet) {};
-	//! true si l'objet pointe une planète
+	//! true si l'objet pointe une planÃ¨te
 	bool isPlanet() const {return isPlanet_;}
-	//! @brief Recupère le pointeur de la flotte
+	//! @brief RecupÃ¨re le pointeur de la flotte
 	//! @pre l'objet pointe sur une flotte
 	Fleet* getFleet() const
 	{
@@ -76,8 +76,8 @@ public:
 		else
 			return fleet_;
 	}
-	//! @brief Recupère le pointeur de la planète
-	//! @pre l'objet pointe sur une planète
+	//! @brief RecupÃ¨re le pointeur de la planÃ¨te
+	//! @pre l'objet pointe sur une planÃ¨te
 	Planet* getPlanet() const
 	{
 		if(false == isPlanet_)

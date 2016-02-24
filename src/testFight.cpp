@@ -64,7 +64,7 @@ void simulOneFight()
 				std::cout << count << "\t";
 			std::cout << std::endl;
 		}
-		//Aprés:
+		//AprÃ©s:
 		for(Report<Fleet> fleetReport : fightReport.fleetList)
 		{
 			for(uint32_t count : fleetReport.fightInfo.after.shipList)

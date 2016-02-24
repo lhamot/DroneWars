@@ -1,5 +1,5 @@
-//! @file
-//! @author Loïc HAMOT
+ï»¿//! @file
+//! @author LoÃ¯c HAMOT
 
 #ifndef __DRONEWARS_PLAYER__
 #define __DRONEWARS_PLAYER__
@@ -9,7 +9,7 @@
 //! Nombre de skill
 static size_t const SkillCount = 13;
 
-//! Coordonée entière tridimentionelle
+//! CoordonÃ©e entiÃ¨re tridimentionelle
 struct Coord
 {
 	//! Serialize l'objet
@@ -19,10 +19,10 @@ struct Coord
 		ar& X& Y& Z;
 	}
 
-	typedef int8_t Value; //!< Type pour une Coordonée monodimensionnelle
-	Value X = 0;              //!< Coordonée en X
-	Value Y = 0;              //!< Coordonée en Y
-	Value Z = 0;              //!< Coordonée en Z
+	typedef int8_t Value; //!< Type pour une CoordonÃ©e monodimensionnelle
+	Value X = 0;              //!< CoordonÃ©e en X
+	Value Y = 0;              //!< CoordonÃ©e en Y
+	Value Z = 0;              //!< CoordonÃ©e en Z
 
 	//! Constructeur par defaut
 	Coord() {}
@@ -38,14 +38,14 @@ struct Coord
 
 static Coord const UndefinedCoord(-1, -1, -1);
 
-//! Test d'égalité de deux Coord
+//! Test d'Ã©galitÃ© de deux Coord
 inline bool operator == (Coord const& a, Coord const& b)
 {
 	return (a.X == b.X) && (a.Y == b.Y) && (a.Z == b.Z);
 }
 
 
-//! Test d'inégalité de deux Coord
+//! Test d'inÃ©galitÃ© de deux Coord
 inline bool operator != (Coord const& a, Coord const& b)
 {
 	return (a == b) == false;
@@ -57,7 +57,7 @@ inline std::ostream& operator << (std::ostream& os, Coord const& c)
 	return os;
 }
 
-//! Direction tridimentionelle en valeur entière
+//! Direction tridimentionelle en valeur entiÃ¨re
 struct Direction
 {
 	//! Serialize l'objet
@@ -85,14 +85,14 @@ struct Direction
 };
 
 
-//! Test d'égalité de deux Direction
+//! Test d'Ã©galitÃ© de deux Direction
 inline bool operator == (Direction const& a, Direction const& b)
 {
 	return (a.X == b.X) && (a.Y == b.Y) && (a.Z == b.Z);
 }
 
 
-//! Test d'inégalité de deux Direction
+//! Test d'inÃ©galitÃ© de deux Direction
 inline bool operator != (Direction const& a, Direction const& b)
 {
 	return (a == b) == false;
@@ -102,7 +102,7 @@ inline bool operator != (Direction const& a, Direction const& b)
 static size_t const MaxStringSize = 256; //!< Taille max des string courte
 
 
-//! Script de planète ou flotte d'un joueur
+//! Script de planÃ¨te ou flotte d'un joueur
 struct CodeData
 {
 	//! @brief Taile max du code lua
@@ -110,7 +110,7 @@ struct CodeData
 	//! @brief Taille max du code blockly
 	static size_t const MaxBlocklySize = MaxCodeSize * 8;
 
-	//! Planète ou Flotte
+	//! PlanÃ¨te ou Flotte
 	enum Target : uint8_t
 	{
 		Planet,
@@ -119,11 +119,11 @@ struct CodeData
 	};
 
 	size_t   id = 0;         //!< ID de la version du code source lua
-	uint32_t playerId = 0;   //!< Propriétaire
-	Target   target = Undefined;  //!< Planète ou Flotte
+	uint32_t playerId = 0;   //!< PropriÃ©taire
+	Target   target = Undefined;  //!< PlanÃ¨te ou Flotte
 	std::string code;        //!< Code lua
 	std::string blocklyCode; //!< Code blockly (XML)
-	std::string lastError;   //!< ernière erreur, si applicable
+	std::string lastError;   //!< erniÃ¨re erreur, si applicable
 	time_t blocklyCodeDate = 0;
 	time_t codeDate = 0;
 };
@@ -136,10 +136,10 @@ struct Alliance
 	typedef uint32_t ID;      //!< Type d'identifiant
 	static ID const NoId = 0; //!< Valeur indiquant l'absence d'alliance
 	ID id;                    //!< Identifiant unique
-	uint32_t masterID;        //!< Identifiant du propriétaire
+	uint32_t masterID;        //!< Identifiant du propriÃ©taire
 	std::string name;         //!< Nom
 	std::string description;  //!< Description
-	std::string masterLogin;  //!< Login du propriétaire (Pas stoké dans SGBD)
+	std::string masterLogin;  //!< Login du propriÃ©taire (Pas stokÃ© dans SGBD)
 	Player* master = nullptr; //!< Pour les script lua uniquement
 
 	//! Constructeur
@@ -158,7 +158,7 @@ struct Alliance
 };
 
 
-//! Donnée d'un joueur
+//! DonnÃ©e d'un joueur
 struct Player
 {
 	//! Un uint8_t pour chaque Skill
@@ -167,10 +167,10 @@ struct Player
 	static ID const NoId = 0;      //!< Valeur indiquant l'absence de joueur
 	ID id;                         //!< Identifiant unique
 	std::string login;             //!< Login
-	Coord mainPlanet;              //!< Coordonées de la planète principale
+	Coord mainPlanet;              //!< CoordonÃ©es de la planÃ¨te principale
 	uint64_t score = 0;            //!< Score
 	Alliance::ID allianceID = 0;   //!< ID de l'alliance, ou Alliance::NoID
-	std::string allianceName;      //!< Nom de l'alliance (Pas stoké dans le SGBD)
+	std::string allianceName;      //!< Nom de l'alliance (Pas stokÃ© dans le SGBD)
 	uint32_t experience = 0;       //!< Experience
 	uint32_t skillpoints = 0;      //!< Points de competances
 	SkillTab skilltab;             //!< Niveau du joueur dans chaque competance

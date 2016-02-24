@@ -1,5 +1,5 @@
 //! @file
-//! @author Loïc HAMOT
+//! @author LoÃ¯c HAMOT
 
 #include "stdafx.h"
 #include "fighting.h"
@@ -30,16 +30,16 @@ using namespace boost::adaptors;
 using namespace boost;
 
 
-//! Données d'un vaisseau ou d'une flotte pendant un combat
+//! DonnÃ©es d'un vaisseau ou d'une flotte pendant un combat
 struct Unit
 {
-	//! @brief Type d'unité
+	//! @brief Type d'unitÃ©
 	//!
 	//! Si type < Ship::Count, type est un Ship::Type
 	//! Sinon type - Ship::Count est un Cannon::Type
 	uint16_t type;
-	uint16_t life;   //!< Point de vie de l'unité
-	uint16_t shield; //!< Point de bouclier de l'unité
+	uint16_t life;   //!< Point de vie de l'unitÃ©
+	uint16_t shield; //!< Point de bouclier de l'unitÃ©
 	int16_t armyIndex = -1;
 	Player::ID playerID = Player::NoId;
 
@@ -58,7 +58,7 @@ struct Unit
 	}
 };
 
-typedef std::vector<Unit> UnitTab; //!< Liste d'unité (cannons ou vaisseaux)
+typedef std::vector<Unit> UnitTab; //!< Liste d'unitÃ© (cannons ou vaisseaux)
 
 //! Remplit un UnitTab a partir d'une flotte (Fleet)
 void fillShipList(
@@ -74,7 +74,7 @@ void fillShipList(
 }
 
 
-//! Remplit un UnitTab a partir d'une planète (Planet)
+//! Remplit un UnitTab a partir d'une planÃ¨te (Planet)
 void fillShipList(
   Planet const& planet, int16_t armyIndex, Player::ID pid, UnitTab& shipTab)
 {
@@ -88,10 +88,10 @@ void fillShipList(
 	}
 }
 
-//! Générateur de nombre pseudo-aléatoire
+//! GÃ©nÃ©rateur de nombre pseudo-alÃ©atoire
 boost::random::mt19937 gen(static_cast<uint32_t>(time(0)));
 
-//! Recharge les boucliers des unités
+//! Recharge les boucliers des unitÃ©s
 void loadShield(UnitTab& unitTab)  throw()
 {
 	for(Unit& unit : unitTab)
@@ -107,29 +107,29 @@ void loadShield(UnitTab& unitTab)  throw()
 //! Interface de toute les competances de combats
 class SkillInterface
 {
-	//C'est plus pratique de les implementer dans la class mère,
+	//C'est plus pratique de les implementer dans la class mÃ¨re,
 	//car ces methodes ne seront pas forcement reimplementer.
-	//! Appelé avant l'attaque
+	//! AppelÃ© avant l'attaque
 	virtual void beforeAttack_(UnitTab&, UnitTab&) {};
 
-	//! Appelé avant le netoyage des unités mortes
+	//! AppelÃ© avant le netoyage des unitÃ©s mortes
 	virtual void beforeCleaning_(UnitTab&, UnitTab&) {};
 
-	//! Appelé avant le rechargement des boucliers
+	//! AppelÃ© avant le rechargement des boucliers
 	virtual void beforeReload_(UnitTab&, UnitTab&) {};
 
 public:
-	//! Appelé avant l'attaque : Appel beforeAttack_
+	//! AppelÃ© avant l'attaque : Appel beforeAttack_
 	void beforeAttack(UnitTab& ownUnits, UnitTab& theirUnits)
 	{
 		beforeAttack_(ownUnits, theirUnits);
 	}
-	//! Appelé avant le netoyage des unités mortes : Appel beforeCleaning_
+	//! AppelÃ© avant le netoyage des unitÃ©s mortes : Appel beforeCleaning_
 	void beforeCleaning(UnitTab& ownUnits, UnitTab& theirUnits)
 	{
 		beforeCleaning_(ownUnits, theirUnits);
 	}
-	//! Appelé avant le rechargement des boucliers : Appel beforeReload_
+	//! AppelÃ© avant le rechargement des boucliers : Appel beforeReload_
 	void beforeReload(UnitTab& ownUnits, UnitTab& theirUnits)
 	{
 		beforeReload_(ownUnits, theirUnits);
@@ -143,18 +143,18 @@ class NoSkill : public SkillInterface
 };
 
 
-//! Statistique d'un type d'unité
+//! Statistique d'un type d'unitÃ©
 struct UnitStat
 {
-	size_t livingCount; //!< Nombre d'unités vivantes
-	size_t deadCount;   //!< Nombre d'unités mortes
+	size_t livingCount; //!< Nombre d'unitÃ©s vivantes
+	size_t deadCount;   //!< Nombre d'unitÃ©s mortes
 	size_t meanPV;      //!< Nombre de PV moyen
 
 	UnitStat(): livingCount(0), deadCount(0), meanPV(0) {}
 };
 
 
-//! Statistique de chaque type d'unitées d'une armé
+//! Statistique de chaque type d'unitÃ©es d'une armÃ©
 struct ArmyStats
 {
 	boost::array<UnitStat, Ship::Count> shipStats;     //!< Stat des vaisseaux
@@ -162,7 +162,7 @@ struct ArmyStats
 };
 
 
-//! Calcul les stats d'une armé
+//! Calcul les stats d'une armÃ©
 ArmyStats calcArmyStat(UnitTab const& unitTab)
 {
 	ArmyStats result;
@@ -208,11 +208,11 @@ ArmyStats calcArmyStat(UnitTab const& unitTab)
 
 namespace std
 {
-//! Traits de calcul de valeur de hachage d'une coordonée Coord
+//! Traits de calcul de valeur de hachage d'une coordonÃ©e Coord
 template<>
 struct hash<std::pair<Player::ID, Player::ID> >
 {
-	//! Calcul la valeur de hachage d'une coordonée Coord
+	//! Calcul la valeur de hachage d'une coordonÃ©e Coord
 	size_t operator()(std::pair<Player::ID, Player::ID> const& p) const
 	{
 		std::size_t seed = 0;
@@ -318,7 +318,7 @@ void fire(UnitTab const& allUnits,
 		  Ship::List[ship.type].power :
 		  Cannon::List[ship.type - Ship::Count].power;
 
-		//! - On trouve un vaisseau énemie
+		//! - On trouve un vaisseau Ã©nemie
 		std::vector<Unit*> const& enemyVect = enemyVects[ship.playerID];
 		size_t const enemyCount = enemyVect.size();
 		boost::random::uniform_int_distribution<> dist(
@@ -335,9 +335,9 @@ void fire(UnitTab const& allUnits,
 		{
 			//! - Sinon:
 			//!     On mais le bouclier a zero et on diminue la puissance
-			//!     Si l'attaquant est moin puissant que les PV de l'attaqué
+			//!     Si l'attaquant est moin puissant que les PV de l'attaquÃ©
 			//!         On diminue juste les PV
-			//!     Sinon l'attaqué est mort
+			//!     Sinon l'attaquÃ© est mort
 			power -= shield;
 			shield = 0;
 			uint16_t& life = unity.life;
@@ -376,7 +376,7 @@ void fight(std::vector<Fleet*> const& fleetList,
 	//! Qui vase batre contre qui?
 	//! (Si un seul des deux veux se batre, les deux se batrons)
 	PlayersFightingSet playerFightingSet;
-	// Pour chaque paires de joueurs qui veullent se batre (valeur à true)
+	// Pour chaque paires de joueurs qui veullent se batre (valeur Ã  true)
 	// On l'ajoute dans le playerFightingSet
 	for(auto const& playerPair :
 	    playerFightPlayer
@@ -387,9 +387,9 @@ void fight(std::vector<Fleet*> const& fleetList,
 		playerFightingSet[playerPair.second].insert(playerPair.first);
 	}
 
-	//! On remplit la liste des unités (flottes et planete)
+	//! On remplit la liste des unitÃ©s (flottes et planete)
 	UnitTab allUnits;
-	// comptage des unités pour réservation du UnitTab
+	// comptage des unitÃ©s pour rÃ©servation du UnitTab
 	size_t unitCount = 0;
 	for(Fleet const* fleet : fleetList)
 		unitCount += boost::accumulate(fleet->shipList, 0);
@@ -412,10 +412,10 @@ void fight(std::vector<Fleet*> const& fleetList,
 	{
 		//! - On recharge les bouclier
 		loadShield(allUnits);
-		//! - Si il ne reste pas au moins 2 joueurs énemis, on arrete.
+		//! - Si il ne reste pas au moins 2 joueurs Ã©nemis, on arrete.
 		if(fightAgain(allUnits, playerFightingSet) == false)
 			break;
-		//! - Pour chaque joueur on établis une liste des unités énemis
+		//! - Pour chaque joueur on Ã©tablis une liste des unitÃ©s Ã©nemis
 		std::map<Player::ID, std::vector<Unit*> > enemyVects;
 		for(Unit& ship : allUnits)
 		{
@@ -428,12 +428,12 @@ void fight(std::vector<Fleet*> const& fleetList,
 		remove_erase_if(allUnits, bind(&Unit::life, _1) <= 0);
 	}
 
-	//! On vide les flottes et planete données en entré
+	//! On vide les flottes et planete donnÃ©es en entrÃ©
 	for(Fleet* fleet : fleetList)
 		fleet->shipList.assign(0);
 	if(planet)
 		planet->cannonTab.assign(0);
-	//! On les remplis avec ce qui reste des unités aprés le combat
+	//! On les remplis avec ce qui reste des unitÃ©s aprÃ©s le combat
 	for(Unit const& unit : allUnits)
 	{
 		if(unit.armyIndex == PlanetIndex)
@@ -458,8 +458,8 @@ void fight(std::vector<Fleet*> const& fleetList,
 		           planet,
 		           *reportList.planet,
 		           *planet);
-	//! Si une flotte a protégé la planete jusque au bout,
-	//!  la planète est conservé.
+	//! Si une flotte a protÃ©gÃ© la planete jusque au bout,
+	//!  la planÃ¨te est conservÃ©.
 	std::set<Player::ID> winingPlayers;
 	for(Report<Fleet> const& fleetReport : reportList.fleetList)
 		if(fleetReport.isDead == false)

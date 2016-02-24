@@ -1,14 +1,14 @@
 //! @file
-//! @author Loïc HAMOT
+//! @author LoÃ¯c HAMOT
 
 /*! @mainpage Documentation en ligne de Neutrynos - DroneWars
  *
- * DroneWars est un jeu de conquêtes spatiales par navigateur.
- * Il fonctionne en tour par tour comme un jeu de société.
- * A chaque tour, chacune de vos planètes et chacune de vos flottes devra
- * décider quelle action accomplir. La particularité de DroneWars est qu'il
- * ne vous demande pas d'être présent pour jouer à chaque tour, mais
- * plutôt de créer une intelligence artificielle qui travaillera pour vous.
+ * DroneWars est un jeu de conquÃªtes spatiales par navigateur.
+ * Il fonctionne en tour par tour comme un jeu de sociÃ©tÃ©.
+ * A chaque tour, chacune de vos planÃ¨tes et chacune de vos flottes devra
+ * dÃ©cider quelle action accomplir. La particularitÃ© de DroneWars est qu'il
+ * ne vous demande pas d'Ãªtre prÃ©sent pour jouer Ã  chaque tour, mais
+ * plutÃ´t de crÃ©er une intelligence artificielle qui travaillera pour vous.
  *
  * Vous trouverez le site de gestion ici:
  * <A HREF="http://www.nogane.net/projects/dronewars">http://www.nogane.net/projects/dronewars</A>

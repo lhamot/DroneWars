@@ -1,5 +1,5 @@
 //! @file
-//! @author LoÔc HAMOT
+//! @author Lo√Øc HAMOT
 
 #include "stdafx.h"
 #include "Simulation.h"
@@ -25,19 +25,19 @@
 #pragma warning(pop)
 
 
-//! Verrou en Ècriture
+//! Verrou en √©criture
 typedef boost::unique_lock<Universe::Mutex> UniqueLock;
 //! Verrou en lecture
 typedef boost::shared_lock<Universe::Mutex> SharedLock;
-//! Verrou en lecture, mutable en Ècriture
+//! Verrou en lecture, mutable en √©criture
 typedef boost::upgrade_lock<Universe::Mutex> UpgradeLock;
-//! Verrou en Ècriture construit a partir d'un UpgradeLock
+//! Verrou en √©criture construit a partir d'un UpgradeLock
 typedef boost::upgrade_to_unique_lock<Universe::Mutex> UpToUniqueLock;
 
 using namespace std;
 namespace BL = boost::locale;
 
-//! Verifie ‡ la sortie du scope si le joueur a appelÈ la fonction de log
+//! Verifie √† la sortie du scope si le joueur a appel√© la fonction de log
 class CheckPlayerLog : boost::noncopyable
 {
 public:
@@ -57,7 +57,7 @@ public:
 	{
 	}
 
-	//! Ajoute les log du joueur dans la base si il as la compÈtence.
+	//! Ajoute les log du joueur dans la base si il as la comp√©tence.
 	~CheckPlayerLog()
 	{
 		try
@@ -85,14 +85,14 @@ public:
 private:
 	ScriptTools::Engine& state_;        //!< Etats lua
 	PlayerCodes::ObjectMap& codeMap_;   //!< Scripts du joueur
-	Player const& player_;              //!< DonÈes du joueur
-	Coord coord_ = Coord();             //!< CoordonÈe de la planËte(optionel)
+	Player const& player_;              //!< Don√©es du joueur
+	Coord coord_ = Coord();             //!< Coordon√©e de la plan√®te(optionel)
 	Fleet::ID fleetID_ = Fleet::NoId;   //!< ID de la flote (optionel)
 	std::vector<Event>& events_;        //!< Liste des evenements du round
 };
 
-//! @brief Verifie ‡ la sortie du scope
-//!   si le joueur ‡ modifiÈ la memoire de sa planËte ou flotte
+//! @brief Verifie √† la sortie du scope
+//!   si le joueur √† modifi√© la memoire de sa plan√®te ou flotte
 class CheckMemory : boost::noncopyable
 {
 public:
@@ -110,8 +110,8 @@ public:
 	{
 	}
 
-	//! @brief Verifie si le joueur ‡ modifiÈ la memoire de sa planËte / flotte
-	//! pour l'autoriser ou non, en fonction de son skill mÈmoire.
+	//! @brief Verifie si le joueur √† modifi√© la memoire de sa plan√®te / flotte
+	//! pour l'autoriser ou non, en fonction de son skill m√©moire.
 	~CheckMemory()
 	{
 		try
@@ -131,13 +131,13 @@ public:
 
 private:
 	PlayerCodes::ObjectMap& codeMap_;  //!< Scripts du joueur
-	Player const& player_;             //!< DonÈes du joueur
-	TypedPtree oldMem_;                //!< MÈmoire d'origine
-	TypedPtree& memory_;               //!< MÈmoire de sa planËte / flotte (ref)
+	Player const& player_;             //!< Don√©es du joueur
+	TypedPtree oldMem_;                //!< M√©moire d'origine
+	TypedPtree& memory_;               //!< M√©moire de sa plan√®te / flotte (ref)
 	std::vector<Event>& events_;       //!< Liste des evenements du round
 };
 
-//! @brief Wrap une function lua en c++, tout en testant la mÈmoire et les log
+//! @brief Wrap une function lua en c++, tout en testant la m√©moire et les log
 //! a l'aide de CheckPlayerLog et CheckMemory
 class DWObject
 {
@@ -147,7 +147,7 @@ public:
 	{
 	}
 
-	//! Appel la fonction (avec retour) puis test la mÈmoire et les logs
+	//! Appel la fonction (avec retour) puis test la m√©moire et les logs
 	template<typename T, typename ...Args>
 	void call(
 	  ScriptTools::Engine& engine,
@@ -163,7 +163,7 @@ public:
 		return obj_->call(fleetOrPlanet, args...);
 	}
 
-	//! Appel la fonction (sans retour) puis test la mÈmoire et les logs
+	//! Appel la fonction (sans retour) puis test la m√©moire et les logs
 	template<typename R, typename T, typename ...Args>
 	R call(
 	  ScriptTools::Engine& engine,
@@ -180,7 +180,7 @@ public:
 	}
 
 private:
-	//! @return la coordonÈ de la planËte
+	//! @return la coordon√© de la plan√®te
 	static Fleet::ID getFleetID(Planet const&)
 	{
 		return Fleet::NoId;
@@ -230,7 +230,7 @@ void Simulation::reloadPlayer(Player::ID pid)
 }
 
 
-//! Fait interpreter un script ‡ lua et le transforme en PlayerCodes::ObjectMap
+//! Fait interpreter un script √† lua et le transforme en PlayerCodes::ObjectMap
 PlayerCodes::ObjectMap registerCode(
   ScriptTools::Engine& scriptEngine,
   CodeData const& code,
@@ -293,7 +293,7 @@ try
 {
 	auto codeIter = codeMap.functions.find("AI");
 	if(codeIter == codeMap.functions.end())
-		return boost::none; //Le code a ÈtÈ invalidÈ
+		return boost::none; //Le code a √©t√© invalid√©
 	ScriptTools::Object code = codeIter->second;
 	if(ScriptTools::isFunction(code) == false)
 	{
@@ -321,8 +321,8 @@ catch(Polua::Exception const& ex)
 	return boost::none;
 }
 
-//! Applique l'action demandÈ par le script de la planete
-//! C-‡-d ajoute ou arrete une tache de la planËte
+//! Applique l'action demand√© par le script de la planete
+//! C-√†-d ajoute ou arrete une tache de la plan√®te
 void applyPlanetAction(
   Universe const& univ_,
   Planet& sciptModifiedPlanet,
@@ -372,7 +372,7 @@ bool checkLuaMethode(PlayerCodes::ObjectMap& codeMap,
 {
 	auto codeIter = codeMap.functions.find(name);
 	if(codeIter == codeMap.functions.end())
-		return false; //Le code ‡ ÈtÈ invalidÈ
+		return false; //Le code √† √©t√© invalid√©
 	else
 	{
 		ScriptTools::Object methode = codeIter->second;
@@ -433,7 +433,7 @@ void gatherIfWant(
 					addErrorMessage(codeMap, ex.what(), events);
 				}
 
-				//! @todo: DÈcoreler script et traitement
+				//! @todo: D√©coreler script et traitement
 				if(wantGather1 && wantGather2)
 				{
 					gather(fleet, otherFleet);
@@ -470,7 +470,7 @@ void gatherIfWant(
 					addErrorMessage(codeMap, ex.what(), events);
 				}
 
-				//! @todo: DÈcoreler script et traitement
+				//! @todo: D√©coreler script et traitement
 				if(wantGather1)
 				{
 					addArray(fleet.shipList, planet->hangar);
@@ -524,7 +524,7 @@ catch(Polua::Exception const& ex)
 	return boost::none;
 }
 
-//! Applique l'action demandÈ par le script de la flotte
+//! Applique l'action demand√© par le script de la flotte
 void applyFleetScript(Universe& univ_,
                       std::map<Player::ID, Player> const& playerMap,
                       Fleet& scriptModifiedFleet,
@@ -581,7 +581,7 @@ void applyFleetScript(Universe& univ_,
 
 
 
-//! Rechargement des codes flote/planet des joueurs dont le code a ÈtÈ changÈ,
+//! Rechargement des codes flote/planet des joueurs dont le code a √©t√© chang√©,
 //! Modifie la codesMap et playerToReload_
 void Simulation::updatePlayersCode(ScriptTools::Engine& luaEngine,
                                    PlayerCodeMap& codesMap,
@@ -606,7 +606,7 @@ void Simulation::updatePlayersCode(ScriptTools::Engine& luaEngine,
 }
 
 
-//! Genere une map le joueur ID=>Joueur a partir de la base de donnÈe SQL
+//! Genere une map le joueur ID=>Joueur a partir de la base de donn√©e SQL
 std::map<Alliance::ID, Alliance> getAllianceMap(DataBase const& database)
 {
 	std::vector<Alliance> alliances = database.getAlliances();
@@ -616,7 +616,7 @@ std::map<Alliance::ID, Alliance> getAllianceMap(DataBase const& database)
 	return allianceMap;
 }
 
-//! Simule le round pour toute les planËtes
+//! Simule le round pour toute les plan√®tes
 void execPlanetTasks(Universe& univ_,
                      std::map<Player::ID, Player> const& playerMap,
                      std::vector<Event>& events)
@@ -709,8 +709,8 @@ void execPlanets(Universe& univ_,
 	DW_LOG_TRACE << "exit";
 }
 
-//! Retire les flotte qui veulent et parviennent ‡ s'Èchaper
-//! @return La liste des flottes echapÈes
+//! Retire les flotte qui veulent et parviennent √† s'√©chaper
+//! @return La liste des flottes echap√©es
 std::vector<Fleet*> removeEscapedFleet(
   Universe const& univ,
   ScriptTools::Engine& engine,
@@ -761,13 +761,13 @@ std::vector<Fleet*> removeEscapedFleet(
 			if(isEscapeSuccess(escapeProba) == false)
 			{
 				//if(fleet->playerId == 52)
-				//	std::cout << "La flotte : " << fleet->id << " c'est faite repÈrer!!" << std::endl;
+				//	std::cout << "La flotte : " << fleet->id << " c'est faite rep√©rer!!" << std::endl;
 				fightingFleets.push_back(fleet);
 			}
 			else
 			{
 				//if(fleet->playerId == 52)
-				//	std::cout << "La flotte : " << fleet->id << " c'est echapÈ avec succes!!" << std::endl;
+				//	std::cout << "La flotte : " << fleet->id << " c'est echap√© avec succes!!" << std::endl;
 				escapedFleets.push_back(fleet);
 			}
 		}
@@ -784,13 +784,13 @@ std::vector<Fleet*> removeEscapedFleet(
 
 //! @brief Verifie si player1 est ostile contre player2
 //!
-//! Si l'information n'est pas dÈja playerFightPlayer,
+//! Si l'information n'est pas d√©ja playerFightPlayer,
 //! demande au script do_fight pour savoir si player1 veut attaquer player2
-//! et ajoute le rÈsultat dans playerFightPlayer
+//! et ajoute le r√©sultat dans playerFightPlayer
 void addIfTheyWantFight(
   Universe const& univ,                  //!< L'Univers
   Player const& player1,                 //!< Player attaquant
-  Player const& player2,                 //!< Player attaquÈ
+  Player const& player2,                 //!< Player attaqu√©
   PlayersFightingMap& playerFightPlayer, //!< Qui veut attaquer qui
   PlayerCodeMap& codesMap,               //!< Scripts de tout les joueurs
   std::vector<Event>& events             //!< Evenements du rounds
@@ -857,7 +857,7 @@ void execFights(Universe& univ_,
 	PlayersFightingMap playerFightPlayer;
 	tempEvents.reserve(100000);
 	tempReports.reserve(100000);
-	//! Pour chaque coordonÈes, on accede au range des flotes
+	//! Pour chaque coordon√©es, on accede au range des flotes
 	auto fleetMultimapEnd = fleetMultimap.end();
 	for(FleetCoordMultimap::iterator iter1 = fleetMultimap.begin(), iter2 = nextNot(fleetMultimap, iter1);
 	    iter1 != fleetMultimapEnd;
@@ -899,7 +899,7 @@ void execFights(Universe& univ_,
 
 		//! - On excecute le combats
 
-		//! - Retrait de ceux qui s'Èchapent
+		//! - Retrait de ceux qui s'√©chapent
 		std::map<Fleet::ID, double> escapeProbaMap;
 		std::vector<Fleet*> escapedFleets =
 		  removeEscapedFleet(
@@ -1027,7 +1027,7 @@ void execFights(Universe& univ_,
 			  .setFleetID(fleet->id));
 		}
 
-		//! - On cumul l'experience gagnÈ par les joueurs
+		//! - On cumul l'experience gagn√© par les joueurs
 		for(Report<Fleet> const& fleetReport : fightReport.fleetList)
 			experienceMap[fleetReport.fightInfo.before.playerId] +=
 			  fleetReport.experience;
@@ -1038,7 +1038,7 @@ void execFights(Universe& univ_,
 			  report.experience;
 		}
 
-		//! - On ajoute le rapport dans la base de donnÈ
+		//! - On ajoute le rapport dans la base de donn√©
 		tempReports.push_back(fightReport);
 	}
 
@@ -1051,12 +1051,12 @@ void execFights(Universe& univ_,
 	//! On envoie dans la base les gain d'eperience
 	database.updateXP(experienceMap);
 
-	//! On gËre chaque planete perdues(onPlanetLose)
+	//! On g√®re chaque planete perdues(onPlanetLose)
 	std::unordered_map<Coord, Coord> newParentMap;
 	for(Coord planetCoord : lostPlanets)
 		onPlanetLose(planetCoord, univ_, playerMap, newParentMap);
 
-	//! Les planËtes et flottes orpheline sont rÈasignÈ a leurs grand-parents
+	//! Les plan√®tes et flottes orpheline sont r√©asign√© a leurs grand-parents
 	auto newParentMapEnd = newParentMap.end();
 	for(Fleet& fleet : univ_.fleetMap | boost::adaptors::map_values)
 	{
@@ -1091,7 +1091,7 @@ void execFights(Universe& univ_,
 }
 
 
-//! RÈcupËre les messages emit par une flotte
+//! R√©cup√®re les messages emit par une flotte
 TypedPtreePtr getFleetEmission(
   Universe const& univ_,
   ScriptTools::Engine& engine,
@@ -1247,7 +1247,7 @@ void execFleets(
 		return boost::accumulate(nvp.second.shipList, 0) == 0;
 	});
 
-	//Excecution et stockage des Èmissions
+	//Excecution et stockage des √©missions
 	using namespace boost;
 	std::vector<std::shared_ptr<TypedPtree> > mailOwner;
 	static UniverseMailBoxes univMailBoxes(
@@ -1398,7 +1398,7 @@ try
 
 	Universe univCopy = univ_;
 
-	//! CrÈation des planËtes des nouveaux joueurs
+	//! Cr√©ation des plan√®tes des nouveaux joueurs
 	createNewPlayersPlanets(univCopy);
 
 	std::map<Player::ID, Player> playerMap = database_.getPlayerMap();
@@ -1424,16 +1424,16 @@ try
 	for(Universe::FleetMap::value_type const& kvp : univ_.fleetMap)
 		++playerMap.at(kvp.second.playerId).fleetCount;
 
-	//! DÈsactivation de tout les codes qui echoue
+	//! D√©sactivation de tout les codes qui echoue
 	//disableFailingCode(univCopy, codesMap);
 
-	//! Rechargement des codes flote/planet des joueurs dont le code a ÈtÈ changÈ
+	//! Rechargement des codes flote/planet des joueurs dont le code a √©t√© chang√©
 	updatePlayersCode(scriptEngine, codesMap, events);
 
 	// Excecution des taches des planet
 	execPlanetTasks(univCopy, playerMap, events);
 
-	// Excecution des taches des flottes (dÈplacement etc...)
+	// Excecution des taches des flottes (d√©placement etc...)
 	execFleetTasks(univCopy, playerMap, events);
 
 	//! Excecution du code des planetes(modifie l'univers)
@@ -1594,7 +1594,7 @@ void openlibs(lua_State* L)
 }
 
 
-boost::shared_mutex roundTimeMutex; //!< mutex pour protÈger le temps du round
+boost::shared_mutex roundTimeMutex; //!< mutex pour prot√©ger le temps du round
 
 void Simulation::loop()
 try
@@ -1602,7 +1602,7 @@ try
 	using namespace boost::chrono;
 
 	ScriptTools::Engine scriptEngine;
-	PlayerCodeMap codesMap; //DonnÈ non partagÈe entre thread
+	PlayerCodeMap codesMap; //Donn√© non partag√©e entre thread
 
 	//! @todo: remplacer openlibs par luaL_openlibs qui semble faire pareil
 	openlibs(scriptEngine.state());

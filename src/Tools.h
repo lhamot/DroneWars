@@ -1,5 +1,5 @@
 //! @file
-//! @author Loïc HAMOT
+//! @author LoÃ¯c HAMOT
 
 #ifndef __BTA_TOOLS__
 #define __BTA_TOOLS__
@@ -8,9 +8,9 @@
 #include "Logger.h"
 #include <vector>
 
-//! Obtient une local pour la culture demandée
+//! Obtient une local pour la culture demandÃ©e
 //! @todo: Si le nombre de trad pas seconde augmente, il faudra surement
-//!   préparer les locale et les réutiliser.
+//!   prÃ©parer les locale et les rÃ©utiliser.
 std::locale getLocal(std::string const& loc);
 
 template<typename T>
@@ -25,8 +25,8 @@ struct TableTraits<T[I]>
 #define TABLESIZE(Table) TableTraits<decltype(Table)>::Size
 
 
-//! Arrondie pour que (moyenne des valeurs arrondies) == (valeur entrée)
-//! @pre attend une valeur non négative
+//! Arrondie pour que (moyenne des valeurs arrondies) == (valeur entrÃ©e)
+//! @pre attend une valeur non nÃ©gative
 template<typename O>
 O statRound(double val)
 {
@@ -46,7 +46,7 @@ O statRound(double val)
 
 
 //! @brief Recherche un iterateur dans une map et le retourne
-//! @throw std::logic_error si la clé n'existe pas
+//! @throw std::logic_error si la clÃ© n'existe pas
 template<typename M>
 auto mapFind(M& map, typename M::key_type key) -> decltype(map.find(key))
 {
@@ -57,7 +57,7 @@ auto mapFind(M& map, typename M::key_type key) -> decltype(map.find(key))
 }
 
 
-//! Recherche dans une map le prochain iterateur qui n'as pas la mème clé
+//! Recherche dans une map le prochain iterateur qui n'as pas la mÃ¨me clÃ©
 template<typename T, typename I>
 typename T::iterator
 nextNot(T& map, I const& iter)
@@ -70,7 +70,7 @@ nextNot(T& map, I const& iter)
 }
 
 
-//! @brief Supprime de la map tout les éléments correspondants a une condition
+//! @brief Supprime de la map tout les Ã©lÃ©ments correspondants a une condition
 template<typename M, typename F>
 void map_remove_erase_if(M& map, F const& func)
 {

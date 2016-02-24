@@ -1,5 +1,5 @@
 //! @file
-//! @author Loïc HAMOT
+//! @author LoÃ¯c HAMOT
 
 #include "stdafx.h"
 #include "Rules.h"
@@ -53,7 +53,7 @@ void checkTutos(Universe& univ_,
 		size_t const plLvl = tutoMap[CoddingLevelTag];
 		switch(plLvl)
 		{
-		case 0: //! Cas 0 : Créer une mine de métal
+		case 0: //! Cas 0 : CrÃ©er une mine de mÃ©tal
 		{
 			Planet const& planet =
 			  MAP_FIND(univ_.planetMap, player.mainPlanet)->second;
@@ -61,7 +61,7 @@ void checkTutos(Universe& univ_,
 				wisePlayer.push_back(player.id);
 			break;
 		}
-		case 1: //! Cas 1 : Créer fabrique SI mine de métal a 4
+		case 1: //! Cas 1 : CrÃ©er fabrique SI mine de mÃ©tal a 4
 		{
 			Planet const& planet =
 			  MAP_FIND(univ_.planetMap, player.mainPlanet)->second;
@@ -70,7 +70,7 @@ void checkTutos(Universe& univ_,
 				wisePlayer.push_back(player.id);
 			break;
 		}
-		case 2: //! Cas 2: Créer Vaisseau
+		case 2: //! Cas 2: CrÃ©er Vaisseau
 		{
 			for(Event const& ev : events)
 			{
@@ -83,7 +83,7 @@ void checkTutos(Universe& univ_,
 			}
 			break;
 		}
-		case 3: //! Cas 3: Créer 3 flottes
+		case 3: //! Cas 3: CrÃ©er 3 flottes
 		{
 			for(Event const& sig : events)
 			{
@@ -101,7 +101,7 @@ void checkTutos(Universe& univ_,
 			}
 			break;
 		}
-		case 4: //! Cas 4: Créer 3 flottes composé de 5 mosquito exactement
+		case 4: //! Cas 4: CrÃ©er 3 flottes composÃ© de 5 mosquito exactement
 		{
 			for(Event const& sig : events)
 			{
@@ -130,7 +130,7 @@ void checkTutos(Universe& univ_,
 			}
 			break;
 		}
-		case 5: //! Cas 5: Envoyez 6 flottes dans 6 endroit différent
+		case 5: //! Cas 5: Envoyez 6 flottes dans 6 endroit diffÃ©rent
 		{
 			std::set<Coord, CompCoord> fleetCoords;
 			for(Fleet const& fleet : univ_.fleetMap | adaptors::map_values)
@@ -147,7 +147,7 @@ void checkTutos(Universe& univ_,
 			}
 			break;
 		}
-		case 6: //! Cas 6: Récoltez ressources
+		case 6: //! Cas 6: RÃ©coltez ressources
 		{
 			for(Event const& sig : events)
 			{
@@ -207,7 +207,7 @@ bool fleetCanSeePlanet(Fleet const& fleet,
 
 	//uint64_t const score1 = MAP_FIND(univ.playerMap, fleet.playerId)->second.score;
 	//uint64_t const score2 = MAP_FIND(univ.playerMap, planet.playerId)->second.score;
-	//Bloquage si trop d'équart de niveaux
+	//Bloquage si trop d'Ã©quart de niveaux
 	//return (score1 * 5) > score2 && (score2 * 5) > score1;
 	//! @todo: Gerer la difference de score
 	return true;
@@ -243,7 +243,7 @@ void updateScore(Universe const& univ, DataBase& database)
 
 double coefXP = 10.;
 
-//! Calcule l'XP qu'un combat entre deux armés va rapporter
+//! Calcule l'XP qu'un combat entre deux armÃ©s va rapporter
 template<typename A, typename E>
 uint32_t calcExp(PlayerMap const& playerMap,
                  Report<A> const& allyReport,
@@ -260,7 +260,7 @@ uint32_t calcExp(PlayerMap const& playerMap,
 			return res;
 		}
 
-		// Donne la valeur de la planète pour le calcul d'XP
+		// Donne la valeur de la planÃ¨te pour le calcul d'XP
 		size_t operator()(Planet const& army) const
 		{
 			size_t res = 0;
@@ -316,7 +316,7 @@ void calcExperience(PlayerMap const& playerMap,
 		}
 	}
 
-	//! - Experience de la planète
+	//! - Experience de la planÃ¨te
 	if(report.planet)
 	{
 		Report<Planet>& planetReport = *report.planet;
@@ -419,7 +419,7 @@ size_t playerFightSimulationCount(Player const& player)
 
 namespace InternalRules
 {
-//! Test si la flotte peut colonizer la planète
+//! Test si la flotte peut colonizer la planÃ¨te
 FleetActionTest canColonize(
   Player const& player,
   Fleet const&, //fleet

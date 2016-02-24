@@ -1,5 +1,5 @@
 //! @file
-//! @author Loïc HAMOT
+//! @author LoÃ¯c HAMOT
 
 #ifndef __BTA_ENGINE__
 #define __BTA_ENGINE__
@@ -12,14 +12,14 @@ class Simulation;
 //! Informations sur l'age de l'Univers
 struct TimeInfo
 {
-	double roundDuration; //!< Durée du dernier round
+	double roundDuration; //!< DurÃ©e du dernier round
 	double univTime;      //!< Age de l'univers, en round, avec le round actuel
 };
 
 
-//! @brief Gère le simulateur et permet un acces thread-safe a ces données
-//! @remark Cette class semble peu utile pour l'instant, mais pourrait ètre
-//! le serveur HTTP du simulateur, aprés séparation en deux processus.
+//! @brief GÃ¨re le simulateur et permet un acces thread-safe a ces donnÃ©es
+//! @remark Cette class semble peu utile pour l'instant, mais pourrait Ã¨tre
+//! le serveur HTTP du simulateur, aprÃ©s sÃ©paration en deux processus.
 class Engine
 {
 public:
@@ -36,28 +36,28 @@ public:
 
 	//********* Requetes qui ne modifient pas la base *************************
 
-	//! @brief Extrait la liste des flotte d'un joueur donné
+	//! @brief Extrait la liste des flotte d'un joueur donnÃ©
 	//! @remark liste vide si le joueur n'existe pas
 	std::vector<Fleet> getPlayerFleets(Player::ID pid) const;
 
-	//! @brief Extrait la liste des planètes d'un joueur donné
+	//! @brief Extrait la liste des planÃ¨tes d'un joueur donnÃ©
 	//! @remark liste vide si le joueur n'existe pas
 	std::vector<Planet> getPlayerPlanets(Player::ID pid) const;
 
-	//! Extrait la planète à une coordonée donnée, si elle existe
+	//! Extrait la planÃ¨te Ã  une coordonÃ©e donnÃ©e, si elle existe
 	boost::optional<Planet> getPlanet(Coord coord) const;
 
-	//! @brief Extrait une liste de planètes a des coordonées données
-	//! @remark Les coordonées ne pointants aucune planète sont ignorées
+	//! @brief Extrait une liste de planÃ¨tes a des coordonÃ©es donnÃ©es
+	//! @remark Les coordonÃ©es ne pointants aucune planÃ¨te sont ignorÃ©es
 	//! @post retour.size() <= coords.size()
 	std::vector<Planet> getPlanets(std::vector<Coord> const& coord) const;
 
-	//! Extrait la flotte ayant l'ID donnée, si elle existe encore.
+	//! Extrait la flotte ayant l'ID donnÃ©e, si elle existe encore.
 	boost::optional<Fleet> getFleet(Fleet::ID fid) const;
 
 	//********** Requetes qui modifient la base *******************************
 
-	//! Ajoute un joueur dans le simulateur (lui donne une planète)
+	//! Ajoute un joueur dans le simulateur (lui donne une planÃ¨te)
 	void addPlayer(Player::ID pid);
 
 	//! Extrait des info temporel de l'Univers
@@ -73,7 +73,7 @@ private:
 	//! Charge une sauvegarde
 	void load(std::string const& univName, size_t version);
 
-	Universe univ_; //!< Les donnés manipulées par le simulateur
+	Universe univ_; //!< Les donnÃ©s manipulÃ©es par le simulateur
 	std::unique_ptr<Simulation> simulation_; //!< La Simulation
 	boost::thread simulating_;               //!< Excecute la Simulation
 	DataBase::ConnectionInfo connInfo_;

@@ -1,5 +1,5 @@
 //! @file
-//! @author Loïc HAMOT
+//! @author LoÃ¯c HAMOT
 
 #include "stdafx.h"
 #include "DataBase.h"
@@ -64,11 +64,11 @@ std::string hashPassword(std::string const& rawPassword)
 	return DigestEngine::digestToHex(sha1.digest());
 }
 
-//! Crée une transaction RAII (qui rollback à la destruction si pas de commit)
+//! CrÃ©e une transaction RAII (qui rollback Ã  la destruction si pas de commit)
 class Transaction : private boost::noncopyable
 {
 	Session& session_; //!< Connection au SGBD
-	bool commited_;    //!< true si un commit a été effectué
+	bool commited_;    //!< true si un commit a Ã©tÃ© effectuÃ©
 
 public:
 	//! Constructeur
@@ -80,14 +80,14 @@ public:
 	}
 
 
-	//! Excecute la transaction définitivement
+	//! Excecute la transaction dÃ©finitivement
 	void commit()
 	{
 		session_.commit();
 		commited_ = true;
 	}
 
-	//! Destructeur : rollback si aucun commit n'as été fait
+	//! Destructeur : rollback si aucun commit n'as Ã©tÃ© fait
 	~Transaction()
 	{
 		if(commited_ == false)
@@ -419,7 +419,7 @@ try
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
-//! Tuple pour stoker le données d'un Player quand elle sorte du SGBD
+//! Tuple pour stoker le donnÃ©es d'un Player quand elle sorte du SGBD
 typedef Tuple < Player::ID, std::string, std::string, uint64_t,
         Coord::Value, Coord::Value, Coord::Value,
         Alliance::ID, uint32_t, uint32_t, std::string,
@@ -439,7 +439,7 @@ Player playerFromTuple(PlayerTmp const& playerTup)
 	player.allianceName = playerTup.get<12>();
 	player.unreadMessageCount = playerTup.get<13>();
 
-	//La skill tab doit etre déserialisée
+	//La skill tab doit etre dÃ©serialisÃ©e
 	if(playerTup.get<10>().size())
 	{
 		std::vector<std::string> strs;
@@ -453,7 +453,7 @@ Player playerFromTuple(PlayerTmp const& playerTup)
 }
 
 
-//! Requete SQL générique pour extraire un PlayerTmp
+//! Requete SQL gÃ©nÃ©rique pour extraire un PlayerTmp
 static char const* const GetPlayerRequest =
   "SELECT Player.*, Alliance.name, COUNT(Message.id) FROM Player "
   "LEFT OUTER JOIN Alliance "
@@ -609,7 +609,7 @@ try
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
-//! Tuple pour stoker les donnée d'un Event quand il sort de la base de donnée
+//! Tuple pour stoker les donnÃ©e d'un Event quand il sort de la base de donnÃ©e
 typedef Poco::Tuple < Event::ID, time_t, size_t, std::string, intptr_t,
         intptr_t, int, Player::ID, Fleet::ID, Coord::Value, Coord::Value,
         Coord::Value >
@@ -1028,7 +1028,10 @@ try
 	Transaction trans(*session_);
 	typedef Poco::Tuple<uint64_t, Player::ID> ScoreTuple;
 
-	auto pair_to_poco = [](auto const & p) {return ScoreTuple(get<1>(p), get<0>(p)); };
+	auto pair_to_poco = [](std::map<Player::ID, uint64_t>::value_type const & p) 
+	{
+		return ScoreTuple(get<1>(p), get<0>(p)); 
+	};
 
 	(*session_) << "UPDATE Player SET score = ? WHERE id = ?",
 	            use(scoreMap | transformed(pair_to_poco) | cached),
@@ -1211,7 +1214,7 @@ try
 	            "SELECT COUNT(*) FROM FriendshipRequest "
 	            "WHERE sender = ? AND recipient = ? ",
 	            into(rowCount), use(recipient), use(sender), now;
-	//! - Si oui on le considère comme une validation
+	//! - Si oui on le considÃ¨re comme une validation
 	if(rowCount)
 	{
 		Player::ID playerA = sender;
@@ -1226,7 +1229,7 @@ try
 		            "WHERE sender = ? AND recipient = ? ",
 		            use(recipient), use(sender), now;
 	}
-	//! - Sinon on insert la demande (sauf si il en as déja une identique)
+	//! - Sinon on insert la demande (sauf si il en as dÃ©ja une identique)
 	else
 	{
 		(*session_) <<
@@ -1253,13 +1256,13 @@ try
 	//! Si le joueur accepte
 	if(accept)
 	{
-		//! - On verifie que la requete est bien là
+		//! - On verifie que la requete est bien lÃ 
 		size_t rowCount = 0;
 		(*session_) <<
 		            "SELECT COUNT(*) FROM FriendshipRequest "
 		            "WHERE sender = ? AND recipient = ? ",
 		            into(rowCount), use(sender), use(recipient), now;
-		//! - Dans ce cas on ajoute l'amitiée dans la base
+		//! - Dans ce cas on ajoute l'amitiÃ©e dans la base
 		if(rowCount)
 		{
 			Player::ID playerA = sender;

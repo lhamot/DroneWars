@@ -1,5 +1,5 @@
 //! @file
-//! @author Loïc HAMOT
+//! @author LoÃ¯c HAMOT
 
 #include "stdafx.h"
 #include <boost/range/adaptor/map.hpp>
@@ -13,7 +13,7 @@
 using namespace std;
 using namespace boost;
 
-typedef boost::unique_lock<boost::shared_mutex> UniqueLock; //!< Verou en écriture
+typedef boost::unique_lock<boost::shared_mutex> UniqueLock; //!< Verou en Ã©criture
 typedef boost::shared_lock<boost::shared_mutex> SharedLock; //!< Verou en lecture
 
 Engine::Engine(DataBase::ConnectionInfo const& connInfo,
@@ -25,7 +25,7 @@ Engine::Engine(DataBase::ConnectionInfo const& connInfo,
 
 	time_t maxtime = 0;
 	size_t version = 1;
-	//! Recherche la dernière sauvegarde
+	//! Recherche la derniÃ¨re sauvegarde
 	for(const filesystem::path& p : make_iterator_range(dir, end))
 	{
 		string const fileStr = p.filename().string();
@@ -41,7 +41,7 @@ Engine::Engine(DataBase::ConnectionInfo const& connInfo,
 	}
 	if(maxtime)
 	{
-		//! Si elle est trouvée on la charge
+		//! Si elle est trouvÃ©e on la charge
 		stringstream ss;
 		ss << "save/" << maxtime << "_save.bta";
 		if(version == 2)

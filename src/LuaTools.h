@@ -1,5 +1,5 @@
 //! @file
-//! @author Loïc HAMOT
+//! @author LoÃ¯c HAMOT
 
 #ifndef __LUA_TOOLS__
 #define __LUA_TOOLS__
@@ -18,14 +18,14 @@ extern "C"
 namespace LuaTools
 {
 typedef Polua::object Object;
-typedef Polua::State Engine; //!< Interpréteur lua
+typedef Polua::State Engine; //!< InterprÃ©teur lua
 
 
-//! Nombre d'instruction max authorisé dans l'éxcecution d'un script lua
+//! Nombre d'instruction max authorisÃ© dans l'Ã©xcecution d'un script lua
 static size_t const LuaMaxInstruction = 20000;
 
 
-//! callback appelé par lua quand le nombre d'instruction max est dépassé
+//! callback appelÃ© par lua quand le nombre d'instruction max est dÃ©passÃ©
 void luaCountHook(lua_State* L, lua_Debug* ar);
 
 //! Ce Polua::object est t'il une fonction

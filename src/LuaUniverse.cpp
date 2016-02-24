@@ -1,6 +1,6 @@
 //! @file
-//! @author Loïc HAMOT
-//! @todo: tous ces runtime_error sont surement à évité car sont envoyé à lua
+//! @author LoÃ¯c HAMOT
+//! @todo: tous ces runtime_error sont surement Ã  Ã©vitÃ© car sont envoyÃ© Ã  lua
 
 #include "stdafx.h"
 #include "LuaUniverse.h"
@@ -32,14 +32,14 @@ namespace BL = boost::locale;
 using namespace boost;
 
 
-//! Extrait la quantité d'une ressource donnée, dans un RessourceSet
+//! Extrait la quantitÃ© d'une ressource donnÃ©e, dans un RessourceSet
 size_t getRessource(RessourceSet const& ress, size_t i)
 {
 	return ress.tab.at(i);
 }
 
 
-//! Génère une direction aléatoirement
+//! GÃ©nÃ¨re une direction alÃ©atoirement
 Direction directionRandom()
 {
 	auto randDir = [] {return Direction::Value((rand() % 3) - 1);};
@@ -68,7 +68,7 @@ Direction directionFromTo(Coord const& ori, Coord const& targ)
 }
 
 
-//! true si la planète est libre
+//! true si la planÃ¨te est libre
 //! @todo: remplacable par Planet::isFree
 bool planetIsFree(Planet const& planet)
 {
@@ -76,35 +76,35 @@ bool planetIsFree(Planet const& planet)
 }
 
 
-//! Crée un PlanetAction pour construir le building demandé
+//! CrÃ©e un PlanetAction pour construir le building demandÃ©
 PlanetAction makeBuilding(Building::Enum building)
 {
 	return PlanetAction(PlanetAction::Building, Building::Enum(building - 1));
 }
 
 
-//! Crée un PlanetAction pour construir le vaisseau demandé
+//! CrÃ©e un PlanetAction pour construir le vaisseau demandÃ©
 PlanetAction makeShip(Ship::Enum ship)
 {
 	return PlanetAction(PlanetAction::Ship, Ship::Enum(ship - 1), 1);
 }
 
 
-//! Crée un PlanetAction pour construir le canon demandé
+//! CrÃ©e un PlanetAction pour construir le canon demandÃ©
 PlanetAction makeCannon(Cannon::Enum cannon)
 {
 	return PlanetAction(PlanetAction::Cannon, Cannon::Enum(cannon - 1), 1);
 }
 
 
-//! Crée un PlanetAction qui demande de ne rien faire
+//! CrÃ©e un PlanetAction qui demande de ne rien faire
 PlanetAction noPlanetAction()
 {
 	return PlanetAction();
 }
 
 
-//! Retourne le prix d'un vaisseau donné
+//! Retourne le prix d'un vaisseau donnÃ©
 //! @throw std::runtime_error si ship n'est pas compris dans [1; Ship::Count]
 RessourceSet shipPrice(Ship::Enum ship)
 {
@@ -117,7 +117,7 @@ RessourceSet shipPrice(Ship::Enum ship)
 }
 
 
-//! Retourne le prix d'un canon donné
+//! Retourne le prix d'un canon donnÃ©
 //! @throw std::runtime_error si cannon n'est pas dans [1; Cannon::Count]
 RessourceSet cannonPrice(Cannon::Enum cannon)
 {
@@ -130,7 +130,7 @@ RessourceSet cannonPrice(Cannon::Enum cannon)
 }
 
 
-//! Retourne le prix d'un Building donné, à un niveau donné
+//! Retourne le prix d'un Building donnÃ©, Ã  un niveau donnÃ©
 //! @throw std::runtime_error si building n'est pas dans [1; Building::Count]
 //! @throw std::runtime_error si level < 1
 boost::optional<RessourceSet> buildingPrice(Building::Enum building, size_t level)
@@ -206,7 +206,7 @@ int luaCFunction_log(lua_State* L)
 
 int luaCFunction_simul_fight(lua_State* L)
 {
-	//Recupération des arguments
+	//RecupÃ©ration des arguments
 	Fleet* playerFleet = Polua::fromstackAny<Fleet*>(L, -3);
 	Planet* planetOri = lua_type(L, -2) == LUA_TNIL ?
 	                    nullptr :
@@ -217,7 +217,7 @@ int luaCFunction_simul_fight(lua_State* L)
 		BOOST_THROW_EXCEPTION(
 		  std::logic_error("playerFleet->player == nullptr"));
 
-	//Création de la liste des joueurs
+	//CrÃ©ation de la liste des joueurs
 	struct PlayerComp
 	{
 		bool operator()(Player const& a, Player const& b)
@@ -232,7 +232,7 @@ int luaCFunction_simul_fight(lua_State* L)
 	for(Fleet const& fleet : fleetVectOri)
 		playerSet.insert(*fleet.player);
 
-	//Création de la PlayersFightingMap
+	//CrÃ©ation de la PlayersFightingMap
 	PlayersFightingMap playerFighting;
 	bool willFight = false;
 	for(Player const& player : playerSet)
@@ -333,7 +333,7 @@ int workingThing_getTask(lua_State* L)
 }
 
 
-//! Applique l'action demandé par le script de la flotte
+//! Applique l'action demandÃ© par le script de la flotte
 FleetActionTest checkFleetActionImpl(
   Player const& player,
   FleetAction const& action,
@@ -502,7 +502,7 @@ int initDroneWars(LuaTools::Engine& engine)
 	.property("Z", &Direction::Z)
 	;
 	Class<Building>(L, "Building")
-	.enumValue("CommandCenter",     Building::CommandCenter     + 1) //+1 pour correspondre au tableau de batiment (commence à 1 en lua)
+	.enumValue("CommandCenter",     Building::CommandCenter     + 1) //+1 pour correspondre au tableau de batiment (commence Ã  1 en lua)
 	.enumValue("MetalMine",         Building::MetalMine         + 1)
 	.enumValue("CarbonMine",        Building::CarbonMine        + 1)
 	.enumValue("LoiciumFilter",     Building::LoiciumFilter     + 1)

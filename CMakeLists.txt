@@ -66,6 +66,7 @@ add_executable(
     src/TypedPtree.cpp
     src/UnivManip.cpp
     src/Logger.cpp
+    src/Model.cpp
     src/gen-cpp/EngineServer.cpp
     src/gen-cpp/thrift_constants.cpp
     src/gen-cpp/thrift_types.cpp

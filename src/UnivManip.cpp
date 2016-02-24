@@ -1,5 +1,5 @@
 //! @file
-//! @author Loïc HAMOT
+//! @author LoÃ¯c HAMOT
 
 #include "stdafx.h"
 #include "UnivManip.h"
@@ -48,7 +48,7 @@ using namespace boost;
 namespace BL = boost::locale;
 
 
-//! Retourne le prix d'un Building donné, à un niveau donné
+//! Retourne le prix d'un Building donnÃ©, Ã  un niveau donnÃ©
 //! @pre id est dans [0: Building::Count[
 //! @pre level > 0
 boost::optional<RessourceSet> getBuilingPrice(Building::Enum id, size_t level)
@@ -77,8 +77,8 @@ boost::optional<RessourceSet> getBuilingPrice(Building::Enum id, size_t level)
 }
 
 
-//! Recupère les script pour un nouveau joueur
-//! @param codes [out] planète_lua, planète_blockly, flotte_lua, flotte_blockly
+//! RecupÃ¨re les script pour un nouveau joueur
+//! @param codes [out] planÃ¨te_lua, planÃ¨te_blockly, flotte_lua, flotte_blockly
 void getNewPlayerCode(std::vector<std::string>& codes)
 {
 	std::vector<std::string> result;
@@ -152,8 +152,8 @@ void getNewPlayerCode(std::vector<std::string>& codes)
 }
 
 
-//! @brief Donne une planète a un nouveau joueur
-//! @return la coordonée de la nouvelle planète
+//! @brief Donne une planÃ¨te a un nouveau joueur
+//! @return la coordonÃ©e de la nouvelle planÃ¨te
 Coord createMainPlanet(Universe& univ, Player::ID pid)
 {
 	bool done = false;
@@ -185,9 +185,9 @@ Coord createMainPlanet(Universe& univ, Player::ID pid)
 }
 
 
-//! Construit l'Universe et la base de donnée SQL, au premier lancement
+//! Construit l'Universe et la base de donnÃ©e SQL, au premier lancement
 //!
-//! Si des joueurs sont présent dans la base ils seront conservés mais reinisialisés
+//! Si des joueurs sont prÃ©sent dans la base ils seront conservÃ©s mais reinisialisÃ©s
 void construct(Universe& univ, DataBase& database)
 {
 	univ.roundCount = 0;
@@ -214,7 +214,7 @@ void construct(Universe& univ, DataBase& database)
 		}
 	}
 
-	// Création des joueurs AI
+	// CrÃ©ation des joueurs AI
 	std::string const& password = "test";
 	std::vector<std::string> codes;
 	getNewPlayerCode(codes);
@@ -282,7 +282,7 @@ void saveToStream(Universe const& univ, std::ostream& out)
 }
 
 
-//! @brief Déserialize l'Universe depuit un flux
+//! @brief DÃ©serialize l'Universe depuit un flux
 void loadFromStream_v2(std::istream& in, Universe& univ)
 {
 	using namespace boost::iostreams;
@@ -299,7 +299,7 @@ void loadFromStream_v2(std::istream& in, Universe& univ)
 
 //! @brief true si un RessourceSet en contient un autre
 //!
-//! C'est a dire que chaque quantité de chaque type de ressource dans stock
+//! C'est a dire que chaque quantitÃ© de chaque type de ressource dans stock
 //! est plus grand que dans price
 bool canPay(RessourceSet const& stock, RessourceSet const& price)
 {
@@ -312,7 +312,7 @@ bool canPay(RessourceSet const& stock, RessourceSet const& price)
 }
 
 
-//! @brief true si la planète a asser de ressource pour payer price
+//! @brief true si la planÃ¨te a asser de ressource pour payer price
 bool canPay(Planet const& planet, RessourceSet const& price)
 {
 	return canPay(planet.ressourceSet, price);
@@ -326,8 +326,8 @@ bool canPay(Fleet const& fleet, RessourceSet const& price)
 }
 
 
-//! @brief Retire à planète la quantité de ressource demandée
-//! @pre La planète peut payer
+//! @brief Retire Ã  planÃ¨te la quantitÃ© de ressource demandÃ©e
+//! @pre La planÃ¨te peut payer
 void pay(Planet& planet, RessourceSet const& price)
 {
 	if(canPay(planet, price) == false)
@@ -343,7 +343,7 @@ void pay(Planet& planet, RessourceSet const& price)
 }
 
 
-//! @brief Retire à flotte la quantité de ressource demandée
+//! @brief Retire Ã  flotte la quantitÃ© de ressource demandÃ©e
 //! @pre La flotte peut payer
 void pay(Fleet& fleet, RessourceSet const& price)
 {
@@ -360,7 +360,7 @@ void pay(Fleet& fleet, RessourceSet const& price)
 }
 
 
-//! Test si une planète peut fabriquer un vaisseau dans la quantité demandée
+//! Test si une planÃ¨te peut fabriquer un vaisseau dans la quantitÃ© demandÃ©e
 BuildTestState canBuild(Planet const& planet, Ship::Enum type)
 {
 	if(type < 0 || type >= Ship::Count)
@@ -382,7 +382,7 @@ BuildTestState canBuild(Planet const& planet, Ship::Enum type)
 }
 
 
-//! Test si une planète peut upgrader un batiment
+//! Test si une planÃ¨te peut upgrader un batiment
 BuildTestState canBuild(Planet const& planet, Building::Enum type)
 {
 	if(type < 0 || type >= Building::Count)
@@ -406,7 +406,7 @@ BuildTestState canBuild(Planet const& planet, Building::Enum type)
 }
 
 
-//! Test si une planète peut fabriquer un canon dans la quantité demandée
+//! Test si une planÃ¨te peut fabriquer un canon dans la quantitÃ© demandÃ©e
 BuildTestState canBuild(Planet const& planet, Cannon::Enum type)
 {
 	if(type < 0 || type >= Cannon::Count)
@@ -424,10 +424,10 @@ BuildTestState canBuild(Planet const& planet, Cannon::Enum type)
 }
 
 
-//! Ajoute une tache d'upgrade de building a la planète
+//! Ajoute une tache d'upgrade de building a la planÃ¨te
 //! @pre building est compris dans [0: Building::Count[
-//! @pre La planète a un CommandCenter
-//! @pre La planète peut payer
+//! @pre La planÃ¨te a un CommandCenter
+//! @pre La planÃ¨te peut payer
 void addTask(Planet& planet, uint32_t roundCount, Building::Enum building)
 {
 	size_t const buNextLevel =  planet.buildingList[building] + 1;
@@ -457,16 +457,16 @@ void addTask(Planet& planet, uint32_t roundCount, Building::Enum building)
 }
 
 
-//! Ajoute une tache de fabrication de vaisseau à la planète
+//! Ajoute une tache de fabrication de vaisseau Ã  la planÃ¨te
 //! @pre ship est compris dans [0: Ship::Count[
-//! @pre La planète a un Building::Factory
-//! @pre La planète peut payer
+//! @pre La planÃ¨te a un Building::Factory
+//! @pre La planÃ¨te peut payer
 void addTask(Planet& planet, uint32_t roundCount, Ship::Enum ship, uint32_t number)
 {
 	size_t const factoryLvl = planet.buildingList[Building::Factory];
 	if(factoryLvl == 0)
 		BOOST_THROW_EXCEPTION(std::logic_error("Need Factory"));
-	//! @todo: Ajouter regle sur durée de fabrication dans Rules
+	//! @todo: Ajouter regle sur durÃ©e de fabrication dans Rules
 	double const floatDuration =
 	  double(Ship::List[ship].price.tab[0]) /
 	  (factoryLvl * pow(1.15, factoryLvl) * 4); //-V112
@@ -483,10 +483,10 @@ void addTask(Planet& planet, uint32_t roundCount, Ship::Enum ship, uint32_t numb
 }
 
 
-//! Ajoute une tache de fabrication de canon à la planète
+//! Ajoute une tache de fabrication de canon Ã  la planÃ¨te
 //! @pre cannon est compris dans [0: Cannon::Count[
-//! @pre La planète a un Building::Factory
-//! @pre La planète peut payer
+//! @pre La planÃ¨te a un Building::Factory
+//! @pre La planÃ¨te peut payer
 void addTask(Planet& planet,
              uint32_t roundCount,
              Cannon::Enum cannon,
@@ -538,7 +538,7 @@ void stopTask(Planet& planet,
 }
 
 
-//! Excecute une tache sur une planète
+//! Excecute une tache sur une planÃ¨te
 void execTask(Universe& univ,
               Planet& planet,
               PlanetTask& task,
@@ -695,7 +695,7 @@ void execBuilding(Planet& planet, Building::Enum type, size_t level)
 }
 
 
-//! Simule la vie de la planète durant un round
+//! Simule la vie de la planÃ¨te durant un round
 void planetRound(Player const& player,
                  Universe& univ,
                  Planet& planet,
@@ -731,7 +731,7 @@ void planetRound(Player const& player,
 		cappedAdd(planet.ressourceSet.tab[Ressource::Loicium], Ressource::Value(rand() % 3));
 	}
 
-	//Limitation des ressources à un milliard
+	//Limitation des ressources Ã  un milliard
 	for(auto& val : planet.ressourceSet.tab)
 		val = std::min(val, Ressource::Value(1000000000));
 }
@@ -749,7 +749,7 @@ void fleetRound(Universe& univ,
 	if(fleet.task && fleet.task->expired)
 		fleet.task.reset();
 
-	//Limitation des ressources à un milliard
+	//Limitation des ressources Ã  un milliard
 	for(auto& val : fleet.ressourceSet.tab)
 		val = std::min(val, Ressource::Value(1000000000));
 }
@@ -781,8 +781,8 @@ FleetActionTest canMove(Fleet const& fleet,
 }
 
 
-//! Ajoute une tache de déplacement dans la flotte
-//! @pre la flotte peut se rendre a cet coordonée (canMove)
+//! Ajoute une tache de dÃ©placement dans la flotte
+//! @pre la flotte peut se rendre a cet coordonÃ©e (canMove)
 void addTaskMove(Fleet& fleet, uint32_t roundCount, Coord const& coord)
 {
 	if(fleet.task)
@@ -793,7 +793,7 @@ void addTaskMove(Fleet& fleet, uint32_t roundCount, Coord const& coord)
 }
 
 
-//! Test si la flotte peut récolter la planète
+//! Test si la flotte peut rÃ©colter la planÃ¨te
 FleetActionTest canHarvest(Fleet const& fleet, Planet const* planet)
 {
 	if(fleet.task)
@@ -807,8 +807,8 @@ FleetActionTest canHarvest(Fleet const& fleet, Planet const* planet)
 }
 
 
-//! Ajoute une tache de récolte dans la flotte
-//! @pre la flotte peut récolter la planète (canHarvest)
+//! Ajoute une tache de rÃ©colte dans la flotte
+//! @pre la flotte peut rÃ©colter la planÃ¨te (canHarvest)
 void addTaskHarvest(Fleet& fleet, uint32_t roundCount, Planet const& planet)
 {
 	if(fleet.task)
@@ -819,7 +819,7 @@ void addTaskHarvest(Fleet& fleet, uint32_t roundCount, Planet const& planet)
 }
 
 
-//! Test si la flotte peut colonizer la planète
+//! Test si la flotte peut colonizer la planÃ¨te
 FleetActionTest canColonize(Player const& player,
                             Fleet const& fleet,
                             Planet const* planet,
@@ -837,8 +837,8 @@ FleetActionTest canColonize(Player const& player,
 }
 
 
-//! Ajoute une tache de récolte dans la flotte
-//! @pre la flotte peut colonizer la planète (canColonize)
+//! Ajoute une tache de rÃ©colte dans la flotte
+//! @pre la flotte peut colonizer la planÃ¨te (canColonize)
 void addTaskColonize(Fleet& fleet, uint32_t roundCount, Planet const& planet)
 {
 	if(fleet.task)
@@ -849,7 +849,7 @@ void addTaskColonize(Fleet& fleet, uint32_t roundCount, Planet const& planet)
 }
 
 
-//! Test si la flotte peut balancer ses ressources sur la planète
+//! Test si la flotte peut balancer ses ressources sur la planÃ¨te
 FleetActionTest canDrop(Fleet const& fleet, Planet const* planet)
 {
 	if(planet == nullptr)
@@ -864,8 +864,8 @@ FleetActionTest canDrop(Fleet const& fleet, Planet const* planet)
 }
 
 
-//! La flotte balance ses ressources sur la planète
-//! @pre la flotte peut balancer ses ressources sur la planète (canDrop)
+//! La flotte balance ses ressources sur la planÃ¨te
+//! @pre la flotte peut balancer ses ressources sur la planÃ¨te (canDrop)
 void drop(Fleet& fleet, Planet& planet)
 {
 	addArray(planet.ressourceSet.tab, fleet.ressourceSet.tab);
