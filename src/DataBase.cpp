@@ -2,7 +2,6 @@
 //! @author Loïc HAMOT
 
 #include "stdafx.h"
-#include "DataBase.h"
 
 #include <iostream>
 #include <sstream>
@@ -24,30 +23,34 @@
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/set.hpp>
 #include <boost/serialization/optional.hpp>
+#include <boost/serialization/boost_array.hpp>
 #include <boost/throw_exception.hpp>
 #pragma warning(pop)
 
 #pragma warning(push)
-#pragma warning(disable: 4512 4244 4100)
+#pragma warning(disable: 4512 4244 4100 4245)
 #include <Poco/Data/Session.h>
 #include <Poco/Data/MySQL/Connector.h>
-#include <Poco/Data/BLOB.h>
 #include <Poco/Tuple.h>
 #include <Poco/SHA1Engine.h>
 #include <Poco/DigestStream.h>
 #pragma warning(pop)
 
+#include "DataBase.h"
 #include "NameGen.h"
 #include "Skills.h"
 #include "Rules.h"
 #include "Tools.h"
 
 
+using namespace Poco::Data::Keywords;
 using namespace Poco::Data;
 using namespace Poco;
 using namespace boost;
 using namespace std;
 using namespace boost::adaptors;
+
+namespace PKW = Poco::Data::Keywords;
 
 typedef DataBase::PlayerTutoMap PlayerTutoMap;
 
@@ -97,7 +100,7 @@ public:
 
 
 //! Attrape toutes exceptions venant du SGBD pour les logger et les relancer
-#define DB_CATCH handleException(ex, __FILE__, __LINE__, __func__);
+#define DB_CATCH handleException(ex, __FILE__, __LINE__, __func__); throw std::logic_error("Can't get here");
 
 void DataBase::handleException(
   Poco::Data::DataException const& ex,
@@ -326,9 +329,9 @@ try
 	            "(playerID, time, target, code) "
 	            "VALUES(?, ?, ?, ?)",
 	            use(pid),
-	            use(time(0)),
-	            use((int)target),
-	            use(code),
+	            PKW::bind(time(0)),
+	            PKW::bind((int)target),
+	            useRef(code),
 	            now;
 }
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
@@ -345,9 +348,9 @@ try
 	            "(playerID, time, target, code) "
 	            "VALUES(?, ?, ?, ?)",
 	            use(pid),
-	            use(time(0)),
-	            use((int)target),
-	            use(code),
+	            PKW::bind(time(0)),
+	            PKW::bind((int)target),
+	            useRef(code),
 	            now;
 }
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
@@ -367,11 +370,11 @@ try
 	            "(login, password, planetCoordX, planetCoordY, planetCoordZ, "
 	            " experience, skillpoints, isAI) "
 	            "VALUES(?, ?, ?, ?, ?, 0, 0, ?)",
-	            use(login),
-	            use(password),
-	            use(UndefinedCoord.X),
-	            use(UndefinedCoord.Y),
-	            use(UndefinedCoord.Z),
+	            useRef(login),
+	            useRef(password),
+	            PKW::bind(UndefinedCoord.X),
+	            PKW::bind(UndefinedCoord.Y),
+	            PKW::bind(UndefinedCoord.Z),
 	            use(isAI),
 	            now;
 	size_t rowCount;
@@ -387,7 +390,7 @@ try
 		            "INSERT INTO TutoDisplayed "
 		            "(playerID, tag, level) "
 		            "VALUES(?, ?, ?)",
-		            use(pid), use(std::string(CoddingLevelTag)), use(0),
+		            use(pid), PKW::bind(std::string(CoddingLevelTag)), PKW::bind(0),
 		            now;
 
 		addScriptImpl(pid, CodeData::Planet, codes[0]);
@@ -477,7 +480,7 @@ try
 		(*session_) <<
 		            boost::format(GetPlayerRequest) %
 		            "WHERE login = ?",
-		            into(playerList), use(login), now;
+		            into(playerList), useRef(login), now;
 		if(playerList.size() != 1)
 			return boost::optional<Player>();
 		else
@@ -489,7 +492,7 @@ try
 		(*session_) <<
 		            boost::format(GetPlayerRequest) %
 		            "WHERE login = ? AND password = ?",
-		            into(playerList), use(login), use(password), now;
+		            into(playerList), useRef(login), useRef(password), now;
 		if(playerList.size() != 1)
 			return boost::optional<Player>();
 		else
@@ -535,7 +538,7 @@ try
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
-void DataBase::addEvents(std::vector<Event> const& events)
+void DataBase::addEvents(std::vector<::Event> const& events)
 try
 {
 	if(events.empty())
@@ -561,7 +564,7 @@ try
 	            "(time, type, comment, value, value2, viewed, playerID, "
 	            "  fleetID, planetCoordX, planetCoordY, planetCoordZ) "
 	            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-	            use(events | transformed(event_to_tuple) | cached),
+	            PKW::bind(events | transformed(event_to_tuple) | cached),
 	            now;
 	trans.commit();
 }
@@ -579,14 +582,14 @@ try
 		int count = 0;
 		(*session_) <<
 		            "SELECT count(id) FROM Event WHERE playerID=?",
-		            into(count), use(maxEventCount.first), now;
+		            into(count), PKW::bind(maxEventCount.first), now;
 		count = std::max(0, int(count) - int(maxEventCount.second));
 		(*session_) <<
 		            "DELETE FROM Event WHERE playerID=? ORDER BY id LIMIT ?",
-		            use(maxEventCount.first), use(count), now;
+		            PKW::bind(maxEventCount.first), PKW::bind(count), now;
 	}
 
-	for(size_t type = 0; type < Event::Count; ++type)
+	for(size_t type = 0; type < ::Event::Count; ++type)
 	{
 		int count = 0;
 		(*session_) <<
@@ -601,7 +604,7 @@ try
 	//! Supprime les Rappor de combats de plus de 24 heures
 	(*session_) <<
 	            "DELETE FROM FightReport WHERE time < ?",
-	            use(time(0) - (3600 * 1)),
+	            PKW::bind(time(0) - (3600 * 1)),
 	            now;
 
 	trans.commit();
@@ -610,19 +613,19 @@ catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
 //! Tuple pour stoker les donnée d'un Event quand il sort de la base de donnée
-typedef Poco::Tuple < Event::ID, time_t, size_t, std::string, intptr_t,
+typedef Poco::Tuple <::Event::ID, time_t, size_t, std::string, intptr_t,
         intptr_t, int, Player::ID, Fleet::ID, Coord::Value, Coord::Value,
         Coord::Value >
         DBEvent;
 
 
 //! Convertie un DBEvent en Event
-Event toEvent(DBEvent const& ev)
+::Event toEvent(DBEvent const& ev)
 {
-	Event res(ev.get<7>(), ev.get<1>(), Event::Type(ev.get<2>()));
+	::Event res(ev.get<7>(), ev.get<1>(), ::Event::Type(ev.get<2>()));
 	res.id = ev.get<0>();
 	res.time = ev.get<1>();
-	res.type = Event::Type(ev.get<2>());
+	res.type = ::Event::Type(ev.get<2>());
 	res.comment = ev.get<3>();
 	res.value = ev.get<4>();
 	res.value2 = ev.get<5>();
@@ -634,7 +637,7 @@ Event toEvent(DBEvent const& ev)
 }
 
 
-std::vector<Event> DataBase::getPlayerEvents(Player::ID pid) const
+std::vector<::Event> DataBase::getPlayerEvents(Player::ID pid) const
 try
 {
 	checkConnection(session_);
@@ -646,16 +649,16 @@ try
 	            "ORDER BY id DESC LIMIT 100 ",
 	            into(dbEvents),
 	            use(pid),
-	            use((int)Event::FleetCodeError),
-	            use((int)Event::FleetCodeExecError),
-	            use((int)Event::PlanetCodeError),
-	            use((int)Event::PlanetCodeExecError),
-	            use((int)Event::FleetLose),
-	            use((int)Event::PlanetLose),
-	            use((int)Event::PlayerLogGather),
+	            PKW::bind((int)::Event::FleetCodeError),
+	            PKW::bind((int)::Event::FleetCodeExecError),
+	            PKW::bind((int)::Event::PlanetCodeError),
+	            PKW::bind((int)::Event::PlanetCodeExecError),
+	            PKW::bind((int)::Event::FleetLose),
+	            PKW::bind((int)::Event::PlanetLose),
+	            PKW::bind((int)::Event::PlayerLogGather),
 	            now;
 
-	std::vector<Event> out;
+	std::vector<::Event> out;
 	out.reserve(dbEvents.size());
 	boost::transform(dbEvents, back_inserter(out), toEvent);
 	return out;
@@ -663,7 +666,7 @@ try
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
 
-std::vector<Event> DataBase::getPlanetEvents(Player::ID pid,
+std::vector<::Event> DataBase::getPlanetEvents(Player::ID pid,
     Coord pcoord) const
 try
 {
@@ -681,11 +684,11 @@ try
 	            use(pcoord.X), use(pcoord.Y), use(pcoord.Z),
 	            now;
 
-	return dbEvents | transformed(toEvent) | collected<std::vector<Event>>();
+	return dbEvents | transformed(toEvent) | collected<std::vector<::Event>>();
 }
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
-std::vector<Event> DataBase::getFleetEvents(
+std::vector<::Event> DataBase::getFleetEvents(
   Player::ID pid, Fleet::ID fid) const
 try
 {
@@ -698,7 +701,7 @@ try
 	            into(dbEvents), use(pid), use(fid),
 	            now;
 
-	return dbEvents | transformed(toEvent) | collected<std::vector<Event>>();
+	return dbEvents | transformed(toEvent) | collected<std::vector<::Event>>();
 }
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
@@ -728,7 +731,7 @@ try
 	oa& report;
 	data = ss.str();
 	(*session_) << "INSERT INTO FightReport (time, data) VALUES(?, ?)",
-	            use(time(0)), use(data), now;
+	            PKW::bind(time(0)), use(data), now;
 	size_t id = 0;
 	(*session_) << "SELECT LAST_INSERT_ID() ", into(id), now;
 	trans.commit();
@@ -779,7 +782,7 @@ try
 		BOOST_THROW_EXCEPTION(Exception("Invalid reportID"));
 	using namespace boost::archive;
 	stringstream ss(ios::binary | ios::in | ios::out);
-	ss.rdbuf()->sputn(data.rawContent(), data.size());
+	ss.rdbuf()->sputn(reinterpret_cast<const char*>(data.rawContent()), data.size());
 	boost::archive::text_iarchive ia(ss);
 	ia& report;
 	return report;
@@ -832,11 +835,12 @@ class TypeHandler<typename DataBase::CodeError>
 public:
 	static void bind(std::size_t pos,
 	                 const DataBase::CodeError& obj,
-	                 AbstractBinder* pBinder)
+	                 AbstractBinder* pBinder,
+	                 AbstractBinder::Direction dir)
 	{
 		poco_assert_dbg(pBinder != 0);
-		TypeHandler<std::string>::bind(pos++, obj.message, pBinder);
-		TypeHandler<size_t>::bind(pos++, obj.codeDataId, pBinder);
+		TypeHandler<std::string>::bind(pos++, obj.message, pBinder, dir);
+		TypeHandler<size_t>::bind(pos++, obj.codeDataId, pBinder, dir);
 	}
 
 	static std::size_t size()
@@ -846,7 +850,7 @@ public:
 
 	static void prepare(std::size_t pos,
 	                    const DataBase::CodeError& obj,
-	                    AbstractPreparation* pPrepare)
+	                    AbstractPreparator::Ptr pPrepare)
 	{
 		TypeHandler<std::string>::prepare(pos++, obj.message, pPrepare);
 		TypeHandler<size_t>::prepare(pos++, obj.codeDataId, pPrepare);
@@ -855,7 +859,7 @@ public:
 	static void extract(std::size_t pos,
 	                    DataBase::CodeError& obj,
 	                    const DataBase::CodeError& defVal,
-	                    AbstractExtractor* pExt)
+	                    AbstractExtractor::Ptr pExt)
 	{
 		std::string message;
 		size_t codeID = 0;
@@ -885,7 +889,7 @@ try
 	Transaction trans(*session_);
 	(*session_) <<
 	            "UPDATE Script SET lastError = ? WHERE id = ? ",
-	            use(errors),
+	            PKW::bind(errors),
 	            now;
 	trans.commit();
 }
@@ -904,7 +908,7 @@ try
 	            "WHERE playerID = ? AND target = ? "
 	            "ORDER BY id DESC "
 	            "LIMIT 1 ",
-	            use(pid), use((int)target), into(scrData), now;
+	            use(pid), PKW::bind((int)target), into(scrData), now;
 
 	typedef Poco::Tuple<size_t, Player::ID, time_t, size_t, Data::BLOB> BlocklyTuple;
 	BlocklyTuple bloData;
@@ -913,7 +917,7 @@ try
 	            "WHERE playerID = ? AND target = ? "
 	            "ORDER BY id DESC "
 	            "LIMIT 1 ",
-	            use(pid), use((int)target), into(bloData), now;
+	            use(pid), PKW::bind((int)target), into(bloData), now;
 
 	CodeData res;
 	res.id = scrData.get<0>();
@@ -941,7 +945,7 @@ try
 	            "UPDATE Player "
 	            "SET login = ?, password = ? "
 	            "WHERE id = ? ",
-	            use(login), use(password), use(pid),
+	            useRef(login), useRef(password), use(pid),
 	            now;
 	addScript(pid, CodeData::Planet, "");
 	addScript(pid, CodeData::Fleet, "");
@@ -962,7 +966,7 @@ try
 	for(Player::ID pid : pids)
 		ss << pid << ",";
 	ss << "0) AND tag = ? ";
-	(*session_) << ss.str(), use(tutoName), now;
+	(*session_) << ss.str(), useRef(tutoName), now;
 }
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
@@ -977,11 +981,11 @@ try
 	(*session_) <<
 	            "INSERT IGNORE INTO TutoDisplayed "
 	            "(playerID, tag, level) "
-	            "VALUES(?, ?, ?)", use(pid), use(tutoName), use(0), now;
+	            "VALUES(?, ?, ?)", use(pid), useRef(tutoName), PKW::bind(0), now;
 	(*session_) << "UPDATE TutoDisplayed "
 	            "SET level = level + ? "
 	            "WHERE playerID = ? AND tag = ? ",
-	            use(value), use(pid), use(tutoName), now;
+	            use(value), use(pid), useRef(tutoName), now;
 	trans.commit();
 }
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
@@ -1028,13 +1032,13 @@ try
 	Transaction trans(*session_);
 	typedef Poco::Tuple<uint64_t, Player::ID> ScoreTuple;
 
-	auto pair_to_poco = [](std::map<Player::ID, uint64_t>::value_type const & p) 
+	auto pair_to_poco = [](std::map<Player::ID, uint64_t>::value_type const & p)
 	{
-		return ScoreTuple(get<1>(p), get<0>(p)); 
+		return ScoreTuple(get<1>(p), get<0>(p));
 	};
 
 	(*session_) << "UPDATE Player SET score = ? WHERE id = ?",
-	            use(scoreMap | transformed(pair_to_poco) | cached),
+	            PKW::bind(scoreMap | transformed(pair_to_poco) | cached),
 	            now;
 	trans.commit();
 }
@@ -1054,9 +1058,9 @@ try
 		            "experience = experience + ?, "
 		            "skillpoints = skillpoints + ? "
 		            "WHERE id = ?",
-		            use(nvp.second),
-		            use(nvp.second),
-		            use(nvp.first),
+		            PKW::bind(nvp.second),
+		            PKW::bind(nvp.second),
+		            PKW::bind(nvp.first),
 		            now;
 	trans.commit();
 }
@@ -1101,8 +1105,8 @@ try
 	            "skillpoints = skillpoints - ?, "
 	            "skilltab = ? "
 	            "WHERE id = ?",
-	            use(cost),
-	            use(skilltabstr),
+	            PKW::bind(cost),
+	            useRef(skilltabstr),
 	            use(pid),
 	            now;
 	trans.commit();
@@ -1122,7 +1126,7 @@ void DataBase::setPlayerSkills(Player::ID pid,
 	            "UPDATE Player SET "
 	            "skilltab = ? "
 	            "WHERE id = ?",
-	            use(skilltabstr),
+	            PKW::bind(skilltabstr),
 	            use(pid),
 	            now;
 	trans.commit();
@@ -1142,7 +1146,7 @@ try
 	            "INSERT INTO Message "
 	            "(sender, recipient, time, suject, message, viewed) "
 	            "VALUES(?, ?, ?, ?, ?, 0)",
-	            use(sender), use(recip), use(time(0)), use(obj), use(mes), now;
+	            use(sender), use(recip), PKW::bind(time(0)), useRef(obj), useRef(mes), now;
 }
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
@@ -1365,7 +1369,7 @@ try
 	            "INSERT IGNORE INTO Alliance "
 	            "(masterID, name, description) "
 	            "VALUES(?, ?, ?)",
-	            use(pid), use(name), use(description), now;
+	            use(pid), useRef(name), useRef(description), now;
 	size_t rowCount;
 	(*session_) << "SELECT ROW_COUNT() ", into(rowCount), now;
 	if(rowCount == 0)
@@ -1429,7 +1433,7 @@ try
 	            "UPDATE Alliance SET "
 	            "  name = ?, description = ? "
 	            "WHERE id = ?",
-	            use(al.name), use(al.description), use(al.id), now;
+	            useRef(al.name), useRef(al.description), PKW::bind(al.id), now;
 }
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 

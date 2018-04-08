@@ -2,11 +2,6 @@
 //! @author Loïc HAMOT
 
 #include "stdafx.h"
-#include "UnivManip.h"
-
-#include "Tools.h"
-#include "Rules.h"
-#include "NameGen.h"
 #include <boost/range/numeric.hpp>
 #include <boost/range/algorithm/transform.hpp>
 #include <boost/format.hpp>
@@ -19,6 +14,7 @@
 #include "portable_binary_iarchive.hpp"
 #include <boost/property_tree/ptree_serialization.hpp>
 #include <boost/locale.hpp>
+#include <boost/serialization/boost_array.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/map.hpp>
@@ -36,6 +32,12 @@
 #pragma warning(pop)
 #include <boost/iostreams/filtering_streambuf.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
+
+#include "UnivManip.h"
+
+#include "Tools.h"
+#include "Rules.h"
+#include "NameGen.h"
 
 #include "DataBase.h"
 #include "Skills.h"

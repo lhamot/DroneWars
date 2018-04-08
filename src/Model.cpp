@@ -14,7 +14,7 @@ Building const Building::List[] =
 	{ RessourceSet(100, 0, 0), 1.6 }  //GeothermicCentral
 };
 static_assert(sizeof(Building::List) == (sizeof(Building) * Building::Count),
-	"Building info missing");
+              "Building info missing");
 
 
 Ship const Ship::List[] =
@@ -31,7 +31,7 @@ Ship const Ship::List[] =
 	{ RessourceSet(2000, 0, 0),   8,       0,  4 }  //LargeCargo
 };
 static_assert(sizeof(Ship::List) == (sizeof(Ship) * Ship::Count),
-	"Ship info missing");
+              "Ship info missing");
 
 Cannon const Cannon::List[] =
 {
@@ -43,4 +43,4 @@ Cannon const Cannon::List[] =
 	{ RessourceSet(200000, 0, 0), 32,     32, 32 },
 };
 static_assert(sizeof(Cannon::List) == (sizeof(Cannon) * Cannon::Count),
-	"Cannon info missing");
+              "Cannon info missing");

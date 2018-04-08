@@ -586,10 +586,11 @@ private:
 		if(version > 0)
 			ar& wantEscape& escapeProba;
 	}
+
+public:
 	//! Constructeur par default utilisé uniquement par boost::serialization
 	Report() {}
 
-public:
 	bool isDead;         //!< True si l'armée est détruite
 	bool hasFight;       //!< True si l'armée a combatue
 	uint32_t experience; //!< Points d'experience gagnés
