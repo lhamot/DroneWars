@@ -1,4 +1,5 @@
 {% load tmp_filters %}
+{% load static from staticfiles %}
 {% load i18n %}
 			{% if target_event.type == Event_Type.FleetWin or target_event.type == Event_Type.FleetLose or target_event.type == Event_Type.PlanetLose or target_event.type == Event_Type.PlanetWin or target_event.type == Event_Type.FightAvoided %}
 			<div class="panel-heading">
@@ -31,7 +32,7 @@
 				<tr>
 					<th>{% trans "Planet name" %}</th>
 					<td>
-						<img src="{{ STATIC_URL }}{{fight_report.planet.fightInfo.before|img_path:'min'}}" width="40" class="{{fight_report.planet.fightInfo.before|armyClass:player}}"/>
+						<img src="{% static "{{fight_report.planet.fightInfo.before|img_path:'min'}}" %}" width="40" class="{{fight_report.planet.fightInfo.before|armyClass:player}}"/>
 						&nbsp;
 						{{fight_report.planet.fightInfo.before.name}}
 					</td>

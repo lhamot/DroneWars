@@ -1,5 +1,7 @@
 {% extends "ingame_base.html" %}
 
+{% load static from staticfiles %}
+
 {% load i18n %}
 
 {% load l10n %}
@@ -93,7 +95,7 @@
 				<div class="panel-heading"><h3>{{planet.name}}</h3></div>
 				<div class="panel-body">
 					<a href="planet.html?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}">
-						<img src="{{ STATIC_URL }}{{planet|img_path:'pl'}}" class="{{planet|armyClass:player}} img-responsive"/>
+						<img src="{% static "{{planet|img_path:'pl'}}" %}" class="{{planet|armyClass:player}} img-responsive"/>
 					</a>
 				</div>
 			</div>

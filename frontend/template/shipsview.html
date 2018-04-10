@@ -1,5 +1,7 @@
 {% extends "ingame_base.html" %}
 
+{% load static from staticfiles %}
+
 {% load i18n %}
 
 {% load tmp_filters %}
@@ -25,7 +27,7 @@
 					</thead>
 					{% for ship in ships %}
 					<tr>
-						<td><img src="{{ STATIC_URL }}img/ships/{{ship.index}}.jpg" width="80" class="img-thumbnail"/></td>
+						<td><img src="{% static "img/ships/{{ship.index}}.jpg" %}" width="80" class="img-thumbnail"/></td>
 						<td style="white-space: nowrap">{{ship.index|shipname}}</td>
 						<td>{{ship.index|shipbrief}}</td>
 						<td>{{ship.price.tab.0}}</td>

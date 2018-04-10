@@ -1,10 +1,12 @@
 {% extends "codesview.html" %}
 
+{% load static from staticfiles %}
+
 {% block header_adds %}
-<script type="text/javascript" src="{{ STATIC_URL }}CodeMirror/lib/codemirror.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}CodeMirror/mode/lua/lua.js"></script>
-<link rel="stylesheet" href="{{ STATIC_URL }}CodeMirror/lib/codemirror.css">
-<link rel="stylesheet" href="{{ STATIC_URL }}CodeMirror/theme/cobalt.css">
+<script type="text/javascript" src="{% static "CodeMirror/lib/codemirror.js" %}"></script>
+<script type="text/javascript" src="{% static "CodeMirror/mode/lua/lua.js" %}"></script>
+<link rel="stylesheet" href="{% static "CodeMirror/lib/codemirror.css" %}">
+<link rel="stylesheet" href="{% static "CodeMirror/theme/cobalt.css" %}">
 {% endblock %}
 
 {% block buttons %}

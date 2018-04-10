@@ -1,35 +1,37 @@
 {% extends "codesview.html" %}
 
+{% load static from staticfiles %}
+
 {% load i18n %}
 
 {% block header_adds %}
     <meta charset="utf-8">
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly/blockly_compressed.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly/blocks_compressed.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly/msg/js/fr.js"></script>
+    <script type="text/javascript" src="{% static "blockly/blockly_compressed.js" %}"></script>
+    <script type="text/javascript" src="{% static "}blockly/blocks_compressed.js" %}"></script>
+    <script type="text/javascript" src="{% static "blockly/msg/js/fr.js" %}"></script>
 
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/language/fr/_messages.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/generators/lua.js">           </script>
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/generators/lua/control.js">   </script>
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/generators/lua/text.js">      </script>
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/generators/lua/lists.js">     </script>
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/generators/lua/logic.js">     </script>
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/generators/lua/math.js">      </script>
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/generators/lua/procedures.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/generators/lua/variables.js"> </script>
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/language/fr/dronewars.js">    </script>
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/language/common/dronewars.js"></script>
+    <script type="text/javascript" src="{% static "}blockly_adds/language/fr/_messages.js" %}"></script>
+    <script type="text/javascript" src="{% static "}blockly_adds/generators/lua.js" %}">           </script>
+    <script type="text/javascript" src="{% static "blockly_adds/generators/lua/control.js" %}">   </script>
+    <script type="text/javascript" src="{% static "blockly_adds/generators/lua/text.js" %}">      </script>
+    <script type="text/javascript" src="{% static "blockly_adds/generators/lua/lists.js" %}">     </script>
+    <script type="text/javascript" src="{% static "blockly_adds/generators/lua/logic.js" %}">     </script>
+    <script type="text/javascript" src="{% static "blockly_adds/generators/lua/math.js" %}">      </script>
+    <script type="text/javascript" src="{% static "blockly_adds/generators/lua/procedures.js" %}"></script>
+    <script type="text/javascript" src="{% static "blockly_adds/generators/lua/variables.js" %}"> </script>
+    <script type="text/javascript" src="{% static "blockly_adds/language/fr/dronewars.js" %}">    </script>
+    <script type="text/javascript" src="{% static "blockly_adds/language/common/dronewars.js" %}"></script>
     {% if level < 6  %}
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/language/common/dronewars_tutos.js"></script>
+    <script type="text/javascript" src="{% static "blockly_adds/language/common/dronewars_tutos.js" %}"></script>
     {% endif %}
 
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/language/common/dronewars_Fleet.js">       </script>
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/language/common/dronewars_Planet.js">      </script>
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/language/common/dronewars_RessourceSet.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/language/common/dronewars_Coord.js">       </script>
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/language/common/dronewars_FleetAction.js"> </script>
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/language/common/dronewars_PlanetAction.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}blockly_adds/language/common/dronewars_Player.js"></script>
+    <script type="text/javascript" src="{% static "blockly_adds/language/common/dronewars_Fleet.js" %}">       </script>
+    <script type="text/javascript" src="{% static "blockly_adds/language/common/dronewars_Planet.js" %}">      </script>
+    <script type="text/javascript" src="{% static "blockly_adds/language/common/dronewars_RessourceSet.js" %}"></script>
+    <script type="text/javascript" src="{% static "blockly_adds/language/common/dronewars_Coord.js" %}">       </script>
+    <script type="text/javascript" src="{% static "blockly_adds/language/common/dronewars_FleetAction.js" %}"> </script>
+    <script type="text/javascript" src="{% static "blockly_adds/language/common/dronewars_PlanetAction.js" %}"></script>
+    <script type="text/javascript" src="{% static "blockly_adds/language/common/dronewars_Player.js" %}"></script>
 
     <style>
       .blocklySvg {
@@ -120,7 +122,7 @@
 {% block toolbox %}{% endblock %}
 <script>
 	Blockly.inject(document.getElementById('blocklyDiv'), { 
-			path: '{{ STATIC_URL }}blockly/',
+			path: '{% static "blockly/" %}',
 			toolbox: document.getElementById('toolbox')
 		}
 	);
