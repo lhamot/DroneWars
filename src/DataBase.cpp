@@ -889,7 +889,8 @@ try
 	Transaction trans(*session_);
 	(*session_) <<
 	            "UPDATE Script SET lastError = ? WHERE id = ? ",
-	            PKW::bind(errors),
+	            PKW::bind(errors | transformed(boost::bind(&CodeError::message, _1)) | collected<std::vector<string>>()),
+	            PKW::bind(errors | transformed(boost::bind(&CodeError::codeDataId, _1)) | collected<std::vector<size_t>>()),
 	            now;
 	trans.commit();
 }
