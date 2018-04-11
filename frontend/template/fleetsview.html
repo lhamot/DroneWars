@@ -63,7 +63,7 @@
 						<td>
 							{% if planet %}
 							<a href="planet.html?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}">
-								<img src="{% static "{{planet|img_path:'min'}}" %}" class="{{planet|armyClass:player}}" width="40"/>
+								<img src="{% static planet|img_path:'min' %}" class="{{planet|armyClass:player}}" width="40"/>
 							</a>
 							{% endif %}
 						</td>

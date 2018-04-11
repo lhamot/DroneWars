@@ -32,7 +32,7 @@
 				<tr>
 					<th>{% trans "Planet name" %}</th>
 					<td>
-						<img src="{% static "{{fight_report.planet.fightInfo.before|img_path:'min'}}" %}" width="40" class="{{fight_report.planet.fightInfo.before|armyClass:player}}"/>
+						<img src="{% static fight_report.planet.fightInfo.before|img_path:'min' %}" width="40" class="{{fight_report.planet.fightInfo.before|armyClass:player}}"/>
 						&nbsp;
 						{{fight_report.planet.fightInfo.before.name}}
 					</td>

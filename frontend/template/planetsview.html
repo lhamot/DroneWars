@@ -63,7 +63,7 @@
 					{% for planet in planetList %}
 					<tr onclick="document.location.href='planet.html?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}'">
 						<td>
-							<img src="{% static "{{planet|img_path:'min'}}" %}" width="40" class="{{planet|armyClass:player}}"/>
+							<img src="{% static planet|img_path:'min' %}" width="40" class="{{planet|armyClass:player}}"/>
 						</td>
 						<td><a href="planet.html?planet_coord={{planet.coord.X}}_{{planet.coord.Y}}_{{planet.coord.Z}}">{{planet.name}}</a></td>
 						<td class="left-border-col">{{planet.coord.X}}</td>
