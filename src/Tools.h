@@ -4,7 +4,6 @@
 #ifndef __BTA_TOOLS__
 #define __BTA_TOOLS__
 
-#include "SafeInt3.hpp"
 #include "Logger.h"
 #include <vector>
 
@@ -182,12 +181,6 @@ auto mapFind(M& map, typename M::key_type key, char const* const filename, int l
 
 #define MAP_FIND(map, key) \
 	mapFind(map, key, __FILE__, __LINE__)
-
-namespace std
-{
-template<typename T>
-class numeric_limits<SafeInt<T> > : public numeric_limits<T> {};
-}
 
 template<typename A>
 void cappedAdd(A& a, A const b)

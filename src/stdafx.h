@@ -20,8 +20,6 @@
 #include <unordered_map>
 #include <ciso646>
 
-#include "SafeInt3.hpp"
-
 #pragma warning(push)
 #pragma warning(disable:4244 4310 4100 4512 4127 4456 4458 4459 4706 4702 4503 4345 6011 4714)
 #include <boost/array.hpp>

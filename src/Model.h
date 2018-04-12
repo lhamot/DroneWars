@@ -9,8 +9,6 @@
 #include "Logger.h"
 
 
-typedef std::map<int, int> AfacMap;
-
 //! Pour éviter un warning bidon de doxygen
 typedef boost::serialization::access boost_serialization_access;
 
@@ -55,7 +53,7 @@ struct CompCoord
 //! Les types de Ressource
 struct Ressource
 {
-	typedef SafeInt<uint32_t> Value; //!< Type contenant une quantité d'une ressource
+	typedef uint32_t Value; //!< Type contenant une quantité d'une ressource
 	//! Les types de Ressource
 	enum Enum : uint8_t
 	{
