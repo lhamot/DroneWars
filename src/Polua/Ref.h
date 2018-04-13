@@ -1,5 +1,9 @@
-//! @file
-//! @author Loïc HAMOT
+//
+// Copyright (c) 2018 LoÃ¯c HAMOT
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
 #ifndef __POLUA_REF__
 #define __POLUA_REF__
 
@@ -9,32 +13,32 @@
 namespace Polua
 {
 
-//! Référence un objet stoké dans les registre de lua
+//! RÃ©fÃ©rence un objet stokÃ© dans les registre de lua
 class Ref
 {
-	Ref(Ref const&);            //!< Désactivation du constructeur par copie
-	Ref& operator=(Ref const&); //!< Désactivation de l'opérateur de copie
+	Ref(Ref const&);            //!< DÃ©sactivation du constructeur par copie
+	Ref& operator=(Ref const&); //!< DÃ©sactivation de l'opÃ©rateur de copie
 
-	lua_State* L; //!< Données de l'interpreteur lua
+	lua_State* L; //!< DonnÃ©es de l'interpreteur lua
 	int ref;      //!< Identifiant de l'obj dans les registres (0 si invalide)
 
 public:
-	//! crée une référence a partir de l'objet sur la pile, et le pop.
+	//! crÃ©e une rÃ©fÃ©rence a partir de l'objet sur la pile, et le pop.
 	inline explicit Ref(lua_State* L):
 		L(L),
 		ref(luaL_ref(L, LUA_REGISTRYINDEX))
 	{
 	}
 
-	//! crée une référence a partir de la globale nommée
+	//! crÃ©e une rÃ©fÃ©rence a partir de la globale nommÃ©e
 	inline Ref(lua_State* L, std::string const& name): L(L), ref(LUA_REFNIL)
 	{
 		POLUA_CHECK_STACK(L, 0);
 		lua_getglobal(L, name.c_str());       //Pousse la variable global name
-		ref = luaL_ref(L, LUA_REGISTRYINDEX); //Crée la ref et pop l'objet
+		ref = luaL_ref(L, LUA_REGISTRYINDEX); //CrÃ©e la ref et pop l'objet
 	}
 
-	//! Supprime la référence si il y en as une
+	//! Supprime la rÃ©fÃ©rence si il y en as une
 	inline ~Ref()
 	{
 		POLUA_CHECK_STACK(L, 0);
@@ -42,7 +46,7 @@ public:
 			luaL_unref(L, LUA_REGISTRYINDEX, ref);
 	}
 
-	//! Pousse l'objet référencé dans la pile
+	//! Pousse l'objet rÃ©fÃ©rencÃ© dans la pile
 	inline void push() const
 	{
 		POLUA_CHECK_STACK(L, 1);
@@ -51,26 +55,26 @@ public:
 		lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
 	}
 
-	//! Retourne le type de l'objet référence (voir lua_type)
+	//! Retourne le type de l'objet rÃ©fÃ©rence (voir lua_type)
 	inline int type() const
 	{
 		POLUA_CHECK_STACK(L, 0);
 		lua_rawgeti(L, LUA_REGISTRYINDEX, ref); //Pousse l'objet sur la pile
-		int const type = lua_type(L, -1);       //Recupère son type
+		int const type = lua_type(L, -1);       //RecupÃ¨re son type
 		lua_pop(L, 1);                          //pop l'objet de la pile
 		return type;
 	}
 
-	//! Test si la référence est valide
+	//! Test si la rÃ©fÃ©rence est valide
 	inline bool is_valid() const
 	{
 		return ref >= 0;
 	}
 
-	//! @return le lua_State duquel la référence provient
+	//! @return le lua_State duquel la rÃ©fÃ©rence provient
 	lua_State* state() {return L;}
 
-	//! Appel this en tant que function qui ne retourne pas de résultat
+	//! Appel this en tant que function qui ne retourne pas de rÃ©sultat
 	//! @throw Polua::Exception en cas d'erreur
 	template<typename ...Args>
 	void call(Args const& ... args)
@@ -81,9 +85,9 @@ public:
 		return caller.call(args...);
 	}
 
-	//! Appel this en tant que function qui retourne un résultat
+	//! Appel this en tant que function qui retourne un rÃ©sultat
 	//! @throw Polua::Exception en cas d'erreur
-	//! @return résultat de la function lua, et déterminé par R
+	//! @return rÃ©sultat de la function lua, et dÃ©terminÃ© par R
 	template<typename R, typename ...Args>
 	R call(Args const& ... args)
 	{
@@ -93,7 +97,7 @@ public:
 		return caller.call<R>(args...);
 	}
 
-	//! @return l'objet demandé
+	//! @return l'objet demandÃ©
 	//! @throw luaL_error si pas le bon type
 	template<typename T>
 	T get()
@@ -106,17 +110,17 @@ public:
 	}
 };
 
-//! Référence un obj stoké dans les registre de lua (avec sémentique de valeur)
+//! RÃ©fÃ©rence un obj stokÃ© dans les registre de lua (avec sÃ©mentique de valeur)
 typedef std::shared_ptr<Ref> object;
 
-//! Crée une référence sur l'objet en haut de la pile, et le pop
+//! CrÃ©e une rÃ©fÃ©rence sur l'objet en haut de la pile, et le pop
 inline object ref(lua_State* L)
 {
 	POLUA_CHECK_STACK(L, 0);
 	return std::make_shared<Ref>(L);
 }
 
-//! Crée une référence un objet présent dans les variables globals
+//! CrÃ©e une rÃ©fÃ©rence un objet prÃ©sent dans les variables globals
 inline object refFromName(lua_State* L, std::string const& name)
 {
 	POLUA_CHECK_STACK(L, 0);

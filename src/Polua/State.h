@@ -1,5 +1,9 @@
-//! @file
-//! @author Loïc HAMOT
+//
+// Copyright (c) 2018 LoÃ¯c HAMOT
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
 #ifndef __POLUA_STATE__
 #define __POLUA_STATE__
 
@@ -14,7 +18,7 @@ extern "C"
 
 namespace Polua
 {
-//! Contient un lua_State et gère ca suppresion automatiquement
+//! Contient un lua_State et gÃ¨re ca suppresion automatiquement
 class State
 {
 	State(State const&);            //!< class non copiable
@@ -22,7 +26,7 @@ class State
 
 	lua_State* const state_; //!< Etats lua internes
 
-	//! Appelée par lua pour gerer une erreur quand on est PAS dans un call
+	//! AppelÃ©e par lua pour gerer une erreur quand on est PAS dans un call
 	static int at_panic(lua_State* L)
 	{
 		char const* mess = lua_tostring(L, -1);
@@ -53,7 +57,7 @@ public:
 		luaL_openlibs(state_);
 	}
 
-	//! Equivalent à luaL_loadbuffer
+	//! Equivalent Ã  luaL_loadbuffer
 	int loadString(std::string const& code,
 	               std::string const& tag = std::string())
 	{

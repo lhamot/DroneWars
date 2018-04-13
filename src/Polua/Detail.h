@@ -1,5 +1,9 @@
-//! @file
-//! @author Loïc HAMOT
+//
+// Copyright (c) 2018 LoÃ¯c HAMOT
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
 #ifndef __POLUA_DETAIL__
 #define __POLUA_DETAIL__
 
@@ -56,7 +60,7 @@ typename Add<sizeof...(Inputs), First, ArgList>::Type, Inputs... >
 };
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-//! Génere une liste de TypeWithIdx avec pour chaque type donné en entré,
+//! GÃ©nere une liste de TypeWithIdx avec pour chaque type donnÃ© en entrÃ©,
 //! l'index (dans la pile lua) plus le type.
 template<typename... Args>
 struct ArgIdxListMaker;
@@ -77,7 +81,7 @@ struct ArgIdxListMaker<>
 };
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-//! Extrait un objet de la pile lua, a partir du TypeWithIdx donné
+//! Extrait un objet de la pile lua, a partir du TypeWithIdx donnÃ©
 template<typename TI>
 static auto fromStack(lua_State* L)
 -> decltype(Polua::fromstackAny<typename TI::Type>(L, TI::Index))

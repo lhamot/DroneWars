@@ -1,5 +1,9 @@
-//! @file
-//! @author Loïc HAMOT
+//
+// Copyright (c) 2018 LoÃ¯c HAMOT
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
 #ifndef __POLUA_INDEXER_STD_VECTOR__
 #define __POLUA_INDEXER_STD_VECTOR__
 
@@ -12,7 +16,7 @@ namespace Polua
 template<typename V>
 struct Indexer<std::vector<V> >
 {
-	//! Récupere une valeur dans le std::vector
+	//! RÃ©cupere une valeur dans le std::vector
 	static int get(lua_State* L)
 	{
 		int isnum = 0;
@@ -59,7 +63,7 @@ struct IPairs<std::vector<T> >
 	}
 
 	//! @brief Comme la methode lua ipairs. Pour les std::vector.
-	//! @remarks Sur un vector, ipairs et pairs font la même chose.
+	//! @remarks Sur un vector, ipairs et pairs font la mÃªme chose.
 	static int pairs(lua_State* L)
 	{
 		return ipairs(L);

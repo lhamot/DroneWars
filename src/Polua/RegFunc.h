@@ -1,5 +1,9 @@
-//! @file
-//! @author Loïc HAMOT
+//
+// Copyright (c) 2018 LoÃ¯c HAMOT
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
 #ifndef __POLUA_REGFUNC__
 #define __POLUA_REGFUNC__
 
@@ -14,23 +18,23 @@ extern "C"
 namespace Polua
 {
 //! Enregistre un lua_CFunction dans la memoire global de lua
-void regFunc(lua_State* L,             //!< Donnée de l'interpréteur lua
+void regFunc(lua_State* L,             //!< DonnÃ©e de l'interprÃ©teur lua
              std::string const& name,  //!< Nom de la function dans lua
              lua_CFunction func        //!< function lua
             )
 {
 	POLUA_CHECK_STACK(L, 0);
 	lua_pushcfunction(L, func);     //Pousse la function sur la pile
-	lua_setglobal(L, name.c_str()); //La déplace dans les globals, nommé name
+	lua_setglobal(L, name.c_str()); //La dÃ©place dans les globals, nommÃ© name
 }
 
 //! @brief Enregistre un wraper de function C++ dans les global lua
 //!
 //! Enregistre un lua_CFunction closure avec le pointeur d'une fonction c++
-//! dans la memoire global de lua. Le lua_CFunction est généralement un wrapper
+//! dans la memoire global de lua. Le lua_CFunction est gÃ©nÃ©ralement un wrapper
 //! pour appeler la function c++.
 template<typename F>
-void regFunc(lua_State* L,             //!< Donnée de l'interpréteur lua
+void regFunc(lua_State* L,             //!< DonnÃ©e de l'interprÃ©teur lua
              std::string const& name,  //!< Nom de la function dans lua
              lua_CFunction caller,     //!< wrapper appelant la function c++
              F funcPtr                 //!< Pointeur de fonction c++
@@ -43,18 +47,18 @@ void regFunc(lua_State* L,             //!< Donnée de l'interpréteur lua
 	lua_setglobal(L, name.c_str());    // Le transfert dans la memoire global
 }
 
-//! @brief Contient des fonctions utilisée par regFunc
+//! @brief Contient des fonctions utilisÃ©e par regFunc
 //!   pour enregistrer des function c++ dans lua
 namespace Function
 {
-//! @brief Wrapper qui crée une lua_CFunction appelant une fonction C++ donnée
+//! @brief Wrapper qui crÃ©e une lua_CFunction appelant une fonction C++ donnÃ©e
 template<typename T>
 struct Caller;
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
-//! @brief Wrapper servant à créer une lua_CFunction appelant
-//! une fonction C++ donnée et ayant une valeur de retour
+//! @brief Wrapper servant Ã  crÃ©er une lua_CFunction appelant
+//! une fonction C++ donnÃ©e et ayant une valeur de retour
 template<typename R, typename... Args>
 struct Caller<R(*)(Args...)>
 {
@@ -76,8 +80,8 @@ static int call(lua_State* L)
 }
           };
 
-//! @brief Wrapper servant à créer une lua_CFunction appelant
-//! une fonction C++ donnée sans valeur de retour
+//! @brief Wrapper servant Ã  crÃ©er une lua_CFunction appelant
+//! une fonction C++ donnÃ©e sans valeur de retour
 template<typename... Args>
 struct Caller<void(*)(Args...)>
 {
@@ -104,7 +108,7 @@ static int call(lua_State* L)
 
 
 //! @brief Enregistre une function c++ dans les variables global de lua
-//!   en la rendant appelable avec le nom donnée
+//!   en la rendant appelable avec le nom donnÃ©e
 template<typename F>
 void regFunc(lua_State* L, std::string const& name, F funcPtr)
 {

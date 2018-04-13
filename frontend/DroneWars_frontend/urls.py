@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+#-*- coding: utf-8 -*-
+#
+# Copyright (c) 2018 Loïc HAMOT
+#
+# Distributed under the Boost Software License, Version 1.0. (See accompanying
+# file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+#
 from django.conf.urls import patterns, include, url
 import Game.views
 import Game.info_views

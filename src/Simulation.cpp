@@ -1,5 +1,9 @@
-//! @file
-//! @author Loïc HAMOT
+//
+// Copyright (c) 2018 Loïc HAMOT
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
 
 #include "stdafx.h"
 #include "Simulation.h"
@@ -371,6 +375,7 @@ bool checkLuaMethode(PlayerCodes::ObjectMap& codeMap,
                      std::vector<Event>& events)
 {
 	auto codeIter = codeMap.functions.find(name);
+
 	if(codeIter == codeMap.functions.end())
 		return false; //Le code à été invalidé
 	else

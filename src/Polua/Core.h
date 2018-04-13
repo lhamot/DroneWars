@@ -1,5 +1,9 @@
-//! @file
-//! @author Loïc HAMOT
+//
+// Copyright (c) 2018 LoÃ¯c HAMOT
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
 #ifndef __POLUA_CORE__
 #define __POLUA_CORE__
 
@@ -21,32 +25,32 @@ extern "C"
 
 //luaL_loadXXX => compile du code et l'ajoute sur la pile sous la forme d'une fonction
 //getglobal global vers pile
-//luaL_ref crée une référence(dans la table donnée) sur l'objet sur la pile, pop l'objet, et retourne la ref
-//lua_rawgeti pousse sur la pile un objet reference dans la table donné
+//luaL_ref crÃ©e une rÃ©fÃ©rence(dans la table donnÃ©e) sur l'objet sur la pile, pop l'objet, et retourne la ref
+//lua_rawgeti pousse sur la pile un objet reference dans la table donnÃ©
 //une lib est une liste de pair nom -> cfunction (dans lua_newLib par example)
-//luaL_setmetatable(L, tname); //Donne la metatable tname(pré-enregistré dans le registre) à l'objet sur la pile
-//lua_getmetatable(L, index); //Met sur la pile la metatable de l'objet pointé
+//luaL_setmetatable(L, tname); //Donne la metatable tname(prÃ©-enregistrÃ© dans le registre) Ã  l'objet sur la pile
+//lua_getmetatable(L, index); //Met sur la pile la metatable de l'objet pointÃ©
 
 
 namespace Polua
 {
 
-//! Check qu'à la sortie, la pile lua a été changé du nombre d'item attendu
+//! Check qu'Ã  la sortie, la pile lua a Ã©tÃ© changÃ© du nombre d'item attendu
 class CheckStack
 {
 	CheckStack(CheckStack const&);            //!< Class non-copiable
 	CheckStack& operator=(CheckStack const&); //!< Class non-copiable
 
 public:
-	lua_State* const L;         //!< Données de l'interpreteur Lua
+	lua_State* const L;         //!< DonnÃ©es de l'interpreteur Lua
 	int const expectedDiff;     //!< Difference attendue entre debut et fin
 	int const startValue;       //!< Taille de la pile au debut
-	std::string const funcName; //!< Nom de la fonction téstée
+	std::string const funcName; //!< Nom de la fonction tÃ©stÃ©e
 
 	//! ctor
-	CheckStack(lua_State* L,          //!<Données de l'interpreteur Lua
+	CheckStack(lua_State* L,          //!<DonnÃ©es de l'interpreteur Lua
 	           int expDiff,           //!< Diff attendue entre debut et fin
-	           char const* const func //!< Nom de la fonction téstée
+	           char const* const func //!< Nom de la fonction tÃ©stÃ©e
 	          ):
 		L(L),
 		expectedDiff(expDiff),
@@ -55,7 +59,7 @@ public:
 	{
 	}
 
-	//! Teste si la pile et été modifié comme attendu, et appel terminate sinon
+	//! Teste si la pile et Ã©tÃ© modifiÃ© comme attendu, et appel terminate sinon
 	~CheckStack()
 	{
 		if(lua_gettop(L) != startValue + expectedDiff)
@@ -68,8 +72,8 @@ public:
 #ifdef _DEBUG
 #  define POLUA_CHECK_STACK(L, D) CheckStack checkStack(L, D, __FUNCTION__);
 #else
-//! @brief Check(en debug) qu'à la sortie,
-//!   la pile lua a changé du nombre d'item attendu
+//! @brief Check(en debug) qu'Ã  la sortie,
+//!   la pile lua a changÃ© du nombre d'item attendu
 #  define POLUA_CHECK_STACK(L, D) ;
 #endif
 
@@ -90,9 +94,9 @@ inline void printStack(lua_State* L)
 //! Exception signalant une erreur dans la code lua ou dans l'usage de Polua
 struct Exception : std::runtime_error
 {
-	int errCode; //!< Code d'érreur lua, quand applicable
+	int errCode; //!< Code d'Ã©rreur lua, quand applicable
 	//! ctor
-	Exception(int err,                   //!< Code d'érreur lua, ou zero
+	Exception(int err,                   //!< Code d'Ã©rreur lua, ou zero
 	          std::string const& mess    //!< Message d'erreur
 	         ):
 		std::runtime_error(mess),
@@ -103,8 +107,8 @@ struct Exception : std::runtime_error
 
 
 //! @brief Traits permettant de savoir
-//!  si un type peut ètre considéré comme un type primitife pour lua
-//! @todo: Gérer les enums
+//!  si un type peut Ã¨tre considÃ©rÃ© comme un type primitife pour lua
+//! @todo: GÃ©rer les enums
 template<typename T>struct IsPrimitive
 {
 	static bool const value = false; //!< true si primitife (false par defaut)
@@ -141,8 +145,8 @@ inline void throwOnError(lua_State* L, int errCode)
 	}
 }
 
-//! @brief Stock un objet c++. Copie une rédérence.
-//! Déstiné a etre crée en temps que userdata.
+//! @brief Stock un objet c++. Copie une rÃ©dÃ©rence.
+//! DÃ©stinÃ© a etre crÃ©e en temps que userdata.
 template<typename T>
 class WrapperBase
 {
@@ -154,7 +158,7 @@ public:
 	//! Destructeur virtuel
 	virtual ~WrapperBase() {};
 
-	//! Recupere le pointeur sur l'objet stoqué
+	//! Recupere le pointeur sur l'objet stoquÃ©
 	virtual T* getPtr() = 0;
 };
 
@@ -162,35 +166,35 @@ public:
 template<typename T>
 class CopyWrapper : public WrapperBase<T>
 {
-	T copy_;  //!< Copie de l'objet stocké
+	T copy_;  //!< Copie de l'objet stockÃ©
 
 public:
-	//! Construit l'objet stocké par copie ou autre
+	//! Construit l'objet stockÃ© par copie ou autre
 	template<typename ...Args>
 	explicit CopyWrapper(Args const& ... args): copy_(args...) {}
 
-	//! Recupere le pointeur sur l'objet stoqué
+	//! Recupere le pointeur sur l'objet stoquÃ©
 	virtual T* getPtr() {return &copy_;}
 };
 
-//! Stock une référence sur un objet utilisateur.
+//! Stock une rÃ©fÃ©rence sur un objet utilisateur.
 template<typename T>
 class RefWrapper : public WrapperBase<T>
 {
-	T& ref_;  //!< stocke une référence sur l'objet
+	T& ref_;  //!< stocke une rÃ©fÃ©rence sur l'objet
 
 public:
-	//! Prend la référence sur l'objet donné
+	//! Prend la rÃ©fÃ©rence sur l'objet donnÃ©
 	explicit RefWrapper(T& ref): ref_(ref) {}
 
-	//! Recupere le pointeur sur l'objet stoqué
+	//! Recupere le pointeur sur l'objet stoquÃ©
 	virtual T* getPtr() {return &ref_;}
 };
 
 
 //! @brief Extrait un type C++ d'un userdata et retourne son pointeur.
 //!
-//! Appel luaL_error l'index donné ne référence pas un userdata
+//! Appel luaL_error l'index donnÃ© ne rÃ©fÃ©rence pas un userdata
 template<typename T>
 static T* userdata_fromstack(lua_State* L, int idx)
 {
@@ -205,8 +209,8 @@ static T* userdata_fromstack(lua_State* L, int idx)
 
 //! @brief Extrait un type C++ d'un userdata et retourne son pointeur.
 //!
-//! Appel luaL_error l'index donné ne référence pas un userdata
-//! Appel luaL_error l'index donné ne référence un objet C++ du type attendu
+//! Appel luaL_error l'index donnÃ© ne rÃ©fÃ©rence pas un userdata
+//! Appel luaL_error l'index donnÃ© ne rÃ©fÃ©rence un objet C++ du type attendu
 template<typename T>
 static T* check(lua_State* L, int narg)
 {
@@ -365,7 +369,7 @@ struct Push;
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
-// **************** Les type primitifs sont toujours copié ********************
+// **************** Les type primitifs sont toujours copiÃ© ********************
 //! Traits pour pousser dans la pile lua un ptr sur un primitif persistant
 template<typename T>
 struct Push<T*, true, false>
@@ -378,7 +382,7 @@ struct Push<T*, true, false>
 //! Traits pour pousser dans la pile lua un ptr sur un primitif temporaire
 template<typename T> struct Push<T*, true, true> :
 	public Push<T*, true, false> {};
-//! Traits pour pousser dans la pile lua une réf sur un primitif persistant
+//! Traits pour pousser dans la pile lua une rÃ©f sur un primitif persistant
 template<typename T>
 struct Push<T&, true, false>
 {
@@ -387,7 +391,7 @@ struct Push<T&, true, false>
 		Polua::push(L, ref);
 	}
 };
-//! Traits pour pousser dans la pile lua une réf sur un primitif temporaire
+//! Traits pour pousser dans la pile lua une rÃ©f sur un primitif temporaire
 template<typename T> struct Push<T&, true, true> :
 	public Push<T&, true, false> {};
 //! Traits pour pousser dans la pile lua un primitif persistant
@@ -403,7 +407,7 @@ struct Push<T, true, false>
 template<typename T> struct Push<T, true, true> :
 	public Push<T, true, false> {};
 
-// ********** Le userdata pointeur et ref sont stoké par pointeur *************
+// ********** Le userdata pointeur et ref sont stokÃ© par pointeur *************
 
 //! Pousse dans la pile lua une copie d'un type C++ en passant par CopyWrapper
 template<typename T>
@@ -453,7 +457,7 @@ struct Push<T&, false, false>
 };
 
 
-// ********** Le objet userdata persistent sont stoké par pointeur ************
+// ********** Le objet userdata persistent sont stokÃ© par pointeur ************
 //! Traits pour pousser dans pile lua un objet(non primitif) persistant
 template<typename T>
 struct Push<T, false, false>
@@ -464,7 +468,7 @@ struct Push<T, false, false>
 	}
 };
 
-// ********** Le objet userdata temporaire sont copié dans la pile ************
+// ********** Le objet userdata temporaire sont copiÃ© dans la pile ************
 //! Traits pour pousser dans pile lua un objet(non primitif) temporaire
 template<typename T>
 struct Push<T, false, true>
@@ -521,23 +525,23 @@ struct Fromstack;
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
-// ***************** Le objet primitifs sont toujours copiés ******************
+// ***************** Le objet primitifs sont toujours copiÃ©s ******************
 template<typename T>
 struct Fromstack<T*, true>
 {
-	//! Les pointeurs sur des primitif ne sont pas géré
+	//! Les pointeurs sur des primitif ne sont pas gÃ©rÃ©
 };
 
 template<typename T>
 struct Fromstack<T&, true>
 {
-	//! Les référence non constante sur des primitif ne sont pas géré
+	//! Les rÃ©fÃ©rence non constante sur des primitif ne sont pas gÃ©rÃ©
 };
 
 template<typename T>
 struct Fromstack<T const&, true>
 {
-	//! Les référence constante sur des primitif sont retournées par copié
+	//! Les rÃ©fÃ©rence constante sur des primitif sont retournÃ©es par copiÃ©
 	typedef T result_type;
 	static result_type fromstack(lua_State* L, int index)
 	{
@@ -555,7 +559,7 @@ struct Fromstack<T, true>
 	}
 };
 
-// ************** Les userdata sont récupéré par pointeur *********************
+// ************** Les userdata sont rÃ©cupÃ©rÃ© par pointeur *********************
 template<typename T>
 struct Fromstack<T*, false>
 {
@@ -588,7 +592,7 @@ struct Fromstack<T, false>
 
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-//! Récupère un objet depuit la pile lua a l'index donné
+//! RÃ©cupÃ¨re un objet depuit la pile lua a l'index donnÃ©
 template<typename T>
 typename Fromstack<T, true>::result_type
 fromstackAny(lua_State* L, int index, typename BaseIsPrim<T>::Is* = 0)
@@ -614,43 +618,43 @@ fromstackEnum(lua_State* L, int index)
 }
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-//! Récupère un enum depuit la pile lua a l'index donné
+//! RÃ©cupÃ¨re un enum depuit la pile lua a l'index donnÃ©
 template<typename T>
 typename Fromstack<T, std::is_enum<T>::value>::result_type
 fromstackAny(
-  lua_State* L,                      //!< Données de l'interpréteur lua
-  int index,                         //!< Index de l'obj désiré dans la pile
+  lua_State* L,                      //!< DonnÃ©es de l'interprÃ©teur lua
+  int index,                         //!< Index de l'obj dÃ©sirÃ© dans la pile
   typename BaseIsPrim<T>::IsNot* = 0 //!< Juste pour faire marcher le SFINAE
 )
 {
 	return fromstackEnum<T>(L, index);
 }
 
-//! @brief Ajoute une valeur dans la table, à la clé donné
+//! @brief Ajoute une valeur dans la table, Ã  la clÃ© donnÃ©
 //! @pre La metatable est au sommet de la pile
 template<typename T>
 void setInMetatable(
-  lua_State* L,            //!< Données de l'interpréteur lua
-  std::string const& name, //!< Nom de la donnée dans la metatable
-  T const& val             //!< Donée a ajouter dans la metatable
+  lua_State* L,            //!< DonnÃ©es de l'interprÃ©teur lua
+  std::string const& name, //!< Nom de la donnÃ©e dans la metatable
+  T const& val             //!< DonÃ©e a ajouter dans la metatable
 )
 {
 	POLUA_CHECK_STACK(L, 0);
 	Polua::pushTemp(L, val);           //push la valeur
-	lua_setfield(L, -2, name.c_str()); //metatable[name] = val; puis pop la clé
+	lua_setfield(L, -2, name.c_str()); //metatable[name] = val; puis pop la clÃ©
 }
 
-//! @brief Ajoute un lua_CFunction dans la table, à la clé donné
+//! @brief Ajoute un lua_CFunction dans la table, Ã  la clÃ© donnÃ©
 //! @pre La metatable est au sommet de la pile
 inline void setInMetatable(
-  lua_State* L,            //!< Données de l'interpréteur lua
+  lua_State* L,            //!< DonnÃ©es de l'interprÃ©teur lua
   std::string const& name, //!< Nom de la function dans la metatable
   lua_CFunction val        //!< Pointeur sur function C appelable par lua
 )
 {
 	POLUA_CHECK_STACK(L, 0);
 	Polua::push(L, val);               //push la lua_CFunction
-	lua_setfield(L, -2, name.c_str()); //metatable[name] = val; puis pop la clé
+	lua_setfield(L, -2, name.c_str()); //metatable[name] = val; puis pop la clÃ©
 }
 
 }

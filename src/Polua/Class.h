@@ -1,5 +1,9 @@
-//! @file
-//! @author Loïc HAMOT
+//
+// Copyright (c) 2018 LoÃ¯c HAMOT
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
 #ifndef __POLUA_CLASS__
 #define __POLUA_CLASS__
 
@@ -33,22 +37,22 @@ static VoidPtr const NullPtr = { 0, 0, 0 };
 struct Methode
 {
 	lua_CFunction caller;   //!< permet a lua d'appeler la methode
-	VoidPtr func;           //!< Pointeur sur la méthode a appeler
+	VoidPtr func;           //!< Pointeur sur la mÃ©thode a appeler
 	//! default ctor
 	Methode() : caller(nullptr), func(NullPtr) {}
 	//! ctor
 	Methode(lua_CFunction caller, VoidPtr func) : caller(caller), func(func) {}
 };
 //! @brief Pointeur de fonction servant a excecuter un Setter ou Getter
-//! (util pour le binding des propriétés)
+//! (util pour le binding des propriÃ©tÃ©s)
 typedef int(*Xetter)(lua_State*, VoidPtr);
 
-//! Contient toutes les infos sur une méthode ou propriété d'un objet
+//! Contient toutes les infos sur une mÃ©thode ou propriÃ©tÃ© d'un objet
 struct Member
 {
-	Methode methode;     //!< Wrapper de methode (peut ètre null)
-	Xetter getter;       //!< Wrapper de getter (peut ètre null)
-	Xetter setter;       //!< Wrapper de setter (peut ètre null)
+	Methode methode;     //!< Wrapper de methode (peut Ã¨tre null)
+	Xetter getter;       //!< Wrapper de getter (peut Ã¨tre null)
+	Xetter setter;       //!< Wrapper de setter (peut Ã¨tre null)
 	VoidPtr attibPtr;    //!< Pointeur sur l'attribut des Xetter
 	//! ctor
 	explicit Member(Methode const& f):
@@ -65,14 +69,14 @@ inline void setInMetatable(
 	POLUA_CHECK_STACK(L, 0);
 	Member* ptr = static_cast<Member*>(lua_newuserdata(L, sizeof(Member)));
 	new(ptr) Member(member);
-	lua_setfield(L, -2, name.c_str()); //metatable[name] = val; puis pop la clé
+	lua_setfield(L, -2, name.c_str()); //metatable[name] = val; puis pop la clÃ©
 }
 
 
 namespace ClassHelpers
 {
 
-//! Convertie un VoidPtr dans le type véritable d'une methode menbre
+//! Convertie un VoidPtr dans le type vÃ©ritable d'une methode menbre
 template<typename O>
 static O toMember(VoidPtr in)
 {
@@ -86,7 +90,7 @@ static O toMember(VoidPtr in)
 	return output;
 }
 
-//! Convertie le type véritable d'une methode membre en VoidPtr
+//! Convertie le type vÃ©ritable d'une methode membre en VoidPtr
 template<typename I>
 VoidPtr memberToVoid(I in)
 {
@@ -137,7 +141,7 @@ template<class T> struct PtrToType<T&> {static T& get(T* val) {return *val;}};
 template<class T> struct PtrToType<T*> {static T* get(T* val) {return val;}};
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-//! Crée la lua_CFunction qui appelera une methode membre C++ ayant un retour
+//! CrÃ©e la lua_CFunction qui appelera une methode membre C++ ayant un retour
 template<typename R, typename... Args>
 struct MemCallerR;
 
@@ -214,7 +218,7 @@ static int call(lua_State* L)
 
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-//! Crée la lua_CFunction qui appelera une methode membre C++ sans retour
+//! CrÃ©e la lua_CFunction qui appelera une methode membre C++ sans retour
 template<typename... Args>
 struct MemCaller;
 
@@ -286,13 +290,13 @@ static int call(lua_State* L)
 template<typename T>
 struct Indexer
 {
-	//! getter (qui dans cette version par defaut, déclanche une erreur lua)
+	//! getter (qui dans cette version par defaut, dÃ©clanche une erreur lua)
 	static int get(lua_State* L)
 	{
 		return luaL_error(L, "Can't index (get) type %s", typeid(T).name());
 	}
 
-	//! setter (qui dans cette version par defaut, déclanche une erreur lua)
+	//! setter (qui dans cette version par defaut, dÃ©clanche une erreur lua)
 	static int set(lua_State* L)
 	{
 		return luaL_error(L, "Can't index (set) type %s", typeid(T).name());
@@ -300,7 +304,7 @@ struct Indexer
 };
 
 
-//! Traits pour itérer le type T (conteneur c++)
+//! Traits pour itÃ©rer le type T (conteneur c++)
 template<typename T>
 struct IPairs
 {
@@ -316,7 +320,7 @@ struct IPairs
 	}
 };
 
-//! Traits pour connaitre le nombre d'élément  du type T (conteneur c++)
+//! Traits pour connaitre le nombre d'Ã©lÃ©ment  du type T (conteneur c++)
 template<typename T>
 struct Length
 {
@@ -335,7 +339,7 @@ class Class
 	Class(Class const&);             //!< class non copyable
 	Class& operator=(Class const&);  //!< class non copyable
 
-	lua_State* L;             //!< Donnée de l'interpreteur lua
+	lua_State* L;             //!< DonnÃ©e de l'interpreteur lua
 	std::string const& name;  //!< Nom de la class dans lua
 
 	//! metafunction lua "__call" pour le(s) constructeur
@@ -347,7 +351,7 @@ class Class
 		std::sprintf(funcName, "ctor%i", nbArgs);
 		lua_getmetatable(L, 1);      //Pousse la metatable du type
 		lua_pushstring(L, funcName); //Pousse le nom du constructeur
-		lua_rawget(L, -2);		     //Pousse le ctor (à la place du nom)
+		lua_rawget(L, -2);		     //Pousse le ctor (Ã  la place du nom)
 		if(lua_type(L, -1) == LUA_TFUNCTION)
 		{
 			lua_CFunction ctor = lua_tocfunction(L, -1); //On recup le ctor
@@ -403,7 +407,7 @@ class Class
 				lua_pushlightuserdata(L, member->methode.func.a); // Et la fonction par dessu
 				lua_pushlightuserdata(L, member->methode.func.b); // Et la fonction par dessu
 				lua_pushlightuserdata(L, member->methode.func.c); // Et la fonction par dessu
-				lua_pushcclosure(L, member->methode.caller, 4);   // Retourne l'appelant avec deux arguments prédefinit //-V112
+				lua_pushcclosure(L, member->methode.caller, 4);   // Retourne l'appelant avec deux arguments prÃ©definit //-V112
 				return 1;
 			}
 			else if(member->getter)
@@ -420,7 +424,7 @@ class Class
 			lua_Integer const value = lua_tointeger(L, -1); //On recup la valeur
 			lua_pop(L, 2);                                  //Pop metatable and Xetter/methode
 			lua_pushinteger(L, value);                      //On met la valeur sur la pile
-			return 1;                                       //Et on dit qu'on as une valeur retournée
+			return 1;                                       //Et on dit qu'on as une valeur retournÃ©e
 		}
 		else
 		{
@@ -471,7 +475,7 @@ class Class
 		};
 
 	private:
-		//! Extrait un objet de la pile a l'index donné
+		//! Extrait un objet de la pile a l'index donnÃ©
 		template<typename TI>
 		static auto ctorFromStack(lua_State* L)
 		-> decltype(Polua::fromstackAny<typename TI::Type>(L, TI::Index))
@@ -489,14 +493,14 @@ class Class
 			  (CopyWrapper<T>*)lua_newuserdata(L, sizeof(CopyWrapper<T>));
 			new(ptr) CopyWrapper<T>(
 			  ctorFromStack<ArgIdxList>(L)...);
-			// luaL_setmetatable doit etre appelé aprés le new
-			// Ainsi, si le new echoue, le déstructeur ne sera pas appelé.
+			// luaL_setmetatable doit etre appelÃ© aprÃ©s le new
+			// Ainsi, si le new echoue, le dÃ©structeur ne sera pas appelÃ©.
 			luaL_setmetatable(L, typeid(T).name());
 			return 1;
 		}
 	};
 
-	//! metamethode "__gc" appelé par lua pour detruire le userdata
+	//! metamethode "__gc" appelÃ© par lua pour detruire le userdata
 	static int destructor(lua_State* L)
 	{
 		WrapperBase<T>* obj = static_cast<WrapperBase<T>*>(lua_touserdata(L, -1));
@@ -510,7 +514,7 @@ class Class
 		}
 	}
 
-	//! metamethode "__tostring" appelé par lua pour afficher le userdata
+	//! metamethode "__tostring" appelÃ© par lua pour afficher le userdata
 	static int __tostring(lua_State* L)
 	{
 		T* obj = userdata_fromstack<T>(L, -1);
@@ -521,7 +525,7 @@ class Class
 		return 1;
 	}
 
-	//! metamethode "__eq" appelé par lua tester l'egalité de deux T
+	//! metamethode "__eq" appelÃ© par lua tester l'egalitÃ© de deux T
 	static int __eq(lua_State* L)
 	{
 		POLUA_CHECK_STACK(L, 1);
@@ -536,7 +540,7 @@ class Class
 	{
 		POLUA_CHECK_STACK(L, 1)
 		lua_getglobal(L, name.c_str());                                        // Pousse la metatable statique de T
-		if(lua_isnil(L, -1))                                                   // Si nil à été poussé, on va construir la mt
+		if(lua_isnil(L, -1))                                                   // Si nil Ã  Ã©tÃ© poussÃ©, on va construir la mt
 		{
 			lua_pop(L, 1);                                                     //   Pop le nil
 			lua_newuserdata(L, 1);                                             //   Pousse un nouveau userdata
@@ -544,7 +548,7 @@ class Class
 			setInMetatable(L, "__index", &Class<T>::__enumindex);              //   Met la metamethode __index(pour le valeur statics) dans la mt
 			setInMetatable(L, "__call", &Class<T>::__call);                    //   Met la metamethode __call(pour les ctor)  dans la mt
 			lua_setmetatable(L, -2);                                           //   Associe la mt au userdata(et pop la)
-			lua_setglobal(L, name.c_str());                                    //   Déplace le userdata dans les globals
+			lua_setglobal(L, name.c_str());                                    //   DÃ©place le userdata dans les globals
 			lua_getglobal(L, name.c_str());                                    //   Pousse le userdata sur la pile
 		}
 	}
@@ -571,13 +575,13 @@ class Class
 
 public:
 	//! ctor
-	Class(lua_State* state,            //!< Données de l'interpréteur lua
+	Class(lua_State* state,            //!< DonnÃ©es de l'interprÃ©teur lua
 	      std::string const& type_name //!< Nom du type dans lua
 	     ):
 		L(state),
 		name(type_name)
 	{
-		//Crée une metatable, avec les fonctions de mon type,
+		//CrÃ©e une metatable, avec les fonctions de mon type,
 		//dans le registre et la pousse dans la pile
 		luaL_newmetatable(L, typeid(T).name());
 		setInMetatable(L, "__gc", &Class<T>::destructor);
@@ -616,7 +620,7 @@ public:
 		return *this;
 	}
 
-	//! Ajoute un opérateur d'égalité au type T
+	//! Ajoute un opÃ©rateur d'Ã©galitÃ© au type T
 	Class& opEqual()
 	{
 		POLUA_CHECK_STACK(L, 0);
@@ -632,7 +636,7 @@ public:
 		return *this;
 	}
 
-	//! Ajoute une propriété au type T
+	//! Ajoute une propriÃ©tÃ© au type T
 	template<typename A>
 	Class& property(std::string const& propName, A T::*memberPtr)
 	{
@@ -643,7 +647,7 @@ public:
 		return *this;
 	}
 
-	//! Ajoute une propriété en lecture seul au type T
+	//! Ajoute une propriÃ©tÃ© en lecture seul au type T
 	template<typename A>
 	Class& read_only(std::string const& propName, A T::*memberPtr)
 	{
@@ -654,7 +658,7 @@ public:
 		return *this;
 	}
 
-	//! Ajoute une propriété en lecture seul au type T
+	//! Ajoute une propriÃ©tÃ© en lecture seul au type T
 	Class& read_only(std::string const& propName, lua_CFunction function)
 	{
 		setInMetatable(L, propName, function);
