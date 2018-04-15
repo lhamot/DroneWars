@@ -35,6 +35,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/optional.hpp>
 #include <boost/range/algorithm.hpp>
+#include <boost/range/combine.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/sources/severity_logger.hpp>

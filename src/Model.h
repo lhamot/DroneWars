@@ -11,7 +11,7 @@
 #include "Player.h"
 #include "TypedPtree.h"
 #include "Logger.h"
-
+#include "Tools.h"
 
 //! Pour éviter un warning bidon de doxygen
 typedef boost::serialization::access boost_serialization_access;
