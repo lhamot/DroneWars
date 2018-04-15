@@ -1453,6 +1453,7 @@ try
 	execFights(univCopy, scriptEngine, database_, playerMap, codesMap, events);
 
 	//! Supprime evenement trop vieux dans les Player et les Rapport plus utile
+	DW_LOG_TRACE << "Remove olders events";
 	{
 		std::map<Player::ID, size_t> maxEventPerPlayer;
 		for(Player const& player : database_.getPlayers())
@@ -1461,6 +1462,7 @@ try
 	}
 
 	//! Compile les evenements de log
+	DW_LOG_TRACE << "Compile log events. Part 1";
 	std::map<Player::ID, std::string> logResume;
 	for(Event const& ev : events)
 	{
@@ -1474,6 +1476,7 @@ try
 			logResume[ev.playerID] += ss.str();
 		}
 	}
+	DW_LOG_TRACE << "Compile log events. Part 2";
 	for(auto const& playerComment : logResume)
 	{
 		events.push_back(Event(playerComment.first, time(0), Event::PlayerLogGather));
@@ -1481,9 +1484,11 @@ try
 	}
 
 	//! Ajoute les nouveau evenements dans la base
+	DW_LOG_TRACE << "Add new events in database";
 	database_.addEvents(events);
 
 	//! Ajout des erreur de code dans la base
+	DW_LOG_TRACE << "Collect code errors";
 	std::vector<DataBase::CodeError> errorVect;
 	errorVect.reserve(events.size());
 	for(Event const& ev : events)
@@ -1496,6 +1501,7 @@ try
 			errorVect.push_back(err);
 		}
 	}
+	DW_LOG_TRACE << "Add code errors in database";
 	database_.addCodeErrors(errorVect);
 
 	//! Met a jour les score des joueurs (modifie les joueurs)
@@ -1550,6 +1556,7 @@ try
 	cout << "  fleet count:" << double(fleetSize) / sizeof(Fleet) << endl;
 	*/
 
+	DW_LOG_TRACE << "exit";
 	std::cout << time(0) << std::endl;
 }
 CATCH_LOG_EXCEPTION(logger)
