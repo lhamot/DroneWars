@@ -1,0 +1,15 @@
+*.exe
+/VS2015
+/save
+/doc
+*.mo
+/frontend/DroneWars.sqlite3
+*.pyc
+*.dll
+*.patch
+/src_doc
+/unversioned_static
+/frontend/log.txt
+/trace*.txt
+/format.bat
+/dronewars.ini

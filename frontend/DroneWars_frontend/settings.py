@@ -9,7 +9,7 @@
 # Django settings for DroneWars_frontend project.
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+# TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -17,7 +17,7 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DroneWarsPath = 'I:/C/Bit_them_all/'
+DroneWarsPath = 'I:/C/DroneWars/'
 
 DATABASES = {
     'default': {
@@ -94,11 +94,10 @@ STATICFILES_FINDERS = (
 SECRET_KEY = 'r$#2crd()d54liar_s9%ehpq&amp;a(4_1hr&amp;s__rqg0^*!ex!g)=m'
 
 # List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
+# TEMPLATE_LOADERS = (
+#     'django.template.loaders.filesystem.Loader',
+#     'django.template.loaders.app_directories.Loader',
+# )
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -116,12 +115,24 @@ ROOT_URLCONF = 'DroneWars_frontend.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'DroneWars_frontend.wsgi.application'
 
-TEMPLATE_DIRS = (
-    DroneWarsPath + 'frontend/template',
+# TEMPLATE_DIRS = (
+#     DroneWarsPath + 'frontend/template',
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-)
+# )
+
+TEMPLATES = [
+	{
+		'BACKEND': 'django.template.backends.django.DjangoTemplates',
+		'DIRS': [DroneWarsPath + 'frontend/template'],
+		#'loaders': [
+		#       'django.template.loaders.filesystem.Loader',
+		#       'django.template.loaders.app_directories.Loader',
+		#],
+		#'DEBUG': ['DEBUG'],
+	}
+]
 
 INSTALLED_APPS = (
     'django.contrib.auth',

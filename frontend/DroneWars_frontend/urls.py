@@ -6,7 +6,7 @@
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 import Game.views
 import Game.info_views
 import Game.community_views
