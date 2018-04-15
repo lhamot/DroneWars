@@ -13,3 +13,6 @@
 /trace*.txt
 /format.bat
 /dronewars.ini
+/frontend/clearDataBaseLocal.bat
+/frontend/clearDataBaseLocal.py
+/frontend/create_app.bat
