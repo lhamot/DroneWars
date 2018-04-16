@@ -27,7 +27,7 @@
 					</thead>
 					{% for ship in ships %}
 					<tr>
-						<td><img src="{% static "img/ships/{{ship.index}}.jpg" %}" width="80" class="img-thumbnail"/></td>
+						<td><img src="{% static "img/ships/"|addstr:ship.index|addstr:".jpg" %}" width="80" class="img-thumbnail"/></td>
 						<td style="white-space: nowrap">{{ship.index|shipname}}</td>
 						<td>{{ship.index|shipbrief}}</td>
 						<td>{{ship.price.tab.0}}</td>

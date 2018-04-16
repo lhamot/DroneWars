@@ -27,7 +27,7 @@
 					</thead>
 					{% for cannon in cannons %}
 					<tr>
-						<td><img src="{% static "img/cannons/{{cannon.index}}.jpg" %}" width="80" class="img-thumbnail"/></td>
+						<td><img src="{% static "img/cannons/"|addstr:cannon.index|addstr:".jpg" %}" width="80" class="img-thumbnail"/></td>
 						<td style="white-space: nowrap">{{cannon.index|cannonname}}</td>
 						<td>{{cannon.index|cannonbrief}}</td>
 						<td width="1">{{cannon.price.tab.0}}</td>

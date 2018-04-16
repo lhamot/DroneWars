@@ -64,7 +64,7 @@
 				</thead>
 				{% for building in buildings %}
 				<tr onclick="document.location.href='?bid={{building.index}}'">
-					<td><img src="{% static "img/buildings/{{building.index}}.jpg" %}" width="80" class="img-thumbnail"/></td>
+					<td><img src="{% static "img/buildings/"|addstr:building.index|addstr:".jpg" %}" width="80" class="img-thumbnail"/></td>
 					<td style="white-space: nowrap">{{building.index|buildingname}}</td>
 					<td>{{building.index|buildingbrief}}</td>
 				</tr>
