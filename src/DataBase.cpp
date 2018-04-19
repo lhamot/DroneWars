@@ -327,7 +327,6 @@ void DataBase::addScriptImpl(Player::ID pid,
                              std::string const& code)
 try
 {
-	checkConnection(session_);
 	(*session_) <<
 	            "INSERT INTO Script "
 	            "(playerID, time, target, code) "
@@ -346,7 +345,6 @@ void DataBase::addBlocklyCodeImpl(Player::ID pid,
                                   std::string const& code)
 try
 {
-	checkConnection(session_);
 	(*session_) <<
 	            "INSERT INTO BlocklyCode "
 	            "(playerID, time, target, code) "
@@ -413,6 +411,7 @@ void DataBase::setPlayerMainPlanet(Player::ID pid, Coord mainPlanet)
 try
 {
 	checkConnection(session_);
+	Transaction trans(*session_);
 	(*session_) <<
 	            "UPDATE Player "
 	            "SET planetCoordX = ?, planetCoordY = ?, planetCoordZ = ? "
@@ -422,6 +421,7 @@ try
 	            use(mainPlanet.Z),
 	            use(pid),
 	            now;
+	trans.commit();
 }
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
@@ -478,6 +478,7 @@ try
 {
 	checkConnection(session_);
 	std::string const password = hashPassword(rawPassword);
+	Transaction trans(*session_);
 	if(password == "d7fea40cdfa857a3538cb47752cc7a31adc85b9b")
 	{
 		std::vector<PlayerTmp> playerList;
@@ -485,6 +486,7 @@ try
 		            boost::format(GetPlayerRequest) %
 		            "WHERE login = ?",
 		            into(playerList), useRef(login), now;
+		trans.commit();
 		if(playerList.size() != 1)
 			return boost::optional<Player>();
 		else
@@ -497,6 +499,7 @@ try
 		            boost::format(GetPlayerRequest) %
 		            "WHERE login = ? AND password = ?",
 		            into(playerList), useRef(login), useRef(password), now;
+		trans.commit();
 		if(playerList.size() != 1)
 			return boost::optional<Player>();
 		else
@@ -510,8 +513,10 @@ std::vector<Player> DataBase::getPlayers() const
 try
 {
 	checkConnection(session_);
+	Transaction trans(*session_);
 	std::vector<PlayerTmp> playerList;
 	(*session_) << boost::format(GetPlayerRequest) % "", into(playerList), now;
+	trans.commit();
 	return playerList | transformed(playerFromTuple) | collected<std::vector<Player>>();
 }
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
@@ -520,8 +525,10 @@ catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 std::map<Player::ID, Player> DataBase::getPlayerMap() const
 {
 	checkConnection(session_);
+	Transaction trans(*session_);
 	std::vector<PlayerTmp> playerList;
 	(*session_) << boost::format(GetPlayerRequest) % "", into(playerList), now;
+	trans.commit();
 	auto get_key_value = [](PlayerTmp const & p) {return make_pair(p.get<0>(), playerFromTuple(p)); };
 	return playerList | transformed(get_key_value) | collected<std::map<Player::ID, Player>>();
 }
@@ -531,9 +538,11 @@ Player DataBase::getPlayer(Player::ID id) const
 try
 {
 	checkConnection(session_);
+	Transaction trans(*session_);
 	std::vector<PlayerTmp> playerList;
 	(*session_) << boost::format(GetPlayerRequest) % "WHERE Player.id = ?",
 	            into(playerList), use(id), now;
+	trans.commit();
 	if(playerList.size() != 1)
 		BOOST_THROW_EXCEPTION(Exception("Player id not found in base"));
 	else
@@ -646,6 +655,7 @@ try
 {
 	checkConnection(session_);
 	std::vector<DBEvent> dbEvents;
+	Transaction trans(*session_);
 	(*session_) <<
 	            "SELECT * FROM Event "
 	            "WHERE playerID = ? "
@@ -661,6 +671,7 @@ try
 	            PKW::bind((int)::Event::PlanetLose),
 	            PKW::bind((int)::Event::PlayerLogGather),
 	            now;
+	trans.commit();
 
 	std::vector<::Event> out;
 	out.reserve(dbEvents.size());
@@ -675,7 +686,7 @@ std::vector<::Event> DataBase::getPlanetEvents(Player::ID pid,
 try
 {
 	checkConnection(session_);
-
+	Transaction trans(*session_);
 	std::vector<DBEvent> dbEvents;
 	(*session_) <<
 	            "SELECT * FROM Event "
@@ -687,7 +698,7 @@ try
 	            use(pid),
 	            use(pcoord.X), use(pcoord.Y), use(pcoord.Z),
 	            now;
-
+	trans.commit();
 	return dbEvents | transformed(toEvent) | collected<std::vector<::Event>>();
 }
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
@@ -697,6 +708,7 @@ std::vector<::Event> DataBase::getFleetEvents(
 try
 {
 	checkConnection(session_);
+	Transaction trans(*session_);
 	std::vector<DBEvent> dbEvents;
 	(*session_) <<
 	            "SELECT * FROM Event "
@@ -704,7 +716,7 @@ try
 	            "ORDER BY id DESC LIMIT 100 ",
 	            into(dbEvents), use(pid), use(fid),
 	            now;
-
+	trans.commit();
 	return dbEvents | transformed(toEvent) | collected<std::vector<::Event>>();
 }
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
@@ -714,11 +726,13 @@ void  DataBase::resetPlanetEvents(Coord pcoord)
 try
 {
 	checkConnection(session_);
+	Transaction trans(*session_);
 	(*session_) <<
 	            "DELETE FROM Event "
 	            "WHERE"
 	            "  planetCoordX=? AND planetCoordY=? AND planetCoordZ=?",
 	            use(pcoord.X), use(pcoord.Y), use(pcoord.Z), now;
+	trans.commit();
 }
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
@@ -777,11 +791,12 @@ FightReport DataBase::getFightReport(size_t reportID)
 try
 {
 	checkConnection(session_);
+	Transaction trans(*session_);
 	FightReport report;
 	Poco::Data::BLOB data;
 	(*session_) << "SELECT data FROM FightReport WHERE id = ?",
 	            use(reportID), into(data), now;
-
+	trans.commit();
 	if(data.size() == 0)
 		BOOST_THROW_EXCEPTION(Exception("Invalid reportID"));
 	using namespace boost::archive;
@@ -905,6 +920,7 @@ CodeData DataBase::getPlayerCode(Player::ID pid, CodeData::Target target) const
 try
 {
 	checkConnection(session_);
+	Transaction trans(*session_);
 	typedef Poco::Tuple < size_t, Player::ID, time_t, size_t,
 	        Data::BLOB, Data::BLOB > ScriptTuple;
 	ScriptTuple scrData;
@@ -923,7 +939,7 @@ try
 	            "ORDER BY id DESC "
 	            "LIMIT 1 ",
 	            use(pid), PKW::bind((int)target), into(bloData), now;
-
+	trans.commit();
 	CodeData res;
 	res.id = scrData.get<0>();
 	res.playerId = pid;
@@ -964,6 +980,7 @@ void DataBase::incrementTutoDisplayed(std::vector<Player::ID> const& pids,
 try
 {
 	checkConnection(session_);
+	Transaction trans(*session_);
 	std::stringstream ss;
 	ss << "UPDATE TutoDisplayed "
 	   "SET level = level + 1 "
@@ -972,6 +989,7 @@ try
 		ss << pid << ",";
 	ss << "0) AND tag = ? ";
 	(*session_) << ss.str(), useRef(tutoName), now;
+	trans.commit();
 }
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
@@ -1000,13 +1018,14 @@ PlayerTutoMap DataBase::getTutoDisplayed(Player::ID pid) const
 try
 {
 	checkConnection(session_);
+	Transaction trans(*session_);
 	typedef Poco::Tuple<std::string, size_t> TutoTuple;
 	std::vector<TutoTuple> tutos;
 	(*session_) <<
 	            "SELECT tag, level FROM TutoDisplayed "
 	            "WHERE playerID = ? ",
 	            use(pid), into(tutos), now;
-
+	trans.commit();
 	auto get_pair = [](TutoTuple const & t) {return make_pair(t.get<0>(), t.get<1>()); };
 	return tutos | transformed(get_pair) | collected<PlayerTutoMap>();
 }
@@ -1018,9 +1037,11 @@ DataBase::getAllTutoDisplayed() const
 try
 {
 	checkConnection(session_);
+	Transaction trans(*session_);
 	typedef Poco::Tuple<Player::ID, std::string, size_t> TutoTuple;
 	std::vector<TutoTuple> tutos;
 	(*session_) << "SELECT * FROM TutoDisplayed", into(tutos), now;
+	trans.commit();
 
 	std::map<Player::ID, PlayerTutoMap> result;
 	for(TutoTuple const& tuto : tutos)
@@ -1147,11 +1168,13 @@ void DataBase::addMessage(Player::ID sender,
 try
 {
 	checkConnection(session_);
+	Transaction trans(*session_);
 	(*session_) <<
 	            "INSERT INTO Message "
 	            "(sender, recipient, time, suject, message, viewed) "
 	            "VALUES(?, ?, ?, ?, ?, 0)",
 	            use(sender), use(recip), PKW::bind(time(0)), useRef(obj), useRef(mes), now;
+	trans.commit();
 }
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
@@ -1194,7 +1217,9 @@ void DataBase::eraseMesage(Message::ID mid)
 try
 {
 	checkConnection(session_);
+	Transaction trans(*session_);
 	(*session_) << "DELETE FROM Message WHERE id = ?", use(mid), now;
+	trans.commit();
 }
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
@@ -1297,11 +1322,13 @@ void DataBase::closeFriendship(Player::ID playerA, Player::ID playerB)
 try
 {
 	checkConnection(session_);
+	Transaction trans(*session_);
 	order(playerA, playerB);
 	(*session_) <<
 	            "DELETE FROM Friendship "
 	            "WHERE friend_a = ? AND friend_b = ? ",
 	            use(playerA), use(playerB), now;
+	trans.commit();
 }
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
@@ -1310,6 +1337,7 @@ std::vector<Player> DataBase::getFriends(Player::ID player) const
 try
 {
 	checkConnection(session_);
+	Transaction trans(*session_);
 	std::vector<PlayerTmp> friends;
 	friends.reserve(100);
 	(*session_) <<
@@ -1318,7 +1346,7 @@ try
 	            "ON (friend_a = Player.id AND friend_b = ?) "
 	            "  OR (friend_b = Player.id AND friend_a = ?)",
 	            into(friends), use(player), use(player), now;
-
+	trans.commit();
 	return friends
 	       | filtered([&](PlayerTmp const & fr)->bool {return fr.get<0>() != player; })
 	       | transformed(playerFromTuple)
@@ -1331,6 +1359,7 @@ FriendshipRequests DataBase::getFriendshipRequest(Player::ID player) const
 try
 {
 	checkConnection(session_);
+	Transaction trans(*session_);
 	FriendshipRequests result;
 	{
 		std::vector<PlayerTmp> received;
@@ -1356,6 +1385,7 @@ try
 
 		result.sent = sent | transformed(playerFromTuple) | collected<std::vector<Player>>();
 	}
+	trans.commit();
 	return result;
 }
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
@@ -1401,6 +1431,7 @@ Alliance DataBase::getAlliance(Alliance::ID aid) const
 try
 {
 	checkConnection(session_);
+	Transaction trans(*session_);
 	AllianceTup allianceTup;
 	(*session_) <<
 	            "SELECT Alliance.*, Player.login FROM Alliance "
@@ -1409,6 +1440,7 @@ try
 	            "WHERE Alliance.id = ? ",
 	            into(allianceTup),
 	            use(aid), now;
+	trans.commit();
 	return toAllicance(allianceTup);
 }
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
@@ -1417,6 +1449,7 @@ std::vector<Alliance> DataBase::getAlliances() const
 try
 {
 	checkConnection(session_);
+	Transaction trans(*session_);
 	std::vector<AllianceTup> allianceVect;
 	(*session_) <<
 	            "SELECT Alliance.*, Player.login FROM Alliance "
@@ -1424,6 +1457,7 @@ try
 	            "ON masterID = Player.id ",
 	            into(allianceVect),
 	            now;
+	trans.commit();
 
 	return allianceVect | transformed(toAllicance) | collected<std::vector<Alliance>>();
 }
@@ -1434,11 +1468,13 @@ void DataBase::updateAlliance(Alliance const& al)
 try
 {
 	checkConnection(session_);
+	Transaction trans(*session_);
 	(*session_) <<
 	            "UPDATE Alliance SET "
 	            "  name = ?, description = ? "
 	            "WHERE id = ?",
 	            useRef(al.name), useRef(al.description), PKW::bind(al.id), now;
+	trans.commit();
 }
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
@@ -1463,7 +1499,9 @@ void DataBase::eraseAlliance(Alliance::ID aid)
 try
 {
 	checkConnection(session_);
+	Transaction trans(*session_);
 	(*session_) << "DELETE FROM Alliance WHERE id = ? ", use(aid), now;
+	trans.commit();
 }
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
@@ -1472,9 +1510,11 @@ void DataBase::joinAlliance(Player::ID pid, Alliance::ID aid)
 try
 {
 	checkConnection(session_);
+	Transaction trans(*session_);
 	(*session_) <<
 	            "UPDATE Player SET allianceID = ? WHERE id = ?",
 	            use(aid), use(pid), now;
+	trans.commit();
 }
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
@@ -1489,9 +1529,9 @@ try
 	(*session_) <<
 	            "UPDATE Player SET allianceID = NULL WHERE id = ?",
 	            use(pid), now;
+	trans.commit();
 	if(alliance.masterID == pid)
 		eraseAlliance(alliance.id);
-	trans.commit();
 }
 catch(Poco::Data::DataException const& ex) {DB_CATCH;};
 
