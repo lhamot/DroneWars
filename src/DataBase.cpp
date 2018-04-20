@@ -325,7 +325,6 @@ DataBase::~DataBase()
 void DataBase::addScriptImpl(Player::ID pid,
                              CodeData::Target target,
                              std::string const& code)
-try
 {
 	(*session_) <<
 	            "INSERT INTO Script "
@@ -337,13 +336,10 @@ try
 	            useRef(code),
 	            now;
 }
-catch(Poco::Data::DataException const& ex) {DB_CATCH;};
-
 
 void DataBase::addBlocklyCodeImpl(Player::ID pid,
                                   CodeData::Target target,
                                   std::string const& code)
-try
 {
 	(*session_) <<
 	            "INSERT INTO BlocklyCode "
@@ -355,8 +351,6 @@ try
 	            useRef(code),
 	            now;
 }
-catch(Poco::Data::DataException const& ex) {DB_CATCH;};
-
 
 Player::ID DataBase::addPlayer(std::string const& login,
                                std::string const& rawPassword,
@@ -534,21 +528,27 @@ std::map<Player::ID, Player> DataBase::getPlayerMap() const
 }
 
 
-Player DataBase::getPlayer(Player::ID id) const
-try
+Player DataBase::getPlayerImpl(Player::ID id) const
 {
-	checkConnection(session_);
-	Transaction trans(*session_);
 	std::vector<PlayerTmp> playerList;
 	(*session_) << boost::format(GetPlayerRequest) % "WHERE Player.id = ?",
 	            into(playerList), use(id), now;
-	trans.commit();
 	if(playerList.size() != 1)
 		BOOST_THROW_EXCEPTION(Exception("Player id not found in base"));
 	else
 		return playerFromTuple(playerList.front());
 }
-catch(Poco::Data::DataException const& ex) {DB_CATCH;};
+
+Player DataBase::getPlayer(Player::ID id) const
+try
+{
+	checkConnection(session_);
+	Transaction trans(*session_);
+	Player player = getPlayerImpl(id);
+	trans.commit();
+	return player;
+}
+catch (Poco::Data::DataException const& ex) { DB_CATCH; };
 
 
 void DataBase::addEvents(std::vector<::Event> const& events)
@@ -1114,7 +1114,7 @@ try
 
 	checkConnection(session_);
 	Transaction trans(*session_);
-	Player pla = getPlayer(pid);
+	Player pla = getPlayerImpl(pid);
 	size_t const cost =
 	  Skill::List[skillID]->skillCost(pla.skilltab.at(skillID)) *
 	  XPPerSkillPoints;
@@ -1484,7 +1484,7 @@ try
 {
 	checkConnection(session_);
 	Transaction trans(*session_);
-	Player player = getPlayer(pid);
+	Player player = getPlayerImpl(pid);
 	if(player.allianceID != aid)
 		return;
 	(*session_) <<
@@ -1523,9 +1523,9 @@ void DataBase::quitAlliance(Player::ID pid)
 try
 {
 	checkConnection(session_);
-	Transaction trans(*session_);
 	Player player = getPlayer(pid);
 	Alliance alliance = getAlliance(player.allianceID);
+	Transaction trans(*session_);
 	(*session_) <<
 	            "UPDATE Player SET allianceID = NULL WHERE id = ?",
 	            use(pid), now;

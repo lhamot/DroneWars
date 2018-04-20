@@ -313,6 +313,10 @@ private:
 	void addBlocklyCodeImpl(Player::ID pid,
 	                        CodeData::Target target,
 	                        std::string const& code);
+	//! @brief Extrait les données un joueur existant (Sans transaction)
+	//! @throw Exception si pid invalid
+	Player getPlayerImpl(Player::ID pid) const;
+
 	void checkConnection(std::unique_ptr<Poco::Data::Session>& session) const;
 
 	//! Crée toute les tables si elles n'éxistent pas déja
