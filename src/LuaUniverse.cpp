@@ -170,6 +170,19 @@ int luaCFunction_age(lua_State* L)
 	return 1;
 }
 
+int luaCFunction_time(lua_State* L)
+{
+	Polua::object playerObj = Polua::refFromName(L, "currentPlayer");
+	Polua::object roundObj = Polua::refFromName(L, "roundIndex");
+	Player currentPlayer = playerObj->get<Player>();
+	size_t round = roundObj->get<size_t>();
+	if (currentPlayer.skilltab[Skill::Chronos] < 1)
+		lua_pushnil(L);
+	else
+		Polua::push(L, round);
+	return 1;
+}
+
 //! luaCFunction qui renvoie forcement true
 int luaCFunction_true(lua_State* L)
 {
@@ -474,6 +487,7 @@ int initDroneWars(LuaTools::Engine& engine)
 	regFunc(L, "simulates", luaCFunction_simul_fight);
 	regFunc(L, "checkFleetAction", checkFleetAction);
 	regFunc(L, "checkPlanetAction", checkPlanetAction);
+	regFunc(L, "time", luaCFunction_time);
 	Class<Ressource>(L, "Ressource")
 	.enumValue("Metal", Ressource::Metal)
 	.enumValue("Carbon", Ressource::Carbon)
