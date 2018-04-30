@@ -131,12 +131,13 @@ void DataBase::checkConnection(
 		std::array<char, 10> buffer;
 		std::sprintf(buffer.data(), "%d", con.port_);
 		session.reset(
-		  new Session("MySQL",
-		              "host=" + con.host_ +
-		              ";port=" + std::string(buffer.data()) +
-		              ";db=" + con.database_ +
-		              ";user=" + con.user_ +
-		              ";password=" + con.password_//pdcx3wady6nsMfUm
+			new Session("MySQL",
+				"host=" + con.host_ +
+				";port=" + std::string(buffer.data()) +
+				";db=" + con.database_ +
+				";user=" + con.user_ +
+				";password=" + con.password_ + //pdcx3wady6nsMfUm
+				";auto-reconnect=true"
 		             ));
 	}
 }
@@ -154,6 +155,8 @@ catch(Poco::Data::DataException const& ex)
 	DW_LOG_ERROR << ex.displayText();
 	BOOST_THROW_EXCEPTION(DataBase::Exception(ex.displayText()));
 };
+
+static size_t const MaxCommentLength = 16383;
 
 void DataBase::createTables()
 {
@@ -188,7 +191,7 @@ void DataBase::createTables()
 		            "  id BIGINT PRIMARY KEY AUTO_INCREMENT,"
 		            "  time INTEGER NOT NULL,"
 		            "  type INTEGER NOT NULL,"
-		            "  comment VARCHAR(16383) NOT NULL,"
+		            "  comment VARCHAR(?) NOT NULL,"
 		            "  value INTEGER NOT NULL,"
 		            "  value2 INTEGER NOT NULL,"
 		            "  viewed INTEGER NOT NULL,"
@@ -202,7 +205,7 @@ void DataBase::createTables()
 		            "  INDEX (playerID),"
 		            "  INDEX (fleetID),"
 		            "  INDEX Coord (planetCoordX, planetCoordY, planetCoordZ)"
-		            ")", now;
+		            ")", PKW::bind(MaxCommentLength), now;
 
 		(*session_) <<
 		            "CREATE TABLE "
@@ -566,7 +569,9 @@ try
 		if(e.playerID == Player::NoId)
 			BOOST_THROW_EXCEPTION(
 			  logic_error("event.playerID == Player::NoId"));
-		return DBEvent(e.time, e.type, e.comment, e.value, e.value2, e.viewed,
+		return DBEvent(e.time, e.type, 
+					   e.comment.size() < MaxCommentLength? e.comment: e.comment.substr(0, MaxCommentLength),
+			           e.value, e.value2, e.viewed,
 		               e.playerID, e.fleetID, e.planetCoord.X, e.planetCoord.Y,
 		               e.planetCoord.Z);
 	};
