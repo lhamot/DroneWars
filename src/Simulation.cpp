@@ -1225,6 +1225,7 @@ void execFleets(
 	for(Fleet& fleet : univ_.fleetMap | boost::adaptors::map_values)
 		fleetMap.insert(make_pair(fleet.coord, fleet));
 
+	// Rassemble les flottes qui le souhaitent
 	for(auto iter = fleetMap.begin(); iter != fleetMap.end(); ++iter)
 	{
 		Fleet& fleet = iter->second;
@@ -1470,9 +1471,14 @@ try
 		if(ev.type == Event::PlayerLog)
 		{
 			std::stringstream ss;
-			ss << ((ev.fleetID == Fleet::NoId) ? translate("Planet : ") : translate("Fleet : "))
-			   << format("({1,num}, {2,num}, {3,num})") % int(ev.planetCoord.X) % int(ev.planetCoord.Y) % int(ev.planetCoord.Z)
-			   << "\n" << ev.comment << "\n\n";
+			if (ev.fleetID == Fleet::NoId) // This is a planet
+			{
+				ss << translate("Planet : ")
+					<< format("({1,num}, {2,num}, {3,num})") % int(ev.planetCoord.X) % int(ev.planetCoord.Y) % int(ev.planetCoord.Z)
+					<< "\n" << ev.comment << "\n\n";
+			}
+			else // This is a fleet
+				ss << translate("Fleet : ") << ev.fleetID << "\n" << ev.comment << "\n\n";
 			logResume[ev.playerID] += ss.str();
 		}
 	}
