@@ -564,13 +564,23 @@ try
 	        int, Player::ID, Fleet::ID, Coord::Value, Coord::Value,
 	        Coord::Value > DBEvent;
 
-	auto event_to_tuple = [](auto & e)
+	std::vector<std::string> longComments;
+	longComments.reserve(events.size());
+	auto event_to_tuple = [&longComments](auto & e)
 	{
 		if(e.playerID == Player::NoId)
 			BOOST_THROW_EXCEPTION(
 			  logic_error("event.playerID == Player::NoId"));
+		std::string const* comment;
+		if (e.comment.size() < MaxCommentLength)
+			comment = &e.comment;
+		else
+		{
+			longComments.push_back(e.comment.substr(0, MaxCommentLength));
+			comment = &longComments.back();
+		}
 		return DBEvent(e.time, e.type, 
-					   e.comment.size() < MaxCommentLength? e.comment: e.comment.substr(0, MaxCommentLength),
+			           *comment,
 			           e.value, e.value2, e.viewed,
 		               e.playerID, e.fleetID, e.planetCoord.X, e.planetCoord.Y,
 		               e.planetCoord.Z);
